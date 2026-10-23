@@ -45,6 +45,7 @@ def apply_snapshot(repo: Path, spec: dict, check_only: bool):
     patch = ROOT / spec['file']
     if hashlib.sha256(patch.read_bytes()).hexdigest() != spec['sha256']:
         raise RuntimeError(f'Source patch checksum mismatch: {patch}')
+    update = None
     # A private index recognizes the complete source snapshot, including new
     # files, without changing the developer's staging area or build outputs.
     with tempfile.TemporaryDirectory(prefix='mi6-edk2-index-') as directory:
@@ -57,10 +58,20 @@ def apply_snapshot(repo: Path, spec: dict, check_only: bool):
             return
         if check_only:
             raise RuntimeError(f'Source snapshot differs: {repo}; checkout preserved')
+        if 'upgrade' in spec:
+            upgrade = ROOT / spec['upgrade']['file']
+            if hashlib.sha256(upgrade.read_bytes()).hexdigest() != spec['upgrade']['sha256']:
+                raise RuntimeError(f'Source patch checksum mismatch: {upgrade}')
+            # Derive the previous complete snapshot from the new one. Only an
+            # exact match may be upgraded; developer edits must be preserved.
+            git(repo, 'apply', '--cached', '--reverse', str(upgrade), env=env)
+            previous = git(repo, 'diff', '--quiet', '--', *paths, env=env, check=False)
+            if previous.returncode == 0:
+                update = upgrade
     # git apply checks every hunk before writing. Never reset or clean a tree
     # to make a source patch apply over conflicting local edits.
-    git(repo, 'apply', '--check', str(patch))
-    git(repo, 'apply', str(patch))
+    git(repo, 'apply', '--check', str(update or patch))
+    git(repo, 'apply', str(update or patch))
     apply_snapshot(repo, spec, True)
 
 

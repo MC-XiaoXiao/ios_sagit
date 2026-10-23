@@ -7,7 +7,7 @@
       "commit": "ace27110b9b9b6c591387d50cf748ec646402b4a",
       "patch": {
         "file": "tools/patches/edk2-sagit/source-snapshot.patch",
-        "sha256": "e870c1ef8fc32a4a1290a7fb8c0b1c7a3cb919785ef0aa57b1e57dc57f57b415",
+        "sha256": "fac8a0adf7586ff56370c2c19368d5baad6bf2222266dfe24d8e43c3cd40ce37",
         "source_files": [
           "Config/sagit.conf",
           "Platforms/Msm8998FamilyPkg/Library/ArmPlatformLib/ArmPlatformLibMem.c",
@@ -27,7 +27,11 @@
           "Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/QcomUartDm.h",
           "Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/XnuBoot.c",
           "Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/XnuBootFormat.h"
-        ]
+        ],
+        "upgrade": {
+          "file": "tools/patches/edk2-sagit/0006-sagit-direct-boot.patch",
+          "sha256": "2f28a816a45fe8b7bac8949c2801ad91b19badc605e9efb72377b68e900d5463"
+        }
       }
     },
     {

@@ -8,7 +8,10 @@ import zlib
 from dataclasses import dataclass
 
 MAGIC = b'MI6BOOT1'
-FIRMWARE_NAME = b'sagit-mi6boot1'
+# Firmware revision 2 accepts a zero-delay payload. The container stays MI6BOOT1.
+FIRMWARE_NAME = b'sagit-mi6boot2'
+LEGACY_FIRMWARE_NAME = b'sagit-mi6boot1'
+FIRMWARE_NAMES = (FIRMWARE_NAME, LEGACY_FIRMWARE_NAME)
 PAYLOAD_HEADER = struct.Struct('<8sIIIIQQII16s')
 AUTOBOOT = 1
 LZMA = 2
@@ -70,10 +73,10 @@ def assemble(image: BootImage, ramdisk: bytes, *, stamp: bool = False) -> bytes:
         ramdisk.ljust(align(len(ramdisk), image.page), b'\0')
 
 
-def pack_payload(efi: bytes, *, autoboot: bool, delay: int = 5) -> bytes:
+def pack_payload(efi: bytes, *, autoboot: bool = True, delay: int = 0) -> bytes:
     check_efi(efi)
-    if not 1 <= delay <= 30:
-        raise ValueError('boot delay must be 1..30 seconds')
+    if not 0 <= delay <= 30:
+        raise ValueError('boot delay must be 0..30 seconds')
     # LZMA-alone, with a concrete decoded size for EDK2's LZMA SDK decoder.
     encoded = bytearray(lzma.compress(efi, format=lzma.FORMAT_ALONE,
                                      filters=[{'id': lzma.FILTER_LZMA1, 'dict_size': 8 << 20,
@@ -91,7 +94,7 @@ def unpack_payload(data: bytes) -> tuple[dict, bytes]:
     magic, version, size, flags, delay, stored, expanded, crc, raw_crc, reserved = PAYLOAD_HEADER.unpack_from(data)
     if magic != MAGIC or version != 1 or size != PAYLOAD_HEADER.size or flags & ~3 or reserved != bytes(16):
         raise ValueError('unsupported MI6BOOT1 header')
-    if not 1 <= delay <= 30 or not 64 <= expanded <= MAX_EFI or not 13 <= stored <= MAX_IMAGE or \
+    if not 0 <= delay <= 30 or not 64 <= expanded <= MAX_EFI or not 13 <= stored <= MAX_IMAGE or \
             stored != len(data) - size:
         raise ValueError('invalid MI6BOOT1 size or countdown')
     encoded = data[size:]
@@ -117,10 +120,13 @@ def unpack_payload(data: bytes) -> tuple[dict, bytes]:
             'efi_sha256': hashlib.sha256(efi).hexdigest()}, efi
 
 
-def package(edk2: bytes, efi: bytes | None, *, autoboot: bool, delay: int = 5) -> bytes:
+def package(edk2: bytes, efi: bytes | None, *, autoboot: bool = True, delay: int = 0) -> bytes:
     image = parse_image(edk2)
-    if image.header[48:64].rstrip(b'\0') != FIRMWARE_NAME:
+    firmware = image.header[48:64].rstrip(b'\0')
+    if firmware not in FIRMWARE_NAMES:
         raise ValueError('EDK2 lacks the MI6BOOT1 loader; rebuild with scripts/build-sagit.sh')
+    if autoboot and delay == 0 and firmware != FIRMWARE_NAME:
+        raise ValueError('EDK2 lacks the zero-delay MI6BOOT1 loader; rebuild with scripts/build-sagit.sh')
     if autoboot and efi is None:
         raise ValueError('--autoboot requires --bridge')
     result = assemble(image, pack_payload(efi, autoboot=autoboot, delay=delay) if efi else b'')

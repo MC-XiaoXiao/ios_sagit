@@ -12,12 +12,12 @@ TEST_FLAGS ?=
 DRIVER_FLAGS ?=
 BOOT_FLAGS ?=
 BRIDGE_EFI ?= build/bridge/XnuBridge.efi
-AUTOBOOT ?= 0
+AUTOBOOT ?= 1
 .PHONY: edk2-sagit boot-image test-fastboot
 edk2-sagit:
 	bash scripts/build-sagit.sh
 boot-image:
-	$(PYTHON) scripts/build-boot.py --bridge "$(BRIDGE_EFI)" $(if $(filter 1,$(AUTOBOOT)),--autoboot,) $(BOOT_FLAGS)
+	$(PYTHON) scripts/build-boot.py --bridge "$(BRIDGE_EFI)" $(if $(filter 1,$(AUTOBOOT)),--autoboot,--no-autoboot) $(BOOT_FLAGS)
 test-fastboot:
 	$(PYTHON) -m unittest discover -s tests -p 'test_fastboot*.py'
 .PHONY: all bootstrap build verify doctor package test collect-sdm835 kernelcache-patcher test-patcher analyze-kexts analyze-abi kernelcache verify-kernelcache

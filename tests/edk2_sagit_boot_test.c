@@ -26,9 +26,10 @@ static EFI_BLOCK_IO_MEDIA Media;
 static EFI_BLOCK_IO_PROTOCOL Block;
 static EFI_DISK_IO_PROTOCOL Disk;
 static EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL Input;
+static EFI_SIMPLE_TEXT_INPUT_PROTOCOL LegacyInput;
 static UINT8 *Image, *Original, *Efi;
-static UINTN ImageSize, EfiSize, Allocations, PartitionCount=1, Loads, Starts, Unloads, PayloadReads;
-static BOOLEAN Cancel, FailRead, FailLoad, FailStart;
+static UINTN ImageSize, EfiSize, Allocations, PartitionCount=1, InputCount=1, Loads, Starts, Unloads, PayloadReads, Stalls;
+static BOOLEAN Cancel, CancelDuringRead, FailRead, FailLoad, FailStart, FailInputLocate;
 
 VOID *EFIAPI AllocatePool(UINTN Size) { VOID *P=malloc(Size); if(P) Allocations++; return P; }
 VOID EFIAPI FreePool(VOID *P) { assert(P && Allocations); Allocations--; free(P); }
@@ -47,7 +48,9 @@ VOID EFIAPI DebugAssert(CONST CHAR8 *File,UINTN Line,CONST CHAR8 *Description) {
 UINTN EFIAPI Print(CONST CHAR16 *Format,...) { return 0; }
 static BOOLEAN guid(EFI_GUID *A,EFI_GUID *B) { return memcmp(A,B,sizeof(*A))==0; }
 static EFI_STATUS EFIAPI locate(EFI_LOCATE_SEARCH_TYPE Type,EFI_GUID *Protocol,VOID *Key,UINTN *Count,EFI_HANDLE **Handles) {
-  UINTN N=guid(Protocol,&gEfiPartitionInfoProtocolGuid) ? PartitionCount : 1;
+  BOOLEAN Partition=guid(Protocol,&gEfiPartitionInfoProtocolGuid);
+  UINTN N=Partition ? PartitionCount : InputCount;
+  if(!Partition && FailInputLocate) { *Count=99; *Handles=NULL; return EFI_DEVICE_ERROR; }
   *Count=N;
   if(!N) { *Handles=NULL; return EFI_NOT_FOUND; }
   *Handles=AllocatePool(N*sizeof(**Handles));
@@ -63,9 +66,13 @@ static EFI_STATUS EFIAPI handle(EFI_HANDLE Handle,EFI_GUID *Protocol,VOID **Out)
   return EFI_SUCCESS;
 }
 static EFI_STATUS EFIAPI read_disk(EFI_DISK_IO_PROTOCOL *This,UINT32 Id,UINT64 Offset,UINTN Size,VOID *Data) {
+  UINT64 PayloadOffset;
+  UINT32 PayloadSize;
   if(FailRead) return EFI_DEVICE_ERROR;
   assert(Offset<=ImageSize && Size<=ImageSize-Offset);
-  if(Size>1632) PayloadReads++;
+  if(Mi6RamdiskRange(Image,ImageSize,&PayloadOffset,&PayloadSize) && Offset==PayloadOffset+64) {
+    PayloadReads++; if(CancelDuringRead) Cancel=TRUE;
+  }
   memcpy(Data,Image+Offset,Size); return EFI_SUCCESS;
 }
 static EFI_STATUS EFIAPI crc(VOID *Data,UINTN Size,UINT32 *Result) {
@@ -74,7 +81,10 @@ static EFI_STATUS EFIAPI crc(VOID *Data,UINTN Size,UINT32 *Result) {
 static EFI_STATUS EFIAPI key(EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL *This,EFI_KEY_DATA *Data) {
   return Cancel ? EFI_SUCCESS : EFI_NOT_READY;
 }
-static EFI_STATUS EFIAPI stall(UINTN Microseconds) { return EFI_SUCCESS; }
+static EFI_STATUS EFIAPI legacy_key(EFI_SIMPLE_TEXT_INPUT_PROTOCOL *This,EFI_INPUT_KEY *Data) {
+  return Cancel ? EFI_SUCCESS : EFI_NOT_READY;
+}
+static EFI_STATUS EFIAPI stall(UINTN Microseconds) { assert(Microseconds==100000); Stalls++; return EFI_SUCCESS; }
 static EFI_STATUS EFIAPI load(BOOLEAN Policy,EFI_HANDLE Parent,EFI_DEVICE_PATH_PROTOCOL *Path,
                              VOID *Data,UINTN Size,EFI_HANDLE *Child) {
   Loads++; assert(Size==EfiSize && memcmp(Data,Efi,Size)==0);
@@ -86,8 +96,9 @@ static EFI_STATUS EFIAPI start(EFI_HANDLE Child,UINTN *Size,CHAR16 **Data) {
 static EFI_STATUS EFIAPI unload(EFI_HANDLE Child) { Unloads++; return EFI_SUCCESS; }
 static void reset(void) {
   assert(!Allocations); memcpy(Image,Original,ImageSize);
-  PartitionCount=1; Loads=Starts=Unloads=PayloadReads=0;
-  Cancel=FailRead=FailLoad=FailStart=FALSE;
+  PartitionCount=InputCount=1; Loads=Starts=Unloads=PayloadReads=Stalls=0;
+  Cancel=CancelDuringRead=FailRead=FailLoad=FailStart=FailInputLocate=FALSE;
+  gST->ConIn=NULL;
 }
 static UINT8 *payload(void) {
   UINT64 Offset; UINT32 Size; assert(Mi6RamdiskRange(Image,ImageSize,&Offset,&Size));
@@ -107,12 +118,25 @@ int main(int Argc,char **Argv) {
   Media.MediaPresent=TRUE; Media.LogicalPartition=TRUE;
   Media.BlockSize=512; Media.LastBlock=ImageSize/512-1;
   Block.Media=&Media; Disk.ReadDisk=read_disk; Input.ReadKeyStrokeEx=key;
+  LegacyInput.ReadKeyStroke=legacy_key;
   Services.LocateHandleBuffer=locate; Services.HandleProtocol=handle;
   Services.CalculateCrc32=crc; Services.Stall=stall;
   Services.LoadImage=load; Services.StartImage=start; Services.UnloadImage=unload;
 
-  reset(); assert(Mi6BootPayload()==EFI_SUCCESS && Loads==1 && Starts==1 && Unloads==1 && !Allocations);
+  reset(); assert(Mi6BootPayload()==EFI_SUCCESS && Loads==1 && Starts==1 && Unloads==1 && !Allocations && !Stalls);
+  reset(); put32(payload()+20,1); assert(Mi6BootPayload()==EFI_SUCCESS && Starts==1 && Stalls==10 && !Allocations);
+  reset(); InputCount=0; assert(Mi6BootPayload()==EFI_SUCCESS && Starts==1 && !Stalls && !Allocations);
+  reset(); InputCount=2; assert(Mi6BootPayload()==EFI_SUCCESS && Starts==1 && !Stalls && !Allocations);
+  reset(); FailInputLocate=TRUE; assert(Mi6BootPayload()==EFI_SUCCESS && Starts==1 && !Stalls && !Allocations);
   reset(); Cancel=TRUE; assert(Mi6BootPayload()==EFI_ABORTED && !Loads && !PayloadReads && !Allocations);
+  reset(); put32(payload()+20,30); Cancel=TRUE;
+  assert(Mi6BootPayload()==EFI_ABORTED && !Loads && !PayloadReads && !Stalls && !Allocations);
+  reset(); InputCount=0; gST->ConIn=&LegacyInput; Cancel=TRUE;
+  assert(Mi6BootPayload()==EFI_ABORTED && !Loads && !PayloadReads && !Stalls && !Allocations);
+  reset(); CancelDuringRead=TRUE;
+  assert(Mi6BootPayload()==EFI_ABORTED && PayloadReads==1 && !Loads && !Stalls && !Allocations);
+  reset(); memcpy(Image+48,"sagit-mi6boot1",14); put32(payload()+20,1);
+  assert(Mi6BootPayload()==EFI_SUCCESS && Starts==1 && Stalls==10 && !Allocations);
   reset(); PartitionCount=2; assert(Mi6BootPayload()==EFI_COMPROMISED_DATA && !Loads && !Allocations);
   reset(); PartitionCount=0; assert(Mi6BootPayload()==EFI_NOT_FOUND && !Loads && !Allocations);
   reset(); FailRead=TRUE; assert(Mi6BootPayload()==EFI_DEVICE_ERROR && !Loads && !Allocations);
@@ -127,6 +151,6 @@ int main(int Argc,char **Argv) {
   reset(); Image[48]=0; assert(Mi6BootPayload()==EFI_NOT_FOUND && !Loads && !Allocations);
   reset(); FailLoad=TRUE; assert(Mi6BootPayload()==EFI_SECURITY_VIOLATION && Loads==1 && !Starts && Unloads==1 && !Allocations);
   reset(); FailStart=TRUE; assert(Mi6BootPayload()==EFI_LOAD_ERROR && Starts==1 && Unloads==1 && !Allocations);
-  puts("sagit boot: 16 loader/recovery cases passed with the EDK2 LZMA decoder");
+  puts("sagit boot: 24 loader/recovery cases passed with the EDK2 LZMA decoder");
   free(Image); free(Original); free(Efi); return 0;
 }

@@ -112,10 +112,10 @@ fastboot -S 0 flash boot boot-sagit.img
 fastboot reboot
 ```
 
-Images built with `--autoboot` start EDK2, the bridge, and the kernel on each
-power-on. The default countdown is five seconds. Press a volume key to cancel
-and enter EDK2 USB Fastboot. Missing or rejected payloads and EFI startup errors
-also return to Fastboot.
+Packaged images start EDK2, the bridge, and the kernel on each power-on by
+default, without a countdown. Hold a volume key as EDK2 starts to enter USB
+Fastboot. `--boot-delay 5` adds a five-second recovery countdown. Missing or
+rejected payloads and EFI startup errors also return to Fastboot.
 
 The combined image loader has passed EDK2 compilation and host tests.
 Automatic boot from the combined image has not yet been validated on hardware.
@@ -261,7 +261,7 @@ Build EDK2 and package an automatic boot image:
 
 ```sh
 make edk2-sagit
-make boot-image BRIDGE_EFI=build/apfs/bridge/XnuBridge.efi AUTOBOOT=1
+make boot-image BRIDGE_EFI=build/apfs/bridge/XnuBridge.efi
 ```
 
 Or invoke the packer directly:
@@ -270,14 +270,20 @@ Or invoke the packer directly:
 python3 scripts/build-boot.py \
   --edk2 build/edk2-sagit/boot-sagit.img \
   --bridge build/apfs/bridge/XnuBridge.efi \
-  --autoboot --boot-delay 5 \
   --output build/boot/boot-sagit.img
 ```
 
-Omit `--autoboot`, or set `AUTOBOOT=0`, to stay in USB Fastboot by default.
+Use `--no-autoboot`, or set `AUTOBOOT=0`, to stay in USB Fastboot by default.
+Without `--bridge`, the packer uses `build/bridge/XnuBridge.efi` for automatic
+boot; `--no-autoboot` without `--bridge` produces a plain recovery image.
+Zero-delay boot requires rebuilt EDK2 with the `sagit-mi6boot2` marker.
 The packer requires EDK2 with the payload loader, preserves its firmware and
 Android DTB, compresses the bridge, verifies the packed contents, and enforces
 a 64 MiB image limit. The build report is saved alongside the image as `.json`.
+
+Local debugging still uses the existing `XnuBridge.efi` build and temporary
+`fastboot stage` / `oem run-efi` path. Building the bridge does not install an
+automatic boot image or change the device's boot partition.
 
 Automatic boot reads the payload from the **boot partition**. Temporary launch
 of the combined image with `fastboot boot` is unsupported. To start an EFI once

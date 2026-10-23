@@ -160,13 +160,13 @@ index 6c3c911..44a7607 100644
 \ No newline at end of file
 +}
 diff --git a/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/PlatformBm.c b/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/PlatformBm.c
-index 50981ff..6d33d39 100644
+index 50981ff..728f6aa 100644
 --- a/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/PlatformBm.c
 +++ b/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/PlatformBm.c
 @@ -32,6 +32,10 @@
- 
+
  #include "PlatformBm.h"
- 
+
 +#ifdef MI6_BOOT_PAYLOAD_ENABLED
 +EFI_STATUS Mi6BootPayload(VOID);
 +#endif
@@ -174,18 +174,65 @@ index 50981ff..6d33d39 100644
  #define DP_NODE_LEN(Type)                                                      \
    {                                                                            \
      (UINT8)sizeof(Type), (UINT8)(sizeof(Type) >> 8)                            \
-@@ -666,6 +670,40 @@ VOID EFIAPI PlatformBootManagerAfterConsole(VOID)
-   PlatformRegisterFvBootOption(
-       &gUefiShellFileGuid, L"UEFI Shell", LOAD_OPTION_ACTIVE);
- 
-+#ifdef QCOM_UARTDM_CONSOLE
-+  // A missing, cancelled or rejected payload falls through to USB Fastboot.
+@@ -508,21 +512,22 @@ VOID EFIAPI PlatformBootManagerBeforeConsole(VOID)
+   EfiBootManagerUpdateConsoleVariable(
+       ConIn, (EFI_DEVICE_PATH_PROTOCOL *)&mUsbKeyboard, NULL);
+
+-  EFI_HANDLE *              handles;
+-  UINTN                     NoHandles;
++  EFI_HANDLE *              handles = NULL;
++  UINTN                     NoHandles = 0;
++  UINTN                     InputIndex;
+   EFI_DEVICE_PATH_PROTOCOL *devicehandle;
+-  /*CHAR16 *devicepathtxt;*/
+-  // EfiBootManagerUpdateConsoleVariable(ConIn,
+-  //  (EFI_DEVICE_PATH_PROTOCOL*)&gQcomKeypadDeviceGuid, NULL);
+-  gBS->LocateHandleBuffer(
+-      ByProtocol, &gEfiSimpleTextInputExProtocolGuid, NULL, &NoHandles,
+-      &handles);
+-  devicehandle = DevicePathFromHandle(handles[1]);
+-  EfiBootManagerUpdateConsoleVariable(
+-      ConIn, devicehandle, NULL); /*
+-            devicepathtxt = ConvertDevicePathToText(devicehandle,TRUE,TRUE);
+-            DEBUG((DEBUG_ERROR,"There are %s handles\n",devicepathtxt));
+-            ASSERT(0);*/
++  // Input enumeration order and count change when UART or USB is absent.
++  if (!EFI_ERROR(gBS->LocateHandleBuffer(
++          ByProtocol, &gEfiSimpleTextInputExProtocolGuid, NULL, &NoHandles,
++          &handles))) {
++    for (InputIndex = 0; InputIndex < NoHandles; InputIndex++) {
++      devicehandle = DevicePathFromHandle(handles[InputIndex]);
++      if (devicehandle != NULL) {
++        EfiBootManagerUpdateConsoleVariable(ConIn, devicehandle, NULL);
++      }
++    }
++  }
++  if (handles != NULL) FreePool(handles);
+
+   //
+   // Add the hardcoded serial console device path to ConIn, ConOut, ErrOut.
+@@ -655,6 +660,15 @@ VOID EFIAPI PlatformBootManagerAfterConsole(VOID)
+   //
+   HandleCapsules();
+
 +#ifdef MI6_BOOT_PAYLOAD_ENABLED
++  // Firmware boots the bundled bridge before menu/BootOrder enumeration.
++  // This path must also work in builds without a UART console.
 +  Status = Mi6BootPayload();
 +  if (Status != EFI_NOT_FOUND) {
 +    Print(L"XNU payload returned: %r. Entering USB Fastboot.\r\n", Status);
 +  }
 +#endif
++
+   //
+   // Enumerate all possible boot options.
+   //
+@@ -666,6 +680,34 @@ VOID EFIAPI PlatformBootManagerAfterConsole(VOID)
+   PlatformRegisterFvBootOption(
+       &gUefiShellFileGuid, L"UEFI Shell", LOAD_OPTION_ACTIVE);
+
++#if defined(MI6_BOOT_PAYLOAD_ENABLED) || defined(QCOM_UARTDM_CONSOLE)
++  // A missing, cancelled or rejected payload falls through to USB Fastboot.
 +  {
 +    EFI_GUID FastbootGuid = {0x9588502a,0x5370,0x11e3,{0x86,0x31,0xd7,0xc5,0x95,0x13,0x64,0xc8}};
 +    PlatformRegisterFvBootOption(&FastbootGuid, L"UEFI Fastboot", LOAD_OPTION_ACTIVE);
@@ -871,10 +918,10 @@ index 0000000..4095f6a
 +}
 diff --git a/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/XnuBoot.c b/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/XnuBoot.c
 new file mode 100644
-index 0000000..802fa6c
+index 0000000..3a7189a
 --- /dev/null
 +++ b/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/XnuBoot.c
-@@ -0,0 +1,129 @@
+@@ -0,0 +1,137 @@
 +// SPDX-License-Identifier: BSD-2-Clause-Patent
 +// Android ramdisk payload packaging follows the UniXNU/sheng design. The
 +// existing Mi 6 XnuBridge remains responsible for every hardware handoff.
@@ -922,22 +969,26 @@ index 0000000..802fa6c
 +  EFI_HANDLE *Handles=NULL;
 +  UINTN Count=0, Index, Tick;
 +  EFI_INPUT_KEY Key;
-+  gBS->LocateHandleBuffer(ByProtocol,&gEfiSimpleTextInputExProtocolGuid,NULL,&Count,&Handles);
-+  Print(L"\r\nMi 6: EDK2 -> XnuBridge -> XNU\r\nPress a volume key for USB Fastboot.\r\n");
-+  for (Tick=0;Tick<Seconds*10;Tick++) {
-+    if (Tick%10==0) Print(L"Starting XNU in %u seconds...\r\n",Seconds-Tick/10);
++  if (EFI_ERROR(gBS->LocateHandleBuffer(ByProtocol,&gEfiSimpleTextInputExProtocolGuid,NULL,&Count,&Handles)))
++    Count=0;
++  if (Seconds) Print(L"\r\nMi 6: EDK2 -> XnuBridge -> XNU\r\nPress a volume key for USB Fastboot.\r\n");
++  // Zero delay still checks held/queued recovery keys, without a timer wait.
++  for (Tick=0;;Tick++) {
 +    for (Index=0;Index<Count;Index++) {
 +      EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL *Input;
 +      EFI_KEY_DATA Data;
 +      if (!EFI_ERROR(gBS->HandleProtocol(Handles[Index],&gEfiSimpleTextInputExProtocolGuid,(VOID **)&Input)) &&
 +          !EFI_ERROR(Input->ReadKeyStrokeEx(Input,&Data))) {
-+        FreePool(Handles); return TRUE;
++        if (Handles) FreePool(Handles);
++        return TRUE;
 +      }
 +    }
 +    if (gST->ConIn && !EFI_ERROR(gST->ConIn->ReadKeyStroke(gST->ConIn,&Key))) {
 +      if (Handles) FreePool(Handles);
 +      return TRUE;
 +    }
++    if (Tick>=Seconds*10) break;
++    if (Tick%10==0) Print(L"Starting XNU in %u seconds...\r\n",Seconds-Tick/10);
 +    gBS->Stall(100000);
 +  }
 +  if (Handles) FreePool(Handles);
@@ -959,7 +1010,8 @@ index 0000000..802fa6c
 +  if (Bytes<sizeof(Header)) return EFI_COMPROMISED_DATA;
 +  Status=Disk->ReadDisk(Disk,MediaId,0,sizeof(Header),Header);
 +  if (EFI_ERROR(Status)) return Status;
-+  if (CompareMem(Header+48,"sagit-mi6boot1",14)!=0) return EFI_NOT_FOUND;
++  if (CompareMem(Header+48,"sagit-mi6boot2",14)!=0 &&
++      CompareMem(Header+48,"sagit-mi6boot1",14)!=0) return EFI_NOT_FOUND;
 +  if (!Mi6RamdiskRange(Header,Bytes,&Offset,&RamdiskSize)) return EFI_NOT_FOUND;
 +  Status=Disk->ReadDisk(Disk,MediaId,Offset,sizeof(PayloadHeader),PayloadHeader);
 +  if (EFI_ERROR(Status)) return Status;
@@ -989,6 +1041,9 @@ index 0000000..802fa6c
 +  } else CopyMem(Expanded,Stored,(UINTN)Payload.Expanded);
 +  Status=gBS->CalculateCrc32(Expanded,(UINTN)Payload.Expanded,&Crc);
 +  if (EFI_ERROR(Status) || Crc!=Payload.ExpandedCrc) { Status=EFI_CRC_ERROR; goto Done; }
++  // Disk I/O and decompression can take time. Catch recovery keys pressed
++  // while preparing the image as well, with no extra countdown.
++  if (Mi6CancelBoot(0)) { Status=EFI_ABORTED; goto Done; }
 +  Status=gBS->LoadImage(FALSE,gImageHandle,NULL,Expanded,(UINTN)Payload.Expanded,&Child);
 +  if (EFI_ERROR(Status)) goto Done;
 +  FreePool(Stored); Stored=NULL;
@@ -1006,7 +1061,7 @@ index 0000000..802fa6c
 +#endif
 diff --git a/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/XnuBootFormat.h b/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/XnuBootFormat.h
 new file mode 100644
-index 0000000..0f6b5c5
+index 0000000..429ed95
 --- /dev/null
 +++ b/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/XnuBootFormat.h
 @@ -0,0 +1,46 @@
@@ -1039,7 +1094,7 @@ index 0000000..0f6b5c5
 +  Out->Flags=Mi6U32(P+16); Out->Delay=Mi6U32(P+20);
 +  Out->Stored=Mi6U64(P+24); Out->Expanded=Mi6U64(P+32);
 +  Out->StoredCrc=Mi6U32(P+40); Out->ExpandedCrc=Mi6U32(P+44);
-+  if ((Out->Flags & ~3U) || Out->Delay<1 || Out->Delay>30 ||
++  if ((Out->Flags & ~3U) || Out->Delay>30 ||
 +      Out->Stored<13 || Out->Stored>0x4000000 || Out->Stored!=RamdiskSize-64 ||
 +      Out->Expanded<64 || Out->Expanded>0x10000000) return FALSE;
 +  for (Index=48;Index<64;Index++) if (P[Index]) return FALSE;

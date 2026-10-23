@@ -12,14 +12,18 @@ from mi6_boot import package, parse_image, unpack_payload
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--edk2', type=Path, default=ROOT / 'build/edk2-sagit/boot-sagit.img')
-    parser.add_argument('--bridge', type=Path, help='self-contained ARM64 XnuBridge.efi, including its kernel')
-    parser.add_argument('--autoboot', action='store_true', help='start the bundled EFI on every power-on')
-    parser.add_argument('--boot-delay', type=int, default=5, help='volume-key recovery countdown, 1..30 seconds')
+    parser.add_argument('--bridge', type=Path, help='self-contained ARM64 EFI (default: build/bridge/XnuBridge.efi when autoboot is enabled)')
+    parser.add_argument('--autoboot', action=argparse.BooleanOptionalAction, default=True,
+                        help='start the bundled EFI on every power-on (default: enabled); --no-autoboot selects USB Fastboot')
+    parser.add_argument('--boot-delay', type=int, choices=range(31), default=0, metavar='0..30',
+                        help='optional volume-key recovery countdown (default: 0, start immediately)')
     parser.add_argument('--output', type=Path, default=ROOT / 'build/boot/boot-sagit.img')
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
+    if args.autoboot and args.bridge is None:
+        args.bridge = ROOT / 'build/bridge/XnuBridge.efi'
     try:
         edk2 = args.edk2.read_bytes()
         efi = args.bridge.read_bytes() if args.bridge else None

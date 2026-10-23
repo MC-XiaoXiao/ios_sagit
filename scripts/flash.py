@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 
 from fastboot_usb import Fastboot
-from mi6_boot import FIRMWARE_NAME, MAGIC, check_efi, parse_image, unpack_payload
+from mi6_boot import FIRMWARE_NAME, FIRMWARE_NAMES, MAGIC, check_efi, parse_image, unpack_payload
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -44,10 +44,13 @@ def main(argv: list[str] | None = None) -> int:
             image = parse_image(data)
             report.update(image=str(args.image.resolve()), image_sha256=hashlib.sha256(data).hexdigest())
             if image.ramdisk and (image.ramdisk.startswith(MAGIC) or
-                                  image.header[48:64].rstrip(b'\0') == FIRMWARE_NAME):
-                if image.header[48:64].rstrip(b'\0') != FIRMWARE_NAME:
+                                  image.header[48:64].rstrip(b'\0') in FIRMWARE_NAMES):
+                firmware = image.header[48:64].rstrip(b'\0')
+                if firmware not in FIRMWARE_NAMES:
                     raise ValueError('payload image is missing the matching EDK2 loader marker')
                 metadata, _ = unpack_payload(image.ramdisk)
+                if firmware != FIRMWARE_NAME and metadata['autoboot'] and metadata['delay_seconds'] == 0:
+                    raise ValueError('zero-delay payload requires rebuilt EDK2 firmware')
                 autoboot = metadata['autoboot']
                 report['payload'] = metadata
         if args.payload:
@@ -72,7 +75,10 @@ def main(argv: list[str] | None = None) -> int:
             report.update(efi_start_accepted=True, downloaded_crc32=f'{crc:08x}')
         report['success'] = True
         if autoboot and args.boot:
-            print('Flash completed; reboot accepted. The bundled EFI will start after the on-screen countdown.')
+            if report['payload']['delay_seconds']:
+                print('Flash completed; reboot accepted. The bundled EFI will start after the on-screen countdown.')
+            else:
+                print('Flash completed; reboot accepted. EDK2 will start the bundled EFI immediately.')
         elif args.payload:
             print('EFI download verified; start accepted by EDK2. Check the device screen for boot progress.')
         else:
