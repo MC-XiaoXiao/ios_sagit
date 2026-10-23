@@ -37,6 +37,13 @@ NATIVE_TOOL_ENTITLEMENTS = {
         'com.apple.system-task-ports',
     }),
 }
+# The native iOS Sandbox consumes a class-name array. Bind its exact contents
+# to this diagnostic identity; other tools still accept Boolean values only.
+NATIVE_TOOL_ARRAY_ENTITLEMENTS = {
+    'org.darwin.development.powerctl': {
+        'com.apple.security.exception.iokit-user-client-class': ('PowerUserClient',),
+    },
+}
 # Explicitly authorized development derivatives of the pinned native service.
 # Preserve its existing policy bytes; this cannot add a service entitlement.
 NATIVE_SERVICE_POLICIES = {
@@ -56,16 +63,27 @@ NATIVE_SERVICE_POLICIES = {
 
 def boolean_entitlement_blobs(entitlements, identifier=None):
     native = NATIVE_TOOL_ENTITLEMENTS.get(identifier, frozenset())
+    arrays = NATIVE_TOOL_ARRAY_ENTITLEMENTS.get(identifier, {})
+    def authorized(key, value):
+        if not isinstance(key, str) or '\0' in key:
+            return False
+        if key in arrays:
+            return type(value) is list and all(type(item) is str for item in value) and tuple(value) == arrays[key]
+        return (key.startswith('org.darwin.') or key in native) and type(value) is bool
     if not isinstance(entitlements, dict) or not entitlements or any(
-            not isinstance(k,str) or not (k.startswith('org.darwin.') or k in native) or '\0' in k or type(v) is not bool
+            not authorized(k, v)
             for k,v in entitlements.items()):
-        raise ValueError('new tool entitlement policy requires explicit Boolean keys authorized for its identifier')
+        raise ValueError('new tool entitlement policy requires values authorized for its identifier')
     def der(tag, payload):
         size=len(payload)
         length=bytes([size]) if size < 128 else bytes([0x80+(size.bit_length()+7)//8])+size.to_bytes((size.bit_length()+7)//8,'big')
         return bytes([tag])+length+payload
     xml=plistlib.dumps(entitlements,sort_keys=True)
-    entries=b''.join(der(0x30,der(0x0c,k.encode())+der(1,b'\xff' if v else b'\0'))
+    def value_der(value):
+        if type(value) is bool:
+            return der(1, b'\xff' if value else b'\0')
+        return der(0x30, b''.join(der(0x0c, item.encode()) for item in value))
+    entries=b''.join(der(0x30,der(0x0c,k.encode())+value_der(v))
                      for k,v in sorted(entitlements.items()))
     encoded=der(0x70,der(2,b'\1')+der(0xb0,entries))
     return {5:struct.pack('>II',BLOB_MAGICS[5],8+len(xml))+xml,
@@ -201,7 +219,7 @@ def verify_macho(image):
 
 
 def sign_new_macho(image, identifier, entitlements, *, compact=False):
-    """Sign a newly cross-linked tool with explicit Boolean-only entitlements.
+    """Sign a newly cross-linked tool with an explicit, identity-bound policy.
 
     Unlike resign_macho this reserves a larger signature at EOF and updates
     __LINKEDIT before hashing. It refuses inputs with existing entitlements or
