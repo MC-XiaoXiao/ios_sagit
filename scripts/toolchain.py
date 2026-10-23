@@ -2347,8 +2347,12 @@ def pack_drivers(jobs, collection, output=None, base_manifest=None, local_kernel
 
 
 def build_power_client():
-    build_iokit_client('powerctl', ['powerctl/powerctl.cpp'], headers=['include/IOKitUser.h'],
-                       protocol='PowerUserProtocol.h', adhoc_sign=True)
+    build_iokit_client('powerctl', ['powerctl/powerctl.cpp'],
+                       extra_exports=['IORegistryEntryCreateCFProperty'],
+                       headers=['include/IOKitUser.h', 'gpuctl/CPUStatus.h'],
+                       protocol='PowerUserProtocol.h', adhoc_sign=True,
+                       entitlements={'com.apple.security.exception.iokit-user-client-class': ['PowerUserClient']},
+                       signing_identifier='org.darwin.development.powerctl')
 
 
 def build_gpu_client():
