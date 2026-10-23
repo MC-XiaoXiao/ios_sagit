@@ -17,7 +17,7 @@ Stock Android bootloader
 
 ## Device support
 
-Hardware status is based on validation through October 22, 2026.
+Hardware status is based on validation through October 23, 2026.
 
 | Feature | Status | Details |
 | --- | --- | --- |
@@ -36,7 +36,7 @@ Hardware status is based on validation through October 22, 2026.
 | Audio | Unavailable | Driver components exist; speaker playback has not been validated |
 | Camera / biometrics | Unavailable | No usable camera or native fingerprint authentication |
 | Haptics / gyroscope | Unverified | Offline driver implementations; CoreHaptics / CoreMotion integration remains incomplete |
-| Power management | Incomplete | DVFS, thermal management, and system suspend/resume remain unverified |
+| Power management | Partial | CPU DVFS validated with 4 and 8 cores; thermal management and system suspend/resume remain unverified |
 
 Android dual boot, normal activation, App Store, DRM, and general application
 compatibility are not validated. The current system uses development policies
@@ -44,8 +44,9 @@ for operation without an Apple SEP.
 
 Validation details: [home screen and touch](docs/apfs/setup-skip-hardware-20261022.md),
 [SMP](docs/smp/README.md), [display](docs/display/README.md),
-[GPU](docs/gpu/README.md), [USB](docs/usb/README.md), and
-[battery](docs/battery/README.md).
+[GPU](docs/gpu/README.md), [USB](docs/usb/README.md),
+[battery](docs/battery/README.md), and
+[CPU DVFS](docs/power/cpu-dvfs-hardware-20261023.md).
 
 ## Repository layout
 

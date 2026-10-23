@@ -1,7 +1,9 @@
 # SDM835 时钟、电压与 CPU 性能管理
 
 驱动使用 Apple Kext、IOService、AppleARMIODevice 匹配及 IOKit PM 框架。
-本阶段完成驱动与离线验证；没有访问真机，也没有验证原生 iOS daemon 的运行行为。
+CPU 调频已在 Mi 6 的四核、八核 iOS 启动链验证。手动档位、上限和自动策略的
+记录见 [CPU DVFS 真机验证](power/cpu-dvfs-hardware-20261023.md)。下方离线审计
+保留当时的验证范围；原生 powerd、温控与系统休眠接线仍未验证。
 
 ## 分层与匹配
 
@@ -86,6 +88,13 @@ CPRh/ACD 的受保护 sequencer、熔丝校准和安全固件初始化仍是必�
 驱动现在提供基于 XNU perfcontrol 的自动策略，也保留显式目标档位与用户态上限。
 合法的重复 quad-core LUT 行可作为启动 desired index 的别名；动态读回会校验该行
 以及 OSM enable，single-core turbo 行仍不会用于四核集群。
+
+EFI 启动须带 `--cpu-osm-handoff`。桥在退出 Boot Services、检查固件参数并取得
+HLOS 所有权后，按小米 v2 板级配置初始化两簇 SAW AVS，再配置 CPRh/OSM。
+两簇 SAW v4.1 版本先共同检查，初始限制先于 AVS enable 写入，每次写入读回。
+缺少这一步时真机 sequencer 停在 `0x188`，desired index 改变而 CPU 留在辅助时钟。
+OSM 初始化要求 200 MHz；启用后原厂 sequencer 可在性能簇停核时切到 100 MHz，
+交接末尾允许这两个已核对的运行配置，不重新写入固件正在管理的分频器。
 
 ## XNU perfcontrol 自动策略
 
@@ -282,8 +291,18 @@ powerctl auto 0 1           # 集群 0 自动策略（管理员）
 powerctl auto 0 0           # 暂停自动，保持当前档位（管理员）
 powerctl read 6 41 0        # 自动策略状态位
 powerctl read 6 38 0        # 上一个可靠窗口的平均利用率，千分比
+# 仅用于带 enable_skstb 启动参数的 development XNU：
+powerctl load 5             # 每个在线 CPU 一个绑核工作线程，随后观察空闲状态
 # powerctl frequency <cluster> <已枚举的Hz>  （管理员）
 ```
+
+`powerctl` 的工程签名包含原生 Sandbox 的
+`com.apple.security.exception.iokit-user-client-class = [PowerUserClient]`。
+签名器将该数组的身份和内容固定到此工具；调频写入继续受 IOUserClient 管理员检查。
+`load` 复用现有 CPU/OSM 采样器，通过 XNU 自带、受 `enable_skstb` 保护的
+`kern.sched_thread_bind_cpu` 绑定诊断工作线程。各线程独立检查单调时钟截止时间，
+避免采样线程饥饿导致负载超时。退出前解绑并回收线程，不修改
+系统的调度推荐、核迁移策略或 CPU hotplug 配置。
 
 已核对的是公开 IOKit/RootDomain/IOReport 契约与链接接口。原生 powerd、
 thermalmonitord、CLPC/SOCTuner 的私有 PMGR selectors/共享内存 ABI 不能由这些接口
