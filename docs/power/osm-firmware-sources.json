@@ -22,6 +22,20 @@
       "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/drivers/clk/msm/clock-local2.c",
       "sha256": "d70add0a581831903c78114505757053a21f3c13e7728662d82462055d520f43",
       "bytes": 76259
+    },
+    {
+      "path": "docs/power/reference/xiaomi-msm-spm.c",
+      "upstream_path": "drivers/soc/qcom/msm-spm.c",
+      "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/drivers/soc/qcom/msm-spm.c",
+      "sha256": "b12efdcbd25fc8897777c325e32e388a773bf8304e00145a64df1e32702d863a",
+      "bytes": 17844
+    },
+    {
+      "path": "docs/power/reference/xiaomi-msm8998-pm.dtsi",
+      "upstream_path": "arch/arm/boot/dts/qcom/msm8998-pm.dtsi",
+      "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/arch/arm/boot/dts/qcom/msm8998-pm.dtsi",
+      "sha256": "660d888d8ad34a80ec5c3b60b6ea5f7ef8732e9760ea23239078681f99b86cc0",
+      "bytes": 24828
     }
   ],
   "clock_contract": {
@@ -36,7 +50,13 @@
       "source": 1,
       "hid": 2,
       "hz": 200000000,
-      "parent_contract": "The original clock-osm frequency table fixes LMH selector 1 to 300 MHz, divided by 1.5. No frequency-counter measurement or unverified physical parent wiring is claimed."
+      "parent_contract": "The original clock-osm frequency table fixes LMH selector 1 to 300 MHz, divided by 1.5. No frequency-counter measurement or unverified physical parent wiring is claimed.",
+      "running_idle": {
+        "source": 1,
+        "hid": 5,
+        "hz": 100000000,
+        "owner": "stock v2 sequencer; performance bank SEQ69/70 selects common LMH CFG 0x105/0x102 after OSM enable"
+      }
     },
     "rbcpr": {
       "cmd_phys": "0x00148044",
@@ -44,6 +64,22 @@
       "source": 0,
       "hid": 1,
       "hz": 19200000
+    },
+    "saw": {
+      "version": "4.1",
+      "base_phys": [
+        "0x17912000",
+        "0x17812000"
+      ],
+      "avs_control_offset": "0x904",
+      "avs_control": "0x01010031",
+      "avs_limit_offset": "0x908",
+      "initial_avs_limits": [
+        "0x04200420",
+        "0x04700470"
+      ],
+      "order": "Both revisions checked before writes; initial limits before AVS enable; every write read back; before CPRh initialization",
+      "provenance": "msm8998-pm.dtsi base AVS policy with msm8998-v2.dtsi silver/gold limit overrides"
     }
   },
   "notes": [

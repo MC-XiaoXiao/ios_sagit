@@ -13,7 +13,7 @@ enum class Failure : uint32_t {
     None, Services, ChipProtocol, ChipRevision, ChipVersion, ChipID,
     PlatformProtocol, PlatformRevision, PlatformRead, BoardID, IO,
     InvalidRead, PLLInactive, PLLRate, RootBusy, RootUpdate, RootEnable,
-    RootConfiguration, BranchEnable
+    RootConfiguration, BranchEnable, SAWVersion, SAWReadback
 };
 
 // Prefixes from simple-init/include/{chipinfo,platforminfo}.h. ChipInfo's
@@ -109,10 +109,15 @@ constexpr uint64_t CPRCommand = GCCBase + 0x48044;
 constexpr uint64_t CPRBranch = GCCBase + 0x48008;
 constexpr uint32_t RootMask = 0x0000371f; // src, HID, MND mode
 constexpr uint32_t AuxConfig = 0x103;      // GPLL0 main / 2
-constexpr uint32_t OSMConfig = 0x102;      // fixed LMH 300 MHz / 1.5
+constexpr uint32_t OSMConfig = 0x102;      // startup LMH 300 MHz / 1.5
+constexpr uint32_t OSMIdleConfig = 0x105;  // stock v2 sequencer: LMH / 3
 constexpr uint32_t CPRConfig = 0x001;      // XO / 1
 constexpr uint32_t ConfigDirtyMask = 0xf0;
 constexpr uint32_t TimeoutUS = 500;
+// Pinned Xiaomi msm8998-pm.dtsi + msm8998-v2.dtsi, SAW v4.1.
+constexpr uint64_t sawBase(unsigned cluster) { return cluster ? 0x17812000 : 0x17912000; }
+constexpr uint32_t SAWControl = 0x01010031;
+constexpr uint32_t SAWLimits[2] = {0x04200420, 0x04700470};
 
 struct Evidence {
     uint32_t auxHz = 0, osmHz = 0, xoHz = 0, rbcprHz = 0;
@@ -138,6 +143,35 @@ inline bool read(IO io, Evidence &out, uint64_t address, uint32_t &value) {
     return value != UINT32_MAX || fail(out, Failure::InvalidRead, address, value);
 }
 
+// HLOS SAW setup precedes CPRh in the vendor probe order. These are AVS
+// interface registers, not direct PMIC voltage writes. The caller has already
+// checked board identity, both disabled OSM banks and transferred ownership.
+inline bool sawPrepare(IO io, Evidence &out) {
+    out = {};
+    if (!io.read32 || !io.write32) return fail(out, Failure::IO);
+    // Inspect both revisions before changing either cluster.
+    for (unsigned c = 0; c < 2; ++c) {
+        uint32_t version = 0;
+        const uint64_t address = sawBase(c) + 0xfd0;
+        if (!read(io, out, address, version)) return false;
+        if ((version & 0xffff0000) != 0x40010000)
+            return fail(out, Failure::SAWVersion, address, version, 0x40010000);
+    }
+    for (unsigned c = 0; c < 2; ++c) {
+        // Establish the board's initial limits before enabling the interface.
+        for (unsigned reg = 0; reg < 2; ++reg) {
+            const uint64_t address = sawBase(c) + (reg ? 0x904 : 0x908);
+            const uint32_t expected = reg ? SAWControl : SAWLimits[c];
+            uint32_t value = 0;
+            io.write32(io.ctx, address, expected);
+            if (!read(io, out, address, value)) return false;
+            if (value != expected) return fail(out, Failure::SAWReadback, address, value, expected);
+        }
+    }
+    out.ready = true;
+    return true;
+}
+
 // Fabia registers and clock rate formula: gcc-msm8998.c and clk-alpha-pll.c.
 // Observe manual OUTCTRL and firmware vote/FSM mode. Never retune the shared
 // GPLL0, clear another master's vote, or pretend to have an exclusive lease.
@@ -157,14 +191,14 @@ inline bool pllInspect(IO io, Evidence &out) {
 }
 
 inline bool rootInspect(IO io, Evidence &out, uint64_t command, uint32_t config,
-                        uint32_t &cmdRaw, uint32_t &cfgRaw) {
+                        uint32_t &cmdRaw, uint32_t &cfgRaw, uint32_t alternate = UINT32_MAX) {
     if (!read(io, out, command, cmdRaw) || !read(io, out, command + 4, cfgRaw))
         return false;
     if (cmdRaw & (1 | ConfigDirtyMask))
         return fail(out, Failure::RootBusy, command, cmdRaw);
     if ((cmdRaw & 0x80000002) != 2)
         return fail(out, Failure::RootEnable, command, cmdRaw, 2);
-    if ((cfgRaw & RootMask) != config)
+    if ((cfgRaw & RootMask) != config && (cfgRaw & RootMask) != alternate)
         return fail(out, Failure::RootConfiguration, command + 4, cfgRaw, config);
     return true;
 }
@@ -174,19 +208,21 @@ inline bool rootInspect(IO io, Evidence &out, uint64_t command, uint32_t config,
 // (source selector 1, HID /1.5), not a cached EFI CalculateFrequency result.
 // The XO evidence is the active CPR root selecting XO /1 plus branch readback.
 // Frequencies are derived from the sagit/MSM8998 19.2 MHz crystal contract.
-inline bool clocksInspect(IO io, Evidence &out) {
+inline bool clocksInspect(IO io, Evidence &out, bool running = false) {
     out = {};
     if (!io.read32) return fail(out, Failure::IO);
     if (!pllInspect(io, out) ||
         !rootInspect(io, out, AuxCommand, AuxConfig, out.auxCommand, out.auxConfig) ||
-        !rootInspect(io, out, OSMCommand, OSMConfig, out.osmCommand, out.osmConfig) ||
+        !rootInspect(io, out, OSMCommand, OSMConfig, out.osmCommand, out.osmConfig,
+                     running ? OSMIdleConfig : UINT32_MAX) ||
         !rootInspect(io, out, CPRCommand, CPRConfig, out.rbcprCommand, out.rbcprConfig) ||
         !read(io, out, CPRBranch, out.rbcprBranch)) return false;
     if ((out.rbcprBranch & 0x80000001) != 1)
         return fail(out, Failure::BranchEnable, CPRBranch, out.rbcprBranch, 1);
     // Detect a parent lost during the snapshot, not just at its beginning.
     if (!pllInspect(io, out)) return false;
-    out.auxHz = 300000000; out.osmHz = 200000000;
+    out.auxHz = 300000000;
+    out.osmHz = (out.osmConfig & RootMask) == OSMIdleConfig ? 100000000 : 200000000;
     out.xoHz = out.rbcprHz = 19200000; out.ready = true;
     return true;
 }

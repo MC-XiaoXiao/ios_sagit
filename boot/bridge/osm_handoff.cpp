@@ -194,6 +194,24 @@ bool qualifyCPU(unsigned cluster) {
     bridge_puts("\n");
     return ready && !timerFailure;
 }
+bool prepareSAW() {
+    // msm8998-pm.dtsi and msm8998-v2.dtsi initialize these before CPRh probes.
+    // ClockDxe can leave AVS disabled even though the secure OSM tables exist.
+    for (unsigned c = 0; c < 2; ++c) {
+        const uint64_t base = QcomOSMClock::base(c) + 0x2000;
+        const uint32_t version = read32(base + 0xfd0);
+        bridge_puts("[OSM SAW] cluster="); bridge_hex(c);
+        bridge_puts(" version="); bridge_hex(version);
+        bridge_puts(" control="); bridge_hex(read32(base + 0x904));
+        bridge_puts(" limit="); bridge_hex(read32(base + 0x908));
+        bridge_puts(" status="); bridge_hex(read32(base + 0xc14));
+        bridge_puts(" pmic="); bridge_hex(read32(base + 0xc18)); bridge_puts("\n");
+    }
+    BridgeOSMFirmware::Evidence evidence{};
+    const bool ready = BridgeOSMFirmware::sawPrepare(clockIO, evidence);
+    if (!ready) logClocks(evidence);
+    return ready;
+}
 void logCPUFailure() {
     for (unsigned c = 0; c < 2; ++c) {
         const uint64_t base = QcomOSMInit::osmBase(c);
@@ -209,9 +227,16 @@ void logCPUFailure() {
         }
         write32(base + 0x1f38, trace);
         const uint64_t cpr = c ? 0x179c4000 : 0x179c8000;
-        bridge_puts("[OSM CPU failure] CPR cluster="); bridge_hex(c);
-        bridge_puts(" control="); bridge_hex(read32(cpr + 4));
-        bridge_puts(" status="); bridge_hex(read32(cpr + 8)); bridge_puts("\n");
+        constexpr uint32_t cprOffsets[] = {0x4,0x8,0x140,0x7f8,0x810,0x814,0x818,0x824,0x3aa0,0x3aa4};
+        for (uint32_t off : cprOffsets) {
+            bridge_puts("[OSM CPR failure] cluster="); bridge_hex(c);
+            bridge_puts(" offset="); bridge_hex(off);
+            bridge_puts(" value="); bridge_hex(read32(cpr + off)); bridge_puts("\n");
+        }
+        // The vendor CPR panic path reads this SAW PMIC status register.
+        bridge_puts("[OSM SAW failure] cluster="); bridge_hex(c);
+        bridge_puts(" pmic-status="); bridge_hex(read32(QcomOSMClock::base(c) + 0x2c18));
+        bridge_puts("\n");
     }
 }
 }
@@ -336,6 +361,7 @@ extern "C" int bridge_osm_finalize(void) {
     const QcomCPRh::Ownership ownership{true, true, true, true};
     for (unsigned c = 0; c < 2; ++c)
         if (!QcomCPRh::inspect(plans[c], cprIO, ownership)) { logCPR(); return -5 - int(c); }
+    if (!prepareSAW()) return -24;
     for (unsigned c = 0; c < 2; ++c)
         if (!QcomCPRh::apply(plans[c], cprIO, ownership)) { logCPR(); return -7 - int(c); }
     if (!engine.prepare(io, identity, clocks, plans, result)) { logOSM(result); return -9; }
@@ -358,7 +384,9 @@ extern "C" int bridge_osm_finalize(void) {
     if (!BridgeOSMPeer::stop(peerIO, peer)) { logPeer(peer); return -20; }
     logPeer(peer);
     if (!qualifyCPU(0)) { logCPUFailure(); return -23; }
-    if (!BridgeOSMFirmware::clocksInspect(clockIO, evidence)) { logClocks(evidence); return -13; }
+    // Once enabled, stock v2 microcode owns the common LMH divider. Parking
+    // the performance cluster can select its documented 100 MHz idle rate.
+    if (!BridgeOSMFirmware::clocksInspect(clockIO, evidence, true)) { logClocks(evidence); return -13; }
     for (unsigned c = 0; c < 2; ++c) {
         if (!QcomCPRh::verify(plans[c], cprIO)) return -15;
         for (unsigned row = 0; row < 40; ++row) {

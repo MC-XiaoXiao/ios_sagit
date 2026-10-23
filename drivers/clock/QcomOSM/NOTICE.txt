@@ -10,6 +10,8 @@ Original source copyright and license notices are retained in:
   docs/power/reference/xiaomi-cpr3-util.c
   docs/power/reference/xiaomi-msm8998-regulator.dtsi
   docs/power/reference/xiaomi-msm8998-v2.dtsi
+  docs/power/reference/xiaomi-msm8998-pm.dtsi
+  docs/power/reference/xiaomi-msm-spm.c
 
 Pinned source commit, URLs, SHA-256 hashes and exact generated table policy:
   docs/power/osm-reference-sources.json

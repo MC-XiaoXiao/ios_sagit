@@ -62,5 +62,13 @@
   "xiaomi-clock-local2.c": {
     "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/drivers/clk/msm/clock-local2.c",
     "sha256": "d70add0a581831903c78114505757053a21f3c13e7728662d82462055d520f43"
+  },
+  "xiaomi-msm-spm.c": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/drivers/soc/qcom/msm-spm.c",
+    "sha256": "b12efdcbd25fc8897777c325e32e388a773bf8304e00145a64df1e32702d863a"
+  },
+  "xiaomi-msm8998-pm.dtsi": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/arch/arm/boot/dts/qcom/msm8998-pm.dtsi",
+    "sha256": "660d888d8ad34a80ec5c3b60b6ea5f7ef8732e9760ea23239078681f99b86cc0"
   }
 }
