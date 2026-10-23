@@ -3,7 +3,7 @@
 入口为 `scripts/build-boot.py`、`scripts/flash.py`，以及 EDK2 的
 `PlatformBootManagerLib/XnuBoot.c`。不需要设备串口，也不绑定开发机的手机序列号。
 
-## 两种启动方式
+## 启动方式
 
 持久启动：
 
@@ -13,10 +13,10 @@ python3 scripts/build-boot.py --bridge PATH/XnuBridge.efi
 python3 scripts/flash.py --image build/boot/boot-sagit.img --boot
 ```
 
-每次上电由原厂 bootloader 进入 EDK2。EDK2 从 GPT 名称为 `boot` 的分区读取
-组合镜像的 ramdisk，验证并解压 EFI，通过 `LoadImage` / `StartImage` 执行。
-桥继续完成米 6 的硬件交接并进入内核。读盘不依赖 Android bootloader 是否把
-initrd 发布给 UEFI，也不扩大 6 MiB 的固件区。
+每次上电由原厂 bootloader 进入 EDK2。EDK2 优先读取 bootloader 通过 FDT
+传入的 ramdisk；没有传入时，从 GPT 名称为 `boot` 的分区读取。
+加载器验证并解压 EFI，通过 `LoadImage` / `StartImage` 执行。
+桥继续完成米 6 的硬件交接并进入内核，固件区仍为 6 MiB。
 
 自动启动默认开启，`--boot-delay` 为 0–30 秒，默认 0，不等待倒计时。
 EDK2 在菜单和 BootOrder 枚举前启动桥，不依赖串口编译开关。
@@ -25,7 +25,22 @@ EDK2 在菜单和 BootOrder 枚举前启动桥，不依赖串口编译开关。
 显式指定 `--no-autoboot`、没有载荷、校验失败或 EFI 返回时也进入 Fastboot。
 内核进入后若挂起，恢复入口仍是原厂 Fastboot。
 
-一次性启动：
+从原厂 Fastboot 临时启动整个组合镜像，不改写分区：
+
+```sh
+fastboot boot build/boot/boot-sagit.img
+```
+
+此路径要求 `sagit-mi6boot3` 固件。PEI 阶段解析 FDT `/chosen` 的
+`linux,initrd-start` / `linux,initrd-end`，兼容 32 位和 64 位大端地址。
+校验地址属于有效 RAM、避开固件与分配器后，将载荷复制到已登记分配 HOB 的
+独立页面。BDS 使用 GUID HOB 取得副本，沿用相同的头部、LZMA 和 CRC32 校验。
+临时载荷关闭自动启动、损坏或分配失败时进入 Fastboot，不回退执行磁盘载荷。
+
+打包器只封装传入的 EFI，不会给旧桥补上驱动或用户态配置。启动完整系统时，
+应传入包含 UFS 交接、驱动镜像、APFS 根卷和信任缓存配置的完整 XnuBridge。
+
+从 EDK2 Fastboot 一次性启动 EFI：
 
 ```sh
 python3 scripts/flash.py --payload PATH/XnuBridge.efi --boot
@@ -40,15 +55,16 @@ python3 scripts/flash.py --payload PATH/XnuBridge.efi --boot
 纯 EDK2 固件没有自动启动载荷，仍进入 Fastboot；也可通过
 `scripts/build-boot.py --no-autoboot` 生成无载荷的恢复镜像。
 
-组合镜像自动启动读取的是设备 `boot` 分区，不支持 `fastboot boot` 临时启动该镜像。
 工具不会把 Fastboot 的命令确认当作 XNU 已启动。
 
 ## 镜像格式
 
 外层保留已使用的 Android boot header v0、EDK2 gzip 和附加 Android DTB。
-镜像 `name` 为 `sagit-mi6boot2`，表示固件支持零倒计时。
-新加载器仍可读取旧标记 `sagit-mi6boot1` 的镜像；旧固件可继续用于恢复和
-带倒计时的自动启动，但打包器及烧录器会拒绝将零倒计时自动启动交给旧固件。
+镜像 `name` 为 `sagit-mi6boot3`，表示固件支持传入 ramdisk 和零倒计时。
+打包报告的 `temporary_boot_supported` 标记此能力。
+新加载器仍可读取旧标记 `sagit-mi6boot2` / `sagit-mi6boot1` 的磁盘镜像。
+修订 2 支持零倒计时；修订 1 仅支持恢复和带倒计时的自动启动。
+打包器及烧录器会拒绝将零倒计时自动启动交给修订 1。
 它是兼容性标记，不是数字签名。
 
 ramdisk 是 64 字节 `MI6BOOT1` 头和 EFI 载荷，均为小端：
@@ -72,9 +88,10 @@ ramdisk 是 64 字节 `MI6BOOT1` 头和 EFI 载荷，均为小端：
 CRC32 用于检测传输和存储损坏，不提供来源认证。
 
 只接受唯一的非可移动 GPT `boot` 分区。分区协议由 EDK2 PartitionDxe 提供；
-重复匹配会拒绝启动，不猜测 LUN 或固定 LBA。加载器及默认启动的增量补丁为
+重复匹配会拒绝启动，不猜测 LUN 或固定 LBA。加载器、默认启动和临时启动的增量补丁为
 `tools/patches/edk2-sagit/0005-sagit-boot-payload.patch` 和
-`tools/patches/edk2-sagit/0006-sagit-direct-boot.patch`。
+`tools/patches/edk2-sagit/0006-sagit-direct-boot.patch`、
+`tools/patches/edk2-sagit/0007-sagit-temporary-boot.patch`。
 构建入口通过 `tools/edk2-sagit.json` 校验并应用包含这些修改的完整源码快照。
 现有源码与上一版快照完全一致时自动应用增量补丁；冲突时保留开发者修改和暂存区。
 
@@ -121,12 +138,19 @@ python3 scripts/usb-storage.py flush --no-uart --device DEVICE
 
 ## 验证范围
 
-2026-10-23 默认启动修改已完成 EDK2 sagit DEBUG 构建、无串口宏的 AArch64
-启动管理器编译，以及真实 APFS EFI 的组合镜像打包回读。
-22 项主机测试通过，其中实际 UEFI 加载器与 EDK2 LZMA 解码器覆盖 24 个用例：
-零倒计时、可选倒计时、无输入设备、按键取消、解压后取消、旧镜像兼容、
-损坏载荷、重复分区及 EFI 失败清理。增量补丁与完整源码快照生成相同的 Git tree。
+2026-10-23 已完成 EDK2 sagit DEBUG 构建和组合镜像打包回读。
+23 项主机测试通过。实际 PEI 保留逻辑、UEFI 加载器和 EDK2 LZMA 解码器在
+ASan / UBSan 下覆盖磁盘加载、32/64 位 FDT、原始 ramdisk 被覆盖后的副本加载、
+非法内存范围、分配失败、损坏载荷、按键取消及 EFI 失败清理。
+增量补丁与完整源码快照生成相同的 Git tree；上一版源码实际升级后逐文件一致，
+开发者暂存区保持不变。
 
-本轮没有烧录设备。本机原有固件和桥的发布路径产物经 SHA-256 核对未变。
-新组合镜像的原厂 bootloader 接受、实际按键恢复和断电重启链
-尚待真机验证；不能将已有临时 EFI 启动记录当作此新路径的硬件验收。
+真机通过原厂 Fastboot 的 `boot` 命令临时启动组合镜像。UART 确认
+`XNU payload source: incoming ramdisk`、`ExitBootServices OK` 和 Darwin 内核输出。
+换入已包含 UFS 交接、驱动镜像及用户态配置的完整桥后，继续进入 launchd 和
+Bash 5.2.21。带随机标记的命令返回 `uid=0`，`mount` 确认
+`/dev/disk6s1 on / (apfs, local, read-only, journaled, noatime)`。
+证据保存在 `build/direct-boot/hardware-system-incoming-ramdisk/`；此项验证到交互用户态。
+
+本轮未使用分区烧录命令。本机原有固件和桥的发布路径产物经 SHA-256 核对未变。
+实际按键恢复和持久镜像断电重启仍待单独验证。

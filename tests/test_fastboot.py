@@ -74,6 +74,7 @@ class ImageTests(unittest.TestCase):
                 self.assertEqual(build_boot.main(['--output', str(image)]), 0)
                 report = json.loads(image.with_suffix('.json').read_text())
                 self.assertTrue(report['autoboot'])
+                self.assertTrue(report['temporary_boot_supported'])
                 self.assertEqual(report['payload']['delay_seconds'], 0)
                 self.assertEqual(boot.parse_image(image.read_bytes()).kernel,
                                  boot.parse_image(firmware.read_bytes()).kernel)
@@ -104,6 +105,12 @@ class ImageTests(unittest.TestCase):
         self.assertFalse(boot.parse_image(recovery).ramdisk)
         delayed = boot.package(bytes(source), efi_fixture(), delay=5)
         self.assertEqual(boot.unpack_payload(boot.parse_image(delayed).ramdisk)[0]['delay_seconds'], 5)
+
+    def test_revision_two_keeps_zero_delay_disk_boot(self):
+        source = bytearray(edk2_fixture())
+        source[48:64] = boot.ZERO_DELAY_FIRMWARE_NAME.ljust(16, b'\0')
+        image = boot.package(bytes(source), efi_fixture())
+        self.assertEqual(boot.unpack_payload(boot.parse_image(image).ramdisk)[0]['delay_seconds'], 0)
 
     def test_old_firmware_and_non_arm64_payload_rejected(self):
         old = bytearray(edk2_fixture()); old[48:64] = bytes(16)
@@ -148,10 +155,12 @@ class ImageTests(unittest.TestCase):
                        '-fshort-wchar', '-DMDE_CPU_X64', '-Wno-macro-redefined',
                        '-Wno-incompatible-pointer-types', '-I' + str(edk2 / 'MdePkg/Include'),
                        '-I' + str(edk2 / 'MdeModulePkg/Include'),
+                       '-I' + str(edk2 / 'ArmPkg/Include'),
+                       '-I' + str(ROOT / 'boot/edk2-msm8998/Platforms/Msm8998FamilyPkg/Include'),
                        '-I' + str(library),
                        '-I' + str(edk2 / 'MdePkg/Include/X64'), str(ROOT / 'tests/edk2_sagit_boot_test.c'),
                        str(library / 'LzmaDecompress.c'), str(library / 'Sdk/C/LzmaDec.c'),
-                       '-lz', '-o', str(executable)]
+                       '-lz', '-lfdt', '-o', str(executable)]
             result = subprocess.run(command, capture_output=True, text=True)
             self.assertEqual(result.returncode, 0, result.stderr)
             subprocess.run([str(executable), str(image), str(efi)], check=True)

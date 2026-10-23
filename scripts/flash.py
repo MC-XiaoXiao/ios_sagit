@@ -8,7 +8,7 @@ import json
 from pathlib import Path
 
 from fastboot_usb import Fastboot
-from mi6_boot import FIRMWARE_NAME, FIRMWARE_NAMES, MAGIC, check_efi, parse_image, unpack_payload
+from mi6_boot import LEGACY_FIRMWARE_NAME, FIRMWARE_NAMES, MAGIC, check_efi, parse_image, unpack_payload
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -49,7 +49,7 @@ def main(argv: list[str] | None = None) -> int:
                 if firmware not in FIRMWARE_NAMES:
                     raise ValueError('payload image is missing the matching EDK2 loader marker')
                 metadata, _ = unpack_payload(image.ramdisk)
-                if firmware != FIRMWARE_NAME and metadata['autoboot'] and metadata['delay_seconds'] == 0:
+                if firmware == LEGACY_FIRMWARE_NAME and metadata['autoboot'] and metadata['delay_seconds'] == 0:
                     raise ValueError('zero-delay payload requires rebuilt EDK2 firmware')
                 autoboot = metadata['autoboot']
                 report['payload'] = metadata

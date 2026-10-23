@@ -7,7 +7,7 @@
       "commit": "ace27110b9b9b6c591387d50cf748ec646402b4a",
       "patch": {
         "file": "tools/patches/edk2-sagit/source-snapshot.patch",
-        "sha256": "fac8a0adf7586ff56370c2c19368d5baad6bf2222266dfe24d8e43c3cd40ce37",
+        "sha256": "347e130b34ceef0af38ee1d39d135bb8b35c3a00985ae5ce70238fc50d0ba481",
         "source_files": [
           "Config/sagit.conf",
           "Platforms/Msm8998FamilyPkg/Library/ArmPlatformLib/ArmPlatformLibMem.c",
@@ -26,11 +26,16 @@
           "Platforms/Msm8998FamilyPkg/Drivers/QcomFastboot/TestPayload/Probe.inf",
           "Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/QcomUartDm.h",
           "Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/XnuBoot.c",
-          "Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/XnuBootFormat.h"
+          "Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/XnuBootFormat.h",
+          "Platforms/Msm8998FamilyPkg/Library/ArmPlatformLib/AArch64/ArmPlatformHelper.S",
+          "Platforms/Msm8998FamilyPkg/MemoryInitPei/MemoryInitPeiLib.c",
+          "Platforms/Msm8998FamilyPkg/MemoryInitPei/MemoryInitPeiLib.inf",
+          "Platforms/Msm8998FamilyPkg/MemoryInitPei/XnuBootRamdisk.h",
+          "Platforms/Msm8998FamilyPkg/Include/Guid/Mi6BootRamdisk.h"
         ],
         "upgrade": {
-          "file": "tools/patches/edk2-sagit/0006-sagit-direct-boot.patch",
-          "sha256": "2f28a816a45fe8b7bac8949c2801ad91b19badc605e9efb72377b68e900d5463"
+          "file": "tools/patches/edk2-sagit/0007-sagit-temporary-boot.patch",
+          "sha256": "245d94f48020a890b86bb8997ebd2771950a426b2cd44fc9437c99eb177cf223"
         }
       }
     },

@@ -8,10 +8,11 @@ import zlib
 from dataclasses import dataclass
 
 MAGIC = b'MI6BOOT1'
-# Firmware revision 2 accepts a zero-delay payload. The container stays MI6BOOT1.
-FIRMWARE_NAME = b'sagit-mi6boot2'
+# Revision 3 preserves the incoming ramdisk for fastboot boot. Container: MI6BOOT1.
+FIRMWARE_NAME = b'sagit-mi6boot3'
+ZERO_DELAY_FIRMWARE_NAME = b'sagit-mi6boot2'
 LEGACY_FIRMWARE_NAME = b'sagit-mi6boot1'
-FIRMWARE_NAMES = (FIRMWARE_NAME, LEGACY_FIRMWARE_NAME)
+FIRMWARE_NAMES = (FIRMWARE_NAME, ZERO_DELAY_FIRMWARE_NAME, LEGACY_FIRMWARE_NAME)
 PAYLOAD_HEADER = struct.Struct('<8sIIIIQQII16s')
 AUTOBOOT = 1
 LZMA = 2
@@ -125,7 +126,7 @@ def package(edk2: bytes, efi: bytes | None, *, autoboot: bool = True, delay: int
     firmware = image.header[48:64].rstrip(b'\0')
     if firmware not in FIRMWARE_NAMES:
         raise ValueError('EDK2 lacks the MI6BOOT1 loader; rebuild with scripts/build-sagit.sh')
-    if autoboot and delay == 0 and firmware != FIRMWARE_NAME:
+    if autoboot and delay == 0 and firmware == LEGACY_FIRMWARE_NAME:
         raise ValueError('EDK2 lacks the zero-delay MI6BOOT1 loader; rebuild with scripts/build-sagit.sh')
     if autoboot and efi is None:
         raise ValueError('--autoboot requires --bridge')

@@ -7,7 +7,7 @@ import hashlib
 import json
 from pathlib import Path
 
-from mi6_boot import package, parse_image, unpack_payload
+from mi6_boot import FIRMWARE_NAME, package, parse_image, unpack_payload
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -31,6 +31,7 @@ def main(argv: list[str] | None = None) -> int:
         args.output.parent.mkdir(parents=True, exist_ok=True)
         args.output.write_bytes(result)
         report = {'product': 'sagit', 'format': 'MI6BOOT1', 'autoboot': args.autoboot,
+                  'temporary_boot_supported': parse_image(edk2).header[48:64].rstrip(b'\0') == FIRMWARE_NAME,
                   'edk2': str(args.edk2.resolve()), 'edk2_sha256': hashlib.sha256(edk2).hexdigest(),
                   'bridge': str(args.bridge.resolve()) if args.bridge else None,
                   'image_bytes': len(result), 'image_sha256': hashlib.sha256(result).hexdigest(),

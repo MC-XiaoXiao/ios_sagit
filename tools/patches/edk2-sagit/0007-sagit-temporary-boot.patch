@@ -1,0 +1,325 @@
+diff --git a/Platforms/Msm8998FamilyPkg/Include/Guid/Mi6BootRamdisk.h b/Platforms/Msm8998FamilyPkg/Include/Guid/Mi6BootRamdisk.h
+new file mode 100644
+index 0000000..eac4c7d
+--- /dev/null
++++ b/Platforms/Msm8998FamilyPkg/Include/Guid/Mi6BootRamdisk.h
+@@ -0,0 +1,19 @@
++// SPDX-License-Identifier: BSD-2-Clause-Patent
++#ifndef MI6_BOOT_RAMDISK_H
++#define MI6_BOOT_RAMDISK_H
++
++#define MI6_BOOT_RAMDISK_HOB_GUID \
++  {0x297866da,0x926e,0x4625,{0xa6,0x6c,0x8f,0xf6,0xad,0x0f,0xbb,0xb9}}
++
++// The producer owns a page allocation containing a copy of the incoming
++// ramdisk. Presence, including a rejected ramdisk, takes precedence over disk.
++typedef struct {
++  UINT32 Version;
++  UINT32 Reserved;
++  UINT64 Status;
++  EFI_PHYSICAL_ADDRESS Base;
++  UINT64 Size;
++} MI6_BOOT_RAMDISK;
++
++#define MI6_BOOT_RAMDISK_MAX_SIZE 0x4000000ULL
++#endif
+diff --git a/Platforms/Msm8998FamilyPkg/Library/ArmPlatformLib/AArch64/ArmPlatformHelper.S b/Platforms/Msm8998FamilyPkg/Library/ArmPlatformLib/AArch64/ArmPlatformHelper.S
+index 5988c04..a8f5e34 100644
+--- a/Platforms/Msm8998FamilyPkg/Library/ArmPlatformLib/AArch64/ArmPlatformHelper.S
++++ b/Platforms/Msm8998FamilyPkg/Library/ArmPlatformLib/AArch64/ArmPlatformHelper.S
+@@ -19,15 +19,15 @@
+
+ ASM_FUNC(ArmPlatformPeiBootAction)
+ startlabel:
++  mov x10, FixedPcdGet64 (PcdDeviceTreeStore)
++  str x0, [x10] // preserve the FDT even if the FD is already in place
+   // check if we're located at expected location
+-  adr	x4, .
++  adr	x4, startlabel
+   ldr	x5, =ArmPlatformPeiBootAction
+   cmp	x4, x5
+   bne	docopy
+   ret
+ docopy:
+-  mov x10, FixedPcdGet64 (PcdDeviceTreeStore)
+-  str x0, [x10] // oh my fdt
+   // find our start address by getting our expected offset, then subtracting it from our actual address
+   ldr	x6, =FixedPcdGet64 (PcdFdBaseAddress)
+   sub	x5, x5, x6 // x5 now holds offset of ArmPlatformPeiBootAction from start of FD base
+diff --git a/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/XnuBoot.c b/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/XnuBoot.c
+index 3a7189a..0a54173 100644
+--- a/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/XnuBoot.c
++++ b/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/XnuBoot.c
+@@ -2,12 +2,14 @@
+ // Android ramdisk payload packaging follows the UniXNU/sheng design. The
+ // existing Mi 6 XnuBridge remains responsible for every hardware handoff.
+ #ifdef MI6_BOOT_PAYLOAD_ENABLED
+-#include <Uefi.h>
++#include <PiDxe.h>
+ #include "PlatformBm.h"
+ #include <Protocol/BlockIo.h>
+ #include <Protocol/DiskIo.h>
+ #include <Protocol/PartitionInfo.h>
+ #include <Protocol/SimpleTextInEx.h>
++#include <Library/HobLib.h>
++#include <Guid/Mi6BootRamdisk.h>
+ #include "XnuBootFormat.h"
+
+ // Public decoder entry points supplied by EDK2's LzmaCustomDecompressLib,
+@@ -15,6 +17,23 @@
+ RETURN_STATUS EFIAPI LzmaUefiDecompressGetInfo(CONST VOID *, UINT32, UINT32 *, UINT32 *);
+ RETURN_STATUS EFIAPI LzmaUefiDecompress(CONST VOID *, UINTN, VOID *, VOID *);
+
++STATIC EFI_STATUS Mi6MemoryPayload(CONST UINT8 **Memory, UINT32 *Size, BOOLEAN *Present) {
++  STATIC CONST EFI_GUID Guid=MI6_BOOT_RAMDISK_HOB_GUID;
++  VOID *Hob=GetFirstGuidHob(&Guid);
++  MI6_BOOT_RAMDISK Record;
++  *Memory=NULL; *Size=0; *Present=(Hob!=NULL);
++  if (!Hob) return EFI_SUCCESS;
++  if (GET_GUID_HOB_DATA_SIZE(Hob)!=sizeof(Record)) return EFI_COMPROMISED_DATA;
++  CopyMem(&Record,GET_GUID_HOB_DATA(Hob),sizeof(Record));
++  if (Record.Version!=1 || Record.Reserved) return EFI_COMPROMISED_DATA;
++  if (EFI_ERROR((EFI_STATUS)Record.Status)) return (EFI_STATUS)Record.Status;
++  if (!Record.Base || (Record.Base & EFI_PAGE_MASK) || Record.Size<64 ||
++      Record.Size>MI6_BOOT_RAMDISK_MAX_SIZE || Record.Base>(1ULL<<48)-Record.Size)
++    return EFI_COMPROMISED_DATA;
++  *Memory=(VOID *)(UINTN)Record.Base; *Size=(UINT32)Record.Size;
++  return EFI_SUCCESS;
++}
++
+ STATIC EFI_STATUS Mi6FindBoot(EFI_DISK_IO_PROTOCOL **Io, UINT32 *MediaId, UINT64 *Bytes) {
+   EFI_HANDLE *Handles;
+   UINTN Count, Index;
+@@ -72,32 +91,46 @@ STATIC BOOLEAN Mi6CancelBoot(UINT32 Seconds) {
+ }
+
+ EFI_STATUS Mi6BootPayload(VOID) {
+-  EFI_DISK_IO_PROTOCOL *Disk;
++  EFI_DISK_IO_PROTOCOL *Disk=NULL;
+   EFI_STATUS Status;
+   EFI_HANDLE Child=NULL;
+   UINT8 Header[1632], PayloadHeader[64];
+   UINT8 *Stored=NULL, *Expanded=NULL;
+   VOID *Scratch=NULL;
+   UINT32 MediaId=0, RamdiskSize, Crc, DestinationSize, ScratchSize;
+-  UINT64 Bytes=0, Offset;
++  UINT64 Bytes=0, Offset=0;
++  CONST UINT8 *Memory;
++  BOOLEAN MemoryPresent;
+   MI6_BOOT_PAYLOAD Payload;
+-  Status=Mi6FindBoot(&Disk,&MediaId,&Bytes);
+-  if (EFI_ERROR(Status)) return Status;
+-  if (Bytes<sizeof(Header)) return EFI_COMPROMISED_DATA;
+-  Status=Disk->ReadDisk(Disk,MediaId,0,sizeof(Header),Header);
+-  if (EFI_ERROR(Status)) return Status;
+-  if (CompareMem(Header+48,"sagit-mi6boot2",14)!=0 &&
+-      CompareMem(Header+48,"sagit-mi6boot1",14)!=0) return EFI_NOT_FOUND;
+-  if (!Mi6RamdiskRange(Header,Bytes,&Offset,&RamdiskSize)) return EFI_NOT_FOUND;
+-  Status=Disk->ReadDisk(Disk,MediaId,Offset,sizeof(PayloadHeader),PayloadHeader);
++  Status=Mi6MemoryPayload(&Memory,&RamdiskSize,&MemoryPresent);
+   if (EFI_ERROR(Status)) return Status;
++  if (MemoryPresent) {
++    Print(L"XNU payload source: incoming ramdisk (%u bytes)\r\n",RamdiskSize);
++    CopyMem(PayloadHeader,Memory,sizeof(PayloadHeader));
++  } else {
++    Status=Mi6FindBoot(&Disk,&MediaId,&Bytes);
++    if (EFI_ERROR(Status)) return Status;
++    if (Bytes<sizeof(Header)) return EFI_COMPROMISED_DATA;
++    Status=Disk->ReadDisk(Disk,MediaId,0,sizeof(Header),Header);
++    if (EFI_ERROR(Status)) return Status;
++    if (CompareMem(Header+48,"sagit-mi6boot3",14)!=0 &&
++        CompareMem(Header+48,"sagit-mi6boot2",14)!=0 &&
++        CompareMem(Header+48,"sagit-mi6boot1",14)!=0) return EFI_NOT_FOUND;
++    if (!Mi6RamdiskRange(Header,Bytes,&Offset,&RamdiskSize)) return EFI_NOT_FOUND;
++    Status=Disk->ReadDisk(Disk,MediaId,Offset,sizeof(PayloadHeader),PayloadHeader);
++    if (EFI_ERROR(Status)) return Status;
++    Print(L"XNU payload source: boot partition (%u bytes)\r\n",RamdiskSize);
++  }
+   if (!Mi6PayloadHeader(PayloadHeader,RamdiskSize,&Payload)) return EFI_COMPROMISED_DATA;
+   if (!(Payload.Flags & 1)) return EFI_NOT_FOUND;
+   if (Mi6CancelBoot(Payload.Delay)) return EFI_ABORTED;
+   Stored=AllocatePool((UINTN)Payload.Stored);
+   Expanded=AllocatePool((UINTN)Payload.Expanded);
+   if (!Stored || !Expanded) { Status=EFI_OUT_OF_RESOURCES; goto Done; }
+-  Status=Disk->ReadDisk(Disk,MediaId,Offset+64,(UINTN)Payload.Stored,Stored);
++  if (MemoryPresent) {
++    CopyMem(Stored,Memory+64,(UINTN)Payload.Stored);
++    Status=EFI_SUCCESS;
++  } else Status=Disk->ReadDisk(Disk,MediaId,Offset+64,(UINTN)Payload.Stored,Stored);
+   if (EFI_ERROR(Status)) goto Done;
+   Status=gBS->CalculateCrc32(Stored,(UINTN)Payload.Stored,&Crc);
+   if (EFI_ERROR(Status) || Crc!=Payload.StoredCrc) { Status=EFI_CRC_ERROR; goto Done; }
+diff --git a/Platforms/Msm8998FamilyPkg/MemoryInitPei/MemoryInitPeiLib.c b/Platforms/Msm8998FamilyPkg/MemoryInitPei/MemoryInitPeiLib.c
+index 9cad287..4ba7130 100644
+--- a/Platforms/Msm8998FamilyPkg/MemoryInitPei/MemoryInitPeiLib.c
++++ b/Platforms/Msm8998FamilyPkg/MemoryInitPei/MemoryInitPeiLib.c
+@@ -23,6 +23,9 @@
+ #include <Library/PcdLib.h>
+ #include <Library/FdtParserLib.h>
+ #include <Library/PlatformMemoryMapLib.h>
++#ifdef MI6_BOOT_PAYLOAD_ENABLED
++#include "XnuBootRamdisk.h"
++#endif
+
+ #define SIZE_KB ((UINTN)(1024))
+ #define SIZE_MB ((UINTN)(SIZE_KB * 1024))
+@@ -127,6 +130,13 @@ MemoryPeim(IN EFI_PHYSICAL_ADDRESS UefiMemoryBase, IN UINT64 UefiMemorySize)
+   DEBUG((EFI_D_INFO, "FDT Memory Total: 0x%016lx (%d GiB)\n", MemoryTotal, MemoryTotal / SIZE_GB));
+   DEBUG((EFI_D_INFO, "Select Config: %d GiB\n", MemGB));
+
++#ifdef MI6_BOOT_PAYLOAD_ENABLED
++  // Copy the incoming Android ramdisk before DXE can reuse its original RAM.
++  Mi6PreserveRamdisk(Fdt,MemoryDescriptorEx,Mem,UefiMemoryBase,UefiMemorySize,
++                    FixedPcdGet64(PcdFdBaseAddress),FixedPcdGet32(PcdFdSize),
++                    FixedPcdGet64(PcdDeviceTreeStore));
++#endif
++
+   // Run through each memory descriptor
+   while (MemoryDescriptorEx->Length != 0) {
+     if (MemoryDescriptorEx->MemoryType == EfiConventionalMemory)
+diff --git a/Platforms/Msm8998FamilyPkg/MemoryInitPei/MemoryInitPeiLib.inf b/Platforms/Msm8998FamilyPkg/MemoryInitPei/MemoryInitPeiLib.inf
+index 5fdccfa..763fcdf 100644
+--- a/Platforms/Msm8998FamilyPkg/MemoryInitPei/MemoryInitPeiLib.inf
++++ b/Platforms/Msm8998FamilyPkg/MemoryInitPei/MemoryInitPeiLib.inf
+@@ -22,6 +22,7 @@
+
+ [Sources]
+   MemoryInitPeiLib.c
++  XnuBootRamdisk.h
+
+ [Packages]
+   MdePkg/MdePkg.dec
+@@ -33,8 +34,11 @@
+   SimpleInit.dec
+
+ [LibraryClasses]
++  BaseLib
++  BaseMemoryLib
+   DebugLib
+   HobLib
++  MemoryAllocationLib
+   ArmMmuLib
+   ArmPlatformLib
+   SimpleInitLib
+@@ -48,6 +52,8 @@
+ [FixedPcd]
+   gArmTokenSpaceGuid.PcdSystemMemoryBase
+   gArmTokenSpaceGuid.PcdSystemMemorySize
++  gArmTokenSpaceGuid.PcdFdBaseAddress
++  gArmTokenSpaceGuid.PcdFdSize
+   gSimpleInitTokenSpaceGuid.PcdDeviceTreeStore
+
+ [Depex]
+diff --git a/Platforms/Msm8998FamilyPkg/MemoryInitPei/XnuBootRamdisk.h b/Platforms/Msm8998FamilyPkg/MemoryInitPei/XnuBootRamdisk.h
+new file mode 100644
+index 0000000..e9b8208
+--- /dev/null
++++ b/Platforms/Msm8998FamilyPkg/MemoryInitPei/XnuBootRamdisk.h
+@@ -0,0 +1,94 @@
++// SPDX-License-Identifier: BSD-2-Clause-Patent
++#ifndef MI6_PREPI_RAMDISK_H
++#define MI6_PREPI_RAMDISK_H
++#include <Guid/Mi6BootRamdisk.h>
++#include <Library/BaseMemoryLib.h>
++#include <Library/HobLib.h>
++#include <Library/MemoryAllocationLib.h>
++#include <Library/PlatformMemoryMapLib.h>
++#include <libfdt.h>
++
++STATIC UINT64 Mi6FdtInteger(CONST UINT8 *Data, INT32 Length) {
++  UINT64 Value=0;
++  while (Length--) Value=(Value<<8)|*Data++;
++  return Value;
++}
++
++STATIC EFI_STATUS Mi6InitrdRange(CONST VOID *Fdt, UINT64 *Base, UINT64 *Size, BOOLEAN *Present) {
++  INT32 Node, StartLength=0, EndLength=0;
++  CONST UINT8 *Start, *End;
++  UINT64 Limit;
++  *Base=*Size=0; *Present=FALSE;
++  if (fdt_check_header(Fdt)) { *Present=TRUE; return EFI_COMPROMISED_DATA; }
++  Node=fdt_path_offset(Fdt,"/chosen");
++  if (Node==-FDT_ERR_NOTFOUND) return EFI_NOT_FOUND;
++  if (Node<0) { *Present=TRUE; return EFI_COMPROMISED_DATA; }
++  Start=fdt_getprop(Fdt,Node,"linux,initrd-start",&StartLength);
++  End=fdt_getprop(Fdt,Node,"linux,initrd-end",&EndLength);
++  if (!Start && !End && StartLength==-FDT_ERR_NOTFOUND && EndLength==-FDT_ERR_NOTFOUND)
++    return EFI_NOT_FOUND;
++  *Present=TRUE;
++  if (!Start || !End || (StartLength!=4 && StartLength!=8) || (EndLength!=4 && EndLength!=8))
++    return EFI_COMPROMISED_DATA;
++  *Base=Mi6FdtInteger(Start,StartLength); Limit=Mi6FdtInteger(End,EndLength);
++  if (!*Base && !Limit) { *Present=FALSE; return EFI_NOT_FOUND; }
++  if (!*Base || Limit<=*Base || Limit>(1ULL<<48) || Limit-*Base>MI6_BOOT_RAMDISK_MAX_SIZE)
++    return EFI_COMPROMISED_DATA;
++  *Size=Limit-*Base;
++  return EFI_SUCCESS;
++}
++
++STATIC BOOLEAN Mi6RangesOverlap(UINT64 Base, UINT64 Size, UINT64 Other, UINT64 Bytes) {
++  // Subtraction avoids overflowing either end of an untrusted range.
++  return Size && Bytes && (Base<=Other ? Other-Base<Size : Base-Other<Bytes);
++}
++
++STATIC BOOLEAN Mi6InitrdSourceValid(
++  CONST ARM_MEMORY_REGION_DESCRIPTOR_EX *Map, DeviceMemoryAddHob Selected,
++  UINT64 Base, UINT64 Size, UINT64 UefiBase, UINT64 UefiSize,
++  UINT64 FdBase, UINT64 FdSize, UINT64 FdtStore) {
++  BOOLEAN Covered=FALSE;
++  if (!Size || Size>MI6_BOOT_RAMDISK_MAX_SIZE || Base>MAX_UINT64-Size ||
++      Mi6RangesOverlap(Base,Size,UefiBase,UefiSize) ||
++      Mi6RangesOverlap(Base,Size,FdBase,FdSize) ||
++      Mi6RangesOverlap(Base,Size,FdtStore,sizeof(UINT64))) return FALSE;
++  for (;Map->Length;Map++) {
++    if ((Map->HobOption==Mem4G || Map->HobOption==Mem6G || Map->HobOption==Mem8G) &&
++        Map->HobOption!=Selected) continue;
++    if (!Mi6RangesOverlap(Base,Size,Map->Address,Map->Length)) continue;
++    if (Map->ResourceType!=EFI_RESOURCE_SYSTEM_MEMORY ||
++        (Map->MemoryType!=EfiConventionalMemory && Map->MemoryType!=EfiBootServicesData)) return FALSE;
++    if (Map->HobOption!=NoHob && Base>=Map->Address && Base-Map->Address<=Map->Length &&
++        Size<=Map->Length-(Base-Map->Address)) Covered=TRUE;
++  }
++  return Covered;
++}
++
++STATIC VOID Mi6PreserveRamdisk(
++  CONST VOID *Fdt, CONST ARM_MEMORY_REGION_DESCRIPTOR_EX *Map, DeviceMemoryAddHob Selected,
++  UINT64 UefiBase, UINT64 UefiSize, UINT64 FdBase, UINT64 FdSize, UINT64 FdtStore) {
++  STATIC CONST EFI_GUID Guid=MI6_BOOT_RAMDISK_HOB_GUID;
++  UINT64 Base, Size;
++  BOOLEAN Present;
++  EFI_STATUS Status=Mi6InitrdRange(Fdt,&Base,&Size,&Present);
++  MI6_BOOT_RAMDISK *Record;
++  VOID *Copy;
++  if (!Present) return;
++  Record=BuildGuidHob(&Guid,sizeof(*Record));
++  if (!Record) CpuDeadLoop();
++  ZeroMem(Record,sizeof(*Record)); Record->Version=1; Record->Status=EFI_COMPROMISED_DATA;
++  if (EFI_ERROR(Status)) return;
++  if (!Mi6InitrdSourceValid(Map,Selected,Base,Size,UefiBase,UefiSize,FdBase,FdSize,FdtStore)) return;
++  // A foreign initrd must not cause execution of a different on-disk payload.
++  if (Size<64 || CompareMem((VOID *)(UINTN)Base,"MI6BOOT1",8)) {
++    Record->Status=EFI_NOT_FOUND;
++    return;
++  }
++  // PrePi AllocatePages emits an allocation HOB. The copy remains owned across
++  // DXE allocations and FDT reuse until the bridge exits boot services.
++  Copy=AllocatePages(EFI_SIZE_TO_PAGES(Size));
++  if (!Copy) { Record->Status=EFI_OUT_OF_RESOURCES; return; }
++  CopyMem(Copy,(VOID *)(UINTN)Base,(UINTN)Size);
++  Record->Base=(UINTN)Copy; Record->Size=Size; Record->Status=EFI_SUCCESS;
++}
++#endif
+diff --git a/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.fdf b/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.fdf
+index f1f307d..4157d78 100755
+--- a/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.fdf
++++ b/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.fdf
+@@ -60,7 +60,7 @@ DATA = {
+   0x01, 0x00, 0x00, 0x10,                         # code0: adr x1, .
+   0xff, 0x1f, 0x00, 0x14,                         # code1: b 0x8000
+   0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, # text_offset: 512 KB
+-  0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, # image_size: 2 MB
++  0x00, 0x00, 0x60, 0x00, 0x00, 0x00, 0x00, 0x00, # image_size: 6 MB, the complete FD
+   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # flags
+   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # res2
+   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # res3

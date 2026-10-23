@@ -118,7 +118,8 @@ Fastboot. `--boot-delay 5` adds a five-second recovery countdown. Missing or
 rejected payloads and EFI startup errors also return to Fastboot.
 
 The combined image loader has passed EDK2 compilation and host tests.
-Automatic boot from the combined image has not yet been validated on hardware.
+Temporary boot from stock Fastboot has been verified through APFS root mounting,
+launchd, and interactive root Bash. Persistent boot after flashing remains untested.
 
 For recovery, hold Volume Down + Power to enter stock Fastboot, then flash a
 plain EDK2 image or the original system's `boot.img`.
@@ -142,6 +143,7 @@ Install the following host dependencies:
   The compiler wrappers use `/usr/bin/gcc` and
   `/usr/bin/aarch64-none-linux-gnu-gcc`; adjust `scripts/edk2-*-gcc.sh` for
   different installation paths.
+- zlib and libfdt development files for the EDK2 payload loader host tests.
 
 ## Building the kernel
 
@@ -276,7 +278,8 @@ python3 scripts/build-boot.py \
 Use `--no-autoboot`, or set `AUTOBOOT=0`, to stay in USB Fastboot by default.
 Without `--bridge`, the packer uses `build/bridge/XnuBridge.efi` for automatic
 boot; `--no-autoboot` without `--bridge` produces a plain recovery image.
-Zero-delay boot requires rebuilt EDK2 with the `sagit-mi6boot2` marker.
+Temporary image boot requires rebuilt EDK2 with the `sagit-mi6boot3` marker.
+Revision 2 continues to support zero-delay boot from the boot partition.
 The packer requires EDK2 with the payload loader, preserves its firmware and
 Android DTB, compresses the bridge, verifies the packed contents, and enforces
 a 64 MiB image limit. The build report is saved alongside the image as `.json`.
@@ -285,9 +288,20 @@ Local debugging still uses the existing `XnuBridge.efi` build and temporary
 `fastboot stage` / `oem run-efi` path. Building the bridge does not install an
 automatic boot image or change the device's boot partition.
 
-Automatic boot reads the payload from the **boot partition**. Temporary launch
-of the combined image with `fastboot boot` is unsupported. To start an EFI once
-from an existing EDK2 USB Fastboot session:
+To start the combined image once from the original bootloader's Fastboot,
+without flashing a partition:
+
+```sh
+fastboot boot build/boot/boot-sagit.img
+```
+
+EDK2 preserves the incoming ramdisk from the Android device tree before DXE
+allocations can reuse its memory. This payload takes precedence over the boot
+partition. A rejected or disabled incoming payload returns to EDK2 Fastboot;
+it cannot trigger a different payload from disk. When no incoming ramdisk is
+provided, EDK2 retains the existing boot-partition path.
+
+To start an EFI once from an existing EDK2 USB Fastboot session:
 
 ```sh
 python3 scripts/flash.py --payload build/apfs/bridge/XnuBridge.efi --boot
