@@ -1,0 +1,343 @@
+{
+  "schema": 1,
+  "hardware_tested": false,
+  "installed": false,
+  "comparison_firmware": {
+    "path": "firmware/iPhone14,6_18.6.2_22G100_Restore.ipsw",
+    "ProductVersion": "18.6.2",
+    "ProductBuildVersion": "22G100",
+    "SupportedProductTypes": [
+      "iPhone14,6"
+    ],
+    "packed_kernel_sha256": "79fca287759e6842dd9f1c59c961342dd632851fa85d37df51955cba9dc52e4d"
+  },
+  "providers": [
+    {
+      "role": "runtime-arm64",
+      "path": "build/ios18-kext-analysis/kernelcache.release.ipad7c.macho",
+      "metadata": {
+        "file": "kernelcache.release.ipad7c.macho",
+        "sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+        "size": 48562176,
+        "cputype": "0x100000c",
+        "cpusubtype": "0x0",
+        "filetype": 2,
+        "segments": [
+          {
+            "name": "__TEXT",
+            "vmaddr": "0xfffffff007004000",
+            "vmsize": 835584,
+            "fileoff": 0,
+            "filesize": 835584
+          },
+          {
+            "name": "__DATA_CONST",
+            "vmaddr": "0xfffffff0070d0000",
+            "vmsize": 1048576,
+            "fileoff": 835584,
+            "filesize": 1048576
+          },
+          {
+            "name": "__TEXT_EXEC",
+            "vmaddr": "0xfffffff0071d0000",
+            "vmsize": 7897088,
+            "fileoff": 1884160,
+            "filesize": 7897088
+          },
+          {
+            "name": "__KLD",
+            "vmaddr": "0xfffffff007958000",
+            "vmsize": 16384,
+            "fileoff": 9781248,
+            "filesize": 16384
+          },
+          {
+            "name": "__LASTDATA_CONST",
+            "vmaddr": "0xfffffff00795c000",
+            "vmsize": 16384,
+            "fileoff": 9797632,
+            "filesize": 16384
+          },
+          {
+            "name": "__LAST",
+            "vmaddr": "0xfffffff007960000",
+            "vmsize": 16384,
+            "fileoff": 9814016,
+            "filesize": 16384
+          },
+          {
+            "name": "__KLDDATA",
+            "vmaddr": "0xfffffff007964000",
+            "vmsize": 16384,
+            "fileoff": 9830400,
+            "filesize": 16384
+          },
+          {
+            "name": "__DATA",
+            "vmaddr": "0xfffffff007968000",
+            "vmsize": 737280,
+            "fileoff": 9846784,
+            "filesize": 147456
+          },
+          {
+            "name": "__BOOTDATA",
+            "vmaddr": "0xfffffff007a1c000",
+            "vmsize": 540672,
+            "fileoff": 10010624,
+            "filesize": 540672
+          },
+          {
+            "name": "__PRELINK_TEXT",
+            "vmaddr": "0xfffffff005130000",
+            "vmsize": 8028160,
+            "fileoff": 11501568,
+            "filesize": 8028160
+          },
+          {
+            "name": "__PRELINK_INFO",
+            "vmaddr": "0xfffffff007ce0000",
+            "vmsize": 3325952,
+            "fileoff": 45236224,
+            "filesize": 3325952
+          },
+          {
+            "name": "__PLK_TEXT_EXEC",
+            "vmaddr": "0xfffffff0058d8000",
+            "vmsize": 20709376,
+            "fileoff": 19529728,
+            "filesize": 20709376
+          },
+          {
+            "name": "__PRELINK_DATA",
+            "vmaddr": "0xfffffff007b88000",
+            "vmsize": 1409024,
+            "fileoff": 43827200,
+            "filesize": 1409024
+          },
+          {
+            "name": "__PLK_DATA_CONST",
+            "vmaddr": "0xfffffff006c98000",
+            "vmsize": 3588096,
+            "fileoff": 40239104,
+            "filesize": 3588096
+          },
+          {
+            "name": "__PLK_LLVM_COV",
+            "vmaddr": "0xfffffff007ce0000",
+            "vmsize": 0,
+            "fileoff": 45236224,
+            "filesize": 0
+          },
+          {
+            "name": "__PLK_LINKEDIT",
+            "vmaddr": "0xfffffff007ce0000",
+            "vmsize": 0,
+            "fileoff": 45236224,
+            "filesize": 0
+          },
+          {
+            "name": "__LINKINFO",
+            "vmaddr": "0xfffffff007aa0000",
+            "vmsize": 294912,
+            "fileoff": 10551296,
+            "filesize": 294912
+          },
+          {
+            "name": "__LINKEDIT",
+            "vmaddr": "0xfffffff007ae8000",
+            "vmsize": 655360,
+            "fileoff": 10846208,
+            "filesize": 641616
+          }
+        ],
+        "darwin_version": "Darwin Kernel Version 24.6.0: Tue Jul 21 20:48:55 PDT 2026; root:xnu-11417.140.69.706.66~1/RELEASE_ARM64_T8010"
+      },
+      "haptics_kexts": []
+    },
+    {
+      "role": "comparison-arm64e",
+      "path": "build/haptics/native/kernelcache.macho/kernelcache.release.iphone14c.decompressed",
+      "metadata": {
+        "file": "kernelcache.release.iphone14c.decompressed",
+        "sha256": "43e2c7defdb69e6b6b8153ea72f2455d84ca7f8121b10f892b02a306f81ce90f",
+        "size": 60325888,
+        "cputype": "0x100000c",
+        "cpusubtype": "0x2",
+        "filetype": 12,
+        "segments": [
+          {
+            "name": "__TEXT",
+            "vmaddr": "0xfffffff007004000",
+            "vmsize": 32768,
+            "fileoff": 0,
+            "filesize": 32768
+          },
+          {
+            "name": "__PRELINK_TEXT",
+            "vmaddr": "0xfffffff00700c000",
+            "vmsize": 10321920,
+            "fileoff": 32768,
+            "filesize": 10321920
+          },
+          {
+            "name": "__DATA_CONST",
+            "vmaddr": "0xfffffff0079e4000",
+            "vmsize": 4997120,
+            "fileoff": 10354688,
+            "filesize": 4997120
+          },
+          {
+            "name": "__DATA_SPTM",
+            "vmaddr": "0xfffffff007ea8000",
+            "vmsize": 245760,
+            "fileoff": 15351808,
+            "filesize": 245760
+          },
+          {
+            "name": "__TEXT_EXEC",
+            "vmaddr": "0xfffffff007ee4000",
+            "vmsize": 38993920,
+            "fileoff": 15597568,
+            "filesize": 38993920
+          },
+          {
+            "name": "__TEXT_BOOT_EXEC",
+            "vmaddr": "0xfffffff00a414000",
+            "vmsize": 32768,
+            "fileoff": 54591488,
+            "filesize": 32768
+          },
+          {
+            "name": "__PRELINK_INFO",
+            "vmaddr": "0xfffffff00a41c000",
+            "vmsize": 2228224,
+            "fileoff": 54624256,
+            "filesize": 2228224
+          },
+          {
+            "name": "__DATA",
+            "vmaddr": "0xfffffff00a63c000",
+            "vmsize": 2768896,
+            "fileoff": 56852480,
+            "filesize": 2768896
+          },
+          {
+            "name": "__LINKEDIT",
+            "vmaddr": "0xfffffff00a8e0000",
+            "vmsize": 704512,
+            "fileoff": 59621376,
+            "filesize": 704512
+          }
+        ],
+        "darwin_version": "Darwin Kernel Version 24.6.0: Tue Jul 15 21:54:59 PDT 2025; root:xnu-11417.140.69~16/RELEASE_ARM64_T8110"
+      },
+      "haptics_kexts": [
+        {
+          "CFBundleIdentifier": "com.apple.driver.AppleAOPHaptics",
+          "CFBundleVersion": "840.26",
+          "DTPlatformBuild": "22G79",
+          "DTSDKName": "iphoneos18.6.internal",
+          "IOKitPersonalities": {
+            "AppleAOPHapticsAudio": {
+              "CFBundleIdentifier": "com.apple.driver.AppleAOPHaptics",
+              "IOClass": "AppleAOPHaptics",
+              "IOMatchCategory": "AppleAOPHaptics",
+              "IOPersonalityPublisher": "com.apple.driver.AppleAOPHaptics",
+              "IOPropertyMatch": {
+                "compatible": "aop-audio-haptic"
+              },
+              "IOProviderClass": "AppleAOPAudioDeviceNode",
+              "IOResourceMatch": "IOKit"
+            },
+            "AppleAOPHapticsDebug": {
+              "CFBundleIdentifier": "com.apple.driver.AppleAOPHaptics",
+              "IOClass": "AppleAOPInput",
+              "IOPersonalityPublisher": "com.apple.driver.AppleAOPHaptics",
+              "IOPropertyMatch": {
+                "compatible": "aop-audio-hpdbg"
+              },
+              "IOProviderClass": "AppleAOPAudioDeviceNode",
+              "IOResourceMatch": "IOKit"
+            }
+          },
+          "OSBundleLibraries": {
+            "com.apple.driver.AppleAOPAudio": "1.1",
+            "com.apple.driver.AppleARMPlatform": "1.0",
+            "com.apple.driver.AppleEmbeddedAudio": "1.1.0",
+            "com.apple.driver.AppleIISController": "1.0",
+            "com.apple.iokit.AppleARMIISAudio": "1.0",
+            "com.apple.iokit.IOAudio2Family": "1.0",
+            "com.apple.kpi.bsd": "8.0",
+            "com.apple.kpi.iokit": "8.0",
+            "com.apple.kpi.libkern": "8.0",
+            "com.apple.kpi.mach": "8.0",
+            "com.apple.kpi.unsupported": "8.0"
+          }
+        },
+        {
+          "CFBundleIdentifier": "com.apple.driver.AppleHapticsSupportLEAP",
+          "CFBundleVersion": "9.21",
+          "DTPlatformBuild": "22G79",
+          "DTSDKName": "iphoneos18.6.internal",
+          "IOKitPersonalities": {
+            "AppleHapticsSupport": {
+              "CFBundleIdentifier": "com.apple.driver.AppleHapticsSupportLEAP",
+              "IOClass": "AppleHapticsSupportLEAP",
+              "IONameMatch": [
+                "haptics-support,leap"
+              ],
+              "IOPersonalityPublisher": "com.apple.driver.AppleHapticsSupportLEAP",
+              "IOProviderClass": "AppleARMIODevice",
+              "IOUserClientClass": "AppleHapticsSupportUserClient"
+            }
+          },
+          "OSBundleLibraries": {
+            "com.apple.driver.AppleARMPlatform": "1.0.0",
+            "com.apple.driver.AppleEmbeddedAudioLibs": "1.0.0",
+            "com.apple.driver.AppleFirmwareUpdateKext": "1.0.0",
+            "com.apple.iokit.CoreAnalyticsFamily": "1.0",
+            "com.apple.iokit.IOHIDFamily": "1.4",
+            "com.apple.iokit.IOReportFamily": "1.0",
+            "com.apple.kec.Libm": "1.0.0",
+            "com.apple.kpi.bsd": "11.0",
+            "com.apple.kpi.iokit": "11.0",
+            "com.apple.kpi.libkern": "11.0",
+            "com.apple.kpi.mach": "11.0",
+            "com.apple.kpi.private": "11.0",
+            "com.apple.kpi.unsupported": "11.0"
+          }
+        },
+        {
+          "CFBundleIdentifier": "com.apple.driver.AppleHapticsSupportNVM",
+          "CFBundleVersion": "9.21",
+          "DTPlatformBuild": "22G79",
+          "DTSDKName": "iphoneos18.6.internal",
+          "IOKitPersonalities": {
+            "AppleHapticsSupportArcEEPROM": {
+              "CFBundleIdentifier": "com.apple.driver.AppleHapticsSupportNVM",
+              "IOClass": "AppleHapticsSupportArcEEPROM",
+              "IONameMatch": [
+                "arc-eeprom-i2c"
+              ],
+              "IOPersonalityPublisher": "com.apple.driver.AppleHapticsSupportNVM",
+              "IOProviderClass": "AppleSPUAppInterface"
+            }
+          },
+          "OSBundleLibraries": {
+            "com.apple.driver.AppleSPU": "1.0",
+            "com.apple.kpi.iokit": "11.0",
+            "com.apple.kpi.libkern": "11.0"
+          }
+        }
+      ]
+    }
+  ],
+  "findings": [
+    "The runtime arm64 iPad provider has no haptics hardware Kext.",
+    "The iPhone comparison is arm64e; it is evidence, not a loadable arm64 dependency.",
+    "AppleAOPHaptics matches AppleAOPAudioDeviceNode / aop-audio-haptic and uses AppleAOPAudioDeviceProvider.",
+    "function-haptics_session notifies session start/stop; it is not a duration/amplitude playback API.",
+    "AppleHapticsSupportLEAP has a com.apple.ahs.userclientaccess-gated client and firmware/calibration support.",
+    "PMI8998Haptics exposes a project diagnostic ABI; UIKit/Core Haptics/mediaserverd bridging is not implemented."
+  ]
+}

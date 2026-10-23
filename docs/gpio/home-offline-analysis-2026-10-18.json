@@ -1,0 +1,138 @@
+{
+  "analysis_date_client": "2026-10-18",
+  "timezone": "America/Los_Angeles",
+  "mode": "offline-only; local file reads and evidence generation; no device, network, driver edits, builds or test execution",
+  "finding": "Later GPU boot artifacts disable the shared fingerprint provider and omit Home trusted application packets. The matched round134 artifact therefore has no physical Home input path.",
+  "bridges": [
+    {
+      "directory": "build/input/final-bridge",
+      "build_json_sha256": "45317651f96a87a1a7dd4cf202ee737f80dc21a1b0a3f9c7a57dd38112e557ba",
+      "efi_sha256": "15ee2cbc46dd6ba4b70b1f16c3b932ec00794c76371d407a6c8b672e9fb179f4",
+      "apple_dt_sha256": "4868678d406e554001a07bd4ab31db27c7db34ef7f8d615172081a4fa3a4e311",
+      "apple_dt_embedded_offset": 33054288,
+      "node": "/device-tree/arm-io/fingerprint",
+      "status": "okay",
+      "firmware_bytes": {
+        "fpc-firmware": 679244,
+        "goodix-firmware": 1740073
+      },
+      "metadata_has_input_firmware": true
+    },
+    {
+      "directory": "build/gpu-runtime/ui-producer-fence-bridge",
+      "build_json_sha256": "0d48513fd1e05b8bc638eafa057c4af74d971d71d47dce4cbeb7e9b3aea4cb3f",
+      "efi_sha256": "25c5f0f3941c6bf28330f0c3b2d359f94f9c04ef207ed2986a4e6806adf55556",
+      "apple_dt_sha256": "6422d1ec861e8f67a1cb61b77080adead44fc7146f372a731dc69faca74bafee",
+      "apple_dt_embedded_offset": 35164400,
+      "node": "/device-tree/arm-io/fingerprint",
+      "status": "disabled",
+      "firmware_bytes": {
+        "fpc-firmware": 0,
+        "goodix-firmware": 0
+      },
+      "metadata_has_input_firmware": false
+    },
+    {
+      "directory": "build/gpu-runtime/ui-surface-wait-fallback-bridge",
+      "build_json_sha256": "37bdc31e1f14d08dde06638438dc05cdc96104caeb620d49f8e3451d24abca69",
+      "efi_sha256": "56ec870252a9846f91a315ed7a1c5df7221bf1d7912cda7dca0ea5e65dc52f8f",
+      "apple_dt_sha256": "e437c696776507866138a3fa5ed34dda9fd60eefee7198e7ac49e2c23b030d51",
+      "apple_dt_embedded_offset": 35164400,
+      "node": "/device-tree/arm-io/fingerprint",
+      "status": "disabled",
+      "firmware_bytes": {
+        "fpc-firmware": 0,
+        "goodix-firmware": 0
+      },
+      "metadata_has_input_firmware": false
+    },
+    {
+      "directory": "build/gpu-runtime/ui-surface-access-state-bridge",
+      "build_json_sha256": "ba7e8c21faa336bdb2d4109bf3a0df526d6f757d65d00098f38d57863f9c346b",
+      "efi_sha256": "90fb317872b8c25de6aaf35caea8db144a11ca34bf54008e0530b8d0edfe5b51",
+      "apple_dt_sha256": "6f58e759070ad09f092302c07df53217ca37a0cbeeafd6815bc3cf578daee30f",
+      "apple_dt_embedded_offset": 35164400,
+      "node": "/device-tree/arm-io/fingerprint",
+      "status": "disabled",
+      "firmware_bytes": {
+        "fpc-firmware": 0,
+        "goodix-firmware": 0
+      },
+      "metadata_has_input_firmware": false
+    }
+  ],
+  "round134_identity": {
+    "report": "build/gpu-runtime/round-134-recovery/report.json",
+    "report_sha256": "f3a1146cf66c2699be4093a933484a1eee26dff25f51d9280d02426644aadd69",
+    "payload_sha256": "56ec870252a9846f91a315ed7a1c5df7221bf1d7912cda7dca0ea5e65dc52f8f",
+    "matches_fallback_efi": true
+  },
+  "gpu_bridge_metadata_scan": {
+    "total": 69,
+    "without_input_firmware": 69,
+    "with_input_firmware": [],
+    "scope": "69 saved build metadata files at analysis time; four embedded device trees inspected above"
+  },
+  "historical_hid_events": {
+    "log": "build/input/hardware-home-07/uart.txt",
+    "sha256": "80bf92e813bf7fce37b796a5caed981f01cd55ac2280597307dd2f60566398eb",
+    "events": [
+      {
+        "line": 5625,
+        "text": "FPCFingerprint: HID Home down"
+      },
+      {
+        "line": 5676,
+        "text": "AMFI: Launch Constraint Violation (not enforcing), error info: c[6]p[2]m[3]e[255], (Process was launched as a system service unexpectedly but met System Service constraints) launching proc[vc:FPCFingerprint: HID Home up"
+      }
+    ],
+    "scope": "HID down/up delivery; does not prove SpringBoard Home behavior"
+  },
+  "mechanism": {
+    "default_disabled": "device_trees/xiaomi-sagit.dts:80",
+    "conditional_configuration": "scripts/build-bridge.py:1441",
+    "firmware_gpio_clock_handoff": "scripts/input_firmware.py:122",
+    "sensor_requires_firmware_before_resources": "drivers/input/FingerprintHID/FingerprintHID.cpp:130"
+  },
+  "remaining_issues": [
+    {
+      "finding": "Runtime secure sampling is synchronous inside the native HID workloop; idle timer also samples every100ms, held state every20ms. A slow SMC can block HID gate.",
+      "source": "drivers/input/FingerprintHID/FingerprintHID.cpp:188",
+      "status": "Current static code confirms risk; not exercised in this analysis."
+    },
+    {
+      "finding": "After three consecutive sampling failures or secure quarantine, input is latched offline and IRQ disabled; timer alone does not resume it.",
+      "source": "drivers/input/FingerprintHID/FingerprintHID.cpp:194",
+      "status": "Secondary failure mechanism, not cause of disabled-provider round134."
+    },
+    {
+      "finding": "Current SCM1.0.2 separates metadata and monitor locks, while frozen GPU runtime records SCM1.0.1. Runtime fingerprint secure calls still share native HID gate.",
+      "sources": [
+        "drivers/security/QcomSCM/QcomSCM.cpp:194",
+        "build/gpu-runtime/round-64-evidence.json:515",
+        "docs/gpu/ui-render-handoff.json"
+      ],
+      "status": "Source fix must not be assumed present in frozen runtime."
+    }
+  ],
+  "recommended_next_steps": [
+    "Move runtime QSEE transactions off native HID workloop, with serialized TA access and stop/PM lifecycle handling.",
+    "Build an explicit Home-enabled candidate using existing --input-firmware build/input/firmware path; verify GPIO/clock authorization and embedded DT.",
+    "Verify exact SCM version and kernel artifact identity; do not infer frozen binary state from current source.",
+    "Keep hardware validation deferred until user authorizes it."
+  ],
+  "source_sha256": {
+    "device_trees/xiaomi-sagit.dts": "608c2f553eec83a7b788f75a0201c8d87b749683b15a5c4b29a5b14de821179d",
+    "scripts/build-bridge.py": "7d5c20a964947f439d3a2a931c7754e7aac6c7c4b19a4e4394d827b304bc21b3",
+    "scripts/input_firmware.py": "98332ffc6c8aa69ccb61f04ffc3ffc4f9ee744abc2288074ff6976a5152e46c5",
+    "drivers/input/FingerprintHID/FingerprintHID.cpp": "7bd71aca1f13e3b0991f6f4ad861f43c32d1406779f0a277ccf98cc91e2aaef4",
+    "drivers/input/FingerprintHID/SecureApp.cpp": "6456a66855df58243c70ec5eaee2c056440a882462909aba2907b6554bcee503",
+    "drivers/security/QcomSCM/QcomSCM.cpp": "87d860eaa6c8e8a57b02592cd46f553e51bffc7bd88c28201bec7fdabfe34cee",
+    "drivers/security/QcomSCM/Info.plist": "f02602f7b1874c4cabe78342b24b52cbbc2de4ee19190a4a87950d119fad2676"
+  },
+  "limits": [
+    "Explains saved subsequent GPU boots; not an exhaustive claim about every historical boot.",
+    "No new physical input or SpringBoard behavior validation.",
+    "No driver or boot policy was changed."
+  ]
+}

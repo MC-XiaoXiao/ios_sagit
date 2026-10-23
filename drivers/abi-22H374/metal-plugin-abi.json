@@ -1,0 +1,512 @@
+{
+  "schema_version": 1,
+  "framework": "Metal.framework",
+  "source_version": "iOS 18.7.10 / 22H374 arm64",
+  "source_receipt": "build/drivers/metal-plugin-analysis/extraction.json",
+  "images": {
+    "Metal": {
+      "path": "build/drivers/metal-plugin-analysis/native/Metal",
+      "sha256": "ac1943c7df8c41618c07befce2931d4bec8012b16feb5133b5f78759adcf2d67"
+    },
+    "AGXMetalA10": {
+      "path": "build/drivers/metal-plugin-analysis/native/AGXMetalA10",
+      "sha256": "6d7f41c4c4c1b5a5ae4b4fd2aac027bb4e9eeb6adf48de937bdf573c960b1439"
+    },
+    "IOGPU": {
+      "path": "build/drivers/metal-plugin-analysis/native/IOGPU",
+      "sha256": "340f66f904119bb7e5cfa61c3acffac372eeae0a34a6d3848c01581136a414df"
+    }
+  },
+  "loader": {
+    "matching_class": "IOAcceleratorES",
+    "property": "MetalPluginName",
+    "bundle_path": "/System/Library/Extensions/{MetalPluginName}.bundle",
+    "optional_class_property": "MetalPluginClassName",
+    "principal_class_key": "NSPrincipalClass",
+    "required_superclass": "_MTLDevice",
+    "protocols": [
+      "MTLDevice",
+      "MTLDeviceSPI"
+    ],
+    "entry_selector": "initWithAcceleratorPort:",
+    "entry_argument": "uint32_t borrowed io_service_t",
+    "entry_result": "retained device or nil",
+    "registration_hooks": [
+      "initLimits",
+      "initFeatureQueries",
+      "initWorkarounds"
+    ]
+  },
+  "limits": {
+    "size": 264,
+    "alignment": 8,
+    "members": [
+      {
+        "name": "maxFramebufferStorageBits",
+        "offset": "0x0",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "linearTextureArrayAlignmentBytes",
+        "offset": "0x4",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "linearTextureArrayAlignmentSlice",
+        "offset": "0x8",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxTileBuffers",
+        "offset": "0xc",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxTileTextures",
+        "offset": "0x10",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxTileSamplers",
+        "offset": "0x14",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxTileInlineDataSize",
+        "offset": "0x18",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "minTilePixels",
+        "offset": "0x1c",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxColorAttachments",
+        "offset": "0x20",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxVertexAttributes",
+        "offset": "0x24",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxVertexBuffers",
+        "offset": "0x28",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxVertexTextures",
+        "offset": "0x2c",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxVertexSamplers",
+        "offset": "0x30",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxVertexInlineDataSize",
+        "offset": "0x34",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxInterpolants",
+        "offset": "0x38",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxFragmentBuffers",
+        "offset": "0x3c",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxFragmentTextures",
+        "offset": "0x40",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxFragmentSamplers",
+        "offset": "0x44",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxFragmentInlineDataSize",
+        "offset": "0x48",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxComputeBuffers",
+        "offset": "0x4c",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxComputeTextures",
+        "offset": "0x50",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxComputeSamplers",
+        "offset": "0x54",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxComputeInlineDataSize",
+        "offset": "0x58",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxComputeLocalMemorySizes",
+        "offset": "0x5c",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxTotalComputeThreadsPerThreadgroup",
+        "offset": "0x60",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxComputeThreadgroupMemory",
+        "offset": "0x64",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxLineWidth",
+        "offset": "0x68",
+        "size": 4,
+        "type": "float"
+      },
+      {
+        "name": "maxPointSize",
+        "offset": "0x6c",
+        "size": 4,
+        "type": "float"
+      },
+      {
+        "name": "maxVisibilityQueryOffset",
+        "offset": "0x70",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "padmaxBufferLength",
+        "offset": "0x74",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "minConstantBufferAlignmentBytes",
+        "offset": "0x78",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "minBufferNoCopyAlignmentBytes",
+        "offset": "0x7c",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxTextureWidth1D",
+        "offset": "0x80",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxTextureWidth2D",
+        "offset": "0x84",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxTextureHeight2D",
+        "offset": "0x88",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxTextureWidth3D",
+        "offset": "0x8c",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxTextureHeight3D",
+        "offset": "0x90",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxTextureDepth3D",
+        "offset": "0x94",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxTextureDimensionCube",
+        "offset": "0x98",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxTextureLayers",
+        "offset": "0x9c",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "linearTextureAlignmentBytes",
+        "offset": "0xa0",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "iosurfaceTextureAlignmentBytes",
+        "offset": "0xa4",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "iosurfaceReadOnlyTextureAlignmentBytes",
+        "offset": "0xa8",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "deviceLinearTextureAlignmentBytes",
+        "offset": "0xac",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "deviceLinearReadOnlyTextureAlignmentBytes",
+        "offset": "0xb0",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxFunctionConstantIndices",
+        "offset": "0xb4",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxComputeThreadgroupMemoryAlignmentBytes",
+        "offset": "0xb8",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxInterpolatedComponents",
+        "offset": "0xbc",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxTessellationFactor",
+        "offset": "0xc0",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxIndirectBuffers",
+        "offset": "0xc4",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxIndirectTextures",
+        "offset": "0xc8",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxIndirectSamplers",
+        "offset": "0xcc",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxIndirectSamplersPerDevice",
+        "offset": "0xd0",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxFenceInstances",
+        "offset": "0xd4",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxViewportCount",
+        "offset": "0xd8",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxCustomSamplePositions",
+        "offset": "0xdc",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxVertexAmplificationFactor",
+        "offset": "0xe0",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxVertexAmplificationCount",
+        "offset": "0xe4",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxTextureBufferWidth",
+        "offset": "0xe8",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxComputeAttributes",
+        "offset": "0xec",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxIOCommandsInFlight",
+        "offset": "0xf0",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxPredicatedNestingDepth",
+        "offset": "0xf4",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxAccelerationStructureLevels",
+        "offset": "0xf8",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxConstantBufferArguments",
+        "offset": "0xfc",
+        "size": 4,
+        "type": "unsigned int"
+      },
+      {
+        "name": "maxBufferLength",
+        "offset": "0x100",
+        "size": 8,
+        "type": "unsigned __int64"
+      }
+    ]
+  },
+  "functions": [
+    {
+      "name": "getMetalPluginClassForService",
+      "address": "0x18242ea70",
+      "size": 304,
+      "evidence": "MetalPluginName path; optional MetalPluginClassName; NSBundle classNamed/principalClass; real _MTLDevice subclass check",
+      "sha256": "613d0869752e622a9004e6ec59d66b3d666d228ed89054ea5d1f28747c63dcc3"
+    },
+    {
+      "name": "-[MTLIOAccelServiceGlobalContext init]",
+      "address": "0x18242eba0",
+      "size": 328,
+      "evidence": "IOServiceMatching(IOAcceleratorES); retain service descriptor and release iterator-owned service",
+      "sha256": "bfd2edae784da58b018d54140134a2a54defea72ca6db9e12fe1e1c191f1ed12"
+    },
+    {
+      "name": "-[MTLIOAccelServiceGlobalContext processPendingCreateIOAccelServiceRequests]",
+      "address": "0x18242ed80",
+      "size": 148,
+      "evidence": "[[descriptor deviceClass] alloc] initWithAcceleratorPort:[descriptor acceleratorPort], nil excluded",
+      "sha256": "c355f699dc8d6ec34f02d4eebafd4e93151a4bb072da2ed58749b13ea45dfc33"
+    },
+    {
+      "name": "MTLAddDevice",
+      "address": "0x182433430",
+      "size": 328,
+      "evidence": "Requires MTLDevice and MTLDeviceSPI; calls initLimits/initFeatureQueries/initWorkarounds before insertion",
+      "sha256": "80839810c646a256a9b806495cc5d558512e10573231be83811f2dd327622059"
+    },
+    {
+      "name": "-[_MTLDevice init]",
+      "address": "0x18242e42c",
+      "size": 716,
+      "evidence": "Initializes framework queues/library builders/loader; no IOServiceOpen or generic IOGPU work queues",
+      "sha256": "64422e4b3f9908627c6a389713f083ceabb5b840e8a55a9450cde2996331730f"
+    },
+    {
+      "name": "-[_MTLDevice initWithAcceleratorPort:]",
+      "address": "0x182526a78",
+      "size": 28,
+      "evidence": "Abstract initializer; subclass must override",
+      "sha256": "71ef0a89ffae8d68b7fbbe9000efbfaa2949e437097283bc5586ed1535562ecf"
+    },
+    {
+      "name": "-[_MTLDevice maxTextureWidth2D]",
+      "address": "0x18242ca08",
+      "size": 24,
+      "evidence": "Dynamically dispatches limits, reads uint32 at offset 132",
+      "sha256": "9e14a1f89584016590a425871db0370f0f571e0bca8b93af0afd97691a201f5d"
+    },
+    {
+      "name": "-[_MTLDevice initGPUFamilySupport]",
+      "address": "0x1824335b0",
+      "size": 5260,
+      "evidence": "Unknown feature profile (NSUIntegerMax) follows default branch at 0x1824342c8, returning an empty family vector",
+      "sha256": "ca1eb87358e1c5cd5c43e6e7b9bc058009b9b8094a06f75ce12baf42b1e54ddd"
+    },
+    {
+      "name": "-[MTLIOAccelServiceDescriptor initWithAcceleratorPort:deviceClass:]",
+      "address": "0x182473f0c",
+      "size": 104,
+      "evidence": "32-bit service name, retained with IOObjectRetain; class in separate 64-bit slot",
+      "sha256": "9958398848c4cae507d24303c3966be40b9e1cf8e214f351dfc7a869f882341c"
+    }
+  ],
+  "apple_reference": "https://developer.apple.com/documentation/BundleResources/Information-Property-List/NSPrincipalClass",
+  "runtime_verified": false,
+  "scope": "Static inspection of actual Apple arm64 framework bytes. The project declares a real _MTLDevice subclass, retains its own service reference and overrides -limits with subclass-owned storage; no Apple private ivar writes. No complete GPU family is advertised. System bundle deployment/trust handoff, loader execution, feature initialization and hardware behavior remain unverified.",
+  "concrete_device_protocol_adoption": {
+    "native_base_class": "_MTLDevice",
+    "native_base_protocol_list": null,
+    "evidence": "build/gpu-runtime/metal-objc-metadata.txt (_MTLDevice class_ro_t baseProtocols=0, _limits size264 alignment8)",
+    "public_protocol": "QcomMTLDevice explicitly adopts SDK MTLDevice",
+    "private_protocol": "objc_getProtocol(MTLDeviceSPI), class_addProtocol on QcomMTLDevice only after version/limits/initializer checks; no local duplicate protocol and no Apple class mutation",
+    "runtime_verified": false
+  }
+}

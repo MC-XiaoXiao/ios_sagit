@@ -1,0 +1,82 @@
+{
+  "date": "2026-10-20",
+  "scope": "offline only; no device connection, deployment or execution",
+  "checks": {
+    "arm64_kext_build": "passed",
+    "native_IOHIDDevice_vtable_slots": 207,
+    "native_provider_imports": "passed",
+    "spi_host_tests": "passed",
+    "gyro_host_tests": "passed",
+    "asan_ubsan": "passed",
+    "gyro_integration_tests": 6,
+    "driver_toolchain_regression_tests": 19,
+    "touch_integration_regression_tests": 8,
+    "boot_bridge_regression_tests": 49,
+    "kernelcache_patcher_tests": 5,
+    "CoreMotion_probe_cross_link": "passed"
+  },
+  "hardware_tested": false,
+  "ssc_platform_handoff_implemented": false,
+  "CoreMotion_runtime_verified": false,
+  "default_board_spi_enabled": false,
+  "logs": [
+    "build/gyro-build.log",
+    "build/gyro-tests.log",
+    "build/gyro-collection.log",
+    "build/gyro-verify.log",
+    "build/gyro-toolchain-tests.log",
+    "build/gyro-touch-regression.log",
+    "build/gyro-bridge-regression.log"
+  ],
+  "artifacts": {
+    "build/output/Extensions/GenericSPI.kext/Contents/MacOS/GenericSPI": {
+      "sha256": "6f76fcf32bcccca9704a10f36c83652616d814098df4a1a77c367b058616055a",
+      "bytes": 90168
+    },
+    "build/output/Extensions/QcomSPI.kext/Contents/MacOS/QcomSPI": {
+      "sha256": "df292437d5c28b226a40fa0a4b0fd12b74c585aaa5822ec1327a4e8d9cfdec7a",
+      "bytes": 85320
+    },
+    "build/output/Extensions/SPIGyro.kext/Contents/MacOS/SPIGyro": {
+      "sha256": "6d805c78596fb2fca522caac58635c88c21c7317b095765a6a15681679b5a433",
+      "bytes": 91536
+    },
+    "build/output/gyroctl": {
+      "sha256": "1bfa1dc708b8cc3a3008c8fccba4f59977891d449dae8203e3ee3e8a83d7f54d",
+      "bytes": 68288
+    },
+    "build/output/kernelcache.gyro": {
+      "sha256": "03416613d7e485bdbc6b4048f738bd73a0339a5a081bc2e65985d94ae5bdf4fa",
+      "bytes": 23625728
+    }
+  },
+  "source_sha256": {
+    "drivers/bus/GenericSPI/GenericSPI.cpp": "e723c43e560d5b284fd82b1749eec69578fa5473c7ab8d18e55827b23a21fa75",
+    "drivers/bus/GenericSPI/GenericSPI.h": "b05ae1c14fa8228c287fc884cd20059963a7b202491f69dde90ea0c851d222e5",
+    "drivers/bus/GenericSPI/Info.plist": "48809742e153f7a11bbae0f62c00d941bc6103e652dd0c9e46554c8dcbf588b4",
+    "drivers/bus/GenericSPI/LICENSE": "75577a5c17bbf6064d6d40460cb1c42f38f5e594dc1da634adaacf0196fc1188",
+    "drivers/bus/QcomSPI/Info.plist": "a89c5d9f3cc6d1a3578805d22b07b61271c855d15974225832e143415eb14c6d",
+    "drivers/bus/QcomSPI/LICENSE": "aaf135472f81c5b4a0dca9367e5bb5e9750032b5bebe5442b36e4c0a47430df3",
+    "drivers/bus/QcomSPI/QUPSPI.h": "0f222c00e0bbc76d53d3aa59cbace4e0746e7db5a7b35211384b7021b3f819a2",
+    "drivers/bus/QcomSPI/QcomSPI.cpp": "f5eebe19e6d4e1c8170d5eff50b20173e4990b7378a3fbf18854c2df6133040f",
+    "drivers/bus/QcomSPI/QcomSPI.h": "364596179bf21c60e01bcb6383389c493d5a1c2e3e956d190eda74f7c1b5ac9a",
+    "drivers/input/SPIGyro/GyroHID.h": "041984664a3e893f4c0a6c89d8df97c8cdbe15e08d34962ba627fda3e97ff16a",
+    "drivers/input/SPIGyro/GyroSensor.h": "cf686d9330abfc3140439d89145502d85b86ab0d51502a31bf5d2da56140f396",
+    "drivers/input/SPIGyro/Info.plist": "99305459e443d7ccf96dcf3dc37ff4d1159c4358181b384c131a4557ae06969b",
+    "drivers/input/SPIGyro/LICENSE": "aaf135472f81c5b4a0dca9367e5bb5e9750032b5bebe5442b36e4c0a47430df3",
+    "drivers/input/SPIGyro/SPIGyro.cpp": "76d054970434fe808b481aba3911d31cab508f88203d8339d5371fd975e7a7e1",
+    "drivers/input/SPIGyro/SPIGyro.h": "dedb4edd29b42ffdfc929860d11c24f4d0420babf6b65233d61a5978b6b21276",
+    "drivers/include/SPIProtocol.h": "b32cf8907c0ba7a1d519c142ad84950b930a595c909f83a486a1c0da05edc6a7",
+    "tests/gyro_test.cpp": "8bfc607203dde2add86ce135108983622cd24991983f83adc1bc9ad94817c98c",
+    "tests/spi_test.cpp": "2633bbc03801a0fe94e8ded20cd5f506267ec07063dbbb6a6fbeb45b0c62fe67",
+    "tests/test_gyro_integration.py": "a0efb5b5d14dc6b7ae3547e78a12a644f7b0f5069a6f5046a5975f100b24dc69",
+    "tools/gyroctl/gyroctl.mm": "9529b7dcbf7943e75fbba4015a6f7eb0ec89008659e822a7785cce6fd86b724b"
+  },
+  "collection": {
+    "status": "passed",
+    "kext_count": 26,
+    "sha256": "03416613d7e485bdbc6b4048f738bd73a0339a5a081bc2e65985d94ae5bdf4fa",
+    "errors": [],
+    "warnings": []
+  }
+}

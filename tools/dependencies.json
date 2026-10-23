@@ -1,0 +1,68 @@
+{
+  "xnu": {
+    "ref": "refs/tags/xnu-11417.140.69",
+    "url": "https://codeload.github.com/apple-oss-distributions/xnu/tar.gz/refs/tags/xnu-11417.140.69",
+    "archive": "xnu-11417.140.69.tar.gz",
+    "sha256": "6ec42735d647976a429331cdc73a35e8f3889b56c251397c05989a59063dc251"
+  },
+  "cctools-port": {
+    "ref": "904de2a71d4da6a9b30d2efaf912a10ddc7d9ddb",
+    "url": "https://codeload.github.com/tpoechtrager/cctools-port/tar.gz/904de2a71d4da6a9b30d2efaf912a10ddc7d9ddb",
+    "archive": "cctools-port-904de2a71d4da6a9b30d2efaf912a10ddc7d9ddb.tar.gz",
+    "sha256": "6809ba18b6b4f4646b17b1baba48f9a0cb94425cc334272918ba944fd7399b32"
+  },
+  "host-dispatch": {
+    "ref": "323b9b4e0ca05d6c56a0c2f2d7d8d47363e612b7",
+    "url": "https://codeload.github.com/tpoechtrager/apple-libdispatch/tar.gz/323b9b4e0ca05d6c56a0c2f2d7d8d47363e612b7",
+    "archive": "host-dispatch-323b9b4e0ca05d6c56a0c2f2d7d8d47363e612b7.tar.gz",
+    "sha256": "ac65cff5ed89903d02e2722162373ecac3b782846ab133dcc2306bf6c6872482"
+  },
+  "tcsh": {
+    "ref": "f773aba56aa128a38712987b1b8bdbc393d1e4d0",
+    "url": "https://codeload.github.com/tcsh-org/tcsh/tar.gz/f773aba56aa128a38712987b1b8bdbc393d1e4d0",
+    "archive": "tcsh-f773aba56aa128a38712987b1b8bdbc393d1e4d0.tar.gz",
+    "sha256": "f3ad6d66f2c3b6393fd2298fb0379c64edfcc0954fe02059b61a698f18317416"
+  },
+  "unifdef": {
+    "ref": "da688503bef95b40c5edcba1a467b27991f0fb97",
+    "url": "https://codeload.github.com/fanf2/unifdef/tar.gz/da688503bef95b40c5edcba1a467b27991f0fb97",
+    "archive": "unifdef-da688503bef95b40c5edcba1a467b27991f0fb97.tar.gz",
+    "sha256": "1acca580e31cb79109e43e267353009d66f3c24e670325adaa02fd6410dc0fd6"
+  },
+  "bootstrap_cmds": {
+    "ref": "refs/tags/bootstrap_cmds-138",
+    "url": "https://codeload.github.com/apple-oss-distributions/bootstrap_cmds/tar.gz/refs/tags/bootstrap_cmds-138",
+    "archive": "bootstrap_cmds-138.tar.gz",
+    "sha256": "7f86f67c13be04504679170e923c6079e706d57b295f10db752f2f8245f7df8c"
+  },
+  "libdispatch": {
+    "ref": "refs/tags/libdispatch-1521.140.2",
+    "url": "https://codeload.github.com/apple-oss-distributions/libdispatch/tar.gz/refs/tags/libdispatch-1521.140.2",
+    "archive": "libdispatch-1521.140.2.tar.gz",
+    "sha256": "d48114d3fbde8bc827ae6df0b70fa5c448b18ddb910aaa7cdb8b17b660eec9bc"
+  },
+  "libplatform": {
+    "ref": "refs/tags/libplatform-349.140.6",
+    "url": "https://codeload.github.com/apple-oss-distributions/libplatform/tar.gz/refs/tags/libplatform-349.140.6",
+    "archive": "libplatform-349.140.6.tar.gz",
+    "sha256": "ef9951f4e9d3c6ccc92dcef900206f1b1777a96eb7b1f2c46bed9c08455b6bc9"
+  },
+  "AvailabilityVersions": {
+    "ref": "refs/tags/AvailabilityVersions-151",
+    "url": "https://codeload.github.com/apple-oss-distributions/AvailabilityVersions/tar.gz/refs/tags/AvailabilityVersions-151",
+    "archive": "AvailabilityVersions-151.tar.gz",
+    "sha256": "14208b9d8424b9206ee1f745f16d87c8be8920105d3c7862a470b79b83abf3e6"
+  },
+  "sdk": {
+    "ref": "iOS18.6-SDKs",
+    "url": "https://github.com/xybp888/iOS-SDKs/releases/download/iOS18.6-SDKs/iPhoneOS18.6.sdk.zip",
+    "archive": "iPhoneOS18.6.sdk.zip",
+    "sha256": "e654ecf1c841a908a09b39f663249bdcc05468b4d10f998e0d29800a5337a9b7"
+  },
+  "compiler-rt": {
+    "ref": "69445f095c22aac2388f939bedebf224a6efcdaf",
+    "url": "https://codeload.github.com/llvm-mirror/compiler-rt/tar.gz/69445f095c22aac2388f939bedebf224a6efcdaf",
+    "archive": "compiler-rt-69445f095c22aac2388f939bedebf224a6efcdaf.tar.gz",
+    "sha256": "c09c6522bb3d998c3eab09eae8cbf1bc17c99f1b1fc4173ffd436a22b9c575f7"
+  }
+}

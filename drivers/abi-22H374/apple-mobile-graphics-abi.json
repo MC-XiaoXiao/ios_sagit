@@ -1,0 +1,1092 @@
+{
+  "bundle_identifier": "com.apple.iokit.IOMobileGraphicsFamily",
+  "image_sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+  "architecture": "arm64",
+  "classes": {
+    "IOMobileFramebuffer": {
+      "super": "IOService",
+      "instance_size": 144,
+      "vtable_slots": 266
+    },
+    "IOMobileFramebufferService": {
+      "super": "IOMobileFramebuffer",
+      "instance_size": 144,
+      "vtable_slots": 266
+    },
+    "IOMobileFramebufferLegacy": {
+      "super": "IOMobileFramebufferService",
+      "instance_size": 6592,
+      "vtable_slots": 368
+    }
+  },
+  "required_symbols": [
+    "__ZN25IOMobileFramebufferLegacy10gMetaClassE",
+    "__ZN25IOMobileFramebufferLegacyC2EPK11OSMetaClass",
+    "__ZN25IOMobileFramebufferLegacyD2Ev",
+    "__ZN25IOMobileFramebufferLegacy4initEP12OSDictionary",
+    "__ZN25IOMobileFramebufferLegacy4freeEv",
+    "__ZN25IOMobileFramebufferLegacy13setPropertiesEP8OSObject",
+    "__ZN25IOMobileFramebufferLegacy18systemWillShutdownEj",
+    "__ZN25IOMobileFramebufferLegacy5probeEP9IOServicePi",
+    "__ZN25IOMobileFramebufferLegacy5startEP9IOService",
+    "__ZN25IOMobileFramebufferLegacy4stopEP9IOService",
+    "__ZNK25IOMobileFramebufferLegacy11getWorkLoopEv",
+    "__ZN25IOMobileFramebufferLegacy13newUserClientEP4taskPvjPP12IOUserClient",
+    "__ZN25IOMobileFramebufferLegacy13setPowerStateEmP9IOService",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot169Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot170Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot171Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot172Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot173Ev",
+    "__ZN25IOMobileFramebufferLegacy18default_fb_surfaceEjj",
+    "__ZN25IOMobileFramebufferLegacy18get_framebuffer_idEv",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot176Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot177Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot178Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot179Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot180Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot181Ev",
+    "__ZN25IOMobileFramebufferLegacy18set_display_deviceEj",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot183Ev",
+    "__ZN25IOMobileFramebufferLegacy15is_main_displayEv",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot185Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot186Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot187Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot188Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot189Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot190Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot191Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot192Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot193Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot194Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot195Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot196Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot197Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot198Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot199Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot200Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot201Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot202Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot203Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot204Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot205Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot206Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot207Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot208Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot209Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot210Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot211Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot213Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot215Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot216Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot217Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot218Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot219Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot220Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot221Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot222Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot223Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot224Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot225Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot226Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot227Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot228Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot229Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot230Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot231Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot232Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot233Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot234Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot235Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot236Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot237Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot238Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot239Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot240Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot241Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot242Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot243Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot244Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot245Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot246Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot249Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot250Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot251Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot252Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot253Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot254Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot255Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot256Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot257Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot258Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot259Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot260Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot261Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot262Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot263Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot264Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot265Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot266Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot267Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot268Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot269Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot270Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot271Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot272Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot273Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot274Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot275Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot276Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot277Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot278Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot279Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot280Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot281Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot282Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot283Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot284Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot285Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot286Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot287Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot288Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot289Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot290Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot291Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot292Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot293Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot294Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot295Ev",
+    "__ZN25IOMobileFramebufferLegacy14start_hardwareEv",
+    "__ZN25IOMobileFramebufferLegacy19stop_hardware_gatedEv",
+    "__ZN25IOMobileFramebufferLegacy16swap_begin_gatedEv",
+    "__ZN25IOMobileFramebufferLegacy19swap_complete_gatedEv",
+    "__ZN25IOMobileFramebufferLegacy17verify_swap_gatedEPv",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot302Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot303Ev",
+    "__ZN25IOMobileFramebufferLegacy11verify_swapEPv",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot305Ev",
+    "__ZN25IOMobileFramebufferLegacy27do_power_state_change_gatedEv",
+    "__ZN25IOMobileFramebufferLegacy25create_default_fb_surfaceEv",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot308Ev",
+    "__ZNK25IOMobileFramebufferLegacy27get_timing_attributes_gatedEPyb",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot310Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot311Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot312Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot313Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot316Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot317Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot318Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot319Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot320Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot321Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot322Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot323Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot324Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot325Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot326Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot327Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot328Ev",
+    "__ZN25IOMobileFramebufferLegacy12prepare_swapEPv",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot330Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot331Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot332Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot333Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot334Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot335Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot336Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot337Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot338Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot339Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot340Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot341Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot342Ev",
+    "__ZN25IOMobileFramebufferLegacy24default_fb_surface_gatedEjj",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot344Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot346Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot349Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot350Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot351Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot353Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot354Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot356Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot357Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot358Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot359Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot360Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot361Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot362Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot363Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot364Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot365Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot366Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot367Ev",
+    "__ZN25IOMobileFramebufferLegacy19swap_complete_gatedEb",
+    "__ZN25IOMobileFramebufferLegacy12note_vbl_ISREj",
+    "__ZN25IOMobileFramebufferLegacy15nativeNotifyVBLEyyy",
+    "__ZTV25IOMobileFramebufferLegacy",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot168Ev",
+    "__ZN25IOMobileFramebufferLegacy23nativePrunePendingSwapsEv",
+    "__ZN25IOMobileFramebufferLegacy30nativeDropRedundantPendingSwapEv",
+    "__ZN25IOMobileFramebufferLegacy31nativeDropCompletedPendingSwapsEv",
+    "__ZN25IOMobileFramebufferLegacy32nativeDropSupersededPendingSwapsEv",
+    "__ZN25IOMobileFramebufferLegacy21nativeRecordSwapStateEPvj",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot300Ev",
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot301Ev",
+    "__ZN25IOMobileFramebufferLegacy22nativeNotifyPowerStateEjj"
+  ],
+  "virtual_symbols": {
+    "__ZN25IOMobileFramebufferLegacy4initEP12OSDictionary": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 21
+    },
+    "__ZN25IOMobileFramebufferLegacy4freeEv": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 14
+    },
+    "__ZN25IOMobileFramebufferLegacy13setPropertiesEP8OSObject": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 44
+    },
+    "__ZN25IOMobileFramebufferLegacy18systemWillShutdownEj": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 79
+    },
+    "__ZN25IOMobileFramebufferLegacy5probeEP9IOServicePi": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 85
+    },
+    "__ZN25IOMobileFramebufferLegacy5startEP9IOService": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 86
+    },
+    "__ZN25IOMobileFramebufferLegacy4stopEP9IOService": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 87
+    },
+    "__ZNK25IOMobileFramebufferLegacy11getWorkLoopEv": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 111
+    },
+    "__ZN25IOMobileFramebufferLegacy13newUserClientEP4taskPvjPP12IOUserClient": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 141
+    },
+    "__ZN25IOMobileFramebufferLegacy13setPowerStateEmP9IOService": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 155
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot169Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 169
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot170Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 170
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot171Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 171
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot172Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 172
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot173Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 173
+    },
+    "__ZN25IOMobileFramebufferLegacy18default_fb_surfaceEjj": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 174
+    },
+    "__ZN25IOMobileFramebufferLegacy18get_framebuffer_idEv": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 175
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot176Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 176
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot177Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 177
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot178Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 178
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot179Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 179
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot180Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 180
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot181Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 181
+    },
+    "__ZN25IOMobileFramebufferLegacy18set_display_deviceEj": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 182
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot183Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 183
+    },
+    "__ZN25IOMobileFramebufferLegacy15is_main_displayEv": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 184
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot185Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 185
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot186Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 186
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot187Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 187
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot188Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 188
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot189Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 189
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot190Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 190
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot191Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 191
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot192Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 192
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot193Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 193
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot194Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 194
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot195Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 195
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot196Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 196
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot197Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 197
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot198Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 198
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot199Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 199
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot200Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 200
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot201Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 201
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot202Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 202
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot203Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 203
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot204Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 204
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot205Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 205
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot206Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 206
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot207Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 207
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot208Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 208
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot209Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 209
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot210Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 210
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot211Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 211
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot213Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 213
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot215Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 215
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot216Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 216
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot217Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 217
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot218Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 218
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot219Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 219
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot220Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 220
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot221Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 221
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot222Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 222
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot223Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 223
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot224Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 224
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot225Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 225
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot226Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 226
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot227Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 227
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot228Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 228
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot229Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 229
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot230Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 230
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot231Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 231
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot232Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 232
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot233Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 233
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot234Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 234
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot235Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 235
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot236Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 236
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot237Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 237
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot238Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 238
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot239Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 239
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot240Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 240
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot241Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 241
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot242Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 242
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot243Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 243
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot244Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 244
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot245Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 245
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot246Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 246
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot249Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 249
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot250Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 250
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot251Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 251
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot252Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 252
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot253Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 253
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot254Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 254
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot255Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 255
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot256Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 256
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot257Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 257
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot258Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 258
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot259Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 259
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot260Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 260
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot261Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 261
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot262Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 262
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot263Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 263
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot264Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 264
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot265Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 265
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot266Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 266
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot267Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 267
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot268Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 268
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot269Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 269
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot270Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 270
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot271Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 271
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot272Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 272
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot273Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 273
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot274Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 274
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot275Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 275
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot276Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 276
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot277Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 277
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot278Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 278
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot279Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 279
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot280Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 280
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot281Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 281
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot282Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 282
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot283Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 283
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot284Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 284
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot285Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 285
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot286Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 286
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot287Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 287
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot288Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 288
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot289Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 289
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot290Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 290
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot291Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 291
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot292Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 292
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot293Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 293
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot294Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 294
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot295Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 295
+    },
+    "__ZN25IOMobileFramebufferLegacy14start_hardwareEv": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 296
+    },
+    "__ZN25IOMobileFramebufferLegacy19stop_hardware_gatedEv": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 297
+    },
+    "__ZN25IOMobileFramebufferLegacy16swap_begin_gatedEv": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 298
+    },
+    "__ZN25IOMobileFramebufferLegacy19swap_complete_gatedEv": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 299
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot302Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 302
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot303Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 303
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot305Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 305
+    },
+    "__ZN25IOMobileFramebufferLegacy25create_default_fb_surfaceEv": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 307
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot308Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 308
+    },
+    "__ZNK25IOMobileFramebufferLegacy27get_timing_attributes_gatedEPyb": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 309
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot310Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 310
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot311Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 311
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot312Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 312
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot313Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 313
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot316Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 316
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot317Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 317
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot318Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 318
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot319Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 319
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot320Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 320
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot321Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 321
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot322Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 322
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot323Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 323
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot324Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 324
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot325Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 325
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot326Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 326
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot327Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 327
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot328Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 328
+    },
+    "__ZN25IOMobileFramebufferLegacy12prepare_swapEPv": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 329
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot330Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 330
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot331Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 331
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot332Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 332
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot333Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 333
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot334Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 334
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot335Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 335
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot336Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 336
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot337Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 337
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot338Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 338
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot339Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 339
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot340Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 340
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot341Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 341
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot342Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 342
+    },
+    "__ZN25IOMobileFramebufferLegacy24default_fb_surface_gatedEjj": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 343
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot344Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 344
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot346Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 346
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot349Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 349
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot350Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 350
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot351Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 351
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot353Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 353
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot354Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 354
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot356Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 356
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot357Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 357
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot358Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 358
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot359Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 359
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot360Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 360
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot361Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 361
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot362Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 362
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot363Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 363
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot364Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 364
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot365Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 365
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot366Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 366
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot367Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 367
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot168Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 168
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot300Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 300
+    },
+    "__ZN25IOMobileFramebufferLegacy13nativeSlot301Ev": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 301
+    },
+    "__ZN25IOMobileFramebufferLegacy27do_power_state_change_gatedEv": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 306
+    },
+    "__ZN25IOMobileFramebufferLegacy17verify_swap_gatedEPv": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 352
+    },
+    "__ZN25IOMobileFramebufferLegacy11verify_swapEPv": {
+      "class": "IOMobileFramebufferLegacy",
+      "slot": 304
+    }
+  },
+  "note": "Unknown protected nativeSlot declarations are vtable relocation aliases only, never called by local C++. No iOS 12 instance offsets or vtable positions are used.",
+  "function_bindings": {
+    "__ZN25IOMobileFramebufferLegacy19swap_complete_gatedEb": {
+      "address": "0xfffffff005c1dfc0",
+      "bytes": "ff0303d1fc6f06a9fa6707a9f85f08a9f65709a9f44f0aa9fd7b0ba9fdc30291",
+      "note": "Native completion releases the active request, wakes waiters and advances the native swap queue."
+    },
+    "__ZN25IOMobileFramebufferLegacy12note_vbl_ISREj": {
+      "address": "0xfffffff005c23a74",
+      "bytes": "ff0301d1f65701a9f44f02a9fd7b03a9fdc30091f50301aaf30300aa080040f9",
+      "note": "Native VBL timestamp/count update; UInt32 argument is fallback interval in nanoseconds."
+    },
+    "__ZN25IOMobileFramebufferLegacy15nativeNotifyVBLEyyy": {
+      "address": "0xfffffff005c23b18",
+      "bytes": "ff8301d1f65703a9f44f04a9fd7b05a9fd430191f60303aaf40302aaf50301aa",
+      "note": "Relocation alias: emits native VBL notifications with count/time/delta. Called only on native work loop."
+    },
+    "__ZN25IOMobileFramebufferLegacy23nativePrunePendingSwapsEv": {
+      "address": "0xfffffff005c25f40",
+      "bytes": "ff8301d1fa6701a9f85f02a9f65703a9f44f04a9fd7b05a9fd430191f40300aa",
+      "note": "Audited nonvirtual relocation alias for the original iOS 18 queue helper; not an asserted original Apple export name. AppleDisplayPipe calls these helpers before transferring the pending TAILQ reference to its active slot."
+    },
+    "__ZN25IOMobileFramebufferLegacy30nativeDropRedundantPendingSwapEv": {
+      "address": "0xfffffff005c26410",
+      "bytes": "0804409109d566393f05007161000054089962396800003600008052c0035fd6",
+      "note": "Audited nonvirtual relocation alias for the original iOS 18 queue helper; not an asserted original Apple export name. AppleDisplayPipe calls these helpers before transferring the pending TAILQ reference to its active slot."
+    },
+    "__ZN25IOMobileFramebufferLegacy31nativeDropCompletedPendingSwapsEv": {
+      "address": "0xfffffff005c25ea8",
+      "bytes": "f85fbca9f65701a9f44f02a9fd7b03a9fdc30091d35780521300bc7208ce8252",
+      "note": "Audited nonvirtual relocation alias for the original iOS 18 queue helper; not an asserted original Apple export name. AppleDisplayPipe calls these helpers before transferring the pending TAILQ reference to its active slot."
+    },
+    "__ZN25IOMobileFramebufferLegacy32nativeDropSupersededPendingSwapsEv": {
+      "address": "0xfffffff005c26500",
+      "bytes": "ffc301d1f85f03a9f65704a9f44f05a9fd7b06a9fd830191f30300aa080040f9",
+      "note": "Audited nonvirtual relocation alias for the original iOS 18 queue helper; not an asserted original Apple export name. AppleDisplayPipe calls these helpers before transferring the pending TAILQ reference to its active slot."
+    },
+    "__ZN25IOMobileFramebufferLegacy21nativeRecordSwapStateEPvj": {
+      "address": "0xfffffff005c1db18",
+      "bytes": "f657bda9f44f01a9fd7b02a9fd830091482800511f11007163010054f30300aa",
+      "note": "Audited nonvirtual relocation alias for the original iOS 18 queue helper; not an asserted original Apple export name. AppleDisplayPipe calls these helpers before transferring the pending TAILQ reference to its active slot."
+    },
+    "__ZN25IOMobileFramebufferLegacy22nativeNotifyPowerStateEjj": {
+      "address": "0xfffffff005c23dac",
+      "bytes": "08504bf9a80400b4ff0301d1f65701a9f44f02a9fd7b03a9fdc30091f40302aa",
+      "note": "Audited relocation alias for original native slot216 power-state notification, (controller_on, display_on). Original final native driver calls this after applying and storing current power states."
+    },
+    "__ZN25IOMobileFramebufferLegacy25create_default_fb_surfaceEv": {
+      "address": "0xfffffff005c22304",
+      "bytes": "ff4303d1f85f09a9f6570aa9f44f0ba9fd7b0ca9fd030391f30300aa14c857b915cc57b916c00491e00316aa81a28052981b009408008012687e02b9688202b960121991e10316aa82a28052ac1b009408138352686a68381f050071a40a407a841a407a200c0054",
+      "note": "Native slot307 initializes both 1300-byte swap templates with changed/ready=-1, then conditionally allocates PurpleGfxMem only if native framebuffer flag+0x1898 is1 and dimensions are nonzero. Qcom calls it while hardware initialization has not enabled that flag."
+    }
+  }
+}

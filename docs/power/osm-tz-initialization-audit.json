@@ -1,0 +1,609 @@
+{
+  "schema": "sagit-osm-tz-initialization-audit-v1",
+  "scope": "Offline static analysis of pinned stock firmware and pinned vendor Linux source. No device access or firmware modification.",
+  "firmware": {
+    "reference": "build/usb/firmware/stock/tz.mbn",
+    "sha256": "d2c417987bb4210eb774b11c3cd61aa5cd4b1260d1dd3313506490ee9026d911",
+    "architecture": "AArch64 ELF64 little-endian"
+  },
+  "verification": {
+    "functions": {
+      "initializer": {
+        "address": "0x1c094058",
+        "size": 348,
+        "sha256": "7163b52b302d5d897e39d9d0029e27812089e190b2fd4ed94c419dced8e0ca7a"
+      },
+      "version_predicate": {
+        "address": "0x1c093d08",
+        "size": 92,
+        "sha256": "a76baa7b9a229969feb9c9f65c277d8b9b20afc919fd6a7d3667994970679e2a"
+      },
+      "version_reader": {
+        "address": "0x1c093c70",
+        "size": 32,
+        "sha256": "48e6856b938daab5875851736be625b9da40c311143333ba26e7753b27ff5962"
+      },
+      "post_table_setup": {
+        "address": "0x1c094d14",
+        "size": 1008,
+        "sha256": "904ce244bf65f1404464ab1de769c8b957a588f0835a02288cda67161d96f31b"
+      },
+      "direct_caller": {
+        "address": "0x1c0664c8",
+        "size": 140,
+        "sha256": "059822dfe07d6b1d4760e1797a710ef872629cb58297b82fc953b4076270dd8e"
+      },
+      "spm_cc_control_writer": {
+        "address": "0x1c03a390",
+        "size": 172,
+        "sha256": "5bfd74dda095d6b8e11a9387971911399a61ce62234a82c48bf10616834b9c58"
+      }
+    },
+    "single_write_descriptor_array": {
+      "address": "0x1c0ec018",
+      "count": 2,
+      "stride": 16,
+      "sha256": "5d2adeb0650c136153318d95932f6104ea9713464cc6e4e32ecc1bbc13bd8c5e",
+      "null_terminator_address": "0x1c0ec038",
+      "null_terminator_size": 16,
+      "null_terminator_sha256": "374708fff7719dd5979ec875d56cd2286f6d3cf7ec317a3b25632aab28ec37bb"
+    },
+    "block_descriptor_array": {
+      "address": "0x1c0ec048",
+      "count": 12,
+      "stride": 32,
+      "sha256": "263fb597edfa19137fa9daaab0f3966788e2b2b4072ddfd5525d263bca250f4f",
+      "null_terminator_address": "0x1c0ec1c8",
+      "null_terminator_size": 32,
+      "null_terminator_sha256": "66687aadf862bd776c8fc18b8e9f8e20089714856ee233b3902a591d0d5f2925"
+    },
+    "artifacts": [
+      "build/osm-tz-audit/agent-osm/decompilations.json",
+      "build/osm-tz-audit/agent-osm/disassembly.json",
+      "build/osm-tz-audit/agent-osm/entry_and_write_search.json",
+      "build/osm-tz-audit/agent-osm/initialization_tables.json"
+    ],
+    "method": "IDA function/disassembly examination plus ELF program-header mapping and exact source-block hashes; source data excludes entire sequencer instruction dumps."
+  },
+  "entry_and_selection": {
+    "initializer": "0x1c094058",
+    "once_byte": "0x1c109e20",
+    "once_behavior": "Nonzero at entry returns success without rewriting tables; set to 1 only after post_table_setup returns success, at 0x1c0941a0.",
+    "context_pointer": {
+      "global": "0x1c109e18",
+      "value": "0x1c10a8e0",
+      "single_writes_pointer_slot": "0x1c10a908",
+      "blocks_pointer_slot": "0x1c10a910"
+    },
+    "direct_caller": {
+      "function": "0x1c0664c8",
+      "callsite": "0x1c0664e8"
+    },
+    "outer_callsites": [
+      "0x1c01b764",
+      "0x1c01bb60"
+    ],
+    "version_reader": {
+      "function": "0x1c093c70",
+      "physical": "0x01fc8000",
+      "formula": "(read32 & 0xff) | (((read32 >> 8) & 0xff) << 16)",
+      "note": "Actual disassembly uses two 32-bit loads; do not interpret Hex-Rays byte-looking rendering as byte MMIO."
+    },
+    "version_predicate": {
+      "function": "0x1c093d08",
+      "encoding": "four bytes [major_min, minor_min, major_max, minor_max]",
+      "formula": "min=(byte0<<16)|byte1; max=(byte2<<16)|byte3; both zero means unconditional, else min <= hardware_version < max",
+      "ranges": [
+        {
+          "name": "common_single_writes",
+          "bytes": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "unconditional": true
+        },
+        {
+          "name": "v1_blocks",
+          "bytes": [
+            0,
+            0,
+            2,
+            0
+          ],
+          "minimum_inclusive": "0x0",
+          "maximum_exclusive": "0x20000"
+        },
+        {
+          "name": "v2_single_writes_and_blocks",
+          "bytes": [
+            2,
+            0,
+            255,
+            255
+          ],
+          "minimum_inclusive": "0x20000",
+          "maximum_exclusive": "0xff00ff"
+        }
+      ],
+      "product_limit": "TZ table coverage is broader than project support. The production initializer remains limited to chipID 292, boardID 30, versions 0x20000/0x20001."
+    }
+  },
+  "write_protocol": {
+    "order": "Enable clock helpers for IDs 2 and 3; common/v2 single writes; matching blocks in descriptor order (both sequencers, both branch tables, both parameter tables); post_table_setup; once byte.",
+    "single_descriptor": "16 bytes: u64 source, u32 count, 4 version bytes. Each source entry is u64 physical address, u32 value, u32 padding.",
+    "block_descriptor": "32 bytes: u64 source, u32 word count, u32 padding, u64 physical destination, 4 version bytes, u32 padding.",
+    "stores": "Full 32-bit stores, not field-mask or read-modify-write operations. Source words are copied in ascending order.",
+    "single_store_instruction": "0x1c0940f4",
+    "block_store_instruction": "0x1c094160",
+    "no_runtime_image_checksum": "This initializer does not verify the just-written sequencer/branch image by a checksum or complete readback."
+  },
+  "single_write_descriptors": [
+    {
+      "descriptor_va": "0x1c0ec018",
+      "source_va": "0x1c0ec1e8",
+      "count": 6,
+      "version_min_inclusive": "0x0",
+      "version_max_exclusive": "0x0",
+      "entries": [
+        {
+          "address": "0x179c0004",
+          "value": "0x0"
+        },
+        {
+          "address": "0x179c012c",
+          "value": "0x7d0"
+        },
+        {
+          "address": "0x179c0134",
+          "value": "0xbb8"
+        },
+        {
+          "address": "0x179c2004",
+          "value": "0x0"
+        },
+        {
+          "address": "0x179c212c",
+          "value": "0x7d0"
+        },
+        {
+          "address": "0x179c2134",
+          "value": "0xbb8"
+        }
+      ],
+      "source_sha256": "5fd1ea15b757236bf87036a9692f2fc779853120d63749d9a73c7f888ce8d8d8"
+    },
+    {
+      "descriptor_va": "0x1c0ec028",
+      "source_va": "0x1c0ec248",
+      "count": 10,
+      "version_min_inclusive": "0x20000",
+      "version_max_exclusive": "0xff00ff",
+      "entries": [
+        {
+          "address": "0x179c0260",
+          "value": "0x1"
+        },
+        {
+          "address": "0x179c0268",
+          "value": "0x1"
+        },
+        {
+          "address": "0x179c0120",
+          "value": "0x7d0"
+        },
+        {
+          "address": "0x179c0128",
+          "value": "0x4b0"
+        },
+        {
+          "address": "0x179c0130",
+          "value": "0x0"
+        },
+        {
+          "address": "0x179c2260",
+          "value": "0x0"
+        },
+        {
+          "address": "0x179c2268",
+          "value": "0x0"
+        },
+        {
+          "address": "0x179c2120",
+          "value": "0x7d0"
+        },
+        {
+          "address": "0x179c2128",
+          "value": "0x4b0"
+        },
+        {
+          "address": "0x179c2130",
+          "value": "0x0"
+        }
+      ],
+      "source_sha256": "0163659a38bb5736bf27bdcc48fcbce917923d02e27b485f174de71acc5a1deb"
+    }
+  ],
+  "block_descriptors": [
+    {
+      "descriptor_va": "0x1c0ec048",
+      "source_va": "0x1c0ec2e8",
+      "count_words": 160,
+      "destination": "0x179c0500",
+      "version_min_inclusive": "0x0",
+      "version_max_exclusive": "0x20000",
+      "source_sha256": "5e577af7132970dda8c1feab987a4597c3899bda93ac44522edc41b6385d7433",
+      "kind": "sequencer"
+    },
+    {
+      "descriptor_va": "0x1c0ec068",
+      "source_va": "0x1c0ec2e8",
+      "count_words": 160,
+      "destination": "0x179c2500",
+      "version_min_inclusive": "0x0",
+      "version_max_exclusive": "0x20000",
+      "source_sha256": "5e577af7132970dda8c1feab987a4597c3899bda93ac44522edc41b6385d7433",
+      "kind": "sequencer"
+    },
+    {
+      "descriptor_va": "0x1c0ec088",
+      "source_va": "0x1c0ec568",
+      "count_words": 47,
+      "destination": "0x179c0170",
+      "version_min_inclusive": "0x0",
+      "version_max_exclusive": "0x20000",
+      "source_sha256": "a772c7b1ecfe412ef5d3dd4bdcaaaaa732a8b1af43e679688250a77e80e6daf9",
+      "kind": "branch_table"
+    },
+    {
+      "descriptor_va": "0x1c0ec0a8",
+      "source_va": "0x1c0ec568",
+      "count_words": 47,
+      "destination": "0x179c2170",
+      "version_min_inclusive": "0x0",
+      "version_max_exclusive": "0x20000",
+      "source_sha256": "a772c7b1ecfe412ef5d3dd4bdcaaaaa732a8b1af43e679688250a77e80e6daf9",
+      "kind": "branch_table"
+    },
+    {
+      "descriptor_va": "0x1c0ec0c8",
+      "source_va": "0x1c0ec624",
+      "count_words": 92,
+      "destination": "0x179c0300",
+      "version_min_inclusive": "0x0",
+      "version_max_exclusive": "0x20000",
+      "source_sha256": "1cd498a10355b877f771d379535abff6b07dcb940a32f9f5a154c46f3daaab47",
+      "kind": "parameters"
+    },
+    {
+      "descriptor_va": "0x1c0ec0e8",
+      "source_va": "0x1c0ec794",
+      "count_words": 92,
+      "destination": "0x179c2300",
+      "version_min_inclusive": "0x0",
+      "version_max_exclusive": "0x20000",
+      "source_sha256": "db57525a63054b59a3b9ec1bc220cf0706f81ea71c5ed4d1f06b42192a1ce9a7",
+      "kind": "parameters"
+    },
+    {
+      "descriptor_va": "0x1c0ec108",
+      "source_va": "0x1c0ec904",
+      "count_words": 192,
+      "destination": "0x179c0500",
+      "version_min_inclusive": "0x20000",
+      "version_max_exclusive": "0xff00ff",
+      "source_sha256": "e650b467fe4c3ce6b5c0329edf7f0b554a7931f5ba849319f5d497ce42460bfe",
+      "kind": "sequencer"
+    },
+    {
+      "descriptor_va": "0x1c0ec128",
+      "source_va": "0x1c0ecc04",
+      "count_words": 192,
+      "destination": "0x179c2500",
+      "version_min_inclusive": "0x20000",
+      "version_max_exclusive": "0xff00ff",
+      "source_sha256": "e650b467fe4c3ce6b5c0329edf7f0b554a7931f5ba849319f5d497ce42460bfe",
+      "kind": "sequencer"
+    },
+    {
+      "descriptor_va": "0x1c0ec148",
+      "source_va": "0x1c0ecf04",
+      "count_words": 49,
+      "destination": "0x179c0170",
+      "version_min_inclusive": "0x20000",
+      "version_max_exclusive": "0xff00ff",
+      "source_sha256": "2c59a3f566bcd1c2c9717da585f588f95d58f9c7675ff29b64a27ca6c87dfe18",
+      "kind": "branch_table"
+    },
+    {
+      "descriptor_va": "0x1c0ec168",
+      "source_va": "0x1c0ecfc8",
+      "count_words": 49,
+      "destination": "0x179c2170",
+      "version_min_inclusive": "0x20000",
+      "version_max_exclusive": "0xff00ff",
+      "source_sha256": "2c59a3f566bcd1c2c9717da585f588f95d58f9c7675ff29b64a27ca6c87dfe18",
+      "kind": "branch_table"
+    },
+    {
+      "descriptor_va": "0x1c0ec188",
+      "source_va": "0x1c0ed08c",
+      "count_words": 95,
+      "destination": "0x179c0300",
+      "version_min_inclusive": "0x20000",
+      "version_max_exclusive": "0xff00ff",
+      "source_sha256": "62288b3467c8221a5eda0cd94ff06cebd25e1dab89d4b601ebae75c51fee1663",
+      "kind": "parameters"
+    },
+    {
+      "descriptor_va": "0x1c0ec1a8",
+      "source_va": "0x1c0ed208",
+      "count_words": 95,
+      "destination": "0x179c2300",
+      "version_min_inclusive": "0x20000",
+      "version_max_exclusive": "0xff00ff",
+      "source_sha256": "f0ab26897bf593fa621662f7bbb80010dd064db9bce24b7fae06badb85f08f4a",
+      "kind": "parameters"
+    }
+  ],
+  "v2_cold_fingerprint": {
+    "banks": [
+      "0x179c0000",
+      "0x179c2000"
+    ],
+    "parameters": [
+      {
+        "seq": 15,
+        "offset": "0x33c",
+        "physical": [
+          "0x179c033c",
+          "0x179c233c"
+        ],
+        "initial": [
+          "0x0",
+          "0x0"
+        ],
+        "hlos_semantics": "APM threshold virtual corner",
+        "hlos_write": "apmThresholdCorner",
+        "linux_evidence": "docs/power/reference/xiaomi-clock-osm.c:2429-2430"
+      },
+      {
+        "seq": 31,
+        "offset": "0x37c",
+        "physical": [
+          "0x179c037c",
+          "0x179c237c"
+        ],
+        "initial": [
+          "0x0",
+          "0x0"
+        ],
+        "hlos_semantics": "APM threshold predecessor virtual corner",
+        "hlos_write": "apmThresholdCorner ? apmThresholdCorner - 1 : 0xff",
+        "linux_evidence": "docs/power/reference/xiaomi-clock-osm.c:2431-2432"
+      },
+      {
+        "seq": 32,
+        "offset": "0x380",
+        "physical": [
+          "0x179c0380",
+          "0x179c2380"
+        ],
+        "initial": [
+          "0x0",
+          "0x0"
+        ],
+        "hlos_semantics": "PLL L value at MEM-ACC threshold virtual corner",
+        "hlos_write": "frequency_word & 0xff for each matching LUT row; final matching row wins",
+        "linux_evidence": "docs/power/reference/xiaomi-clock-osm.c:2087-2092"
+      },
+      {
+        "seq": 57,
+        "offset": "0x3e4",
+        "physical": [
+          "0x179c03e4",
+          "0x179c23e4"
+        ],
+        "initial": [
+          "0x10",
+          "0xb"
+        ],
+        "hlos_semantics": "Highest MEM-ACC threshold predecessor virtual corner",
+        "hlos_write": "memAccThresholdCorner ? memAccThresholdCorner - 1 : 0xff",
+        "linux_evidence": "docs/power/reference/xiaomi-clock-osm.c:2056-2059,2076-2077"
+      },
+      {
+        "seq": 58,
+        "offset": "0x3e8",
+        "physical": [
+          "0x179c03e8",
+          "0x179c23e8"
+        ],
+        "initial": [
+          "0x11",
+          "0xc"
+        ],
+        "hlos_semantics": "Highest MEM-ACC threshold virtual corner",
+        "hlos_write": "memAccThresholdCorner",
+        "linux_evidence": "docs/power/reference/xiaomi-clock-osm.c:2056-2059,2078-2079"
+      },
+      {
+        "seq": 72,
+        "offset": "0x420",
+        "physical": [
+          "0x179c0420",
+          "0x179c2420"
+        ],
+        "initial": [
+          "0x16",
+          "0x19"
+        ],
+        "hlos_semantics": "APM crossover virtual corner",
+        "hlos_write": "apmCrossoverCorner",
+        "linux_evidence": "docs/power/reference/xiaomi-clock-osm.c:2427-2428"
+      },
+      {
+        "seq": 76,
+        "offset": "0x430",
+        "physical": [
+          "0x179c0430",
+          "0x179c2430"
+        ],
+        "initial": [
+          "0x4b9",
+          "0x5b9"
+        ],
+        "hlos_semantics": "APM switch command with threshold corner",
+        "hlos_write": "0x39 | (apmThresholdCorner << 6)",
+        "linux_evidence": "docs/power/reference/xiaomi-clock-osm.c:2433-2434"
+      },
+      {
+        "seq": 88,
+        "offset": "0x460",
+        "physical": [
+          "0x179c0460",
+          "0x179c2460"
+        ],
+        "initial": [
+          "0x0",
+          "0x0"
+        ],
+        "hlos_semantics": "MEM-ACC crossover virtual corner",
+        "hlos_write": "memAccCrossoverCorner when nonzero",
+        "linux_evidence": "docs/power/reference/xiaomi-clock-osm.c:2042-2044"
+      }
+    ],
+    "scm_access_evidence": "docs/power/osm-tz-scm-audit.json",
+    "admission": "Read only the eight common SCM-allowed parameters for both disabled banks before any HLOS secure-parameter write. Require exact initial values including nonzero sentinels.",
+    "nonzero_sentinels": [
+      57,
+      58,
+      72,
+      76
+    ],
+    "limit": "A compatible initial-state fingerprint is not firmware authentication, a sequencer checksum, a PLL/PMIC liveness test, or proof that every prior firmware stage completed. Original stock bootchain remains a platform prerequisite.",
+    "reentry": "HLOS writes replace these parameters. A repeated/warm attempt cannot treat the cold fingerprint as persistent; reject or use an independently validated ownership protocol."
+  },
+  "v2_inherited_parameters": {
+    "seq55": {
+      "initial": [
+        "0x2c5ffd",
+        "0x2c5ffd"
+      ],
+      "meaning": "TZ-owned fixed value matching ACD register encodings; not a lower MEM-ACC virtual-corner threshold on this v2 image"
+    },
+    "seq56": {
+      "initial": [
+        "0x2f5ffd",
+        "0x2f5ffd"
+      ],
+      "meaning": "TZ-owned fixed value matching ACD register encodings; not a lower MEM-ACC virtual-corner threshold on this v2 image"
+    },
+    "consumer_semantics_limit": "Their exact v2 sequencer consumers were not decoded. The initial values and lack of SCM permission are established independently of the ACD-encoding interpretation.",
+    "scm_behavior": "Neither seq55 nor seq56 is in the common or conditional monitor allowlist. Generic Linux writes are silent no-ops on this firmware; production must retain the inherited values.",
+    "apm_threshold_hlos": {
+      "offset": "0x1048",
+      "linux_evidence": "docs/power/reference/xiaomi-clock-osm.c:2423-2425"
+    },
+    "mem_threshold_zero": {
+      "seq57": "0xff",
+      "seq58": "0x0",
+      "reason": "The pre-corner sentinel 0xff enters the dynamic-threshold branch even when threshold is zero. That branch first assigns threshold_vc[2]=pre and threshold_vc[3]=threshold. The later threshold_vc[0/1] adjustments concern the ignored seq55/56 only.",
+      "linux_evidence": "docs/power/reference/xiaomi-clock-osm.c:2056-2079",
+      "do_not": "Do not fall back to mem_acc_level_map[1] when memAccThresholdCorner is zero."
+    },
+    "obsolete_v1_checks": [
+      {
+        "seq": 13,
+        "old_power": "0x179d1364",
+        "v2_power": "0x179d1360"
+      },
+      {
+        "seq": 37,
+        "old": "0x179d143c",
+        "v2": [
+          "0x17911300",
+          "0x17811300"
+        ]
+      },
+      {
+        "seq": 49,
+        "old": "OSM base + SEQ28",
+        "v2": [
+          "0x179d4020",
+          "0x179d4020"
+        ]
+      }
+    ],
+    "supersedes": "Earlier v1-derived eleven-marker inference in osm-clock-firmware-audit.json and the original OSMInitialization.h. Those addresses also cannot be read via this firmware SCM IO service."
+  },
+  "post_table_writes": {
+    "function": "0x1c094d14",
+    "clock_requests": [
+      "gcc_glm_clk: 100000 kHz then enable",
+      "apcs_common_lmh_clk: 200000 kHz then enable"
+    ],
+    "fuse_read": "0x00784324",
+    "performance_selector": "((fuse >> 7) & 4) | ((fuse >> 11) & 3)",
+    "power_selector": "((fuse >> 9) & 2) | ((fuse & 0x100) != 0)",
+    "writes": [
+      {
+        "address": "0x179c2404",
+        "seq": 65,
+        "value": "u32_table_1c0ed680[performance_selector], or zero if selector == 7"
+      },
+      {
+        "address": "0x179c2410",
+        "seq": 68,
+        "value": "u32_table_1c0ed660[performance_selector], or zero if selector == 7"
+      },
+      {
+        "address": "0x179c0404",
+        "seq": 65,
+        "value": "u32_table_1c0ed6a8[power_selector], or zero if selector == 3"
+      },
+      {
+        "address": "0x179c0410",
+        "seq": 68,
+        "value": "u32_table_1c0ed69c[power_selector], or zero if selector == 3"
+      },
+      {
+        "address": "0x179c1050",
+        "value": "0x179d4020"
+      },
+      {
+        "address": "0x179c3050",
+        "value": "0x179d4020"
+      }
+    ],
+    "other_direct_osm_writer": {
+      "function": "0x1c03a390",
+      "target": "selected OSM bank + 0x1028 (SPM_CC_CTRL)",
+      "effect": "Per-CPU/cluster core-count control, no writes to the eight fingerprint registers."
+    },
+    "conclusion": "The examined post-table initializer and other direct-address writer do not overwrite the eight fingerprint parameters.",
+    "coverage_limit": "Direct-address listing search is not a proof that no indirect/generic SCM/sequencer write exists elsewhere. External HLOS writes and autonomous hardware execution are outside this static no-overwrite finding."
+  },
+  "completion_limit": {
+    "failure_after_fingerprint": "sub_1C094D14 resolves/programs/enables gcc_glm_clk and apcs_common_lmh_clk after all eight fingerprint parameters have been written. Its six checked operations can return failure; sub_1C094058 then returns 0xffffffff without setting its once byte.",
+    "ignored_return": "Caller 0x1c0664c8 invokes initializer at 0x1c0664e8 and discards its return at 0x1c0664ec (MOV W0,#1), ultimately returning zero. The outer bringup path therefore cannot be assumed to fail-stop on this initializer's reported failure.",
+    "independent_caller_audit": "docs/power/osm-tz-boot-chain-audit.json",
+    "candidate_tail_state": {
+      "physical": [
+        "0x179c1050",
+        "0x179c3050"
+      ],
+      "expected": "0x179d4020",
+      "store_instructions": [
+        "0x1c0950f4",
+        "0x1c0950f8"
+      ],
+      "not_written_by_earlier_descriptors": true,
+      "range_evidence": "All applicable v2 block writes are bank+[0x170,0x234), [0x300,0x47c), [0x500,0x800); all single-write destinations are explicitly listed above. None reaches bank+0x1050.",
+      "current_access_evidence": "Not in stock SCM IO allowlist. Pinned xiaomi-clock-osm.c accesses nearby bank+0x1048, but contains no bank+0x1050 direct access. Its 0x4000 device mapping does not prove nonsecure register permission.",
+      "admission": "Do not add a nonsecure direct read solely from the candidate's location. Require independent XPU/HLOS read-permission evidence first.",
+      "limit": "If readable, this distinguishes the examined post-table failure paths from the success tail. It still cannot authenticate the image or prove sequencer correctness."
+    }
+  }
+}

@@ -1,0 +1,87 @@
+diff --git a/pkg/apfswrite/spaceman.go b/pkg/apfswrite/spaceman.go
+index 44dbbdb..12b3b4b 100644
+--- a/pkg/apfswrite/spaceman.go
++++ b/pkg/apfswrite/spaceman.go
+@@ -383,7 +383,7 @@ func (b *builder) deviceGeometry(d *deviceLayout, which int) error {
+ // absolute block placement: device counts, internal-pool sizing, and the
+ // variable-array offsets inside the spaceman object. Because none of this needs
+ // the checkpoint layout, it can run before block positions are fixed — which is
+-// what lets the checkpoint data area be sized to the exact spaceman extent.
++// what lets the checkpoint data area budget for this extent and future growth.
+ func (b *builder) spacemanGeometry() error {
+ 	main := &b.sm.dev[sdMain]
+ 	tier2 := &b.sm.dev[sdTier2]
+diff --git a/pkg/apfswrite/writer.go b/pkg/apfswrite/writer.go
+index 9034c02..f025044 100644
+--- a/pkg/apfswrite/writer.go
++++ b/pkg/apfswrite/writer.go
+@@ -448,8 +448,8 @@ func buildContainer(w io.WriterAt, sizeBytes int64, opts *CreateOptions, planOnl
+ 
+ 	// Lay the container out, then write it. Geometry comes first (device counts,
+ 	// the internal pool and the spaceman extent); knowing the spaceman extent
+-	// lets the checkpoint data area be sized to exactly the ephemeral objects it
+-	// must hold. Then the fixed block positions, then the placement that depends
++	// lets the checkpoint data area reserve room for ephemeral-object growth
++	// across native transactions. Then the fixed block positions and dependent
+ 	// on them, then the write.
+ 	if err := b.spacemanGeometry(); err != nil {
+ 		return 0, err
+@@ -950,23 +950,27 @@ func (b volCtx) fsTreeNodeOID(j uint64) uint64 {
+ 	return b.fsTreeOverflowOID + j - volReservedNodeOIDs
+ }
+ 
+-// Checkpoint-area floors. fsck_apfs rejects a container whose checkpoint areas
+-// are smaller than eight blocks each, so both areas are reserved at no less than
+-// that even when the single static checkpoint uses fewer.
+-const (
+-	minCheckpointDescBlocks = 8
+-	minCheckpointDataBlocks = 8
+-)
++// CheckpointAreaBlocks reserves room for successive writable checkpoints. The
++// stable transaction must remain intact while its successor is built; free
++// queues can also grow beyond the formatter's initially empty roots. Eight data
++// blocks fit two initial four-block checkpoints, but cannot commit a successor
++// that needs five blocks (native APFS returns ENOSPC even on an empty volume).
++// Scale the reserve with the container, bounded for large images, and leave at
++// least four copies of the caller's ephemeral-object growth budget.
++func CheckpointAreaBlocks(blockCount uint64, ephemeralBlocks uint32) (desc, data uint32) {
++	desc = uint32(max(uint64(8), min(uint64(256), blockCount/4096)))
++	desc = (desc + 7) &^ 7
++	data = uint32(max(uint64(32), min(uint64(32768), blockCount/256)))
++	data = max(data, 4*ephemeralBlocks)
++	data = (data + 7) &^ 7
++	return
++}
+ 
+-// sizeCheckpointAreas sizes the two checkpoint areas. Because the whole
+-// container is one static checkpoint, each area is sized to exactly what that
+-// checkpoint writes, then raised to the format floor: the descriptor area holds
+-// the mapping block and the superblock copy (two blocks), and the data area
+-// holds the ephemeral objects — the reaper, the spaceman and the two free-queue
+-// roots — whose count spacemanGeometry recorded in totalBlockCount.
++// Reserve the advertised free queues' full node budgets, not just their empty
++// roots. This policy applies equally to new images and offline COW updates.
+ func (b *builder) sizeCheckpointAreas() {
+-	b.xpDescBlocks = minCheckpointDescBlocks
+-	b.xpDataBlocks = uint32(max(uint64(b.totalBlockCount), minCheckpointDataBlocks))
++	budget := b.totalBlockCount - 2 + uint32(b.ipFreeQueueNodeLimit()) + uint32(b.mainFreeQueueNodeLimit())
++	b.xpDescBlocks, b.xpDataBlocks = CheckpointAreaBlocks(b.mainBlockCount, budget)
+ }
+ 
+ // layoutFixedBlocks assigns every fixed block position, given the sized
+diff --git a/pkg/apfswrite/writer_golden_test.go b/pkg/apfswrite/writer_golden_test.go
+index 5295f78..e1e4319 100644
+--- a/pkg/apfswrite/writer_golden_test.go
++++ b/pkg/apfswrite/writer_golden_test.go
+@@ -53,7 +53,10 @@ func goldenImage(t *testing.T) []byte {
+ //
+ // Update it only alongside a deliberate change to the format the writer emits,
+ // and say in the commit message what moved and why.
+-const goldenSHA256 = "6c1f9df04bf699935fdad64c8d562d1123eaad9ed25ef566abc6095c360915c7"
++// Writable checkpoint reserves enlarge the data ring and move the following
++// metadata/payload addresses; the former eight-block ring could not commit a
++// growing native APFS transaction.
++const goldenSHA256 = "7221de2c4c0cd3051fb400303057a22a043eb613e3f162c45701a06db0db90fe"
+ 
+ func TestGoldenSingleVolumeImage(t *testing.T) {
+ 	sum := sha256.Sum256(goldenImage(t))

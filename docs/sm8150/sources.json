@@ -1,0 +1,41 @@
+{
+  "linux_tag": "v6.12",
+  "linux_commit": "adc218676eef25575469234709c2d87185ca223a",
+  "sources": [
+    {
+      "file": "linux-sm8150.dtsi",
+      "path": "arch/arm64/boot/dts/qcom/sm8150.dtsi",
+      "url": "https://raw.githubusercontent.com/torvalds/linux/adc218676eef25575469234709c2d87185ca223a/arch/arm64/boot/dts/qcom/sm8150.dtsi",
+      "sha256": "0fa3ce68e81494abd4ef3f00dc34538deaf5842076a614593678fb0c5dbd8fb6",
+      "bytes": 131210
+    },
+    {
+      "file": "linux-qcom_geni_serial.c",
+      "path": "drivers/tty/serial/qcom_geni_serial.c",
+      "url": "https://raw.githubusercontent.com/torvalds/linux/adc218676eef25575469234709c2d87185ca223a/drivers/tty/serial/qcom_geni_serial.c",
+      "sha256": "276ca42cea3e8f6b4c5964de2e7e22b580c328a95572391aa11b5a8d250615b8",
+      "bytes": 50786
+    },
+    {
+      "file": "linux-qcom-geni-se.c",
+      "path": "drivers/soc/qcom/qcom-geni-se.c",
+      "url": "https://raw.githubusercontent.com/torvalds/linux/adc218676eef25575469234709c2d87185ca223a/drivers/soc/qcom/qcom-geni-se.c",
+      "sha256": "cef40d1bafcd815fe13d1d2eb12c4c1b7ce8df7c07fc7edddb942dcb0ab10271",
+      "bytes": 29326
+    },
+    {
+      "file": "linux-geni-se.h",
+      "path": "include/linux/soc/qcom/geni-se.h",
+      "url": "https://raw.githubusercontent.com/torvalds/linux/adc218676eef25575469234709c2d87185ca223a/include/linux/soc/qcom/geni-se.h",
+      "sha256": "bc333bc0de0d77043bf6e5b276fb96a08b42004585d86a3bcc3cc612391c4092",
+      "bytes": 15995
+    },
+    {
+      "file": "linux-dwc3-qcom.c",
+      "path": "drivers/usb/dwc3/dwc3-qcom.c",
+      "url": "https://raw.githubusercontent.com/torvalds/linux/adc218676eef25575469234709c2d87185ca223a/drivers/usb/dwc3/dwc3-qcom.c",
+      "sha256": "bec5907a001c6d7c9c3d03102ef78405fdb0580461316413dc02cb1d7b25008a",
+      "bytes": 22713
+    }
+  ]
+}

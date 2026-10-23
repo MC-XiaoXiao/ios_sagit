@@ -1,0 +1,121 @@
+{
+  "hci_qca.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/bluetooth/hci_qca.c",
+    "ref": "v6.12",
+    "sha256": "8f99dabbab0a0165671b1f9a99d61beacd763a8e2503de151179951803f5a166",
+    "purpose": "reference only; excluded from driver build",
+    "license": "GPL-2.0"
+  },
+  "btqca.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/bluetooth/btqca.c",
+    "ref": "v6.12",
+    "sha256": "28022994d47c5e4a27b4f8118e9cd900c15daacccd90448541c9c6cfc1c28afa",
+    "purpose": "reference only; excluded from driver build",
+    "license": "GPL-2.0"
+  },
+  "btqca.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/bluetooth/btqca.h",
+    "ref": "v6.12",
+    "sha256": "9e30a8e8c4e67a4e7e414e46b2b86455de3a3bae93cfd5d0d0a8fb62a7d3f79f",
+    "purpose": "reference only; excluded from driver build",
+    "license": "GPL-2.0"
+  },
+  "msm8998.dtsi": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/arch/arm64/boot/dts/qcom/msm8998.dtsi",
+    "ref": "v6.12",
+    "sha256": "a939e05d08e3f239877d300801fbc7afce6617fc24347f94683238fe65793392",
+    "purpose": "reference only; excluded from driver build",
+    "license": "GPL-2.0"
+  },
+  "GPL-2.0.txt": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/LICENSES/preferred/GPL-2.0",
+    "ref": "v6.12",
+    "sha256": "f6b78c087c3ebdf0f3c13415070dd480a3f35d8fc76f3d02180a407c1c812f79",
+    "purpose": "reference only; excluded from driver build",
+    "license": "GPL-2.0"
+  },
+  "BSD-2-Clause.txt": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/LICENSES/preferred/BSD-2-Clause",
+    "ref": "v6.12",
+    "sha256": "6313108c23efffa36948f8b2cff1560a5935373b527b0e1a837cc77e6ed1bacd",
+    "purpose": "reference only; excluded from driver build",
+    "license": "BSD-2-Clause"
+  },
+  "qualcomm-bluetooth.yaml": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/Documentation/devicetree/bindings/net/bluetooth/qualcomm-bluetooth.yaml",
+    "ref": "v6.12",
+    "sha256": "3efc82a3a1f5650fbfe05673fa09a97c3cff403c60a0e62c592e5f827bb23015",
+    "purpose": "reference only; excluded from driver build",
+    "license": "GPL-2.0 OR BSD-2-Clause"
+  },
+  "msm8998-mtp.dtsi": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v5.15/arch/arm64/boot/dts/qcom/msm8998-mtp.dtsi",
+    "ref": "v5.15",
+    "sha256": "42d5826071adf4fe5946e62a86d450cdb37f35ddfa565363cfd1391a2451dc1a",
+    "purpose": "reference only; excluded from driver build",
+    "license": "GPL-2.0"
+  },
+  "apple-serial/IOSerialDriverSync.h": {
+    "url": "https://raw.githubusercontent.com/apple-oss-distributions/IOSerialFamily/1c12ee3d9ec665bb53d0151644408d25e54fe012/IOSerialFamily.kmodproj/IOSerialDriverSync.h",
+    "ref": "1c12ee3d9ec665bb53d0151644408d25e54fe012",
+    "sha256": "4c5d90958321b72e83cafad37e67bdf24ff6f2608b63cbc6c0b4642787e94c20",
+    "license": "APSL-1.1",
+    "purpose": "Apple serial framework reference; excluded from driver compilation"
+  },
+  "apple-serial/IOSerialStreamSync.h": {
+    "url": "https://raw.githubusercontent.com/apple-oss-distributions/IOSerialFamily/1c12ee3d9ec665bb53d0151644408d25e54fe012/IOSerialFamily.kmodproj/IOSerialStreamSync.h",
+    "ref": "1c12ee3d9ec665bb53d0151644408d25e54fe012",
+    "sha256": "1889df9bb80580f25f73c28b5b42754f2e29129e629fce29e6cf4b21f77ea973",
+    "license": "APSL-1.1",
+    "purpose": "Apple serial framework reference; excluded from driver compilation"
+  },
+  "apple-serial/IOSerialStreamSync.cpp": {
+    "url": "https://raw.githubusercontent.com/apple-oss-distributions/IOSerialFamily/1c12ee3d9ec665bb53d0151644408d25e54fe012/IOSerialFamily.kmodproj/IOSerialStreamSync.cpp",
+    "ref": "1c12ee3d9ec665bb53d0151644408d25e54fe012",
+    "sha256": "c1b1db6903b405de6c6bcec89d597aa0ce665906a12a1487a85c61f46e837437",
+    "license": "APSL-1.1",
+    "purpose": "Apple serial framework reference; excluded from driver compilation"
+  },
+  "apple-serial/IOSerialBSDClient.cpp": {
+    "url": "https://raw.githubusercontent.com/apple-oss-distributions/IOSerialFamily/1c12ee3d9ec665bb53d0151644408d25e54fe012/IOSerialFamily.kmodproj/IOSerialBSDClient.cpp",
+    "ref": "1c12ee3d9ec665bb53d0151644408d25e54fe012",
+    "sha256": "c6a6804ffe01b7da36f885400c50f80cf50e5d24185c3cba3dfdfb987a019d27",
+    "license": "APSL-1.1",
+    "purpose": "Apple serial framework reference; excluded from driver compilation"
+  },
+  "apple-serial/IOSerialKeys.h": {
+    "url": "https://raw.githubusercontent.com/apple-oss-distributions/IOSerialFamily/1c12ee3d9ec665bb53d0151644408d25e54fe012/IOSerialFamily.kmodproj/IOSerialKeys.h",
+    "ref": "1c12ee3d9ec665bb53d0151644408d25e54fe012",
+    "sha256": "3aa937194759f239de7fb471eb044e99a79b3bc44b4a0875896d3350131f5733",
+    "license": "APSL-1.1",
+    "purpose": "Apple serial framework reference; excluded from driver compilation"
+  },
+  "apple-serial/ioss.h": {
+    "url": "https://raw.githubusercontent.com/apple-oss-distributions/IOSerialFamily/1c12ee3d9ec665bb53d0151644408d25e54fe012/IOSerialFamily.kmodproj/ioss.h",
+    "ref": "1c12ee3d9ec665bb53d0151644408d25e54fe012",
+    "sha256": "e63d229b8db32523cb6eceaaab12b2b772a3bce90418f3c5d6a3511b25116d6b",
+    "license": "APSL-1.1",
+    "purpose": "Apple serial framework reference; excluded from driver compilation"
+  },
+  "apple-serial/IORS232SerialStreamSync.h": {
+    "url": "https://raw.githubusercontent.com/apple-oss-distributions/IOSerialFamily/1c12ee3d9ec665bb53d0151644408d25e54fe012/IOSerialFamily.kmodproj/IORS232SerialStreamSync.h",
+    "ref": "1c12ee3d9ec665bb53d0151644408d25e54fe012",
+    "sha256": "f21b6d1f9b77cab76fab98d390a45ef56a25c3cb82e88f3886037193a8d10e6c",
+    "license": "APSL-1.1",
+    "purpose": "Apple serial framework reference; excluded from driver compilation"
+  },
+  "apple-serial/APPLE_LICENSE": {
+    "url": "https://raw.githubusercontent.com/apple-oss-distributions/IOSerialFamily/1c12ee3d9ec665bb53d0151644408d25e54fe012/APPLE_LICENSE",
+    "ref": "1c12ee3d9ec665bb53d0151644408d25e54fe012",
+    "sha256": "359a21ed59e82096455398ea10c5bc8c3ff28e7acf7935b77751d70e3630fc95",
+    "license": "APSL-1.1",
+    "purpose": "upstream license"
+  },
+  "msm_serial.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/tty/serial/msm_serial.c",
+    "ref": "v6.12",
+    "sha256": "6c1f10150427e93de533b217ddc58d7b4facba53e8b1be8df8b581e27241db16",
+    "license": "GPL-2.0",
+    "purpose": "UARTDM reference only; excluded from driver compilation"
+  }
+}

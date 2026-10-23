@@ -1,0 +1,665 @@
+--- a/pexpert/arm/pe_serial.c
++++ b/pexpert/arm/pe_serial.c
+@@ -28,9 +28,13 @@
+ #include <arm64/proc_reg.h>
+ #include <pexpert/arm/protos.h>
+ #include <kern/sched_prim.h>
++#include <pexpert/arm/usb_console.h>
+ #ifdef PL011_UART
+ #include <pexpert/arm/pl011.h>
+ #endif /* PL011_UART */
++#ifdef QCOM_GENI_UART
++#include <pexpert/arm/qcom_geni_console.h>
++#endif
+ #if HIBERNATION
+ #include <machine/pal_hibernate.h>
+ #endif /* HIBERNATION */
+@@ -50,6 +54,9 @@
+ 
+ 	/* Read a single byte from serial. */
+ 	uint8_t (*receive_data) (void);
++
++	/* Optional atomic, nonblocking receive; returns -1 if busy or empty. */
++	int (*try_receive) (void);
+ 
+ 	/* Enables IRQs from this device. */
+ 	void (*enable_irq) (void);
+@@ -115,6 +122,32 @@
+  */
+ static bool disable_uart_irq = 0;
+ 
++/* USB is a late, optional transport. Early output stays in bounded RAM until
++ * the resource-owning CDC driver has enumerated and a host opens the port. */
++static struct usb_console_buffer usb_console;
++
++unsigned ml_usb_console_read_tx(void *bytes, unsigned count);
++unsigned ml_usb_console_write_rx(const void *bytes, unsigned count);
++void ml_usb_console_set_enabled(bool enabled);
++
++unsigned
++ml_usb_console_read_tx(void *bytes, unsigned count)
++{
++	return usb_console_read_tx(&usb_console, bytes, count);
++}
++
++unsigned
++ml_usb_console_write_rx(const void *bytes, unsigned count)
++{
++	return usb_console_write_rx(&usb_console, bytes, count);
++}
++
++void
++ml_usb_console_set_enabled(bool enabled)
++{
++	usb_console_online(&usb_console, enabled);
++}
++
+ static void
+ register_serial_functions(struct pe_serial_functions *fns)
+ {
+@@ -175,7 +208,7 @@
+ static inline void
+ serial_poll(void)
+ {
+-#if __arm64__ && !defined(ARM64_BOARD_CONFIG_SDM835)
++#if __arm64__ && !defined(QCOM_ARM64)
+ 	if (!uart_hibernation) {
+ 		__builtin_arm_wfe();
+ 	}
+@@ -799,11 +832,18 @@
+ #ifdef QCOM_UARTDM
+ #include "pe_serial_uartdm.inc"
+ #endif
++#ifdef QCOM_GENI_UART
++#include "pe_serial_geni.inc"
++#endif
+ 
+ static const struct {
+ 	const char *const compatible;
+ 	void(*const setup)(const DeviceTreeNode * const devicetree_node);
+ } driver_setup_functions[] = {
++#ifdef QCOM_GENI_UART
++	{ .compatible = "qcom,geni-debug-uart", .setup = qcom_geni_setup },
++	{ .compatible = "qcom,geni-uart", .setup = qcom_geni_setup },
++#endif
+ #ifdef QCOM_UARTDM
+ 	{ .compatible = "qcom,msm-uartdm-v1.4", .setup = qcom_uartdm_setup },
+ 	{ .compatible = "qcom,msm-uartdm", .setup = qcom_uartdm_setup },
+@@ -904,15 +944,19 @@
+ 			fns = fns->next;
+ 		}
+ 
+-		return gPESF != NULL;
+-	}
++		return gPESF != NULL || usb_console.selected;
++	}
++
++	int usb_mode = 0;
++	PE_parse_boot_argn("qcom.usb-cdc", &usb_mode, sizeof(usb_mode));
++	usb_console_select(&usb_console, usb_mode == 1);
+ 
+ 	soc_base = pe_arm_get_soc_base_phys();
+ 
+-#if !defined(ARM64_BOARD_CONFIG_SDM835)
++#if !defined(QCOM_ARM64)
+ 	if (soc_base == 0) {
+ 		uart_initted = true;
+-		return 0;
++		return usb_console.selected;
+ 	}
+ #else
+ 	(void)soc_base;
+@@ -924,7 +968,8 @@
+ 	uint32_t phandle;
+ 	if (!get_serial_device_phandle(&phandle)) {
+ 		// XNU has not been configured to use a serial device; return early.
+-		return 0;
++		uart_initted = true;
++		return usb_console.selected;
+ 	}
+ 
+ 	// Look at the "compatible" string in the devicetree node referenced by the
+@@ -977,7 +1022,7 @@
+ 
+ 	/* Complete. */
+ 	uart_initted = true;
+-	return gPESF != NULL;
++	return gPESF != NULL || usb_console.selected;
+ }
+ 
+ /**
+@@ -1093,6 +1138,9 @@
+ MARK_AS_HIBERNATE_TEXT void
+ uart_putc_options(char c, bool poll)
+ {
++	if (serial_do_transmit) {
++		usb_console_putc(&usb_console, (uint8_t)c);
++	}
+ 	struct pe_serial_functions *fns = gPESF;
+ 
+ 	while (fns != NULL) {
+@@ -1122,6 +1170,9 @@
+ uart_puts_force_poll(
+ 	const char *str)
+ {
++	for (const char *p = str; *p; ++p) {
++		usb_console_putc(&usb_console, (uint8_t)*p);
++	}
+ 	struct pe_serial_functions *fns = gPESF;
+ 	while (fns != NULL) {
+ 		uart_puts_force_poll_device(str, fns);
+@@ -1155,11 +1206,22 @@
+ int
+ uart_getc(void)
+ {
++	int usb_character = usb_console_getc(&usb_console);
++	if (usb_character >= 0) {
++		serial_do_transmit = 1;
++		return usb_character;
++	}
+ 	struct pe_serial_functions *fns = gPESF;
+ 	while (fns != NULL) {
+-		if (fns->receive_ready()) {
++		int character = -1;
++		if (fns->try_receive) {
++			character = fns->try_receive();
++		} else if (fns->receive_ready()) {
++			character = (int)fns->receive_data();
++		}
++		if (character >= 0) {
+ 			serial_do_transmit = 1;
+-			return (int)fns->receive_data();
++			return character;
+ 		}
+ 		fns = fns->next;
+ 	}
+--- a/pexpert/pexpert/arm/protos.h
++++ b/pexpert/pexpert/arm/protos.h
+@@ -48,7 +48,8 @@
+ 	SERIAL_DOCKCHANNEL=0x2,
+ 	SERIAL_PL011_UART=0x4,
+ 	SERIAL_DCC_UART=0x8,
+-	SERIAL_QCOM_UARTDM=0x10
++	SERIAL_QCOM_UARTDM=0x10,
++	SERIAL_QCOM_GENI=0x20
+ } serial_device_t;
+ 
+ kern_return_t serial_irq_enable(serial_device_t device);
+--- a/config/Private.arm64.exports
++++ b/config/Private.arm64.exports
+@@ -140,3 +140,6 @@
+ _serial_irq_enable
+ _serial_irq_action
+ _serial_irq_filter
++_ml_usb_console_read_tx
++_ml_usb_console_write_rx
++_ml_usb_console_set_enabled
+--- /dev/null
++++ b/pexpert/arm/pe_serial_geni.inc
+@@ -0,0 +1,110 @@
++/* SPDX-License-Identifier: BSD-2-Clause */
++static qcom_geni_console_t geni_console;
++static vm_offset_t geni_base;
++static unsigned char geni_lock;
++
++/* Console, kprintf and debugger entry can overlap, including on this CPU.
++ * Drop a contended operation instead of waiting for an interrupted owner. */
++static int
++geni_try_lock(void)
++{
++	return !__atomic_test_and_set(&geni_lock, __ATOMIC_ACQUIRE);
++}
++
++static void
++geni_unlock(void)
++{
++	__atomic_clear(&geni_lock, __ATOMIC_RELEASE);
++}
++
++static uint32_t
++geni_read32(void *context, uint32_t offset)
++{
++	return ml_io_read32((uintptr_t)context + offset);
++}
++
++static void
++geni_write32(void *context, uint32_t offset, uint32_t value)
++{
++	ml_io_write32((uintptr_t)context + offset, value);
++	__builtin_arm_dsb(DSB_SY);
++}
++
++static void
++geni_init(void)
++{
++	if (geni_try_lock()) {
++		(void)qcom_geni_console_init(&geni_console, (void *)geni_base, geni_read32, geni_write32);
++		geni_unlock();
++	}
++}
++
++static unsigned
++geni_transmit_ready(void)
++{
++	/* putc owns its bounded hardware wait; never hang the serial multiplexer. */
++	return 1;
++}
++
++static void
++geni_transmit_data(uint8_t c)
++{
++	if (geni_try_lock()) {
++		(void)qcom_geni_console_putc(&geni_console, c);
++		geni_unlock();
++	}
++}
++
++static int
++geni_receive_character(void)
++{
++	int character = -1;
++	if (geni_try_lock()) {
++		character = qcom_geni_console_getc(&geni_console);
++		geni_unlock();
++	}
++	return character;
++}
++
++static struct pe_serial_functions geni_serial_functions = {
++	.init = geni_init,
++	.transmit_ready = geni_transmit_ready,
++	.transmit_data = geni_transmit_data,
++	.try_receive = geni_receive_character,
++	.device = SERIAL_QCOM_GENI
++};
++
++static void
++qcom_geni_setup(const DeviceTreeNode *node)
++{
++	const uint32_t *handoff;
++	const uint64_t *reg;
++	const char *status;
++	unsigned int size;
++	/* Explicit board contract: firmware quiesced its UART user and retained
++	 * powered clocks, pins, microcode and the configured baud rate. */
++	if (SecureDTGetProperty(node, "qcom,geni-console-handoff", (const void **)&handoff, &size) != kSuccess ||
++	    size != 4 || *handoff != 1) {
++		return;
++	}
++	if (SecureDTGetProperty(node, "status", (const void **)&status, &size) == kSuccess &&
++	    !((size == 5 && !memcmp(status, "okay", 5)) || (size == 3 && !memcmp(status, "ok", 3)))) {
++		return;
++	}
++	if (SecureDTGetProperty(node, "reg", (const void **)&reg, &size) != kSuccess || size != 16) {
++		return;
++	}
++	uint64_t address, bytes;
++	memcpy(&address, reg, 8);
++	memcpy(&bytes, reg + 1, 8);
++	uint64_t base = pe_arm_get_soc_base_phys();
++	if ((address & 3) || bytes < 0x1000 || bytes > 0x10000 ||
++	    address >= (1ULL << 40) || base >= (1ULL << 40) - address ||
++	    bytes > (1ULL << 40) - base - address) {
++		return;
++	}
++	geni_base = ml_io_map(base + address, bytes);
++	if (geni_base) {
++		register_serial_functions(&geni_serial_functions);
++	}
++}
+--- /dev/null
++++ b/pexpert/pexpert/arm/usb_console.h
+@@ -0,0 +1,130 @@
++/* SPDX-License-Identifier: BSD-2-Clause */
++#ifndef _PEXPERT_ARM_USB_CONSOLE_H_
++#define _PEXPERT_ARM_USB_CONSOLE_H_
++
++#include <stdint.h>
++#include <stdbool.h>
++
++/*
++ * Bounded console storage, independent of IOKit and USB DMA. A producer never
++ * waits for a consumer, an interrupt, a lock owner or a connected host.
++ * Try-locking also makes nested panic output safe: contention drops bytes.
++ * Every access to ring state is protected by the same acquire/release lock.
++ */
++#define USB_CONSOLE_TX_BYTES 65536u
++#define USB_CONSOLE_RX_BYTES 4096u
++struct usb_console_buffer {
++	unsigned char lock;
++	bool selected, online;
++	uint32_t generation, rx_generation;
++	uint32_t tx_read, tx_write, rx_read, rx_write;
++	uint64_t tx_dropped;
++	uint8_t tx[USB_CONSOLE_TX_BYTES], rx[USB_CONSOLE_RX_BYTES];
++};
++
++static inline bool
++usb_console_lock(struct usb_console_buffer *b)
++{
++	return !__atomic_test_and_set(&b->lock, __ATOMIC_ACQUIRE);
++}
++
++static inline void
++usb_console_unlock(struct usb_console_buffer *b)
++{
++	__atomic_clear(&b->lock, __ATOMIC_RELEASE);
++}
++
++static inline void
++usb_console_select(struct usb_console_buffer *b, bool selected)
++{
++	/* Called once on the boot CPU, before console and USB workers exist. */
++	b->selected = selected;
++}
++
++static inline void
++usb_console_online(struct usb_console_buffer *b, bool online)
++{
++	/*
++	 * Publish the transport flag independently: disconnect must revoke RX
++	 * even when it races a console writer. RX indices remain lock protected.
++	 */
++	__atomic_store_n(&b->online, online, __ATOMIC_RELEASE);
++	if (!online) {
++		__atomic_add_fetch(&b->generation, 1u, __ATOMIC_RELEASE);
++	}
++}
++
++static inline void
++usb_console_putc(struct usb_console_buffer *b, uint8_t c)
++{
++	if (!b->selected || !usb_console_lock(b)) {
++		return;
++	}
++	if ((uint32_t)(b->tx_write - b->tx_read) < USB_CONSOLE_TX_BYTES) {
++		b->tx[b->tx_write++ & (USB_CONSOLE_TX_BYTES - 1)] = c;
++	} else {
++		b->tx_dropped++;
++	}
++	usb_console_unlock(b);
++}
++
++static inline unsigned
++usb_console_read_tx(struct usb_console_buffer *b, void *bytes, unsigned count)
++{
++	if (!bytes || !count || !b->selected ||
++	    !__atomic_load_n(&b->online, __ATOMIC_ACQUIRE) || !usb_console_lock(b)) {
++		return 0;
++	}
++	uint8_t *out = (uint8_t *)bytes;
++	unsigned done = 0;
++	while (done < count && b->tx_read != b->tx_write) {
++		out[done++] = b->tx[b->tx_read++ & (USB_CONSOLE_TX_BYTES - 1)];
++	}
++	usb_console_unlock(b);
++	return done;
++}
++
++static inline unsigned
++usb_console_write_rx(struct usb_console_buffer *b, const void *bytes, unsigned count)
++{
++	if (!bytes || !count || !b->selected ||
++	    !__atomic_load_n(&b->online, __ATOMIC_ACQUIRE) || !usb_console_lock(b)) {
++		return 0;
++	}
++	const uint8_t *in = (const uint8_t *)bytes;
++	unsigned done = 0;
++	uint32_t generation = __atomic_load_n(&b->generation, __ATOMIC_ACQUIRE);
++	if (b->rx_generation != generation) {
++		b->rx_read = b->rx_write;
++		b->rx_generation = generation;
++	}
++	if (__atomic_load_n(&b->online, __ATOMIC_ACQUIRE)) {
++		while (done < count && (uint32_t)(b->rx_write - b->rx_read) < USB_CONSOLE_RX_BYTES) {
++			b->rx[b->rx_write++ & (USB_CONSOLE_RX_BYTES - 1)] = in[done++];
++		}
++	}
++	usb_console_unlock(b);
++	return done;
++}
++
++static inline int
++usb_console_getc(struct usb_console_buffer *b)
++{
++	if (!b->selected || !usb_console_lock(b)) {
++		return -1;
++	}
++	int c = -1;
++	uint32_t generation = __atomic_load_n(&b->generation, __ATOMIC_ACQUIRE);
++	if (b->rx_generation != generation) {
++		b->rx_read = b->rx_write;
++		b->rx_generation = generation;
++	}
++	if (!__atomic_load_n(&b->online, __ATOMIC_ACQUIRE)) {
++		b->rx_read = b->rx_write;
++	} else if (b->rx_read != b->rx_write) {
++		c = b->rx[b->rx_read++ & (USB_CONSOLE_RX_BYTES - 1)];
++	}
++	usb_console_unlock(b);
++	return c;
++}
++#endif
+--- /dev/null
++++ b/pexpert/pexpert/arm/qcom_geni_console.h
+@@ -0,0 +1,220 @@
++/*
++ * SPDX-License-Identifier: BSD-2-Clause
++ * Polled, retained-firmware GENI UART console.
++ *
++ * Register facts: Linux v6.12 qcom_geni_serial.c, qcom-geni-se.c, geni-se.h;
++ * pinned provenance is recorded in docs/sm8150/sources.json.
++ *
++ * Caller must own the engine exclusively, serialize calls, and provide ordered
++ * 32-bit device MMIO callbacks. Firmware must retain the UART microcode, clocks,
++ * pinmux and baud rate. This backend never programs clocks, pins, DMA or baud.
++ * Only FIFO mode, 8N1, and four little-endian bytes per FIFO word are admitted.
++ * A register read cannot establish board ownership or make unpowered MMIO safe.
++ */
++#ifndef _PEXPERT_QCOM_GENI_CONSOLE_H
++#define _PEXPERT_QCOM_GENI_CONSOLE_H
++#include <stdint.h>
++
++#define QGC_STATUS             0x040U
++#define QGC_M_CLK_CFG          0x048U
++#define QGC_S_CLK_CFG          0x04cU
++#define QGC_IF_DISABLE         0x064U
++#define QGC_FW_REVISION        0x068U
++#define QGC_BYTE_GRAN          0x254U
++#define QGC_DMA_MODE           0x258U
++#define QGC_TX_TRANS_CFG       0x25cU
++#define QGC_TX_PACK0           0x260U
++#define QGC_TX_PACK1           0x264U
++#define QGC_TX_WORD_LEN        0x268U
++#define QGC_TX_STOP_BITS       0x26cU
++#define QGC_TX_TRANS_LEN       0x270U
++#define QGC_RX_TRANS_CFG       0x280U
++#define QGC_RX_PACK0           0x284U
++#define QGC_RX_PACK1           0x288U
++#define QGC_RX_WORD_LEN        0x28cU
++#define QGC_RX_STALE_CNT       0x294U
++#define QGC_TX_PARITY          0x2a4U
++#define QGC_RX_PARITY          0x2a8U
++#define QGC_M_CMD              0x600U
++#define QGC_M_CMD_CTRL         0x604U
++#define QGC_M_IRQ_STATUS       0x610U
++#define QGC_M_IRQ_EN           0x614U
++#define QGC_M_IRQ_CLEAR        0x618U
++#define QGC_S_CMD              0x630U
++#define QGC_S_IRQ_STATUS       0x640U
++#define QGC_S_IRQ_EN           0x644U
++#define QGC_S_IRQ_CLEAR        0x648U
++#define QGC_TX_FIFO            0x700U
++#define QGC_RX_FIFO            0x780U
++#define QGC_TX_FIFO_STATUS     0x800U
++#define QGC_RX_FIFO_STATUS     0x804U
++#define QGC_GSI_EVENT_EN       0xe18U
++#define QGC_HW_PARAM_TX        0xe24U
++#define QGC_HW_PARAM_RX        0xe28U
++
++#define QGC_MAIN_ACTIVE        (1U << 0)
++#define QGC_SECONDARY_ACTIVE   (1U << 12)
++#define QGC_START_UART         (1U << 27)
++#define QGC_CMD_DONE           (1U << 0)
++#define QGC_CMD_ABORTED        (1U << 5)
++#define QGC_ABORT              (1U << 1)
++#define QGC_TX_ERRORS          ((7U << 1) | (3U << 28))
++#define QGC_RX_ERRORS          ((7U << 1) | (15U << 9) | (3U << 24))
++#define QGC_RX_EVENTS          ((1U << 26) | (1U << 27))
++#define QGC_RX_LAST            (1U << 31)
++#define QGC_FIFO_WORDS         0x01ffffffU
++#define QGC_PACK_4X8_0         0x0004380eU
++#define QGC_PACK_4X8_1         0x000c3e0eU
++#ifndef QGC_POLL_LIMIT
++#define QGC_POLL_LIMIT         100000U
++#endif
++
++typedef uint32_t (*qcom_geni_read32_t)(void *, uint32_t);
++typedef void (*qcom_geni_write32_t)(void *, uint32_t, uint32_t);
++typedef struct qcom_geni_console {
++    void *context;
++    qcom_geni_read32_t read32;
++    qcom_geni_write32_t write32;
++    uint32_t rx_word;
++    unsigned int rx_count;
++    unsigned int rx_depth;
++    unsigned int enabled;
++} qcom_geni_console_t;
++
++static inline uint32_t qgc_read(qcom_geni_console_t *s, uint32_t offset)
++{
++    return s->read32(s->context, offset);
++}
++static inline void qgc_write(qcom_geni_console_t *s, uint32_t offset, uint32_t value)
++{
++    s->write32(s->context, offset, value);
++}
++static inline int qgc_wait(qcom_geni_console_t *s, uint32_t offset,
++    uint32_t mask, uint32_t expected)
++{
++    unsigned int i;
++    for (i = 0; i < QGC_POLL_LIMIT; ++i)
++        if ((qgc_read(s, offset) & mask) == expected) return 1;
++    return 0;
++}
++
++static inline int qcom_geni_console_init(qcom_geni_console_t *s, void *context,
++    qcom_geni_read32_t read32, qcom_geni_write32_t write32)
++{
++    uint32_t tx_hw, rx_hw, status, mclk, sclk;
++    if (!s) return 0;
++    s->enabled = 0;
++    s->rx_count = 0;
++    s->rx_word = 0;
++    s->rx_depth = 0;
++    s->context = context;
++    s->read32 = read32;
++    s->write32 = write32;
++    if (!read32 || !write32) return 0;
++    /* Validate the entire retained configuration before any register write. */
++    if (((qgc_read(s, QGC_FW_REVISION) >> 8) & 0xffU) != 2 ||
++        (qgc_read(s, QGC_IF_DISABLE) & 1U) ||
++        (qgc_read(s, QGC_DMA_MODE) & 1U) ||
++        qgc_read(s, QGC_GSI_EVENT_EN) != 0 ||
++        qgc_read(s, QGC_BYTE_GRAN) != 0 ||
++        qgc_read(s, QGC_TX_PACK0) != QGC_PACK_4X8_0 ||
++        qgc_read(s, QGC_RX_PACK0) != QGC_PACK_4X8_0 ||
++        qgc_read(s, QGC_TX_PACK1) != QGC_PACK_4X8_1 ||
++        qgc_read(s, QGC_RX_PACK1) != QGC_PACK_4X8_1 ||
++        (qgc_read(s, QGC_TX_WORD_LEN) & 0x3ffU) != 8 ||
++        (qgc_read(s, QGC_RX_WORD_LEN) & 0x3ffU) != 8 ||
++        (qgc_read(s, QGC_TX_TRANS_CFG) & 1U) ||
++        (qgc_read(s, QGC_RX_TRANS_CFG) & 8U) ||
++        (qgc_read(s, QGC_TX_PARITY) & 1U) ||
++        (qgc_read(s, QGC_RX_PARITY) & 1U) ||
++        (qgc_read(s, QGC_TX_STOP_BITS) & 3U) ||
++        !(qgc_read(s, QGC_RX_STALE_CNT) & 0xffffffU)) return 0;
++    mclk = qgc_read(s, QGC_M_CLK_CFG);
++    sclk = qgc_read(s, QGC_S_CLK_CFG);
++    if (!(mclk & 1U) || !(sclk & 1U) ||
++        !(mclk & 0xfff0U) || !(sclk & 0xfff0U)) return 0;
++    tx_hw = qgc_read(s, QGC_HW_PARAM_TX);
++    rx_hw = qgc_read(s, QGC_HW_PARAM_RX);
++    if (((tx_hw >> 24) & 0x3fU) != 32 ||
++        ((rx_hw >> 24) & 0x3fU) != 32 ||
++        !((tx_hw >> 16) & 0x3fU) || !((rx_hw >> 16) & 0x3fU)) return 0;
++    status = qgc_read(s, QGC_STATUS);
++    if ((status & QGC_MAIN_ACTIVE) || qgc_read(s, QGC_TX_FIFO_STATUS) != 0 ||
++        ((status & QGC_SECONDARY_ACTIVE) &&
++        (qgc_read(s, QGC_S_CMD) >> 27) != 1)) return 0;
++    s->rx_depth = (rx_hw >> 16) & 0x3fU;
++    qgc_write(s, QGC_M_IRQ_EN, 0);
++    qgc_write(s, QGC_S_IRQ_EN, 0);
++    qgc_write(s, QGC_M_IRQ_CLEAR, QGC_CMD_DONE | QGC_TX_ERRORS | QGC_CMD_ABORTED);
++    if (!(status & QGC_SECONDARY_ACTIVE))
++        qgc_write(s, QGC_S_CMD, QGC_START_UART);
++    s->enabled = 1;
++    return 1;
++}
++
++static inline int qcom_geni_console_putc(qcom_geni_console_t *s, uint8_t c)
++{
++    unsigned int i;
++    if (!s || !s->enabled) return 0;
++    if (!qgc_wait(s, QGC_STATUS, QGC_MAIN_ACTIVE, 0) ||
++        !qgc_wait(s, QGC_TX_FIFO_STATUS, 0x0fffffffU, 0)) {
++        s->enabled = 0;
++        return 0;
++    }
++    qgc_write(s, QGC_M_IRQ_CLEAR, QGC_CMD_DONE | QGC_TX_ERRORS | QGC_CMD_ABORTED);
++    qgc_write(s, QGC_TX_TRANS_LEN, 1);
++    qgc_write(s, QGC_M_CMD, QGC_START_UART);
++    qgc_write(s, QGC_TX_FIFO, c);
++    for (i = 0; i < QGC_POLL_LIMIT; ++i) {
++        uint32_t irq = qgc_read(s, QGC_M_IRQ_STATUS);
++        if (irq & QGC_TX_ERRORS) break;
++        if (irq & QGC_CMD_DONE) {
++            qgc_write(s, QGC_M_IRQ_CLEAR, QGC_CMD_DONE);
++            return 1;
++        }
++    }
++    /* Abort only our own command. Retire this console on timeout or error. */
++    qgc_write(s, QGC_M_CMD_CTRL, QGC_ABORT);
++    (void)qgc_wait(s, QGC_M_IRQ_STATUS, QGC_CMD_ABORTED, QGC_CMD_ABORTED);
++    qgc_write(s, QGC_M_IRQ_CLEAR, QGC_CMD_DONE | QGC_TX_ERRORS | QGC_CMD_ABORTED);
++    s->enabled = 0;
++    return 0;
++}
++
++static inline unsigned int qcom_geni_console_rx_ready(qcom_geni_console_t *s)
++{
++    uint32_t irq, status, words, bytes;
++    if (!s || !s->enabled) return 0;
++    if (s->rx_count) return 1;
++    irq = qgc_read(s, QGC_S_IRQ_STATUS);
++    if (irq & QGC_RX_ERRORS) {
++        qgc_write(s, QGC_S_IRQ_CLEAR, irq & (QGC_RX_ERRORS | QGC_RX_EVENTS));
++        s->enabled = 0; // Never expose corrupted bytes as debugger input.
++        return 0;
++    }
++    status = qgc_read(s, QGC_RX_FIFO_STATUS);
++    words = status & QGC_FIFO_WORDS;
++    if (!words) return 0;
++    if (words > s->rx_depth) { s->enabled = 0; return 0; }
++    bytes = 4;
++    if (words == 1 && (status & QGC_RX_LAST)) {
++        bytes = (status >> 28) & 7U;
++        if (!bytes) bytes = 4; // Zero encodes a full final word.
++        if (bytes > 4) { s->enabled = 0; return 0; }
++    }
++    s->rx_word = qgc_read(s, QGC_RX_FIFO);
++    s->rx_count = bytes;
++    qgc_write(s, QGC_S_IRQ_CLEAR, irq & QGC_RX_EVENTS);
++    return 1;
++}
++
++static inline int qcom_geni_console_getc(qcom_geni_console_t *s)
++{
++    int result;
++    if (!qcom_geni_console_rx_ready(s)) return -1;
++    result = s->rx_word & 0xffU;
++    s->rx_word >>= 8;
++    --s->rx_count;
++    return result;
++}
++#endif

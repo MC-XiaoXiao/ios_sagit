@@ -1,0 +1,130 @@
+diff --git a/pkg/apfswrite/writer.go b/pkg/apfswrite/writer.go
+index e578731..e74f9d9 100644
+--- a/pkg/apfswrite/writer.go
++++ b/pkg/apfswrite/writer.go
+@@ -20,6 +20,9 @@ import (
+ // a 4096-byte-block, normalization-sensitive-by-default, case-insensitive
+ // volume named "untitled" with deterministic default UUIDs.
+ type CreateOptions struct {
++	// MinimumFreeBytes requires this much actual shared free space after metadata.
++	MinimumFreeBytes uint64
++
+ 	// TargetVersion selects native filename creation admission. Zero means the
+ 	// documented macOS27 profile on every host; it never inspects the receiver.
+ 	// Explicit macOS15/26/27 targets are supported. Existing-image readers do not
+@@ -319,6 +322,18 @@ var (
+ // If sizeBytes is 0 the image is sized automatically to fit its contents, with a
+ // floor of 512 KiB (the smallest container this writer produces).
+ func CreateContainer(w io.WriterAt, sizeBytes int64, opts *CreateOptions) error {
++	_, err := buildContainer(w, sizeBytes, opts, false)
++	return err
++}
++
++// PlanContainer validates the complete tree and space-manager layout without
++// reading file data or writing output. Zero size chooses the automatic bound.
++// Callers can search block-aligned sizes for a minimum before adding headroom.
++func PlanContainer(sizeBytes int64, opts *CreateOptions) (int64, error) {
++	return buildContainer(nil, sizeBytes, opts, true)
++}
++
++func buildContainer(w io.WriterAt, sizeBytes int64, opts *CreateOptions, planOnly bool) (int64, error) {
+ 	if opts == nil {
+ 		opts = &CreateOptions{}
+ 	}
+@@ -345,7 +360,7 @@ func CreateContainer(w io.WriterAt, sizeBytes int64, opts *CreateOptions) error
+ 		b.blocksize = nxDefaultBlockSize
+ 	}
+ 	if b.blocksize != nxDefaultBlockSize {
+-		return fmt.Errorf("apfswrite: unsupported block size %d: only %d is supported, "+
++		return 0, fmt.Errorf("apfswrite: unsupported block size %d: only %d is supported, "+
+ 			"because this writer does not lay out a sound container at any other size",
+ 			b.blocksize, nxDefaultBlockSize)
+ 	}
+@@ -366,13 +381,13 @@ func CreateContainer(w io.WriterAt, sizeBytes int64, opts *CreateOptions) error
+ 
+ 	specs, err := volumeSpecs(opts)
+ 	if err != nil {
+-		return err
++		return 0, err
+ 	}
+ 	if err := validateCreationNames(opts.TargetVersion, specs); err != nil {
+-		return err
++		return 0, err
+ 	}
+ 	if err := b.setVolumes(specs); err != nil {
+-		return err
++		return 0, err
+ 	}
+ 
+ 	// The container has a floor of 512 KiB.
+@@ -388,12 +403,12 @@ func CreateContainer(w io.WriterAt, sizeBytes int64, opts *CreateOptions) error
+ 			v := b.vol(i)
+ 			blocks := v.fsTreeNodes + v.extentrefNodes + v.omapNodes + v.fileDataBlocks + v.snapBlocks
+ 			if blocks > maxBlocks-payload {
+-				return fmt.Errorf("apfswrite: aggregate payload exceeds image offset range")
++				return 0, fmt.Errorf("apfswrite: aggregate payload exceeds image offset range")
+ 			}
+ 			payload += blocks
+ 		}
+ 		if payload/8+2048 > maxBlocks-payload {
+-			return fmt.Errorf("apfswrite: automatic image size exceeds offset range")
++			return 0, fmt.Errorf("apfswrite: automatic image size exceeds offset range")
+ 		}
+ 		needBlocks := payload + payload/8 + 2048
+ 		sizeBytes = max(int64(needBlocks)*int64(b.blocksize), minBytes)
+@@ -403,14 +418,14 @@ func CreateContainer(w io.WriterAt, sizeBytes int64, opts *CreateOptions) error
+ 	// volumes asked for would be rejected on mount, so it is refused here with
+ 	// the size it would need.
+ 	if allowed := maxVolumes(uint64(sizeBytes)); uint32(len(b.vols)) > allowed {
+-		return fmt.Errorf("apfswrite: %d volumes need a container of at least %d MiB; %d MiB allows %d",
++		return 0, fmt.Errorf("apfswrite: %d volumes need a container of at least %d MiB; %d MiB allows %d",
+ 			len(b.vols), uint64(len(b.vols))*512, uint64(sizeBytes)/(1024*1024), allowed)
+ 	}
+ 
+ 	b.mainBlockCount = uint64(sizeBytes) / uint64(b.blocksize)
+ 	b.blockCount = b.mainBlockCount
+ 	if b.mainBlockCount*uint64(b.blocksize) < minBytes {
+-		return fmt.Errorf("apfswrite: container too small (%d bytes); minimum is %d", sizeBytes, minBytes)
++		return 0, fmt.Errorf("apfswrite: container too small (%d bytes); minimum is %d", sizeBytes, minBytes)
+ 	}
+ 
+ 	// Lay the container out, then write it. Geometry comes first (device counts,
+@@ -419,15 +434,22 @@ func CreateContainer(w io.WriterAt, sizeBytes int64, opts *CreateOptions) error
+ 	// must hold. Then the fixed block positions, then the placement that depends
+ 	// on them, then the write.
+ 	if err := b.spacemanGeometry(); err != nil {
+-		return err
++		return 0, err
+ 	}
+ 	b.sizeCheckpointAreas()
+ 	b.layoutFixedBlocks()
+ 	if err := b.spacemanPlacement(); err != nil {
+-		return err
++		return 0, err
++	}
++	freeBytes := (b.mainBlockCount - uint64(b.deviceUsedBlocks(&b.sm.dev[sdMain]))) * uint64(b.blocksize)
++	if freeBytes < opts.MinimumFreeBytes {
++		return 0, fmt.Errorf("apfswrite: insufficient shared free space: %d < %d", freeBytes, opts.MinimumFreeBytes)
++	}
++	if planOnly {
++		return int64(b.mainBlockCount * uint64(b.blocksize)), nil
+ 	}
+ 	if err := b.assemble(); err != nil {
+-		return err
++		return 0, err
+ 	}
+ 
+ 	// Only the blocks actually used are written, so grow the image to its full
+@@ -435,10 +457,10 @@ func CreateContainer(w io.WriterAt, sizeBytes int64, opts *CreateOptions) error
+ 	total := b.mainBlockCount * uint64(b.blocksize)
+ 	if total > 0 {
+ 		if _, err := w.WriteAt([]byte{0}, int64(total)-1); err != nil {
+-			return fmt.Errorf("apfswrite: sizing image: %w", err)
++			return 0, fmt.Errorf("apfswrite: sizing image: %w", err)
+ 		}
+ 	}
+-	return nil
++	return int64(total), nil
+ }
+ 
+ // CreateContainerFromDir walks srcDir into an Entry tree — regular files,

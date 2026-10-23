@@ -1,0 +1,919 @@
+{
+  "scope": "Static analysis only; no driver edits, build, hardware connection, device test, or interaction with another task/process. Existing captures are historical evidence.",
+  "reviewed_at_utc": "2026-10-19T05:04:09.307968+00:00",
+  "workspace": "/home/xxiao/Projects/MI6_iOS",
+  "workspace_versions": {
+    "drivers/gpu/QcomGPU/Info.plist": "1.123.0",
+    "drivers/gpu/QcomMTL/Info.plist": "0.90.0",
+    "drivers/display/QcomDisplay/Info.plist": "1.0.13"
+  },
+  "files": {
+    "drivers/gpu/QcomGPU/Info.plist": {
+      "sha256": "0e4d818b5c74ef703b0c35e143d139097ae3cd4f4d5e74578de9eea88f3cc5b3",
+      "bytes": 2696
+    },
+    "drivers/gpu/QcomMTL/Info.plist": {
+      "sha256": "386664b64f4acdfdf334c8dbe687914619fadc8147de3013fbed374ae9b1a330",
+      "bytes": 2511
+    },
+    "drivers/display/QcomDisplay/Info.plist": {
+      "sha256": "849a6eb819370386f4c4a2d10936a487329adf3d72cdebc236ef3c6d3404be49",
+      "bytes": 1982
+    },
+    "drivers/gpu/QcomMTL/QcomMTL.mm": {
+      "sha256": "ea0fe5db88c6042353597f8874393b2fddb651c2e6d6acc40ffbeef880c2e53a",
+      "bytes": 325060
+    },
+    "drivers/gpu/QcomMTL/MetalBatch.h": {
+      "sha256": "51fa6246463fdb026166b73dd2c6b192e1d7ec9d86c351275fe21b215e6c9ce8",
+      "bytes": 2932
+    },
+    "drivers/gpu/QcomMTL/MetalSync.h": {
+      "sha256": "25eb9ada1cd0fca11078d2ea94e701af9f783e6c04c8c8ac42b99f680cfc5204",
+      "bytes": 1500
+    },
+    "drivers/gpu/QcomGPU/QcomGPUNative.cpp": {
+      "sha256": "09d240c7dfbb1245bab87a8a129b17eb4e592440aad6425eecc2aaf1ab2d3225",
+      "bytes": 113402
+    },
+    "drivers/gpu/QcomGPU/QcomGPUNative.h": {
+      "sha256": "0ee5532b417efa5b91e97c4aa4b511b4772e9a48db5b526d1eb5ac6f9c5060e5",
+      "bytes": 4747
+    },
+    "drivers/gpu/QcomGPU/QcomGPUHardware.cpp": {
+      "sha256": "3040ab2f9274e83a57e3fdd9f974ead1d10c96c3485f18af445a65f9654fe81d",
+      "bytes": 80280
+    },
+    "drivers/gpu/QcomGPU/AdrenoSubmit.h": {
+      "sha256": "bb0922962d60fb210794323aeff77ef2201a5e292723398f66b4360a0dcb642a",
+      "bytes": 26839
+    },
+    "drivers/gpu/QcomGPU/AdrenoPipeline.h": {
+      "sha256": "b4be238e3a92d8c2c4b9a25d5fb0a7f3c28e05b1e56561e1ac9b0a7e4c727569",
+      "bytes": 69054
+    },
+    "drivers/gpu/QcomGPU/QcomGPUMapper.cpp": {
+      "sha256": "921082328d7255c0f9e3fb7700c95da30ac48e83a405597addc9ecf8f92f20ba",
+      "bytes": 36618
+    },
+    "drivers/include/IOKit/graphics/IOSurface.h": {
+      "sha256": "156826efa6bbe68569cae2b33ff86a7b41c1d154b08b84f791397bc9945e2621",
+      "bytes": 1890
+    },
+    "drivers/include/DisplayFrameStatistics.h": {
+      "sha256": "d3b550ce0307806aa05ef42e5a8a02d36f4078cb7dd7f7c6b150703d5db9af2a",
+      "bytes": 554
+    },
+    "drivers/display/QcomDisplay/QcomDisplay.cpp": {
+      "sha256": "88ef51e87501b72522d3e3e9c7a764f37ca7fd2b317f093265707c3c23200373",
+      "bytes": 67529
+    },
+    "docs/gpu/ui-render-handoff.json": {
+      "sha256": "59c6d33d7b476476145d4962c05d2e1db88533bece0f0d1a72b48cb5865b37e1",
+      "bytes": 70020
+    },
+    "docs/gpu/hello-animation-optimization-priorities.md": {
+      "sha256": "8f56dadca20802b7c7ee28d3eca050da868a9df615cf5b8ab6b81f793ec9bced",
+      "bytes": 36645
+    },
+    "build/gpu-runtime/ui-producer-fence/native-surface-fence-abi.json": {
+      "sha256": "082cf17dd723fa6b17fcbae3c65e353c8579ca8a07cdfe4b101424fe327212b3",
+      "bytes": 1701
+    },
+    "build/gpu-runtime/ui-producer-fence-source.json": {
+      "sha256": "dc4cfa18f73bbf9fdd0518bc83899b108ba3898ba5b2803d48c2d16ffad5900e",
+      "bytes": 32807
+    },
+    "build/gpu-runtime/ui-producer-fence/hardware-evidence.json": {
+      "sha256": "484400735c8436278e241902252661ba076f45bd8510233490c60f36e88903f8",
+      "bytes": 3096
+    },
+    "build/gpu-runtime/ui-present-pipeline/critical-path-findings.json": {
+      "sha256": "4cb4bd21db1aa1815818e7396dec1d3998db3374061df8b93fda863511b010d7",
+      "bytes": 4380
+    },
+    "build/gpu-runtime/ui-present-pipeline/hardware-evidence.json": {
+      "sha256": "5ac0e2c10352a4c712b4ff3cccebc2a4c21204a09e0f83473d70f7b33bb79579",
+      "bytes": 1547
+    },
+    "build/gpu-runtime/ui-present-pipeline/withdrawal.json": {
+      "sha256": "7cbe57ebb7f8420e89716cee1c8d29fc1d4e6a23736a52acc3af99df3ff8a3d2",
+      "bytes": 582
+    },
+    "build/gpu-runtime/round-130-targeted/uart.txt": {
+      "sha256": "faedc8f5c8329e2db53c51fd3e4112b26b3efaf00240931486f32640c871760a",
+      "bytes": 32310
+    },
+    "build/gpu-runtime/round-131-restored/report.json": {
+      "sha256": "c3e401d14ab2fb9b00585aa24bed7d668a75836073e46d2bf8c8c91f6ce6d9f6",
+      "bytes": 352288
+    },
+    "build/gpu-runtime/round-131-health/report.json": {
+      "sha256": "b9666c35959eefda52c4fb11af377c0196365b645a55bd6036edd86c2a5d3ece",
+      "bytes": 25204
+    },
+    "build/gpu-runtime/round-131-health/uart.txt": {
+      "sha256": "f0b3c94fabfcb02efb419c5120a800c524a3f8ecf2c3ce69c3124a82babac7f4",
+      "bytes": 1246
+    },
+    "build/gpu-runtime/ui-present-pipeline/0xfffffff005a9e1dc.json": {
+      "sha256": "748bc4b221c2fe95792ff859045b6c77656482c8009be0f4a5fca722f51e14c7",
+      "bytes": 9932
+    },
+    "build/gpu-runtime/ui-producer-fence/0xfffffff005a9e0c0.json": {
+      "sha256": "10000f713a43b8a4e2eb31c944790314d27525f1ef6fa42caf0b160d6e2d6bcd",
+      "bytes": 613
+    },
+    "build/gpu-runtime/ui-producer-fence/0xfffffff005a9e608.json": {
+      "sha256": "48c1820a869fe0e542d4bb39ff851ddae8658d39e337e3964d4f1db830024870",
+      "bytes": 14992
+    },
+    "build/gpu-runtime/round-129/performance.json": {
+      "sha256": "b8a3d9dd7959169e1a43d2c505548ca48416ad82e8a4606a93135cd36cb94019",
+      "bytes": 69170
+    },
+    "build/gpu-runtime/round-130/performance.json": {
+      "sha256": "b29710dedd3d30e25ab08a168ee91cc752d0369cb16a4e459a8a26cdd6501cc7",
+      "bytes": 75829
+    },
+    "build/gpu-runtime/ui-present-pipeline/restoration-evidence.json": {
+      "sha256": "091930d7d0d7a973f3280c899fd50518110014f0875072fbd985860d29c5ee6a",
+      "bytes": 1314
+    }
+  },
+  "anchors": {
+    "inline_compute": {
+      "path": "drivers/gpu/QcomMTL/QcomMTL.mm",
+      "lines": [
+        3740
+      ],
+      "text": "- (void)setBytes:(const void *)bytes"
+    },
+    "inline_vertex": {
+      "path": "drivers/gpu/QcomMTL/QcomMTL.mm",
+      "lines": [
+        4107
+      ],
+      "text": "- (void)setVertexBytes:(const void *)bytes"
+    },
+    "inline_fragment": {
+      "path": "drivers/gpu/QcomMTL/QcomMTL.mm",
+      "lines": [
+        4139
+      ],
+      "text": "- (void)setFragmentBytes:(const void *)bytes"
+    },
+    "fence_cpu_completion": {
+      "path": "drivers/gpu/QcomMTL/QcomMTL.mm",
+      "lines": [
+        3431,
+        3471
+      ],
+      "text": "status=[_queue waitNative:_queue->_completions.issued()"
+    },
+    "surface_prepare": {
+      "path": "drivers/gpu/QcomGPU/QcomGPUNative.cpp",
+      "lines": [
+        323
+      ],
+      "text": "IOReturn QcomGPUNativeSubmission::prepareSurfaceFences"
+    },
+    "surface_ready": {
+      "path": "drivers/gpu/QcomGPU/QcomGPUNative.cpp",
+      "lines": [
+        352
+      ],
+      "text": "bool QcomGPUNativeSubmission::surfaceFencesReady"
+    },
+    "surface_complete": {
+      "path": "drivers/gpu/QcomGPU/QcomGPUNative.cpp",
+      "lines": [
+        952
+      ],
+      "text": "bool QcomGPU::completeNative"
+    },
+    "dispatch": {
+      "path": "drivers/gpu/QcomGPU/QcomGPUHardware.cpp",
+      "lines": [
+        1032
+      ],
+      "text": "bool QcomGPU::dispatchNextJob"
+    },
+    "global_prefix_retire": {
+      "path": "drivers/gpu/QcomGPU/QcomGPUHardware.cpp",
+      "lines": [
+        1180
+      ],
+      "text": "while (fJobCount && fJobs[fJobHead].hardwareDone)"
+    },
+    "pending_timeout": {
+      "path": "drivers/gpu/QcomGPU/QcomGPUHardware.cpp",
+      "lines": [
+        1209
+      ],
+      "text": "now>=job.admitted && now-job.admitted>=10*fTimeoutTicks"
+    },
+    "AS_full_root": {
+      "path": "drivers/gpu/QcomGPU/QcomGPUMapper.cpp",
+      "lines": [
+        364
+      ],
+      "text": "buffer=buffer->backing();"
+    },
+    "primitive_preflush": {
+      "path": "drivers/gpu/QcomGPU/AdrenoPipeline.h",
+      "lines": [
+        699
+      ],
+      "text": "flush(4,2);GPU::Shader::Draw part=d;"
+    },
+    "raster_restore": {
+      "path": "drivers/gpu/QcomGPU/AdrenoPipeline.h",
+      "lines": [
+        736
+      ],
+      "text": "restore(); event(25);event(24);"
+    },
+    "ready_callback": {
+      "path": "drivers/gpu/QcomGPU/QcomGPUNative.cpp",
+      "lines": [
+        321
+      ],
+      "text": "void surfaceFenceReady(void *,UInt64,IOSurface *,IOReturn) {}"
+    },
+    "wrapper_gate": {
+      "path": "drivers/gpu/QcomGPU/QcomGPUNative.cpp",
+      "lines": [
+        1017
+      ],
+      "text": "return fGate->runAction(nativeQueryAction"
+    }
+  },
+  "existing_capture_extracts": {
+    "129": {
+      "displayed_frames": {
+        "samples": 443,
+        "span_s": 27.790972083333333,
+        "fps": 15.904445467924964,
+        "p50_ms": 49.92276041666666,
+        "p95_ms": 100.39953125,
+        "max_ms": 1267.3111458333333,
+        "baseline_displayed": 0,
+        "final_frame_age_ms": 17414.605
+      },
+      "GPU_execution_delta": {
+        "samples": 1113,
+        "alwayson_ticks": 193161051,
+        "mean_ms": 9.039057867250675,
+        "actual_CP_hz": 595988423.9892647
+      },
+      "compositor_timing_delta": {
+        "preflight": {
+          "samples": 1113,
+          "total_ticks": 44153992,
+          "mean_ms": 2.0662058250973345
+        },
+        "ib_acquire": {
+          "samples": 1113,
+          "total_ticks": 636403,
+          "mean_ms": 0.029780763327343515
+        },
+        "encoding": {
+          "samples": 1113,
+          "total_ticks": 28540572,
+          "mean_ms": 1.3355688454627135
+        },
+        "cache_prepare": {
+          "samples": 1113,
+          "total_ticks": 1094358,
+          "mean_ms": 0.05121097259658581
+        },
+        "address_space": {
+          "samples": 1113,
+          "total_ticks": 64325945,
+          "mean_ms": 3.0101613974992514
+        },
+        "fence_prepare": {
+          "samples": 1113,
+          "total_ticks": 523537,
+          "mean_ms": 0.02449914832285115
+        },
+        "admission_dispatch": {
+          "samples": 1113,
+          "total_ticks": 24816308,
+          "mean_ms": 1.1612902440850554
+        },
+        "admission_total": {
+          "samples": 1113,
+          "total_ticks": 163022307,
+          "mean_ms": 7.628701847484276
+        },
+        "queue_wait": {
+          "samples": 1113,
+          "total_ticks": 413518826,
+          "mean_ms": 19.35079861111111
+        },
+        "kick": {
+          "samples": 1113,
+          "total_ticks": 16173751,
+          "mean_ms": 0.7568579196615753
+        },
+        "poll_validation": {
+          "samples": 1825,
+          "total_ticks": 53481198,
+          "mean_ms": 1.526289897260274
+        },
+        "run_observed": {
+          "samples": 1113,
+          "total_ticks": 345739753,
+          "mean_ms": 16.17904654275232
+        },
+        "retire_cleanup": {
+          "samples": 1113,
+          "total_ticks": 22528249,
+          "mean_ms": 1.0542194987271638
+        },
+        "native_publish": {
+          "samples": 1113,
+          "total_ticks": 1938973,
+          "mean_ms": 0.09073510968852949
+        },
+        "retire_address_space": {
+          "samples": 1113,
+          "total_ticks": 17297798,
+          "mean_ms": 0.8094582023060797
+        },
+        "retire_coherence": {
+          "samples": 1113,
+          "total_ticks": 1171085,
+          "mean_ms": 0.054801446915244086
+        },
+        "retire_surface_publish": {
+          "samples": 1113,
+          "total_ticks": 105484,
+          "mean_ms": 0.004936171009284217
+        },
+        "retire_resources": {
+          "samples": 1113,
+          "total_ticks": 299055,
+          "mean_ms": 0.013994412623539983
+        },
+        "retire_pools": {
+          "samples": 1113,
+          "total_ticks": 3612152,
+          "mean_ms": 0.1690322701407607
+        },
+        "snapshot_map": {
+          "samples": 1113,
+          "total_ticks": 26642,
+          "mean_ms": 0.001246724318658281
+        },
+        "snapshot_copy": {
+          "samples": 1113,
+          "total_ticks": 1880120,
+          "mean_ms": 0.08798105720275531
+        },
+        "snapshot_validate": {
+          "samples": 1113,
+          "total_ticks": 51349,
+          "mean_ms": 0.002402899445941899
+        },
+        "preflight_retire": {
+          "samples": 1113,
+          "total_ticks": 41291518,
+          "mean_ms": 1.932255072626535
+        },
+        "preflight_ticket": {
+          "samples": 1113,
+          "total_ticks": 242798,
+          "mean_ms": 0.011361841120095837
+        },
+        "index_acquire": {
+          "samples": 648,
+          "total_ticks": 4788646,
+          "mean_ms": 0.3848898855452675
+        },
+        "index_snapshot": {
+          "samples": 4743,
+          "total_ticks": 911997,
+          "mean_ms": 0.010014725648323845
+        },
+        "retire_indices": {
+          "samples": 1113,
+          "total_ticks": 3054978,
+          "mean_ms": 0.14295906334231806
+        },
+        "retire_commands": {
+          "samples": 1113,
+          "total_ticks": 247633,
+          "mean_ms": 0.011588097109913148
+        },
+        "wrapper_submit": {
+          "samples": 1113,
+          "total_ticks": 208275527,
+          "mean_ms": 9.746346539008686
+        },
+        "wrapper_resource_create": {
+          "samples": 854,
+          "total_ticks": 83398954,
+          "mean_ms": 5.086294520882123
+        },
+        "wrapper_resource_delete": {
+          "samples": 852,
+          "total_ticks": 35848237,
+          "mean_ms": 2.1914268510367765
+        },
+        "wrapper_shmem_create": {
+          "samples": 25,
+          "total_ticks": 81205,
+          "mean_ms": 0.16917708333333334
+        },
+        "wrapper_program": {
+          "samples": 25,
+          "total_ticks": 93735,
+          "mean_ms": 0.19528125
+        },
+        "native_resource_free": {
+          "samples": 852,
+          "total_ticks": 35510135,
+          "mean_ms": 2.1707584482589986
+        }
+      },
+      "address_space_timing_delta": {
+        "build_lock_wait": {
+          "samples": 1113,
+          "total_ticks": 17746,
+          "mean_us": 0.8304320155735251,
+          "sampled": 0,
+          "nested": 0
+        },
+        "build_health": {
+          "samples": 1113,
+          "total_ticks": 18606163,
+          "mean_us": 870.6837282869122,
+          "sampled": 0,
+          "nested": 0
+        },
+        "table_allocate": {
+          "samples": 172,
+          "total_ticks": 6566,
+          "mean_us": 1.988250968992248,
+          "sampled": 1,
+          "nested": 1
+        },
+        "table_zero": {
+          "samples": 172,
+          "total_ticks": 4655,
+          "mean_us": 1.4095809108527133,
+          "sampled": 1,
+          "nested": 1
+        },
+        "physical_source": {
+          "samples": 24182,
+          "total_ticks": 410938,
+          "mean_us": 0.8850806729523338,
+          "sampled": 1,
+          "nested": 1
+        },
+        "firmware_map": {
+          "samples": 1113,
+          "total_ticks": 463658,
+          "mean_us": 21.697083707696915,
+          "sampled": 0,
+          "nested": 0
+        },
+        "buffer_map": {
+          "samples": 1113,
+          "total_ticks": 44510545,
+          "mean_us": 2082.8908823749625,
+          "sampled": 0,
+          "nested": 0
+        },
+        "publish": {
+          "samples": 1113,
+          "total_ticks": 3033,
+          "mean_us": 0.14193059299191374,
+          "sampled": 0,
+          "nested": 0
+        },
+        "build_tlb": {
+          "samples": 1113,
+          "total_ticks": 106256,
+          "mean_us": 4.972297094938605,
+          "sampled": 0,
+          "nested": 0
+        },
+        "retire_lock_wait": {
+          "samples": 1113,
+          "total_ticks": 4813,
+          "mean_us": 0.22522648996705602,
+          "sampled": 0,
+          "nested": 0
+        },
+        "retire_health": {
+          "samples": 1113,
+          "total_ticks": 16978918,
+          "mean_us": 794.5360699311171,
+          "sampled": 0,
+          "nested": 0
+        },
+        "retire_tlb": {
+          "samples": 1113,
+          "total_ticks": 50258,
+          "mean_us": 2.35184561245882,
+          "sampled": 0,
+          "nested": 0
+        },
+        "table_release": {
+          "samples": 1113,
+          "total_ticks": 153306,
+          "mean_us": 7.174022911051213,
+          "sampled": 0,
+          "nested": 0
+        }
+      },
+      "live_snapshot_span_s": 89.73932307291666,
+      "live_compositor_work_delta": {
+        "submitted": 1113,
+        "completed": 1113,
+        "failed": 0,
+        "shader_operations": 7766,
+        "copy_bytes": 0,
+        "inplace_primitives": 2096,
+        "scratch_bytes": 1847296,
+        "scratch_avoided_bytes": 3744411648,
+        "ib_count": 1938,
+        "ib_bytes": 127008768,
+        "ib_command_words": 13523576
+      },
+      "live_indirect_buffers_per_submitted_job": 1.7412398921832883,
+      "cross_property_epoch_caution": "GPU metrics, AS metrics and work counts come from each explicit gated live sample. Display uses a separate query and mach_continuous_time; live samples use mach_absolute_time. No CPU/GPU elapsed-per-display-frame normalization. No phase isolation of fade/writing."
+    },
+    "130": {
+      "displayed_frames": {
+        "samples": 826,
+        "span_s": 50.327617708333335,
+        "fps": 16.392589944971608,
+        "p50_ms": 49.91385416666667,
+        "p95_ms": 100.1034375,
+        "max_ms": 1183.7801041666667,
+        "baseline_displayed": 0,
+        "final_frame_age_ms": 22206.23
+      },
+      "GPU_execution_delta": {
+        "samples": 2007,
+        "alwayson_ticks": 344903606,
+        "mean_ms": 8.950537857083543,
+        "actual_CP_hz": 595988383.0034529
+      },
+      "compositor_timing_delta": {
+        "preflight": {
+          "samples": 2007,
+          "total_ticks": 79580968,
+          "mean_ms": 2.0651928666334496
+        },
+        "ib_acquire": {
+          "samples": 2007,
+          "total_ticks": 776411,
+          "mean_ms": 0.02014851665005813
+        },
+        "encoding": {
+          "samples": 2007,
+          "total_ticks": 51228069,
+          "mean_ms": 1.3294113571250623
+        },
+        "cache_prepare": {
+          "samples": 2007,
+          "total_ticks": 2021077,
+          "mean_ms": 0.052448643290151135
+        },
+        "address_space": {
+          "samples": 2007,
+          "total_ticks": 115295175,
+          "mean_ms": 2.9920064928998507
+        },
+        "fence_prepare": {
+          "samples": 2007,
+          "total_ticks": 935557,
+          "mean_ms": 0.02427848883075901
+        },
+        "admission_dispatch": {
+          "samples": 2007,
+          "total_ticks": 44854211,
+          "mean_ms": 1.164004396072081
+        },
+        "admission_total": {
+          "samples": 2007,
+          "total_ticks": 292715778,
+          "mean_ms": 7.596219948928749
+        },
+        "queue_wait": {
+          "samples": 2007,
+          "total_ticks": 666239274,
+          "mean_ms": 17.289467955904335
+        },
+        "kick": {
+          "samples": 2007,
+          "total_ticks": 28845686,
+          "mean_ms": 0.7485697454741738
+        },
+        "poll_validation": {
+          "samples": 3215,
+          "total_ticks": 93470029,
+          "mean_ms": 1.5142241608346292
+        },
+        "run_observed": {
+          "samples": 2007,
+          "total_ticks": 636579840,
+          "mean_ms": 16.519780767314398
+        },
+        "retire_cleanup": {
+          "samples": 2007,
+          "total_ticks": 40061665,
+          "mean_ms": 1.0396338077146654
+        },
+        "native_publish": {
+          "samples": 2007,
+          "total_ticks": 3553120,
+          "mean_ms": 0.09220644411227372
+        },
+        "retire_address_space": {
+          "samples": 2007,
+          "total_ticks": 30972138,
+          "mean_ms": 0.8037529583956154
+        },
+        "retire_coherence": {
+          "samples": 2007,
+          "total_ticks": 2152506,
+          "mean_ms": 0.055859336073741904
+        },
+        "retire_surface_publish": {
+          "samples": 2007,
+          "total_ticks": 188568,
+          "mean_ms": 0.004893497757847533
+        },
+        "retire_resources": {
+          "samples": 2007,
+          "total_ticks": 545494,
+          "mean_ms": 0.014156026822786912
+        },
+        "retire_pools": {
+          "samples": 2007,
+          "total_ticks": 6129587,
+          "mean_ms": 0.1590679237252948
+        },
+        "snapshot_map": {
+          "samples": 2007,
+          "total_ticks": 51042,
+          "mean_ms": 0.0013245827105132038
+        },
+        "snapshot_copy": {
+          "samples": 2007,
+          "total_ticks": 3339306,
+          "mean_ms": 0.08665779147982063
+        },
+        "snapshot_validate": {
+          "samples": 2007,
+          "total_ticks": 89740,
+          "mean_ms": 0.002328828267729613
+        },
+        "preflight_retire": {
+          "samples": 2007,
+          "total_ticks": 74447726,
+          "mean_ms": 1.9319809313237004
+        },
+        "preflight_ticket": {
+          "samples": 2007,
+          "total_ticks": 456788,
+          "mean_ms": 0.011854031722305265
+        },
+        "index_acquire": {
+          "samples": 1162,
+          "total_ticks": 7207039,
+          "mean_ms": 0.32303495230923696
+        },
+        "index_snapshot": {
+          "samples": 8751,
+          "total_ticks": 1706601,
+          "mean_ms": 0.01015717846531825
+        },
+        "retire_indices": {
+          "samples": 2007,
+          "total_ticks": 5219537,
+          "mean_ms": 0.13545136293805016
+        },
+        "retire_commands": {
+          "samples": 2007,
+          "total_ticks": 470114,
+          "mean_ms": 0.012199852599236007
+        },
+        "wrapper_submit": {
+          "samples": 2007,
+          "total_ticks": 373656928,
+          "mean_ms": 9.696710679289154
+        },
+        "wrapper_resource_create": {
+          "samples": 1566,
+          "total_ticks": 150590423,
+          "mean_ms": 5.008461812207322
+        },
+        "wrapper_resource_delete": {
+          "samples": 1564,
+          "total_ticks": 65508918,
+          "mean_ms": 2.1815363251278774
+        },
+        "wrapper_shmem_create": {
+          "samples": 25,
+          "total_ticks": 76500,
+          "mean_ms": 0.159375
+        },
+        "wrapper_program": {
+          "samples": 25,
+          "total_ticks": 96009,
+          "mean_ms": 0.20001875
+        },
+        "native_resource_free": {
+          "samples": 1564,
+          "total_ticks": 64872308,
+          "mean_ms": 2.160336343776641
+        }
+      },
+      "address_space_timing_delta": {
+        "build_lock_wait": {
+          "samples": 2007,
+          "total_ticks": 31801,
+          "mean_us": 0.8252626224879589,
+          "sampled": 0,
+          "nested": 0
+        },
+        "build_health": {
+          "samples": 2007,
+          "total_ticks": 33406771,
+          "mean_us": 866.9337267480486,
+          "sampled": 0,
+          "nested": 0
+        },
+        "table_allocate": {
+          "samples": 328,
+          "total_ticks": 21573,
+          "mean_us": 3.4255907012195124,
+          "sampled": 1,
+          "nested": 1
+        },
+        "table_zero": {
+          "samples": 328,
+          "total_ticks": 8362,
+          "mean_us": 1.327807418699187,
+          "sampled": 1,
+          "nested": 1
+        },
+        "physical_source": {
+          "samples": 50915,
+          "total_ticks": 883144,
+          "mean_us": 0.9034092768994075,
+          "sampled": 1,
+          "nested": 1
+        },
+        "firmware_map": {
+          "samples": 2007,
+          "total_ticks": 851299,
+          "mean_us": 22.09192306095333,
+          "sampled": 0,
+          "nested": 0
+        },
+        "buffer_map": {
+          "samples": 2007,
+          "total_ticks": 79703896,
+          "mean_us": 2068.3829513369874,
+          "sampled": 0,
+          "nested": 0
+        },
+        "publish": {
+          "samples": 2007,
+          "total_ticks": 6078,
+          "mean_us": 0.15772919780767314,
+          "sampled": 0,
+          "nested": 0
+        },
+        "build_tlb": {
+          "samples": 2007,
+          "total_ticks": 188010,
+          "mean_us": 4.879017189835576,
+          "sampled": 0,
+          "nested": 0
+        },
+        "retire_lock_wait": {
+          "samples": 2007,
+          "total_ticks": 8870,
+          "mean_us": 0.2301839395449261,
+          "sampled": 0,
+          "nested": 0
+        },
+        "retire_health": {
+          "samples": 2007,
+          "total_ticks": 30437403,
+          "mean_us": 789.8761366467364,
+          "sampled": 0,
+          "nested": 0
+        },
+        "retire_tlb": {
+          "samples": 2007,
+          "total_ticks": 90254,
+          "mean_us": 2.3421669988374028,
+          "sampled": 0,
+          "nested": 0
+        },
+        "table_release": {
+          "samples": 2007,
+          "total_ticks": 248370,
+          "mean_us": 6.445409815645242,
+          "sampled": 0,
+          "nested": 0
+        }
+      },
+      "live_snapshot_span_s": 113.98176041666666,
+      "live_compositor_work_delta": {
+        "submitted": 2007,
+        "completed": 2007,
+        "failed": 0,
+        "shader_operations": 14423,
+        "copy_bytes": 0,
+        "inplace_primitives": 3884,
+        "scratch_bytes": 3416064,
+        "scratch_avoided_bytes": 6952640512,
+        "ib_count": 3560,
+        "ib_bytes": 233308160,
+        "ib_command_words": 25104424
+      },
+      "live_indirect_buffers_per_submitted_job": 1.7737917289486795,
+      "cross_property_epoch_caution": "GPU metrics, AS metrics and work counts come from each explicit gated live sample. Display uses a separate query and mach_continuous_time; live samples use mach_absolute_time. No CPU/GPU elapsed-per-display-frame normalization. No phase isolation of fade/writing."
+    }
+  },
+  "derived_round129": {
+    "shader_operations_per_job": 6.977538185085355,
+    "completion_observation_minus_gpu_ms": 7.139988675501646,
+    "AS_buffer_map_fraction": 0.6919532235398951,
+    "AS_health_fraction": 0.28924818749262055
+  },
+  "restore_evidence": {
+    "boot_payload_sha256": "25c5f0f3941c6bf28330f0c3b2d359f94f9c04ef207ed2986a4e6806adf55556",
+    "health_requested_payload_sha256": "25c5f0f3941c6bf28330f0c3b2d359f94f9c04ef207ed2986a4e6806adf55556",
+    "health_running_payload_identity_verified": false,
+    "health_uart": "QcomGPU: cpu-inherited-clock cluster=0 ticks=4813145525 stable=1\n\n\nmi6-xnu:/# echo DEV_BASH_VERIFIED version=$BASH_VERSION uid=$EUID pid=$$ cwd=$PW \nD\n\n\nDEV_BASH_VERIFIED version=5.2.21(1)-release uid=0 pid=94 cwd=/\n\nmi6-xnu:/# /System/Library/Extensions/gpuctl registry 2>&1 | while IFS= read -r  \nline; do case \"$line\" in \"GPU_PROPERTY GPUStage=\"*|\"GPU_PROPERTY GPUNativeSurfac \neFences\"*|\"GPU_PROPERTY GPUNativeTicketsFailed=\"*) printf \"%s\\n\" \"$line\";; esac; \n done; echo DEV_CONSOLE_RESULT index=0 status=$?\n\n\nGPU_PROPERTY GPUStage=faulted\n\nGPU_PROPERTY GPUNativeTicketsFailed=<CFNumber 0xa3404ddb4a705016 [0x1fc1a7410]>{value = +16, type = kCFNumberSInt64Type}\n\nGPU_PROPERTY GPUNativeSurfaceFencesCreated=<CFNumber 0xa3404ddb4a732a96 [0x1fc1a7410]>{value = +1765, type = kCFNumberSInt64Type}\n\nGPU_PROPERTY GPUNativeSurfaceFencesDeferred=<CFNumber 0xa3404ddb4a705c16 [0x1fc1a7410]>{value = +8, type = kCFNumberSInt64Type}\n\nGPU_PROPERTY GPUNativeSurfaceFencesCompleted=<CFNumber 0xa3404ddb4a733716 [0x1fc1a7410]>{value = +1758, type = kCFNumberSInt64Type}\n\nGPU_PROPERTY GPUNativeSurfaceFencesFailed=<CFNumber 0xa3404ddb4a705b96 [0x1fc1a7410]>{value = +7, type = kCFNumberSInt64Type}\n\nDEV_CONSOLE_RESULT index=0 status=0\n\nmi6-xnu:/# ",
+    "interpretation": "Project restoration evidence links round131 to frozen GPU1.121/Metal0.90 and reports repeated fault plus renewed partial/full-screen flicker. The0.91 presentation change is not required in the recorded reproduction. The health attach alone did not independently verify payload identity. Native dependency-cycle root remains unproved.",
+    "latest_restoration_evidence": {
+      "boot_uuid": "0D13F968-C105-4BB4-A4BD-CC43B6D6380D",
+      "payload": "ui-producer-fence-bridge/XnuBridge.efi",
+      "versions": {
+        "GPU": "1.121.0",
+        "Metal": "0.90.0"
+      },
+      "restore_commands": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "four_CPUs": true,
+      "fence_test": "passed before native UI recovery window",
+      "native_UI": {
+        "submitted": 1367,
+        "completed": 1367,
+        "failed": 0,
+        "displayed": 970,
+        "header_p50_us": 33447.76,
+        "phase_caution": "Single distinct recovery window; not proof of60FPS or optimization speedup."
+      },
+      "window_stages": {
+        "before": 1,
+        "native_power": 0,
+        "on": 1,
+        "stackshot": 0,
+        "after": 0
+      },
+      "late_GPU_stage": "faulted",
+      "late_properties": {
+        "GPUNativeTicketsFailed": 16,
+        "GPUNativeSurfaceFencesCreated": 1765,
+        "GPUNativeSurfaceFencesDeferred": 8,
+        "GPUNativeSurfaceFencesCompleted": 1758,
+        "GPUNativeSurfaceFencesFailed": 7
+      },
+      "conclusion": "Same pending native access fault also exists on frozen1.121/0.90. Metal0.91 admission change is not required to reproduce. Do not keep calling restored version healthy or no flicker.",
+      "user_observation": "部分你好笔画仍局部闪烁，之后按锁屏没有动画而整屏闪烁。用户要求继续调。",
+      "all_hardware_process_handles_terminal": true
+    }
+  },
+  "limits": [
+    "Display windows and live GPU windows differ; do not derive jobs per displayed frame or per-frame CPU time.",
+    "Nested CPU elapsed stages cannot be added. Resource create/delete means are per API call.",
+    "GPU RunObserved excess includes scheduling, setup and observation; it is not measured lock contention.",
+    "Welcome setBytes/MTLFence frequencies are not isolated.",
+    "Deferred count is fences, not jobs; no proof that all16 tickets are direct fence waiters.",
+    "No per-surface predecessor graph or unified frame trace; deadlock root remains unproved.",
+    "Round129 no-flicker feedback is historical; later restoration evidence records renewed flicker and GPU fault.",
+    "Native callback is stateless; replacing it requires cancellation and late-callback lifetime design."
+  ],
+  "latest_progress_refresh_utc": "2026-10-19T05:06:46.779721+00:00"
+}

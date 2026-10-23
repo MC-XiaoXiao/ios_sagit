@@ -1,0 +1,58 @@
+{
+  "path": "/home/xxiao/Projects/Project_iOS2ARM/artifacts/macos26.6.2/bootchain/vma2/decoded/DeviceTree.vma2macosap.bin",
+  "sha256": "c2fecca13d820e0d81d4e8563af1a9ccee9e02e155e6577be2dd76d0e7c40135",
+  "nodes": [
+    {
+      "path": "/device-tree/arm-io",
+      "properties": {
+        "ranges": {
+          "hex": "000000000000000000000010000000000000007000000000"
+        },
+        "compatible": {
+          "hex": "61726d2d696f2c766d6170706c653100",
+          "text": "arm-io,vmapple1"
+        },
+        "device_type": {
+          "hex": "766d6170706c65322d696f00",
+          "text": "vmapple2-io"
+        },
+        "#address-cells": {
+          "hex": "02000000"
+        },
+        "#size-cells": {
+          "hex": "02000000"
+        },
+        "name": {
+          "hex": "61726d2d696f00",
+          "text": "arm-io"
+        }
+      }
+    },
+    {
+      "path": "/device-tree/arm-io/avp-rtc",
+      "properties": {
+        "compatible": {
+          "hex": "6176702c72746300",
+          "text": "avp,rtc"
+        },
+        "name": {
+          "hex": "6176702d72746300",
+          "text": "avp-rtc"
+        }
+      }
+    },
+    {
+      "path": "/device-tree/arm-io/pl031-rtc",
+      "properties": {
+        "name": {
+          "hex": "706c3033312d72746300",
+          "text": "pl031-rtc"
+        },
+        "compatible": {
+          "hex": "41524d2c706c30333100",
+          "text": "ARM,pl031"
+        }
+      }
+    }
+  ]
+}

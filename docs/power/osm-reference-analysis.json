@@ -1,0 +1,85 @@
+{
+  "scope": "Offline MSM8998 v2/v2.1 Xiaomi sagit CPRh calibration and controller initialization",
+  "no_hardware_access": true,
+  "provenance_manifest": "docs/power/osm-reference-sources.json",
+  "board_identity": {
+    "chip_id": 292,
+    "chip_versions": ["0x00020000", "0x00020001"],
+    "board_id": 30,
+    "basis": [
+      "xiaomi-sagit-msm8998-v2-mtp.dts includes msm8998-v2.dtsi and sagit board overlay; board-id <30 0>",
+      "xiaomi-sagit-msm8998-v2.1-mtp.dts includes msm8998-v2.1.dtsi and same board overlay",
+      "xiaomi-msm8998-v2.1.dtsi inherits v2 and changes msm-id, without CPRh or OSM table overrides",
+      "sagit board overlay has no APC CPRh or clock_cpu table override"
+    ],
+    "unknown_identity_policy": "Reject, never reuse another board's voltage data"
+  },
+  "efuse": {
+    "physical_base": "0x00784000",
+    "row_offsets": {"38": "0x130", "39": "0x138", "67": "0x218", "68": "0x220", "69": "0x228", "70": "0x230", "71": "0x238", "100": "0x320"},
+    "speed_bin": "row38[31:29], only 0..3 have fixed sagit tables",
+    "cpr_revision": "row39[53:51], 0..7",
+    "combo": "speed_bin * 8 + cpr_revision",
+    "partial_binning": "row100[45]; use highest active corner voltage/quotient/RO at all frequencies",
+    "decoder_reference": "xiaomi-cprh-kbss-regulator.c msm8998_* fuse segment arrays",
+    "invalid_policy": "Reject absent or all-ones target quotients, unsupported speed bins, quotient offset underflow and out-of-range register encodings"
+  },
+  "calibration_pipeline": [
+    "Select fixed sagit v2 DTS per-fuse-combo and per-speed-bin arrays.",
+    "Decode per-cluster four signed-magnitude 6-bit initial-voltage fuses, RO selects, target quotients and split-row quotient offsets.",
+    "Calculate fused voltage from v2 reference voltages and 10 mV signed steps; add per-fuse board adjustment and enforce monotonicity.",
+    "Interpolate voltage at corner frequencies using the vendor integer division direction; add per-corner board adjustment and enforce monotonicity.",
+    "Round up to 4 mV PMIC setpoints, clip to floor/ceiling, adjust APM 800 mV and MEM-ACC 852 mV crossings.",
+    "Use adjusted open-loop voltage as ceiling, enforce maximum floor range and monotonic floors.",
+    "Apply per-RO quotient scaling to per-fuse and per-corner voltage adjustments, interpolate quotients with RO changes and offset*5, enforce monotonic quotients only across equal ROs.",
+    "Apply force-highest partial-binning override while preserving each frequency.",
+    "Append inactive open-loop APM 880 mV and MEM-ACC 852 mV crossover corners.",
+    "Encode per-RO minimum target quotient, active RO mask, voltage steps and ceil(delta quotient/4) corner words.",
+    "Generate all 40 OSM rows from the fixed speed-bin source; voltage field uses final CPR ceiling, retain turbo rows which share virtual corners but use different frequencies."
+  ],
+  "controller_initialization": {
+    "base": ["0x179c8000", "0x179c4000"],
+    "required_clock": "gcc_hmss_rbcpr_clk = 19.2 MHz XO, kept enabled",
+    "clock_reference": "gcc-msm8998.c:995-1013,2214-2229; GCC root CMD0x48044 and branch0x48008",
+    "sources": [
+      "xiaomi-cpr3-regulator.c:cpr3_regulator_get_gcnt",
+      "xiaomi-cpr3-regulator.c:cpr3_regulator_init_thread",
+      "xiaomi-cpr3-regulator.c:cpr3_regulator_init_ctrl",
+      "xiaomi-cpr3-regulator.c:cpr3_regulator_init_cprh",
+      "xiaomi-cpr3-regulator.c:cpr3_regulator_init_cprh_corners"
+    ],
+    "fields": {
+      "gcnt": 19,
+      "auto_continue": 96000,
+      "ctl_before_loop_enable": "0x21e",
+      "step_quotient": ["0x30b power (min11/max12)", "0x389 performance (min9/max14)"],
+      "thread_threshold": "0x4202",
+      "sensor_owner": "all thread0; 6 sensors power, 9 sensors performance",
+      "pmic_step": "4 mV",
+      "error_step_limit": "up1/down1",
+      "voltage_settling_count": 33,
+      "corner_switch_delay": 5,
+      "base_voltage_steps": 88,
+      "voltage_multiplier": 4
+    },
+    "ordering": "Enable/verify clocks; inspect both OSM banks and both CPRh banks; apply and read back both CPRh plans; program OSM; enable OSM last.",
+    "firmware_live_cpr_policy": "Default API reuses a running loop only on an exact register match. Explicit Ownership requires post-EBS, both OSM banks disabled, verified secure OSM and 19.2MHz clock; under those conditions apply clears LOOP_EN and polls idle up to 5ms before programming. This follows init_ctrl's loop-disable transition with an added bounded idle check using the vendor wait/status convention.",
+    "failure_policy": "Every programmed field is read back; a programming failure disables the CPR loop and OSM interface. Bridge must disable OSM before CPRh rollback.",
+    "not_used_by_fixed_board_profile": ["aging measurements", "per-core-count margins", "temperature margins", "boost margins", "fixed step quotient"]
+  },
+  "secure_firmware_boundary": {
+    "osm_enable_zero": "Means the HLOS enable step did not complete; alone it does not prove the protected sequencer was never initialized.",
+    "v2": "Qualcomm rejects qcom,osm-no-tz for v2; protected sequencer, PMIC/SAW/SPM and related secure initialization must be verified from the running firmware.",
+    "v1": "The no-TZ HLOS sequence path has a distinct bring-up responsibility and cannot be assumed compatible with v2.",
+    "production_boundary": "CPRhCalibration and CPRhInitialization never write protected OSM sequencer or guessed PMIC state; OSM firmware/secure IO integration owns secure admission and allowed SCM writes."
+  },
+  "offline_validation": {
+    "table_source_and_regeneration_check": "python3 scripts/generate-cprh-tables.py --check; verifies all recorded local source hashes and exact generated tables",
+    "calibration": "python3 scripts/test-cprh-calibration.py --sanitize",
+    "oracle": "Unmodified function bodies extracted from the pinned vendor C, compiled as a separate C object with host-only allocation and selected-property shims",
+    "differential_cases": 3072,
+    "coverage": ["both clusters", "all 4 speed bins", "all 8 CPR revisions", "all signed voltage fuse encodings across deterministic samples", "RO changes", "split-row fuse extraction", "partial binning", "v2/v2.1", "unknown identity", "missing/erased fuses", "quotient underflow"],
+    "controller": "tests/cprh_initialization_test.cpp; expected registers/order, readback, idempotence, busy/live mismatch rejection, each read/write failure and malformed plan rejection",
+    "hardware_validation": "Not performed; tests do not establish that the device's protected firmware path is ready."
+  }
+}

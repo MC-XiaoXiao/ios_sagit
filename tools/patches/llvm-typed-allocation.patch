@@ -1,0 +1,17 @@
+--- a/libkern/libkern/c++/OSAllocation.h
++++ b/libkern/libkern/c++/OSAllocation.h
+@@ -84,8 +84,14 @@
+ 	}
+ };
+ 
++#if __has_builtin(__builtin_xnu_type_summary)
+ template <typename T>
+ constexpr bool IOKit_is_data_v = KALLOC_TYPE_IS_DATA_ONLY(T);
++#else
++/* Unknown layout stays on the generic typed heap, not the data heap. */
++template <typename T>
++constexpr bool IOKit_is_data_v = false;
++#endif
+ 
+ template <typename T, bool DataOnly = IOKit_is_data_v<T> >
+ struct IOKit_typed_allocator;

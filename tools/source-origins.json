@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "vendored_sources": {
+    "kernel": {
+      "repository": "https://github.com/MC-XiaoXiao/xnu_kernel_sdm835.git",
+      "base_commit": "0bc4710381f99dd32e139b71b4ea0ab994702e48",
+      "source": "Current source snapshot, including local changes"
+    },
+    "tools/kernelcache_patcher": {
+      "repository": "https://github.com/MC-XiaoXiao/kernelcache_patcher.git",
+      "base_commit": "326c9448f83e3587c85dd2defd2c67a9fbbdd6a0",
+      "source": "Current source snapshot, including local changes"
+    }
+  },
+  "external_sources": [
+    "tools/dependencies.json",
+    "tools/edk2-sagit.json",
+    "tools/apfs-tools.json",
+    "tools/usb-storage.json"
+  ]
+}

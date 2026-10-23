@@ -1,0 +1,598 @@
+{
+  "xnu": "11417.140.69",
+  "config": "DEVELOPMENT_ARM64_SDM835",
+  "kernels": [
+    {
+      "file": "mach.development.sdm835",
+      "sha256": "3a9028a21fe71bee5f856e032146bdc009ca6a737650bcbfb2fccddeca18594f",
+      "bytes": 16105696,
+      "architecture": "arm64",
+      "platform": "iPhoneOS",
+      "sdk": "18.6",
+      "entry": "0xfffffff00748a488",
+      "undefined_symbols": [],
+      "segments": [
+        {
+          "name": "__TEXT",
+          "address": "0xfffffff007004000",
+          "size": 1490944,
+          "file_offset": 0,
+          "file_size": 1490944
+        },
+        {
+          "name": "__DATA_CONST",
+          "address": "0xfffffff007170000",
+          "size": 1048576,
+          "file_offset": 1490944,
+          "file_size": 1048576
+        },
+        {
+          "name": "__TEXT_EXEC",
+          "address": "0xfffffff007270000",
+          "size": 8470528,
+          "file_offset": 2539520,
+          "file_size": 8470528
+        },
+        {
+          "name": "__KLD",
+          "address": "0xfffffff007a84000",
+          "size": 16384,
+          "file_offset": 11010048,
+          "file_size": 16384
+        },
+        {
+          "name": "__LASTDATA_CONST",
+          "address": "0xfffffff007a88000",
+          "size": 16384,
+          "file_offset": 11026432,
+          "file_size": 16384
+        },
+        {
+          "name": "__LAST",
+          "address": "0xfffffff007a8c000",
+          "size": 0,
+          "file_offset": 0,
+          "file_size": 0
+        },
+        {
+          "name": "__KLDDATA",
+          "address": "0xfffffff007a8c000",
+          "size": 16384,
+          "file_offset": 11042816,
+          "file_size": 16384
+        },
+        {
+          "name": "__DATA",
+          "address": "0xfffffff007a90000",
+          "size": 1130496,
+          "file_offset": 11059200,
+          "file_size": 278528
+        },
+        {
+          "name": "__BOOTDATA",
+          "address": "0xfffffff007ba4000",
+          "size": 819200,
+          "file_offset": 11337728,
+          "file_size": 819200
+        },
+        {
+          "name": "__PRELINK_TEXT",
+          "address": "0xfffffff004004000",
+          "size": 0,
+          "file_offset": 12156928,
+          "file_size": 0
+        },
+        {
+          "name": "__PRELINK_INFO",
+          "address": "0xfffffff007c6c000",
+          "size": 0,
+          "file_offset": 12156928,
+          "file_size": 0
+        },
+        {
+          "name": "__PLK_TEXT_EXEC",
+          "address": "0xfffffff007c6c000",
+          "size": 0,
+          "file_offset": 12156928,
+          "file_size": 0
+        },
+        {
+          "name": "__PRELINK_DATA",
+          "address": "0xfffffff007c6c000",
+          "size": 0,
+          "file_offset": 12156928,
+          "file_size": 0
+        },
+        {
+          "name": "__PLK_DATA_CONST",
+          "address": "0xfffffff007c6c000",
+          "size": 0,
+          "file_offset": 12156928,
+          "file_size": 0
+        },
+        {
+          "name": "__PLK_LLVM_COV",
+          "address": "0xfffffff007c6c000",
+          "size": 0,
+          "file_offset": 12156928,
+          "file_size": 0
+        },
+        {
+          "name": "__PLK_LINKEDIT",
+          "address": "0xfffffff007c6c000",
+          "size": 0,
+          "file_offset": 12156928,
+          "file_size": 0
+        },
+        {
+          "name": "__LINKINFO",
+          "address": "0xfffffff007c6c000",
+          "size": 294912,
+          "file_offset": 12156928,
+          "file_size": 294912
+        },
+        {
+          "name": "__LINKEDIT",
+          "address": "0xfffffff007cb4000",
+          "size": 3670016,
+          "file_offset": 12451840,
+          "file_size": 3653856
+        }
+      ],
+      "platform_symbols_verified": []
+    },
+    {
+      "file": "mach.development.sdm835.unstripped",
+      "sha256": "66372b73e5b15bf5280c0846df2a40b2a2f31815732cdbd75882459ebebc9ad1",
+      "bytes": 20465752,
+      "architecture": "arm64",
+      "platform": "iPhoneOS",
+      "sdk": "18.6",
+      "entry": "0xfffffff00748a488",
+      "undefined_symbols": [],
+      "segments": [
+        {
+          "name": "__TEXT",
+          "address": "0xfffffff007004000",
+          "size": 1490944,
+          "file_offset": 0,
+          "file_size": 1490944
+        },
+        {
+          "name": "__DATA_CONST",
+          "address": "0xfffffff007170000",
+          "size": 1048576,
+          "file_offset": 1490944,
+          "file_size": 1048576
+        },
+        {
+          "name": "__TEXT_EXEC",
+          "address": "0xfffffff007270000",
+          "size": 8470528,
+          "file_offset": 2539520,
+          "file_size": 8470528
+        },
+        {
+          "name": "__KLD",
+          "address": "0xfffffff007a84000",
+          "size": 16384,
+          "file_offset": 11010048,
+          "file_size": 16384
+        },
+        {
+          "name": "__LASTDATA_CONST",
+          "address": "0xfffffff007a88000",
+          "size": 16384,
+          "file_offset": 11026432,
+          "file_size": 16384
+        },
+        {
+          "name": "__LAST",
+          "address": "0xfffffff007a8c000",
+          "size": 0,
+          "file_offset": 0,
+          "file_size": 0
+        },
+        {
+          "name": "__KLDDATA",
+          "address": "0xfffffff007a8c000",
+          "size": 16384,
+          "file_offset": 11042816,
+          "file_size": 16384
+        },
+        {
+          "name": "__DATA",
+          "address": "0xfffffff007a90000",
+          "size": 1130496,
+          "file_offset": 11059200,
+          "file_size": 278528
+        },
+        {
+          "name": "__BOOTDATA",
+          "address": "0xfffffff007ba4000",
+          "size": 819200,
+          "file_offset": 11337728,
+          "file_size": 819200
+        },
+        {
+          "name": "__PRELINK_TEXT",
+          "address": "0xfffffff004004000",
+          "size": 0,
+          "file_offset": 12156928,
+          "file_size": 0
+        },
+        {
+          "name": "__PRELINK_INFO",
+          "address": "0xfffffff007c6c000",
+          "size": 0,
+          "file_offset": 12156928,
+          "file_size": 0
+        },
+        {
+          "name": "__PLK_TEXT_EXEC",
+          "address": "0xfffffff007c6c000",
+          "size": 0,
+          "file_offset": 12156928,
+          "file_size": 0
+        },
+        {
+          "name": "__PRELINK_DATA",
+          "address": "0xfffffff007c6c000",
+          "size": 0,
+          "file_offset": 12156928,
+          "file_size": 0
+        },
+        {
+          "name": "__PLK_DATA_CONST",
+          "address": "0xfffffff007c6c000",
+          "size": 0,
+          "file_offset": 12156928,
+          "file_size": 0
+        },
+        {
+          "name": "__PLK_LLVM_COV",
+          "address": "0xfffffff007c6c000",
+          "size": 0,
+          "file_offset": 12156928,
+          "file_size": 0
+        },
+        {
+          "name": "__PLK_LINKEDIT",
+          "address": "0xfffffff007c6c000",
+          "size": 0,
+          "file_offset": 12156928,
+          "file_size": 0
+        },
+        {
+          "name": "__LINKINFO",
+          "address": "0xfffffff007c6c000",
+          "size": 294912,
+          "file_offset": 12156928,
+          "file_size": 294912
+        },
+        {
+          "name": "__LINKEDIT",
+          "address": "0xfffffff007cb4000",
+          "size": 8028160,
+          "file_offset": 12451840,
+          "file_size": 8013912
+        }
+      ],
+      "platform_symbols_verified": [
+        "_pe_sdm835_cpu_off",
+        "_pe_sdm835_cpu_on",
+        "_pe_sdm835_handle_irq",
+        "_pe_sdm835_init_interrupts",
+        "_pe_sdm835_send_ipi",
+        "_qcom_uartdm_init",
+        "_qcom_uartdm_receive_data",
+        "_qcom_uartdm_receive_ready",
+        "_qcom_uartdm_transmit_data"
+      ]
+    }
+  ],
+  "hardware_boot_verified": false,
+  "uartdm_model_tests": "passed: TX; 1/2/3 byte RX; FIFO words; delayed stale; arrival during flush; overrun; malformed DT",
+  "configuration_assertions": "passed: physical SDM835, 8 CPUs, 2 clusters, 4K granule, 40-bit PA, no newer ISA or Apple features",
+  "patch_replay": {
+    "pristine_archive": "xnu-11417.140.69.tar.gz",
+    "patches": [
+      "linux-doconf.patch",
+      "llvm-iokit.patch",
+      "llvm-kalloc.patch",
+      "llvm-typed-allocation.patch",
+      "vmapple-cpu-registers.patch",
+      "vmapple-ios-sources.patch",
+      "vmapple-no-amcc.patch",
+      "vmapple-pmap.patch",
+      "vmapple-runtime.patch",
+      "zz-sdm835-platform.patch"
+    ],
+    "files_matched": 28
+  },
+  "vmapple_regression": {
+    "xnu": "11417.140.69",
+    "config": "DEVELOPMENT_ARM64_VMAPPLE",
+    "kernels": [
+      {
+        "file": "mach.development.vmapple",
+        "sha256": "88501341dd7f1df4eb4b791708ba81b737991fa8210632b3d7ede00278210252",
+        "bytes": 16181544,
+        "architecture": "arm64",
+        "platform": "iPhoneOS",
+        "sdk": "18.6",
+        "entry": "0xfffffff0074a6488",
+        "undefined_symbols": [],
+        "segments": [
+          {
+            "name": "__TEXT",
+            "address": "0xfffffff007004000",
+            "size": 1507328,
+            "file_offset": 0,
+            "file_size": 1507328
+          },
+          {
+            "name": "__DATA_CONST",
+            "address": "0xfffffff007174000",
+            "size": 1196032,
+            "file_offset": 1507328,
+            "file_size": 1196032
+          },
+          {
+            "name": "__TEXT_EXEC",
+            "address": "0xfffffff007298000",
+            "size": 8372224,
+            "file_offset": 2703360,
+            "file_size": 8372224
+          },
+          {
+            "name": "__KLD",
+            "address": "0xfffffff007a94000",
+            "size": 16384,
+            "file_offset": 11075584,
+            "file_size": 16384
+          },
+          {
+            "name": "__LASTDATA_CONST",
+            "address": "0xfffffff007a98000",
+            "size": 16384,
+            "file_offset": 11091968,
+            "file_size": 16384
+          },
+          {
+            "name": "__LAST",
+            "address": "0xfffffff007a9c000",
+            "size": 0,
+            "file_offset": 0,
+            "file_size": 0
+          },
+          {
+            "name": "__KLDDATA",
+            "address": "0xfffffff007a9c000",
+            "size": 16384,
+            "file_offset": 11108352,
+            "file_size": 16384
+          },
+          {
+            "name": "__DATA",
+            "address": "0xfffffff007aa0000",
+            "size": 1130496,
+            "file_offset": 11124736,
+            "file_size": 278528
+          },
+          {
+            "name": "__BOOTDATA",
+            "address": "0xfffffff007bb4000",
+            "size": 819200,
+            "file_offset": 11403264,
+            "file_size": 819200
+          },
+          {
+            "name": "__PRELINK_TEXT",
+            "address": "0xfffffff004004000",
+            "size": 0,
+            "file_offset": 12222464,
+            "file_size": 0
+          },
+          {
+            "name": "__PRELINK_INFO",
+            "address": "0xfffffff007c7c000",
+            "size": 0,
+            "file_offset": 12222464,
+            "file_size": 0
+          },
+          {
+            "name": "__PLK_TEXT_EXEC",
+            "address": "0xfffffff007c7c000",
+            "size": 0,
+            "file_offset": 12222464,
+            "file_size": 0
+          },
+          {
+            "name": "__PRELINK_DATA",
+            "address": "0xfffffff007c7c000",
+            "size": 0,
+            "file_offset": 12222464,
+            "file_size": 0
+          },
+          {
+            "name": "__PLK_DATA_CONST",
+            "address": "0xfffffff007c7c000",
+            "size": 0,
+            "file_offset": 12222464,
+            "file_size": 0
+          },
+          {
+            "name": "__PLK_LLVM_COV",
+            "address": "0xfffffff007c7c000",
+            "size": 0,
+            "file_offset": 12222464,
+            "file_size": 0
+          },
+          {
+            "name": "__PLK_LINKEDIT",
+            "address": "0xfffffff007c7c000",
+            "size": 0,
+            "file_offset": 12222464,
+            "file_size": 0
+          },
+          {
+            "name": "__LINKINFO",
+            "address": "0xfffffff007c7c000",
+            "size": 294912,
+            "file_offset": 12222464,
+            "file_size": 294912
+          },
+          {
+            "name": "__LINKEDIT",
+            "address": "0xfffffff007cc4000",
+            "size": 3670016,
+            "file_offset": 12517376,
+            "file_size": 3664168
+          }
+        ]
+      },
+      {
+        "file": "mach.development.vmapple.unstripped",
+        "sha256": "a6a78c0083eda5c419e19daa607e1d51ebce32445667a484b79aef3aa640db02",
+        "bytes": 20551912,
+        "architecture": "arm64",
+        "platform": "iPhoneOS",
+        "sdk": "18.6",
+        "entry": "0xfffffff0074a6488",
+        "undefined_symbols": [],
+        "segments": [
+          {
+            "name": "__TEXT",
+            "address": "0xfffffff007004000",
+            "size": 1507328,
+            "file_offset": 0,
+            "file_size": 1507328
+          },
+          {
+            "name": "__DATA_CONST",
+            "address": "0xfffffff007174000",
+            "size": 1196032,
+            "file_offset": 1507328,
+            "file_size": 1196032
+          },
+          {
+            "name": "__TEXT_EXEC",
+            "address": "0xfffffff007298000",
+            "size": 8372224,
+            "file_offset": 2703360,
+            "file_size": 8372224
+          },
+          {
+            "name": "__KLD",
+            "address": "0xfffffff007a94000",
+            "size": 16384,
+            "file_offset": 11075584,
+            "file_size": 16384
+          },
+          {
+            "name": "__LASTDATA_CONST",
+            "address": "0xfffffff007a98000",
+            "size": 16384,
+            "file_offset": 11091968,
+            "file_size": 16384
+          },
+          {
+            "name": "__LAST",
+            "address": "0xfffffff007a9c000",
+            "size": 0,
+            "file_offset": 0,
+            "file_size": 0
+          },
+          {
+            "name": "__KLDDATA",
+            "address": "0xfffffff007a9c000",
+            "size": 16384,
+            "file_offset": 11108352,
+            "file_size": 16384
+          },
+          {
+            "name": "__DATA",
+            "address": "0xfffffff007aa0000",
+            "size": 1130496,
+            "file_offset": 11124736,
+            "file_size": 278528
+          },
+          {
+            "name": "__BOOTDATA",
+            "address": "0xfffffff007bb4000",
+            "size": 819200,
+            "file_offset": 11403264,
+            "file_size": 819200
+          },
+          {
+            "name": "__PRELINK_TEXT",
+            "address": "0xfffffff004004000",
+            "size": 0,
+            "file_offset": 12222464,
+            "file_size": 0
+          },
+          {
+            "name": "__PRELINK_INFO",
+            "address": "0xfffffff007c7c000",
+            "size": 0,
+            "file_offset": 12222464,
+            "file_size": 0
+          },
+          {
+            "name": "__PLK_TEXT_EXEC",
+            "address": "0xfffffff007c7c000",
+            "size": 0,
+            "file_offset": 12222464,
+            "file_size": 0
+          },
+          {
+            "name": "__PRELINK_DATA",
+            "address": "0xfffffff007c7c000",
+            "size": 0,
+            "file_offset": 12222464,
+            "file_size": 0
+          },
+          {
+            "name": "__PLK_DATA_CONST",
+            "address": "0xfffffff007c7c000",
+            "size": 0,
+            "file_offset": 12222464,
+            "file_size": 0
+          },
+          {
+            "name": "__PLK_LLVM_COV",
+            "address": "0xfffffff007c7c000",
+            "size": 0,
+            "file_offset": 12222464,
+            "file_size": 0
+          },
+          {
+            "name": "__PLK_LINKEDIT",
+            "address": "0xfffffff007c7c000",
+            "size": 0,
+            "file_offset": 12222464,
+            "file_size": 0
+          },
+          {
+            "name": "__LINKINFO",
+            "address": "0xfffffff007c7c000",
+            "size": 294912,
+            "file_offset": 12222464,
+            "file_size": 294912
+          },
+          {
+            "name": "__LINKEDIT",
+            "address": "0xfffffff007cc4000",
+            "size": 8044544,
+            "file_offset": 12517376,
+            "file_size": 8034536
+          }
+        ]
+      }
+    ],
+    "hardware_boot_verified": false
+  },
+  "hardware_uart_verified": false,
+  "hardware_smp_verified": false
+}

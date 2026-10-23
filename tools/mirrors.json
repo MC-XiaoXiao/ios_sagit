@@ -1,0 +1,238 @@
+{
+  "private-headers/TrustCache/API.h": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu/EXTERNAL_HEADERS/TrustCache/API.h.html",
+    "sha256": "1ceb0fa0add5671b9915e26a4909fe8aa29a95e109886001687af305e388b218"
+  },
+  "private-headers/TrustCache/Types.h": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu/EXTERNAL_HEADERS/TrustCache/Types.h.html",
+    "sha256": "e2c7cfc90ea296a2977bfeb0abfd85bd6c9a3c0cb5d73b653dc24a69248083e2"
+  },
+  "private-headers/TrustCache/RawTypes.h": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu/EXTERNAL_HEADERS/TrustCache/RawTypes.h.html",
+    "sha256": "de238caf92a2da3498a662dbc39e88f16ba22ee844b1a9be92c5e68b6d9b20d0"
+  },
+  "private-headers/TrustCache/TypesConfig.h": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu/EXTERNAL_HEADERS/TrustCache/TypesConfig.h.html",
+    "sha256": "418a1f637f347794014a7adf1db9ed1d78cc8adcd713861bc596b0017651b10f"
+  },
+  "private-headers/TrustCache/Return.h": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu/EXTERNAL_HEADERS/TrustCache/Return.h.html",
+    "sha256": "97f17af08faf2359f007b18314f5a5999a78f5760457318c1b5db4b211523143"
+  },
+  "iig/IOBufferMemoryDescriptor.h": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IOBufferMemoryDescriptor.h.html",
+    "sha256": "e4a0e6dc63630ed7d8acb56cfa00eb16a578e459d26167791e3174cc115c1cbc",
+    "input_sha256": "688feb80ce5f2438a7f2789ecf10544aa9c107d2d17fd21ee759ee90191e5983",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/IODMACommand.h": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IODMACommand.h.html",
+    "sha256": "0dd08d5c2f13988ec75d704c9f51f2763679d7548699373396a68a8bdee9f89d",
+    "input_sha256": "0f0e3e01d07ef058e4e97226b0657d1acb36ce74ec9e31b34c2b6dbee05fdaf1",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/IODataQueueDispatchSource.h": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IODataQueueDispatchSource.h.html",
+    "sha256": "248ab9b381dc7d99d98050fbdc4661fd24109fa40d68f2479a65f0ec484fba9c",
+    "input_sha256": "9678a6e52e70927f1ffa2f3dab15ef1f12609ce834aa322284c78aec519b115d",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/IODispatchQueue.h": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IODispatchQueue.h.html",
+    "sha256": "661eca047755c88eff8be0b980aa42f2cb466e66a23257fc86d1840431092069",
+    "input_sha256": "e67cd75426ac4ccbf1fd3e14f432bda8ca89655759451e520ecf950bf25e99e3",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/IOBufferMemoryDescriptor.iig.cpp": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IOBufferMemoryDescriptor.iig.cpp.html",
+    "sha256": "b450f586414eae8784dd200d1d16d8c4f926516b710003f4b07db74449523537",
+    "input_sha256": "688feb80ce5f2438a7f2789ecf10544aa9c107d2d17fd21ee759ee90191e5983",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/IODispatchQueue.iig.cpp": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IODispatchQueue.iig.cpp.html",
+    "sha256": "44ebf69ed954159b39beac16c73326ff67bd8496f737d98d8ba173b30009cb36",
+    "input_sha256": "e67cd75426ac4ccbf1fd3e14f432bda8ca89655759451e520ecf950bf25e99e3",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/IODMACommand.iig.cpp": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IODMACommand.iig.cpp.html",
+    "sha256": "ce752b0b391f8820b3db894d36c27877f732dfe40063339a67f40e602ef69c10",
+    "input_sha256": "0f0e3e01d07ef058e4e97226b0657d1acb36ce74ec9e31b34c2b6dbee05fdaf1",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/IODataQueueDispatchSource.iig.cpp": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IODataQueueDispatchSource.iig.cpp.html",
+    "sha256": "3d7c0b6a2f33a2c8aad687b3b509e84b60b297701551281f2a448a9ff181e4ef",
+    "input_sha256": "9678a6e52e70927f1ffa2f3dab15ef1f12609ce834aa322284c78aec519b115d",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/IODispatchSource.h": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IODispatchSource.h.html",
+    "sha256": "1585fbbb0609a33e5496a3855300ccb4e5a9003790a383635fd20042b1b00dec",
+    "input_sha256": "b8e7c08fc4817e4e124bcf85cfd0fe6c53486037850582cdd385462a9fda31f0",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/IOExtensiblePaniclog.h": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IOExtensiblePaniclog.h.html",
+    "sha256": "d1f11f0ea24626d096f10b577056b74ccd4d05d7be59b041db26651d40d8b712",
+    "input_sha256": "2919bf3c944fdf352cc92086a2152bc2db6656ef916182143d578cb9b10a2738",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/IOEventLink.h": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IOEventLink.h.html",
+    "sha256": "767dc5711dce016170171e07e2a021389f7d8b6de22ceaccba7ac42ab4ac4f2b",
+    "input_sha256": "972a0b8a6675155cbd03fca24f39a1a0a0a15a4bc8499e9c184329dbe518507d",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/IOInterruptDispatchSource.h": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IOInterruptDispatchSource.h.html",
+    "sha256": "6f436eb1adf8fca2e100c149574c45e8e35a0f2323f0afb5b2283543c5e6dd9a",
+    "input_sha256": "fa110ff11ff90c6d0639d11101631510283440976bf76d84cc76fcfed238f9a8",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/IODispatchSource.iig.cpp": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IODispatchSource.iig.cpp.html",
+    "sha256": "16c6651a960223da1db46f7619e4ac26c3a880b3132760ff22902d8bc52a85d1",
+    "input_sha256": "b8e7c08fc4817e4e124bcf85cfd0fe6c53486037850582cdd385462a9fda31f0",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/IOEventLink.iig.cpp": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IOEventLink.iig.cpp.html",
+    "sha256": "c70ea384e99e50e51d674ef38dcfdc00bc865621af9bf43aaa3697fa2befd32f",
+    "input_sha256": "972a0b8a6675155cbd03fca24f39a1a0a0a15a4bc8499e9c184329dbe518507d",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/IOExtensiblePaniclog.iig.cpp": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IOExtensiblePaniclog.iig.cpp.html",
+    "sha256": "575e301cfd625a87d849bea2c2786899453796b048ac33d896c0b42ced984532",
+    "input_sha256": "2919bf3c944fdf352cc92086a2152bc2db6656ef916182143d578cb9b10a2738",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/IOInterruptDispatchSource.iig.cpp": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IOInterruptDispatchSource.iig.cpp.html",
+    "sha256": "576b4000f152439698c7cda4742fe64266d3ebe3af738e503fdb5766643d6a57",
+    "input_sha256": "fa110ff11ff90c6d0639d11101631510283440976bf76d84cc76fcfed238f9a8",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/IOMemoryDescriptor.h": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IOMemoryDescriptor.h.html",
+    "sha256": "fa681d3803193e417c0c8a625a6e9ba610df91e272341cf95b540b23630d7da2",
+    "input_sha256": "45df15591122b1f8cae88b974fe5fb8240213a6d3c6a56e0af85d9d5b85a86ba",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/IOMemoryMap.h": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IOMemoryMap.h.html",
+    "sha256": "337e522df9df7a5614c5864fbbb8be8b13414db580134dea6ed06ee10f1b961e",
+    "input_sha256": "335655b5e7d7b160cc9be9494279911a89ce73f9d35257381815caddad98a6fc",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/IOServiceNotificationDispatchSource.h": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IOServiceNotificationDispatchSource.h.html",
+    "sha256": "276d60446719ab88a002d4738ef04d0baa4c52d123f68ebd0f5ec444a7889be0",
+    "input_sha256": "d4d443fb1b75a26c2e2d6da92d875d5317dff5759d94e18dac065a2a84eae643",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/IOService.h": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IOService.h.html",
+    "sha256": "20c43cc2d6a32698148fdbb8730e884216f3e44dc6f6d0dcd5464120e880f6f3",
+    "input_sha256": "5b4c6d0aec6977d7d60d00fed75649bfc0e056b8966769667c1740b40ae4d107",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/IOMemoryMap.iig.cpp": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IOMemoryMap.iig.cpp.html",
+    "sha256": "415dc4bb766d5591311d486d1231727b6ab18806fc8365fb4b9ecb790f4b6a87",
+    "input_sha256": "335655b5e7d7b160cc9be9494279911a89ce73f9d35257381815caddad98a6fc",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/IOMemoryDescriptor.iig.cpp": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IOMemoryDescriptor.iig.cpp.html",
+    "sha256": "657cfd05267349ec64e43b3d61a5f8d27ab2cfb02e02049cfefd257821078d1e",
+    "input_sha256": "45df15591122b1f8cae88b974fe5fb8240213a6d3c6a56e0af85d9d5b85a86ba",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/IOServiceNotificationDispatchSource.iig.cpp": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IOServiceNotificationDispatchSource.iig.cpp.html",
+    "sha256": "e0e4fbd4a46b3c8805cb08f78e633fb3958f01684d61f6fbebe4ee5797a9ef04",
+    "input_sha256": "d4d443fb1b75a26c2e2d6da92d875d5317dff5759d94e18dac065a2a84eae643",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/IOService.iig.cpp": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IOService.iig.cpp.html",
+    "sha256": "27505541752ae69fcc32d612f794e6b9aefa0b98d9229c0b952c28ced3540b82",
+    "input_sha256": "5b4c6d0aec6977d7d60d00fed75649bfc0e056b8966769667c1740b40ae4d107",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/IOServiceStateNotificationDispatchSource.h": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IOServiceStateNotificationDispatchSource.h.html",
+    "sha256": "8bdc797f0346e3dc3f1439d5da9b4623eaf1a60294ca9f99d00d68c90aaa7e2a",
+    "input_sha256": "6bff4922ed765ea3fb11ec742d86e1ee220b715254a37551729628684cb78163",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/IOUserClient.h": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IOUserClient.h.html",
+    "sha256": "758656f89b9d7f85a7553a9a0800d075f3ce58550e91c58ad28d7599f181dbd3",
+    "input_sha256": "313e814c5203bcb7c7390e87ae00845d45765039204ff628be9c98a3f6ee5a7f",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/IOUserServer.h": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IOUserServer.h.html",
+    "sha256": "e6c0013fd9e6e7dc149805e878170986a6d196f329f04bec9c6c9876c619e1b9",
+    "input_sha256": "94e6842addf0097f46a9deb8810b5642d90a0afb0d790e00a208f26c16b8df04",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/IOWorkGroup.h": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IOWorkGroup.h.html",
+    "sha256": "8ac24b144b124c09db308296e1aaa70afd602205c002b7cfeaec374d2b1309df",
+    "input_sha256": "afe77e23460b87de542227172f528774f82911bbdd5eb10da8443d50ad849e77",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/IOServiceStateNotificationDispatchSource.iig.cpp": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IOServiceStateNotificationDispatchSource.iig.cpp.html",
+    "sha256": "093c3a0ad7d4764a9f89e601714e6d6e43ba05b9c31f704e291ae045eb740b5f",
+    "input_sha256": "6bff4922ed765ea3fb11ec742d86e1ee220b715254a37551729628684cb78163",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/IOUserClient.iig.cpp": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IOUserClient.iig.cpp.html",
+    "sha256": "98ed7e137ba62f3a5dfa0f586c9474a4b34562a8fc0497f184f994506bd04356",
+    "input_sha256": "313e814c5203bcb7c7390e87ae00845d45765039204ff628be9c98a3f6ee5a7f",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/IOUserServer.iig.cpp": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IOUserServer.iig.cpp.html",
+    "sha256": "eb5c590eade954ca15d919db4d0beedcab1e85a71d41cc0da4be50626b87a4b1",
+    "input_sha256": "94e6842addf0097f46a9deb8810b5642d90a0afb0d790e00a208f26c16b8df04",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/IOWorkGroup.iig.cpp": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/IOWorkGroup.iig.cpp.html",
+    "sha256": "9227b84c31c3ecaf82bd94174ff3d93808185ca6a644a126369333718520d6e5",
+    "input_sha256": "afe77e23460b87de542227172f528774f82911bbdd5eb10da8443d50ad849e77",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/OSAction.h": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/OSAction.h.html",
+    "sha256": "35dcb83b5344923c1e60a34c33ce913153533150fe6b72a0ea42926fff84aae6",
+    "input_sha256": "d1f61a6e9db58d34a3a77880e6262d92e514968d4b1f60be736fe830b90f4f2e",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/OSObject.h": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/OSObject.h.html",
+    "sha256": "a5a4c7034f83885a6a4091d026728d63bc50f23034ddeb7919ed0c79661730c5",
+    "input_sha256": "bcd00a8dfda6bbb511156ca23cb9a6b1685a828c6b91bb589144bba91215aca1",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/OSAction.iig.cpp": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/OSAction.iig.cpp.html",
+    "sha256": "52e10e8347f7ebfc761f4e0c9b182b722f60ff1a78f0f342c9f9fab1b976abca",
+    "input_sha256": "d1f61a6e9db58d34a3a77880e6262d92e514968d4b1f60be736fe830b90f4f2e",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  },
+  "iig/OSObject.iig.cpp": {
+    "url": "https://fergofrog.com/code/codebrowser/xnu-build/RELEASE_ARM64_VMAPPLE/iokit/RELEASE/DriverKit/OSObject.iig.cpp.html",
+    "sha256": "1c51cf1828fcd34385023ccf1d6dbd638d6c0e19b2f656023cfd383104802807",
+    "input_sha256": "bcd00a8dfda6bbb511156ca23cb9a6b1685a828c6b91bb589144bba91215aca1",
+    "transform": "html-source-lines; cpp adds DriverKit/IORPC.h"
+  }
+}

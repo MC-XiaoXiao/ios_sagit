@@ -1,0 +1,35 @@
+{
+  "repository": "https://apt.procurs.us/dists/iphoneos-arm64/1700/main/binary-iphoneos-arm/Packages.xz",
+  "packages": [
+    {
+      "Package": "bash",
+      "Version": "5.2.21",
+      "Filename": "pool/main/iphoneos-arm64/1700/bash/bash_5.2.21_iphoneos-arm.deb",
+      "SHA256": "574bb8fcf46b7827b87d4908b5a27fd840f7850d5c0531581e45df8520a8a1db"
+    },
+    {
+      "Package": "libreadline8",
+      "Version": "8.2.0-1",
+      "Filename": "pool/main/iphoneos-arm64/1700/readline/libreadline8_8.2.0-1_iphoneos-arm.deb",
+      "SHA256": "b23542edb4d55e1949478d3c3eebe136793707e848cb6b920893e53c88c7652c"
+    },
+    {
+      "Package": "libncursesw6",
+      "Version": "6.4",
+      "Filename": "pool/main/iphoneos-arm64/1700/ncurses/libncursesw6_6.4_iphoneos-arm.deb",
+      "SHA256": "a0ccb1ae798c79192529604d79358d21b09f85ac0348ab2ff8f3275ee2df5f1c"
+    },
+    {
+      "Package": "libiosexec1",
+      "Version": "1.3.1",
+      "Filename": "pool/main/iphoneos-arm64/1700/libiosexec/libiosexec1_1.3.1_iphoneos-arm.deb",
+      "SHA256": "2e00e300f34f11bec7aeb04f2484a165e075094329344e8ec900834c03a82b9b"
+    },
+    {
+      "Package": "ncurses-term",
+      "Version": "6.4",
+      "Filename": "pool/main/iphoneos-arm64/1700/ncurses/ncurses-term_6.4_all.deb",
+      "SHA256": "918845cf8202e1b2b600f0d63978c7507df8a290cb06e353af1b763ea9dc30b6"
+    }
+  ]
+}

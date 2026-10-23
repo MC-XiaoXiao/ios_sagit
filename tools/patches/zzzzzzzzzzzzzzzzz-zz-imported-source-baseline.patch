@@ -1,0 +1,115 @@
+# Preserve fixes already present in imported XNU baseline 95b95ed.
+# The process-exec trace belongs to posix_spawn; the old patch had ambiguous context.
+# No source behavior changes: RTC tracing and 64-bit DMA page arithmetic are retained.
+--- a/bsd/kern/kern_exec.c
++++ b/bsd/kern/kern_exec.c
+@@ -4524,10 +4524,29 @@
+ 			exec_failure_reason = os_reason_create(OS_REASON_EXEC, EXEC_EXIT_REASON_BAD_PSATTR);
+ 		}
+ 	}
+ 
+ bad:
++
++#if DEVELOPMENT || DEBUG
++	{
++		int trace = 0;
++		if (PE_parse_boot_argn("process-exec-trace", &trace, sizeof(trace)) && trace) {
++			char path[256] = {0};
++			char label[128] = {0};
++			size_t copied = 0;
++			if (copyinstr(uap->path, path, sizeof(path), &copied) != 0) path[0] = '\0';
++			if (IS_64BIT_PROCESS(ap) && strcmp(path, "/usr/libexec/xpcproxy") == 0) {
++				user_addr_t argument = USER_ADDR_NULL;
++				if (copyin(uap->argv + sizeof(user_addr_t), &argument, sizeof(argument)) == 0 && argument)
++					if (copyinstr(argument, label, sizeof(label), &copied) != 0) label[0] = '\0';
++			}
++			printf("posix_spawn trace: parent=%d child=%d path=%s label=%s errno=%d\n",
++			    proc_selfpid(), proc_getpid(p), path, label, error);
++		}
++	}
++#endif
+ 
+ 	if (error == 0) {
+ 		/* reset delay idle sleep status if set */
+ #if CONFIG_DELAY_IDLE_SLEEP
+ 		if ((p->p_flag & P_DELAYIDLESLEEP) == P_DELAYIDLESLEEP) {
+@@ -6574,28 +6593,11 @@
+ 			goto bad;
+ 		}
+ 		imgp->ip_applec++;
+ 	}
+ 
+-#if DEVELOPMENT || DEBUG
+-	{
+-		int trace = 0;
+-		if (PE_parse_boot_argn("process-exec-trace", &trace, sizeof(trace)) && trace) {
+-			char path[256] = {0};
+-			char label[128] = {0};
+-			size_t copied = 0;
+-			if (copyinstr(uap->path, path, sizeof(path), &copied) != 0) path[0] = '\0';
+-			if (IS_64BIT_PROCESS(ap) && strcmp(path, "/usr/libexec/xpcproxy") == 0) {
+-				user_addr_t argument = USER_ADDR_NULL;
+-				if (copyin(uap->argv + sizeof(user_addr_t), &argument, sizeof(argument)) == 0 && argument)
+-					if (copyinstr(argument, label, sizeof(label), &copied) != 0) label[0] = '\0';
+-			}
+-			printf("posix_spawn trace: parent=%d child=%d path=%s label=%s errno=%d\n",
+-			    proc_selfpid(), proc_getpid(p), path, label, error);
+-		}
+-	}
+-#endif
++
+ 
+ 
+ 	if (load_result->hardened_runtime_binary) {
+ 		const size_t HR_STRING_SIZE = sizeof(HARDENED_RUNTIME_KEY) + HR_FLAGS_NUM_NIBBLES + 2 + 1;
+ 		char hardened_runtime[HR_STRING_SIZE];
+--- a/iokit/Kernel/IOStartIOKit.cpp
++++ b/iokit/Kernel/IOStartIOKit.cpp
+@@ -75,18 +75,30 @@
+ 	mach_timespec_t         t;
+ 
+ 	t.tv_sec = 30;
+ 	t.tv_nsec = 0;
+ 
+-	IOService::waitForService(
++
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++	printf("[XNU RTC] waiting for IORTC\n");
++#endif
++	IOService *rtc = IOService::waitForService(
+ 		IOService::resourceMatching("IORTC"), &t );
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++	printf("[XNU RTC] IORTC %s\n", rtc ? "ready" : "wait timed out");
++#else
++	(void)rtc;
++#endif
+ #if defined(__i386__) || defined(__x86_64__)
+ 	IOService::waitForService(
+ 		IOService::resourceMatching("IONVRAM"), &t );
+ #endif
+ 
+ 	clock_initialize_calendar();
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++	printf("[XNU RTC] calendar initialized\n");
++#endif
+ }
+ 
+ void
+ iokit_post_constructor_init(void)
+ {
+--- a/osfmk/arm/pmap/pmap.c
++++ b/osfmk/arm/pmap/pmap.c
+@@ -7191,11 +7191,12 @@
+  */
+ void
+ pmap_sync_page_attributes_phys(
+ 	ppnum_t pp)
+ {
+-	flush_dcache((vm_offset_t) (pp << PAGE_SHIFT), PAGE_SIZE, TRUE);
++	/* Widen the page number before shifting: RAM can extend beyond 4 GiB. */
++	flush_dcache((vm_offset_t) pp << PAGE_SHIFT, PAGE_SIZE, TRUE);
+ }
+ 
+ #if CONFIG_COREDUMP
+ /* temporary workaround */
+ boolean_t

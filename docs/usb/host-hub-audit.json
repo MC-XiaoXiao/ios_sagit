@@ -1,0 +1,127 @@
+{
+  "status": "Native-hub-routed-TT-error-and-default-address-recovery-integrated-offline-validated-full-lifecycle-incomplete",
+  "runtime_source": "drivers/usb/QcomUSB/QcomUSBHost.cpp",
+  "runtime_header": "drivers/usb/QcomUSB/QcomUSBHost.h",
+  "topology_backend": "drivers/usb/QcomUSB/XHCIHubs.h",
+  "slot_backend": "drivers/usb/QcomUSB/XHCISlots.h",
+  "context_backend": "drivers/usb/QcomUSB/XHCIContexts.h",
+  "wire_header": "drivers/include/IOKit/usb/StandardUSB.h",
+  "tests": [
+    "tests/xhci_hub_test.cpp",
+    "tests/usb_host_abi_compile.cpp"
+  ],
+  "native_evidence": {
+    "file": "build/usb/host-hub-native-evidence.json",
+    "sha256": "f8753217ab86e9779863b702348030db56650d06703be1c2e16dfc1235ec45b4"
+  },
+  "Native_interface": {
+    "wrapper_slots": [
+      195,
+      196,
+      197
+    ],
+    "gated_slots": [
+      198,
+      199,
+      200
+    ],
+    "original_Native_device_and_descriptor_pointers": true,
+    "USB2_flags_width": 32,
+    "multi_TT_flag": 1,
+    "descriptor_wire_sizes": [
+      11,
+      12
+    ],
+    "hub_characteristics_offset": 3,
+    "SS_hub_delay_offset": 8,
+    "runtime_overrides_bound_in_compiler_vtable": true,
+    "new_audited_Native_wrapper_fingerprints": 3,
+    "reference_project_slot_numbers_not_reused": true
+  },
+  "registration": {
+    "USB2_full_high_and_SS_hubs": true,
+    "Native_locationID_port_range": [
+      1,
+      15
+    ],
+    "current_Native_USB2_hub_port_limit_preserved": true,
+    "invalid_type_length_speed_flags_and_ports_rejected": true,
+    "properties_copied_before_sleeping_command": true,
+    "only_real_Configure_Endpoint_with_Slot_Add_1": true,
+    "Evaluate_Context_is_not_hub_configuration": true,
+    "retained_actual_queue_record_owner_slot_parameter_epoch_and_fresh_ticket_checked": true,
+    "foreign_queue_and_acknowledged_record_cannot_commit": true,
+    "output_USB_address_route_root_speed_entries_Hub_MTT_ports_TT_TTT_checked": true,
+    "EP0_context_and_ring_not_reinitialized": true,
+    "child_admission_opens_only_after_output_verification": true,
+    "same_installed_profile_can_reregister_after_children_drain": false,
+    "installed_hub_profile_changes_require_new_slot_lifecycle": true,
+    "clean_profile_without_translated_descendants_can_reregister": true,
+    "HS_unregister_with_translated_descendants_requires_new_USB_device_slot_lifetime": true
+  },
+  "topology": {
+    "one_actual_Device_side_table_via_TopologyNode_base": true,
+    "parent_location_must_be_exact_prefix": true,
+    "maximum_downstream_nibbles": 5,
+    "hub_cannot_exceed_USB_tier_limit": true,
+    "different_bus_holes_bad_parent_missing_unregistered_and_retiring_hub_rejected": true,
+    "root_PortSC_SpeedID_rechecked_after_sleeping_preparation": true,
+    "routed_device_speedID_comes_from_actual_Supported_Protocol": true,
+    "ambiguous_or_missing_child_speedID_rejected": true,
+    "SS_and_USB2_tree_speeds_not_mixed": true,
+    "LS_FS_use_nearest_HS_ancestor_slot_and_branch_port": true,
+    "TT_hub_is_slot_ID_not_USB_address": true,
+    "FS_hub_clears_own_MTT_but_preserves_upstream_TT_for_children": true,
+    "TTT_only_for_HS_hub_context": true
+  },
+  "lifetime": {
+    "parent_lease_acquired_before_DMA_preparation": true,
+    "parent_and_descendant_flags_rechecked_before_native_publication": true,
+    "unregister_closes_new_child_admission_and_retires_descendants": true,
+    "hub_hardware_profile_remains_while_descendant_DMA_may_be_live": true,
+    "parent_Disable_Slot_waits_for_children_and_requests": true,
+    "child_unlinks_only_after_actual_Disable_or_isolation_and_successful_unmap": true,
+    "child_unmap_failure_keeps_parent_and_slot_allocation": true,
+    "partial_child_creation_also_holds_parent": true,
+    "parent_retirement_marks_entire_bounded_subtree": true,
+    "Native_descriptor_policy_attach_start_and_device_ownership_remain_in_Family": true,
+    "global_isolation_release_visits_leaves_before_parents_and_keeps_failed_child_ancestors": true,
+    "TT_maintenance_child_and_HS_hub_leases_block_free_PM_and_reconfiguration": true,
+    "dirty_TT_target_survives_FS_intermediate_retirement_until_HS_owner_cleanup_or_lifetime_closure": true
+  },
+  "offline_models": [
+    "USB2 and SS descriptor boundaries; native flags0/1 and packed layout",
+    "mixed HS/FS/LS tree, nested TT ancestor, FS hub MTT clearing, and independent HS branch",
+    "FS root without external TT and separate SS tree",
+    "parent registration/retirement, speed mismatch, ambiguous PSI, malformed path and maximum depth",
+    "both32/64 byte contexts with existing configured endpoints; Slot Add only and unchanged EP0",
+    "actual CommandQueue Address Device and hub Configure Endpoint with original retained records",
+    "15 invalid command/output ownership cases, pending/frozen/foreign queue and already-acknowledged proof",
+    "actual TT slot3/USB address73, child slot5/USB address38, Disable Slot and failed unmap retaining parent"
+  ],
+  "verification": {
+    "command": "make test-usb",
+    "log": "build/usb/tests.log",
+    "log_sha256": "13472b3c3992b5f517c419d143c08a897e20d5cf3e7674161afa31f12d05b537",
+    "sanitizer_command": "make test-usb-sanitize",
+    "sanitizer_log": "build/usb/sanitized.log",
+    "sanitizer_log_sha256": "d344bb23b828a1702209e574b12854d5d99446576aeba077514f6cc366c3e9ee",
+    "arm64_object": "build/drivers/obj/QcomUSB/QcomUSBHost.cpp.o",
+    "arm64_object_sha256": "5316a1e6a98f921bf6380802605571ee3fe32f97c9b09cce3fee5b07ec3490f9",
+    "compiler_vtable": "build/tests/kernel/usb/2-usb_host_abi_compile.cpp.vtable.txt",
+    "compiler_vtable_sha256": "9abdcf2b0aea95edf912c892e5b39bb5d6d453647495d53cccb86134c2c1bf79",
+    "new_build_or_test_scripts_added": false
+  },
+  "kernel_runtime_tested": false,
+  "hardware_tested": false,
+  "controller_matching_enabled": false,
+  "full_Native_hub_lifecycle_complete": false,
+  "remaining": [
+    "Complete TT cleanup for ordinary abort/timeout/close without Native error latch and remaining Native hub/port lifecycle policy.",
+    "Complete current/source budgeting, bundled buffers, optional streams and controller/system PM.",
+    "Complete Device/OTG/platform and trusted DMA handoff, enable matching and verify kernelcache closure before kernel/runtime or hardware tests."
+  ],
+  "tt_recovery_audit": "docs/usb/host-tt-recovery-audit.json",
+  "Native_control_bulk_TT_error_recovery_integrated": true,
+  "failed_Address_Device_default_TT_recovery_integrated": true
+}

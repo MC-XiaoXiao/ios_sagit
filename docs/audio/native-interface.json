@@ -1,0 +1,209 @@
+{
+  "provider_image": "build/ios18-kext-analysis/kernelcache.release.ipad7c.macho",
+  "sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+  "class": {
+    "IOAudio2Device": {
+      "super": "IOService",
+      "instance_size": 232,
+      "vtable_slots": 197
+    }
+  },
+  "virtuals": {
+    "14": {
+      "alias": "free",
+      "address": "0xfffffff005bb0aa0"
+    },
+    "21": {
+      "alias": "init",
+      "address": "0xfffffff005bb0a60"
+    },
+    "44": {
+      "alias": "setProperties",
+      "address": "0xfffffff005bb0d74"
+    },
+    "81": {
+      "alias": "configureReport",
+      "address": "0xfffffff005bb1840"
+    },
+    "82": {
+      "alias": "updateReport",
+      "address": "0xfffffff005bb1748"
+    },
+    "86": {
+      "alias": "start",
+      "address": "0xfffffff005bb0b30"
+    },
+    "87": {
+      "alias": "stop",
+      "address": "0xfffffff005bb0d34"
+    },
+    "140": {
+      "alias": "newUserClient",
+      "address": "0xfffffff005bb10bc"
+    },
+    "168": {
+      "alias": "isRunning",
+      "address": "0xfffffff005bb0e20"
+    },
+    "169": {
+      "alias": "startIO",
+      "address": "0xfffffff005bb0e28"
+    },
+    "170": {
+      "alias": "stopIO",
+      "address": "0xfffffff005bb0f0c"
+    },
+    "171": {
+      "alias": "startIOWithFlags",
+      "address": "0xfffffff005bb0ff0"
+    },
+    "172": {
+      "alias": "stopIOWithFlags",
+      "address": "0xfffffff005bb1034"
+    },
+    "173": {
+      "alias": "nativeSlot173",
+      "address": "0xfffffff005bb1078"
+    },
+    "174": {
+      "alias": "getStatusBuffer",
+      "address": "0xfffffff005bb10a4"
+    },
+    "175": {
+      "alias": "nativeSlot175",
+      "address": "0xfffffff005bb1080"
+    },
+    "176": {
+      "alias": "nativeSlot176",
+      "address": "0xfffffff005bb108c"
+    },
+    "177": {
+      "alias": "nativeSlot177",
+      "address": "0xfffffff005bb1098"
+    },
+    "178": {
+      "alias": "clientClosed",
+      "address": "0xfffffff005bb127c"
+    },
+    "179": {
+      "alias": "registerNotificationPort",
+      "address": "0xfffffff005bb12e8"
+    },
+    "180": {
+      "alias": "notify",
+      "address": "0xfffffff005bb1314"
+    },
+    "181": {
+      "alias": "nativeSlot181",
+      "address": "0xfffffff005bb1374"
+    },
+    "182": {
+      "alias": "clientMemoryForType",
+      "address": "0xfffffff005bb1454"
+    },
+    "183": {
+      "alias": "nativeSlot183",
+      "address": "0xfffffff005bb14fc"
+    },
+    "184": {
+      "alias": "nativeSlot184",
+      "address": "0xfffffff005bb1510"
+    },
+    "185": {
+      "alias": "nativeSlot185",
+      "address": "0xfffffff005bb151c"
+    },
+    "186": {
+      "alias": "requestConfigChange",
+      "address": "0xfffffff005bb1528"
+    },
+    "187": {
+      "alias": "handleConfigChange",
+      "address": "0xfffffff005bb161c"
+    },
+    "188": {
+      "alias": "handleChangeSampleRate",
+      "address": "0xfffffff005bb16e8"
+    },
+    "189": {
+      "alias": "handleChangeStreamFormat",
+      "address": "0xfffffff005bb16f4"
+    },
+    "190": {
+      "alias": "setStreamActive",
+      "address": "0xfffffff005bb1700"
+    },
+    "191": {
+      "alias": "nativeSlot191",
+      "address": "0xfffffff005bb1708"
+    },
+    "192": {
+      "alias": "nativeSlot192",
+      "address": "0xfffffff005bb1714"
+    },
+    "193": {
+      "alias": "getStreamBuffer",
+      "address": "0xfffffff005bb171c"
+    },
+    "194": {
+      "alias": "nativeSlot194",
+      "address": "0xfffffff005bb1728"
+    },
+    "195": {
+      "alias": "nativeSlot195",
+      "address": "0xfffffff005bb1734"
+    },
+    "196": {
+      "alias": "performConfigChange",
+      "address": "0xfffffff005bb1740"
+    }
+  },
+  "native_userclient": "IOAudio2DeviceUserClient",
+  "entitlement": "com.apple.private.audio.driver-host",
+  "memory_types": {
+    "0x00000000": "native 40-byte status descriptor",
+    "0x10000001": "output stream 1 PCM descriptor"
+  },
+  "rate_encoding": "unsigned 32.32 Hz, not IEEE double",
+  "status_layout": [
+    "uint64 sample frames",
+    "uint64 mach absolute host time",
+    "uint64 discontinuity seed",
+    "uint64 client input position",
+    "uint64 client output position"
+  ],
+  "format_bytes": 40,
+  "config_bytes": 32,
+  "config_layout": [
+    "uint32 object ID = 0",
+    "uint32 selector = conf",
+    "uint32 action = 4 or 5",
+    "uint32 stream ID = 0 or 1",
+    "uint64 rate in 32.32",
+    "uint64 context = 0"
+  ],
+  "evidence_addresses": {
+    "stream_dictionary": "0xfffffff005bb248c",
+    "format_dictionary": "0xfffffff005bb2948",
+    "ranged_format_dictionary": "0xfffffff005bb2a54",
+    "pcm_format_factory": "0xfffffff005bb2bcc",
+    "native_dispatch_table": "0xfffffff005236178",
+    "native_notification": "0xfffffff005bb1314",
+    "usb_output_reference": "0xfffffff0065c7348",
+    "usb_stream_mapping": "0xfffffff0065c9f44",
+    "usb_timestamp_reference": "0xfffffff0065c84a4"
+  },
+  "hardware_tested": false,
+  "native_userspace_tested": false,
+  "board_backend_implemented": false,
+  "board_evidence": {
+    "docs/sdm835/reference/xiaomi-sagit-msm8998-mtp.dtsi": "b5ea7890a131e642931a137ea77aee35bc246691b62f290b7745871c96d537f8",
+    "docs/sdm835/reference/xiaomi-msm8998.dtsi": "0fd6fd923349908a5fda2eeb0c2e1a548fde265666c81832cdb6d9ad7d1010ea",
+    "docs/sdm835/reference/linux-msm8998.dtsi": "a939e05d08e3f239877d300801fbc7afce6617fc24347f94683238fe65793392"
+  },
+  "adsp_transport_backend_implemented": true,
+  "asm_output_backend_implemented": true,
+  "retained_board_handoff_producer": false,
+  "cold_boot_supported": false,
+  "dsp_host_clock_correlation": "APR response observation; no exact AVTimer-to-mach conversion"
+}

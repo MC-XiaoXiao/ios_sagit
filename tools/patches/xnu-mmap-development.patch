@@ -1,0 +1,135 @@
+diff --git a/bsd/kern/kern_mman.c b/bsd/kern/kern_mman.c
+--- a/bsd/kern/kern_mman.c
++++ b/bsd/kern/kern_mman.c
+@@ -135,6 +135,7 @@
+ #include <security/mac_framework.h>
+ #endif
+ #include <os/overflow.h>
++#include <pexpert/pexpert.h>
+ 
+ /*
+  * this function implements the same logic as dyld's "dyld_fall_2020_os_versions"
+@@ -293,6 +294,7 @@
+ 	int                     mapanon = 0;
+ 	int                     fpref = 0;
+ 	int                     error = 0;
++	const char             *failure_stage = "arguments";
+ 	int                     fd = uap->fd;
+ 	int                     num_retries = 0;
+ 	kern_return_t           kr;
+@@ -653,6 +655,7 @@
+ 
+ 			handle = (void *)vp;
+ #if CONFIG_MACF
++			failure_stage = "MAC policy";
+ 			error = mac_file_check_mmap(vfs_context_ucred(ctx),
+ 			    fp->fp_glob, prot, flags, file_pos, &maxprot);
+ 			if (error) {
+@@ -668,6 +671,7 @@
+ 			 * then we don't check for writeability on the file
+ 			 * object, because it will only ever see reads.
+ 			 */
++			failure_stage = "filesystem";
+ 			error = VNOP_MMAP_CHECK(vp, (flags & MAP_PRIVATE) ?
+ 			    (prot & ~PROT_WRITE) : prot, ctx);
+ 			if (error) {
+@@ -760,6 +764,7 @@
+ 	/*
+ 	 * Lookup/allocate object.
+ 	 */
++	failure_stage = "VM mapping";
+ 	if (handle == NULL) {
+ 		control = NULL;
+ #ifdef notyet
+@@ -966,6 +971,17 @@
+ 		break;
+ 	}
+ bad:
++#if DEVELOPMENT || DEBUG
++	if (error) {
++		int trace = 0;
++		if (PE_parse_boot_argn("mmap-failure-trace", &trace, sizeof(trace)) && trace) {
++			printf("mmap failure: pid=%d process=%s stage=%s errno=%d fd=%d prot=%x flags=%x\n",
++			    proc_getpid(p), p->p_comm, failure_stage, error, fd, uap->prot, uap->flags);
++		}
++	}
++#else
++	(void)failure_stage;
++#endif
+ 	if (pager != MEMORY_OBJECT_NULL) {
+ 		/*
+ 		 * Release the reference on the pager.
+diff --git a/security/mac_file.c b/security/mac_file.c
+--- a/security/mac_file.c
++++ b/security/mac_file.c
+@@ -46,6 +46,38 @@
+ #include <sys/file_internal.h>
+ 
+ #include <security/mac_internal.h>
++#include <pexpert/pexpert.h>
++
++#if (DEVELOPMENT || DEBUG) && !SECURE_KERNEL
++/* Explicit, path-scoped console diagnostics on a debugger-enabled boot. */
++static boolean_t
++mac_file_development_mmap_allowed(struct fileglob *fg)
++{
++	char allowed[MAXPATHLEN];
++	char path[MAXPATHLEN];
++	int path_size = sizeof(path);
++	struct vnode *vp;
++	int error;
++
++	if (!PE_i_can_has_debugger(NULL) ||
++	    !PE_parse_boot_argn("development-sandbox-mmap-path", allowed, sizeof(allowed)) ||
++	    allowed[0] != '/' || !fg || FILEGLOB_DTYPE(fg) != DTYPE_VNODE) {
++		return FALSE;
++	}
++	allowed[sizeof(allowed) - 1] = '\0';
++	vp = (struct vnode *)fg_get_data(fg);
++	if (vnode_getwithref(vp) != 0) {
++		return FALSE;
++	}
++	error = vn_getpath(vp, path, &path_size);
++	vnode_put(vp);
++	if (error || strcmp(path, allowed) != 0) {
++		return FALSE;
++	}
++	printf("mmap development allowance: Sandbox path=%s\n", path);
++	return TRUE;
++}
++#endif
+ 
+ int
+ mac_file_check_create(struct ucred *cred)
+@@ -178,7 +210,30 @@
+ 	int maxp;
+ 
+ 	maxp = *maxprot;
+-	MAC_CHECK(file_check_mmap, cred, fg, NULL, prot, flags, offset, &maxp);
++#if DEVELOPMENT || DEBUG
++	int trace = 0;
++	boolean_t development_allow = FALSE;
++#if !SECURE_KERNEL
++	development_allow = mac_file_development_mmap_allowed(fg);
++#endif
++	PE_parse_boot_argn("mmap-failure-trace", &trace, sizeof(trace));
++	if (trace || development_allow) {
++		error = 0;
++		MAC_POLICY_ITERATE({
++			if (mpc->mpc_ops->mpo_file_check_mmap != NULL &&
++			    !(development_allow && strcmp(mpc->mpc_name, "Sandbox") == 0)) {
++				MAC_CHECK_CALL(file_check_mmap, mpc);
++				int __step_err = mpc->mpc_ops->mpo_file_check_mmap(cred, fg, NULL, prot, flags, offset, &maxp);
++				MAC_CHECK_RSLT(file_check_mmap, mpc);
++				if (trace && __step_err) printf("mmap denial: policy=%s errno=%d\n", mpc->mpc_name, __step_err);
++				error = mac_error_select(__step_err, error);
++			}
++		});
++	} else
++#endif
++	{
++		MAC_CHECK(file_check_mmap, cred, fg, NULL, prot, flags, offset, &maxp);
++	}
+ 	if ((maxp | *maxprot) != *maxprot) {
+ 		panic("file_check_mmap increased max protections");
+ 	}

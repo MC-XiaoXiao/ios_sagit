@@ -1,0 +1,315 @@
+{
+  "qcom_q6v5_mss.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/remoteproc/qcom_q6v5_mss.c",
+    "ref": "v6.12",
+    "sha256": "d76df78ae58de5784f7850a4c006a3a3220532e52064d8db88c91a1ed075d2df",
+    "purpose": "Protocol and register reference; not linked into the driver",
+    "license": "GPL-2.0; see source SPDX and retained notices"
+  },
+  "smem.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/soc/qcom/smem.c",
+    "ref": "v6.12",
+    "sha256": "0736029ee4505f23cf13d5f9b6d3e407eb1ed07f1a806cc8f24a7a4b18da2b75",
+    "purpose": "Protocol and register reference; not linked into the driver",
+    "license": "GPL-2.0; see source SPDX and retained notices"
+  },
+  "smp2p.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/soc/qcom/smp2p.c",
+    "ref": "v6.12",
+    "sha256": "372f7eca2129e779693843e032facbb62b245c526446414d19cbb4ee3cb3f465",
+    "purpose": "Protocol and register reference; not linked into the driver",
+    "license": "GPL-2.0; see source SPDX and retained notices"
+  },
+  "mdt_loader.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/soc/qcom/mdt_loader.c",
+    "ref": "v6.12",
+    "sha256": "ea79424add96b68c81ab9dfbde64ffac3ea5089a17259ba980c896f5d5e441ed",
+    "purpose": "Protocol and register reference; not linked into the driver",
+    "license": "GPL-2.0; see source SPDX and retained notices"
+  },
+  "qcom_scm.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/firmware/qcom/qcom_scm.c",
+    "ref": "v6.12",
+    "sha256": "8f1fbf64363590ea3c55b5bf4267a301792948473df9d837f4efa0206b9a5001",
+    "purpose": "Protocol and register reference; not linked into the driver",
+    "license": "GPL-2.0; see source SPDX and retained notices"
+  },
+  "mdt_loader.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/include/linux/soc/qcom/mdt_loader.h",
+    "ref": "v6.12",
+    "sha256": "12d1c1c8b4e420ec28af0cd8255c9d0d37d56df7bf04714a61cee99479b3a8be",
+    "purpose": "Protocol and register reference; not linked into the driver",
+    "license": "GPL-2.0; see source SPDX and retained notices"
+  },
+  "qrtr.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/include/uapi/linux/qrtr.h",
+    "ref": "v6.12",
+    "sha256": "b3f919d3f58984e4895dab7e753aaed2d4069c030b81b8e8bd743d603ade3957",
+    "purpose": "Protocol and register reference; not linked into the driver",
+    "license": "GPL-2.0; see source SPDX and retained notices"
+  },
+  "msm8998.dtsi": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/arch/arm64/boot/dts/qcom/msm8998.dtsi",
+    "ref": "v6.12",
+    "sha256": "a939e05d08e3f239877d300801fbc7afce6617fc24347f94683238fe65793392",
+    "purpose": "Protocol and register reference; not linked into the driver",
+    "license": "GPL-2.0; see source SPDX and retained notices"
+  },
+  "GPL-2.0": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/LICENSES/preferred/GPL-2.0",
+    "ref": "v6.12",
+    "sha256": "f6b78c087c3ebdf0f3c13415070dd480a3f35d8fc76f3d02180a407c1c812f79",
+    "purpose": "Protocol and register reference; not linked into the driver",
+    "license": "GPL-2.0; see source SPDX and retained notices"
+  },
+  "qcom_q6v5.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/remoteproc/qcom_q6v5.c",
+    "ref": "v6.12",
+    "sha256": "5f1f5974b8f142b1894e8defc557723e60f585bbf766e2b417c265bf9797caf2",
+    "purpose": "reference only; excluded from driver build",
+    "license": "See source SPDX and retained notices"
+  },
+  "qcom_glink_native.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/rpmsg/qcom_glink_native.c",
+    "ref": "v6.12",
+    "sha256": "0238242a1620174c083aceefa45f165913214ae3be84476e45e5caed47239466",
+    "purpose": "reference only; excluded from driver build",
+    "license": "See source SPDX and retained notices"
+  },
+  "qcom_glink_smem.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/rpmsg/qcom_glink_smem.c",
+    "ref": "v6.12",
+    "sha256": "ed1f6b0c4ce66a9161fe699fd446f60d8e9863dd4596ddf084cb9422a66b2acb",
+    "license": "See SPDX in retained source",
+    "purpose": "reference only; not compiled"
+  },
+  "msm8998-xiaomi-sagit.dts": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/arch/arm64/boot/dts/qcom/msm8998-xiaomi-sagit.dts",
+    "ref": "v6.12",
+    "sha256": "f20b86bb673d5cec3ba7bb5c1973abcce0377fb27cc22d5b3c58ee940b8b730f",
+    "license": "See SPDX in retained source",
+    "purpose": "reference only; not compiled"
+  },
+  "af_qrtr.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/net/qrtr/af_qrtr.c",
+    "ref": "v6.12",
+    "sha256": "13c230074182a50690103bfceb71a84ede0dc21fad9c33bbbfea16a8a37a49e1",
+    "license": "See SPDX in retained source",
+    "purpose": "reference only; not compiled"
+  },
+  "qcom_scm-smc.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/firmware/qcom/qcom_scm-smc.c",
+    "ref": "v6.12",
+    "sha256": "e9121b279b3813b8ca3e0ac27fdcbe367b1e12cbfcbf39d75c754d3bc88f8c45",
+    "purpose": "wire ABI reference; excluded from compiled driver",
+    "license": "See SPDX / upstream project COPYING"
+  },
+  "qcom_scm.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/firmware/qcom/qcom_scm.h",
+    "ref": "v6.12",
+    "sha256": "d9cc584a5ff50cf8701a7775ad0f2e94f1b46683d0549e8871847c9122394881",
+    "purpose": "wire ABI reference; excluded from compiled driver",
+    "license": "See SPDX / upstream project COPYING"
+  },
+  "qcom-scm-public.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/include/linux/firmware/qcom/qcom_scm.h",
+    "ref": "v6.12",
+    "sha256": "47390ea0f7d1fb6c3c298ed0fd13ee0275618e84d68ea43f0f2ac10448c448a1",
+    "purpose": "wire ABI reference; excluded from compiled driver",
+    "license": "See SPDX / upstream project COPYING"
+  },
+  "libqmi-dms.json": {
+    "url": "https://raw.githubusercontent.com/linux-mobile-broadband/libqmi/1.36.0/data/qmi-service-dms.json",
+    "ref": "1.36.0",
+    "sha256": "8f87102380e16b91d02a8863b7c187130b6ae5e4c95e3bec4ef096770343faa3",
+    "purpose": "wire ABI reference; excluded from compiled driver",
+    "license": "See SPDX / upstream project COPYING"
+  },
+  "libqmi-nas.json": {
+    "url": "https://raw.githubusercontent.com/linux-mobile-broadband/libqmi/1.36.0/data/qmi-service-nas.json",
+    "ref": "1.36.0",
+    "sha256": "21142324059ae8a43ccce47e6df7c00563b5324b6ea7888f6afcd4f348531947",
+    "purpose": "wire ABI reference; excluded from compiled driver",
+    "license": "See SPDX / upstream project COPYING"
+  },
+  "libqmi-wds.json": {
+    "url": "https://raw.githubusercontent.com/linux-mobile-broadband/libqmi/1.36.0/data/qmi-service-wds.json",
+    "ref": "1.36.0",
+    "sha256": "62fdd54826eb48b5f36ba97448948cf699998a5ed89cb582748532d6fce0e721",
+    "purpose": "wire ABI reference; excluded from compiled driver",
+    "license": "See SPDX / upstream project COPYING"
+  },
+  "libqmi-uim.json": {
+    "url": "https://raw.githubusercontent.com/linux-mobile-broadband/libqmi/1.36.0/data/qmi-service-uim.json",
+    "ref": "1.36.0",
+    "sha256": "72c63dca54d286f2b7a2ff694f1210daec6a745d9d638f5007acb6c597e2237f",
+    "purpose": "wire ABI reference; excluded from compiled driver",
+    "license": "See SPDX / upstream project COPYING"
+  },
+  "clk-smd-rpm.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/clk/qcom/clk-smd-rpm.c",
+    "bytes": 49353,
+    "sha256": "c5df7a96bb4f1470fcdaec3f546db0d6c8032f6eccae0637c4b8434225644030",
+    "license": "GPL-2.0-only",
+    "ref": "v6.12",
+    "purpose": "RPM XO/QDSS clock wire ABI and active/sleep voting reference; not linked into the driver"
+  },
+  "rpmpd.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/pmdomain/qcom/rpmpd.c",
+    "sha256": "0e893a1c23d447fd1f3e82555f733da5ff013639a59251aca1713678d7b3e5c6",
+    "purpose": "MSM8998 proxy-domain maximum and RPM level ABI reference; not linked into the driver"
+  },
+  "qcom-rpmpd.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/refs/tags/v6.12/include/dt-bindings/power/qcom-rpmpd.h",
+    "sha256": "e053ecdd9c4c5a8698002e4a29a0a1f0c0c0eac7b966a6d5912ea839af7207fa",
+    "purpose": "MSM8998 proxy-domain maximum and RPM level ABI reference; not linked into the driver"
+  },
+  "rmtfs-qmi_rmtfs.qmi": {
+    "url": "https://raw.githubusercontent.com/linux-msm/rmtfs/b30a3eb38f9af283f18dbd3c7755653efc52c094/qmi_rmtfs.qmi",
+    "ref": "b30a3eb38f9af283f18dbd3c7755653efc52c094",
+    "sha256": "d02cc77f0a0138bee4a54d11c44150c5adb53a02ad083b6e4d3e4ed17587f2fa",
+    "bytes": 1405,
+    "license": "BSD-3-Clause",
+    "purpose": "RMTFS wire, shared-memory and storage reference; not linked into the driver"
+  },
+  "rmtfs-qmi_rmtfs.h": {
+    "url": "https://raw.githubusercontent.com/linux-msm/rmtfs/b30a3eb38f9af283f18dbd3c7755653efc52c094/qmi_rmtfs.h",
+    "ref": "b30a3eb38f9af283f18dbd3c7755653efc52c094",
+    "sha256": "cef8fe7a4e930f4c756d15f4db4d9b2dbdef275f51a696e1f909f8b8be036e13",
+    "bytes": 2132,
+    "license": "BSD-3-Clause",
+    "purpose": "RMTFS wire, shared-memory and storage reference; not linked into the driver"
+  },
+  "rmtfs-qmi_rmtfs.c": {
+    "url": "https://raw.githubusercontent.com/linux-msm/rmtfs/b30a3eb38f9af283f18dbd3c7755653efc52c094/qmi_rmtfs.c",
+    "ref": "b30a3eb38f9af283f18dbd3c7755653efc52c094",
+    "sha256": "fdac6b8eef0c18cb93a4242f1b1acc811ce3bf207caa2fc201fdb97c25cef35d",
+    "bytes": 5718,
+    "license": "BSD-3-Clause",
+    "purpose": "RMTFS wire, shared-memory and storage reference; not linked into the driver"
+  },
+  "rmtfs-rmtfs.c": {
+    "url": "https://raw.githubusercontent.com/linux-msm/rmtfs/b30a3eb38f9af283f18dbd3c7755653efc52c094/rmtfs.c",
+    "ref": "b30a3eb38f9af283f18dbd3c7755653efc52c094",
+    "sha256": "ff99083eb0d8bdd84a42306fcb1e357e87be9e49b45f607493df99c9f3b42f7b",
+    "bytes": 13494,
+    "license": "BSD-3-Clause",
+    "purpose": "RMTFS wire, shared-memory and storage reference; not linked into the driver"
+  },
+  "rmtfs-sharedmem.c": {
+    "url": "https://raw.githubusercontent.com/linux-msm/rmtfs/b30a3eb38f9af283f18dbd3c7755653efc52c094/sharedmem.c",
+    "ref": "b30a3eb38f9af283f18dbd3c7755653efc52c094",
+    "sha256": "8919421c90578f8bcd8093231c599678ebca0d28ed82ffc460eefe07d3dfd5f7",
+    "bytes": 9585,
+    "license": "BSD-3-Clause",
+    "purpose": "RMTFS wire, shared-memory and storage reference; not linked into the driver"
+  },
+  "rmtfs-storage.c": {
+    "url": "https://raw.githubusercontent.com/linux-msm/rmtfs/b30a3eb38f9af283f18dbd3c7755653efc52c094/storage.c",
+    "ref": "b30a3eb38f9af283f18dbd3c7755653efc52c094",
+    "sha256": "7d69325b8e035af2682d6bfed8dcfabaf083a9e33a749614dbb57f79eda852e7",
+    "bytes": 6534,
+    "license": "BSD-3-Clause",
+    "purpose": "RMTFS wire, shared-memory and storage reference; not linked into the driver"
+  },
+  "rmtfs-rproc.c": {
+    "url": "https://raw.githubusercontent.com/linux-msm/rmtfs/b30a3eb38f9af283f18dbd3c7755653efc52c094/rproc.c",
+    "ref": "b30a3eb38f9af283f18dbd3c7755653efc52c094",
+    "sha256": "62b4ecc78b1fcf7adc83bebf1852b248911219af1e7c25627e26752665b1e1cd",
+    "bytes": 4640,
+    "license": "BSD-3-Clause",
+    "purpose": "RMTFS wire, shared-memory and storage reference; not linked into the driver"
+  },
+  "rmtfs-LICENSE": {
+    "url": "https://raw.githubusercontent.com/linux-msm/rmtfs/b30a3eb38f9af283f18dbd3c7755653efc52c094/LICENSE",
+    "ref": "b30a3eb38f9af283f18dbd3c7755653efc52c094",
+    "sha256": "1e1e2972bd05841b6a009bd6f7aef9d847f9a2b721d1a308340e642faa2482cd",
+    "bytes": 1496,
+    "license": "BSD-3-Clause",
+    "purpose": "RMTFS wire, shared-memory and storage reference; not linked into the driver"
+  },
+  "rmtfs_mem.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/soc/qcom/rmtfs_mem.c",
+    "ref": "v6.12",
+    "sha256": "2a8560cad4852e82de2e278c3b6d2af1f228be667ca0a21bce95fce35d42b415",
+    "bytes": 9253,
+    "license": "GPL-2.0",
+    "purpose": "RMTFS physical reservation, VMID assignment and lifetime reference; not linked into driver"
+  },
+  "rmtfs-mem.yaml": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/Documentation/devicetree/bindings/reserved-memory/qcom,rmtfs-mem.yaml",
+    "ref": "v6.12",
+    "sha256": "de79dcadcfe1e00c256cb071264c1e1f56c136ac6f470155e979b2b9b7722129",
+    "bytes": 1809,
+    "license": "GPL-2.0",
+    "purpose": "RMTFS physical reservation, VMID assignment and lifetime reference; not linked into driver"
+  },
+  "qcom_sysmon.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/remoteproc/qcom_sysmon.c",
+    "ref": "v6.12",
+    "sha256": "ac9134027510ad57eb9159ad88d589a830939f6ce974bc9c17e9bbf7844ed9d6",
+    "bytes": 20014,
+    "purpose": "Remoteproc sysmon/SSR and cross-edge lifecycle reference; not linked into the driver",
+    "license": "See source SPDX and retained notices"
+  },
+  "qcom_glink_ssr.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/rpmsg/qcom_glink_ssr.c",
+    "ref": "v6.12",
+    "sha256": "8d9357ede12cd460ae93cd77c0c18ded01cc776279d865a4e47f4892384360e7",
+    "bytes": 4204,
+    "purpose": "Remoteproc sysmon/SSR and cross-edge lifecycle reference; not linked into the driver",
+    "license": "See source SPDX and retained notices"
+  },
+  "qcom_common.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/remoteproc/qcom_common.c",
+    "ref": "v6.12",
+    "sha256": "476eca693cfa80cd1f5acd09e27db67dea001851f136911ff2fa0f9a406a09f9",
+    "bytes": 16349,
+    "purpose": "Remoteproc sysmon/SSR and cross-edge lifecycle reference; not linked into the driver",
+    "license": "See source SPDX and retained notices"
+  },
+  "qcom_common.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/remoteproc/qcom_common.h",
+    "ref": "v6.12",
+    "sha256": "abcf7a5cd185c72ecbacef0d52558b5ec4d96040930760794aa9cce898120087",
+    "bytes": 2375,
+    "purpose": "Remoteproc sysmon/SSR and cross-edge lifecycle reference; not linked into the driver",
+    "license": "See source SPDX and retained notices"
+  },
+  "qcom_q6v5_pas.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/remoteproc/qcom_q6v5_pas.c",
+    "ref": "v6.12",
+    "sha256": "3043e72a0265d84dc6d1e5b8c6537e2ebfafea824698b61f6e3ce15cc0d14772",
+    "bytes": 36680,
+    "license": "GPL-2.0-only; see source SPDX",
+    "purpose": "MSM8998 peer subsystem sysmon/GLINK edge names; not compiled into driver"
+  },
+  "tqftpserv-tqftpserv.c": {
+    "url": "https://raw.githubusercontent.com/linux-msm/tqftpserv/0bf5b98c24229b0042554d99bb1509d813219f36/tqftpserv.c",
+    "bytes": 26127,
+    "sha256": "b980c9d7ba3e67ac353b279d85e8bad9de6836d3887454a87d674001184b96ca",
+    "purpose": "QRTR TFTP protocol and immutable firmware path reference; not compiled into driver",
+    "commit": "0bf5b98c24229b0042554d99bb1509d813219f36"
+  },
+  "tqftpserv-translate.c": {
+    "url": "https://raw.githubusercontent.com/linux-msm/tqftpserv/0bf5b98c24229b0042554d99bb1509d813219f36/translate.c",
+    "bytes": 8760,
+    "sha256": "aefa6e5e8afc0179ebbd1203910126995e2d4e257080fbaf223f882c067fc7ab",
+    "purpose": "QRTR TFTP protocol and immutable firmware path reference; not compiled into driver",
+    "commit": "0bf5b98c24229b0042554d99bb1509d813219f36"
+  },
+  "tqftpserv-README.md": {
+    "url": "https://raw.githubusercontent.com/linux-msm/tqftpserv/0bf5b98c24229b0042554d99bb1509d813219f36/README.md",
+    "bytes": 2977,
+    "sha256": "12254f235875819129897dcf5c42b5c99160a49c3fdf80d6ceb6b020529cdcd9",
+    "purpose": "QRTR TFTP protocol and immutable firmware path reference; not compiled into driver",
+    "commit": "0bf5b98c24229b0042554d99bb1509d813219f36"
+  },
+  "tqftpserv-LICENSE": {
+    "url": "https://raw.githubusercontent.com/linux-msm/tqftpserv/0bf5b98c24229b0042554d99bb1509d813219f36/LICENSE",
+    "bytes": 1568,
+    "sha256": "a6d7cc7891d16f9c74c9a9c2514805e59bb8758db7690bb7ae065c79cec9515a",
+    "purpose": "QRTR TFTP protocol and immutable firmware path reference; not compiled into driver",
+    "commit": "0bf5b98c24229b0042554d99bb1509d813219f36"
+  }
+}

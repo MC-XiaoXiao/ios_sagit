@@ -1,0 +1,206 @@
+{
+  "bundle_identifier": "com.apple.iokit.IOAudio2Family",
+  "image_sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+  "architecture": "arm64",
+  "classes": {
+    "IOAudio2Device": {
+      "super": "IOService",
+      "instance_size": 232,
+      "vtable_slots": 197
+    }
+  },
+  "required_symbols": [
+    "__ZN14IOAudio2Device10gMetaClassE",
+    "__ZN14IOAudio2Device12clientClosedEv",
+    "__ZN14IOAudio2Device12updateReportEP19IOReportChannelListjPvS2_",
+    "__ZN14IOAudio2Device13nativeSlot173Ev",
+    "__ZN14IOAudio2Device13nativeSlot175Ev",
+    "__ZN14IOAudio2Device13nativeSlot176Ev",
+    "__ZN14IOAudio2Device13nativeSlot177Ev",
+    "__ZN14IOAudio2Device13nativeSlot181EjPKv",
+    "__ZN14IOAudio2Device13nativeSlot183Ev",
+    "__ZN14IOAudio2Device13nativeSlot184Ev",
+    "__ZN14IOAudio2Device13nativeSlot185Ev",
+    "__ZN14IOAudio2Device13nativeSlot191Ev",
+    "__ZN14IOAudio2Device13nativeSlot192Ev",
+    "__ZN14IOAudio2Device13nativeSlot194Ev",
+    "__ZN14IOAudio2Device13nativeSlot195Ev",
+    "__ZN14IOAudio2Device13newUserClientEP4taskPvjP12OSDictionaryPP12IOUserClient",
+    "__ZN14IOAudio2Device13setPropertiesEP8OSObject",
+    "__ZN14IOAudio2Device15configureReportEP19IOReportChannelListjPvS2_",
+    "__ZN14IOAudio2Device15getStatusBufferEv",
+    "__ZN14IOAudio2Device15getStreamBufferEjPjPP18IOMemoryDescriptor",
+    "__ZN14IOAudio2Device15setStreamActiveEjj",
+    "__ZN14IOAudio2Device15stopIOWithFlagsEjPy",
+    "__ZN14IOAudio2Device16startIOWithFlagsEjPy",
+    "__ZN14IOAudio2Device18handleConfigChangeEPKN11AudioOutput12ConfigChangeEy",
+    "__ZN14IOAudio2Device19clientMemoryForTypeEjPjPP18IOMemoryDescriptor",
+    "__ZN14IOAudio2Device19performConfigChangeEPKN11AudioOutput12ConfigChangeE",
+    "__ZN14IOAudio2Device19requestConfigChangeEjjyy",
+    "__ZN14IOAudio2Device22handleChangeSampleRateEPKyy",
+    "__ZN14IOAudio2Device24handleChangeStreamFormatEjPKN11AudioOutput6FormatEy",
+    "__ZN14IOAudio2Device24registerNotificationPortEPvjj",
+    "__ZN14IOAudio2Device4freeEv",
+    "__ZN14IOAudio2Device4initEP12OSDictionary",
+    "__ZN14IOAudio2Device4stopEP9IOService",
+    "__ZN14IOAudio2Device5startEP9IOService",
+    "__ZN14IOAudio2Device6notifyEjjjjyy",
+    "__ZN14IOAudio2Device6stopIOEv",
+    "__ZN14IOAudio2Device7startIOEv",
+    "__ZN14IOAudio2Device9isRunningEv",
+    "__ZN14IOAudio2DeviceC2EPK11OSMetaClass",
+    "__ZN14IOAudio2DeviceD2Ev",
+    "__ZTV14IOAudio2Device"
+  ],
+  "virtual_symbols": {
+    "__ZN14IOAudio2Device4freeEv": {
+      "class": "IOAudio2Device",
+      "slot": 14
+    },
+    "__ZN14IOAudio2Device4initEP12OSDictionary": {
+      "class": "IOAudio2Device",
+      "slot": 21
+    },
+    "__ZN14IOAudio2Device13setPropertiesEP8OSObject": {
+      "class": "IOAudio2Device",
+      "slot": 44
+    },
+    "__ZN14IOAudio2Device15configureReportEP19IOReportChannelListjPvS2_": {
+      "class": "IOAudio2Device",
+      "slot": 81
+    },
+    "__ZN14IOAudio2Device12updateReportEP19IOReportChannelListjPvS2_": {
+      "class": "IOAudio2Device",
+      "slot": 82
+    },
+    "__ZN14IOAudio2Device5startEP9IOService": {
+      "class": "IOAudio2Device",
+      "slot": 86
+    },
+    "__ZN14IOAudio2Device4stopEP9IOService": {
+      "class": "IOAudio2Device",
+      "slot": 87
+    },
+    "__ZN14IOAudio2Device13newUserClientEP4taskPvjP12OSDictionaryPP12IOUserClient": {
+      "class": "IOAudio2Device",
+      "slot": 140
+    },
+    "__ZN14IOAudio2Device9isRunningEv": {
+      "class": "IOAudio2Device",
+      "slot": 168
+    },
+    "__ZN14IOAudio2Device7startIOEv": {
+      "class": "IOAudio2Device",
+      "slot": 169
+    },
+    "__ZN14IOAudio2Device6stopIOEv": {
+      "class": "IOAudio2Device",
+      "slot": 170
+    },
+    "__ZN14IOAudio2Device16startIOWithFlagsEjPy": {
+      "class": "IOAudio2Device",
+      "slot": 171
+    },
+    "__ZN14IOAudio2Device15stopIOWithFlagsEjPy": {
+      "class": "IOAudio2Device",
+      "slot": 172
+    },
+    "__ZN14IOAudio2Device13nativeSlot173Ev": {
+      "class": "IOAudio2Device",
+      "slot": 173
+    },
+    "__ZN14IOAudio2Device15getStatusBufferEv": {
+      "class": "IOAudio2Device",
+      "slot": 174
+    },
+    "__ZN14IOAudio2Device13nativeSlot175Ev": {
+      "class": "IOAudio2Device",
+      "slot": 175
+    },
+    "__ZN14IOAudio2Device13nativeSlot176Ev": {
+      "class": "IOAudio2Device",
+      "slot": 176
+    },
+    "__ZN14IOAudio2Device13nativeSlot177Ev": {
+      "class": "IOAudio2Device",
+      "slot": 177
+    },
+    "__ZN14IOAudio2Device12clientClosedEv": {
+      "class": "IOAudio2Device",
+      "slot": 178
+    },
+    "__ZN14IOAudio2Device24registerNotificationPortEPvjj": {
+      "class": "IOAudio2Device",
+      "slot": 179
+    },
+    "__ZN14IOAudio2Device6notifyEjjjjyy": {
+      "class": "IOAudio2Device",
+      "slot": 180
+    },
+    "__ZN14IOAudio2Device13nativeSlot181EjPKv": {
+      "class": "IOAudio2Device",
+      "slot": 181
+    },
+    "__ZN14IOAudio2Device19clientMemoryForTypeEjPjPP18IOMemoryDescriptor": {
+      "class": "IOAudio2Device",
+      "slot": 182
+    },
+    "__ZN14IOAudio2Device13nativeSlot183Ev": {
+      "class": "IOAudio2Device",
+      "slot": 183
+    },
+    "__ZN14IOAudio2Device13nativeSlot184Ev": {
+      "class": "IOAudio2Device",
+      "slot": 184
+    },
+    "__ZN14IOAudio2Device13nativeSlot185Ev": {
+      "class": "IOAudio2Device",
+      "slot": 185
+    },
+    "__ZN14IOAudio2Device19requestConfigChangeEjjyy": {
+      "class": "IOAudio2Device",
+      "slot": 186
+    },
+    "__ZN14IOAudio2Device18handleConfigChangeEPKN11AudioOutput12ConfigChangeEy": {
+      "class": "IOAudio2Device",
+      "slot": 187
+    },
+    "__ZN14IOAudio2Device22handleChangeSampleRateEPKyy": {
+      "class": "IOAudio2Device",
+      "slot": 188
+    },
+    "__ZN14IOAudio2Device24handleChangeStreamFormatEjPKN11AudioOutput6FormatEy": {
+      "class": "IOAudio2Device",
+      "slot": 189
+    },
+    "__ZN14IOAudio2Device15setStreamActiveEjj": {
+      "class": "IOAudio2Device",
+      "slot": 190
+    },
+    "__ZN14IOAudio2Device13nativeSlot191Ev": {
+      "class": "IOAudio2Device",
+      "slot": 191
+    },
+    "__ZN14IOAudio2Device13nativeSlot192Ev": {
+      "class": "IOAudio2Device",
+      "slot": 192
+    },
+    "__ZN14IOAudio2Device15getStreamBufferEjPjPP18IOMemoryDescriptor": {
+      "class": "IOAudio2Device",
+      "slot": 193
+    },
+    "__ZN14IOAudio2Device13nativeSlot194Ev": {
+      "class": "IOAudio2Device",
+      "slot": 194
+    },
+    "__ZN14IOAudio2Device13nativeSlot195Ev": {
+      "class": "IOAudio2Device",
+      "slot": 195
+    },
+    "__ZN14IOAudio2Device19performConfigChangeEPKN11AudioOutput12ConfigChangeE": {
+      "class": "IOAudio2Device",
+      "slot": 196
+    }
+  },
+  "note": "Local semantic aliases for the pinned native vtable. Original Apple user client, entitlement check and dispatch table retained. Unused/unrecovered hooks are named nativeSlotN and are never called directly. See docs/audio/native-interface.json."
+}

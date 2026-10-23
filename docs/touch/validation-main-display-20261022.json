@@ -1,0 +1,221 @@
+{
+  "date": "2026-10-22",
+  "timezone": "America/Los_Angeles",
+  "scope": "sagit real-device driver-report to native IOHIDEventDriver / BackBoard / UIKit; page images and awake state checked",
+  "status": "passed_for_user_accepted_scope",
+  "firmware": "iPad arm64 iOS 18.7.10 / 22H374",
+  "hardware_tested": true,
+  "physical_touch_tested": false,
+  "optical_presentation_verified": false,
+  "input_transport": "SynapticsTouch diagnostic report encoder; physical_input=0; no direct window targeting or UIKit action invocation",
+  "fix": {
+    "display_version": "1.0.24",
+    "summary": "Built-in framebuffer no longer publishes IOMFBUUID; retain loader identity as QcomPanelUUID to match native built-in digitizer nil displayUUID.",
+    "touch_changes": "Pressure-free HID width/height field alignment and last accepted release coordinates."
+  },
+  "artifact": {
+    "payload": {
+      "path": "build/touch-debug-20261022/main-display-fix/bridge/XnuBridge.efi",
+      "sha256": "28b48d264b541e623062bab7c07ede03e2c29788eba30f096851fdd6a04bc5b8",
+      "bytes": 65577472
+    },
+    "crc32": "1da210bf",
+    "kernel": {
+      "path": "build/touch-debug-20261022/main-display-fix/kernelcache",
+      "sha256": "70581a36374ec92896e7614bd8e4423872282a2da532c3059350214766f72556",
+      "bytes": 35422208
+    },
+    "persistent_partition_flash": false,
+    "boot_method": "fastboot -s edk2-fastboot1 stage + oem crc32 + oem run-efi"
+  },
+  "checks": [
+    {
+      "id": "language-selection",
+      "status": "passed",
+      "action": "driver hid-tap (0.5, 0.366) on English",
+      "observed_before": "language list",
+      "observed_after": "Select Your Country or Region",
+      "evidence": [
+        {
+          "path": "build/touch-debug-20261022/main-display-language/export-2-0.png",
+          "sha256": "eb4ebf6e8f31a68ed8ebce724e5c5edb460d6ed8f8ec95a51e9821e76ab5f6e4",
+          "bytes": 34250
+        },
+        {
+          "path": "build/touch-debug-20261022/main-display-language/export-3-0.png",
+          "sha256": "a02ebc6c876356007f8bbc64276e8a2ce15e883a5fa831fe99b0cee255b54e68",
+          "bytes": 50249
+        },
+        {
+          "path": "build/touch-debug-20261022/main-display-language/command-1.txt",
+          "sha256": "8e5747abf04872e0907f95adbdb6d8b9361e1eadb810fd479f32d2d5cf536c92",
+          "bytes": 5376
+        },
+        {
+          "path": "build/touch-debug-20261022/main-display-language/export-4-0.txt",
+          "sha256": "aeb90ef309f98e160b15cec68720129c55525da108763ec60884696d170fe9e5",
+          "bytes": 98134
+        }
+      ]
+    },
+    {
+      "id": "language-back",
+      "status": "passed",
+      "action": "driver hid-tap (0.043, 0.065)",
+      "observed_before": "country or region list",
+      "observed_after": "language list",
+      "evidence": [
+        {
+          "path": "build/touch-debug-20261022/main-display-menu-contiguous/command-1.txt",
+          "sha256": "7fa5a8f3e0b602aa5efb03c02de60114acdbd3cdff802ac9fa698dc0c78c0ebc",
+          "bytes": 5910
+        },
+        {
+          "path": "build/touch-debug-20261022/main-display-menu-contiguous/export-2-0.png",
+          "sha256": "eb4ebf6e8f31a68ed8ebce724e5c5edb460d6ed8f8ec95a51e9821e76ab5f6e4",
+          "bytes": 34250
+        }
+      ]
+    },
+    {
+      "id": "home-menu",
+      "status": "passed",
+      "action": "Home while on language list, then driver hid-tap Cancel (0.5, 0.944)",
+      "observed_before": "Emergency Call / Accessibility Options / Start Over / Cancel menu",
+      "observed_after": "menu dismissed; language list",
+      "evidence": [
+        {
+          "path": "build/touch-debug-20261022/main-display-menu-contiguous/export-3-0.png",
+          "sha256": "ba4f675a0192eed6e6be8d5130402d04d33f9a4740806783be40adec76402bdb",
+          "bytes": 69044
+        },
+        {
+          "path": "build/touch-debug-20261022/main-display-menu-cancel/command-1.txt",
+          "sha256": "28960c2221680cd584bba80b59ece8e7c94852b0c91c066cee75db1be8eb1c7d",
+          "bytes": 3352
+        },
+        {
+          "path": "build/touch-debug-20261022/main-display-menu-cancel/export-2-0.png",
+          "sha256": "ba4f675a0192eed6e6be8d5130402d04d33f9a4740806783be40adec76402bdb",
+          "bytes": 69044
+        },
+        {
+          "path": "build/touch-debug-20261022/main-display-menu-cancel/export-3-0.png",
+          "sha256": "eb4ebf6e8f31a68ed8ebce724e5c5edb460d6ed8f8ec95a51e9821e76ab5f6e4",
+          "bytes": 34250
+        }
+      ]
+    },
+    {
+      "id": "hello-info",
+      "status": "skipped_by_user",
+      "user_instruction": "hello看不见就算了",
+      "reason": "Only Apple logo or wallpaper captured; no visible Hello controls, so these attempts are excluded from passing results.",
+      "evidence": [
+        {
+          "path": "build/touch-debug-20261022/main-display-hello-awake/export-2-0.png",
+          "sha256": "9542e28b2f0c71afcb31f4ee7cc9d64143d9a5bcbe2014d689528c905062f08d",
+          "bytes": 168734
+        },
+        {
+          "path": "build/touch-debug-20261022/main-display-hello-power/export-2-0.png",
+          "sha256": "dadc79f9411b2617e8a1fb9370a96d2d192a8112fd5e5c73aa446ddb7f2564db",
+          "bytes": 167899
+        }
+      ]
+    }
+  ],
+  "native_delivery": {
+    "destination": "Setup.261 contextID CB9BFD5",
+    "down": 1,
+    "up": 1,
+    "touch_id": 1,
+    "unknown_display_uuid_observed_in_validation_log": false
+  },
+  "runtime_evidence": [
+    {
+      "path": "build/touch-debug-20261022/main-display-final-runtime/export-1-0.txt",
+      "sha256": "9fe7a08146b5480fa43ea7554ced022c443c7e881e2acd2a570347ca174afb46",
+      "bytes": 6352
+    },
+    {
+      "path": "build/touch-debug-20261022/main-display-final-runtime/export-2-0.txt",
+      "sha256": "a8b613db6a009c9896cf88cca22ad55755b309381d1a506871393635733754f0",
+      "bytes": 1394
+    }
+  ],
+  "host_checks": [
+    {
+      "command": "make test-touch",
+      "status": "passed",
+      "suites": [
+        "i2c",
+        "touch"
+      ],
+      "python_tests": 9,
+      "log": {
+        "path": "build/touch-debug-20261022/final-touch-host-tests.log",
+        "sha256": "6f175aa10097d0aa1296b4b1f750c4ca91b660b6ab0b6edfe50db9b11327cfce",
+        "bytes": 424
+      }
+    },
+    {
+      "command": "make test-display",
+      "status": "passed",
+      "display_bridge_tests": 3,
+      "log": {
+        "path": "build/touch-debug-20261022/main-display-host-tests.log",
+        "sha256": "9ccdd61951d94a3454bd39a23e8c53c8c0d2a0a858f23c20945844e8c0358ebf",
+        "bytes": 820
+      }
+    },
+    {
+      "command": "QcomDisplay cross-build / arm64 Kext ABI and import verification",
+      "status": "passed",
+      "log": {
+        "path": "build/touch-debug-20261022/main-display-driver-build.log",
+        "sha256": "415c77c9cdd1ebf89645fdb9c57020b608c92d8e4a434b8fffccc186e7cc534e",
+        "bytes": 214
+      }
+    },
+    {
+      "command": "full candidate kernelcache verification",
+      "status": "passed",
+      "kext_count": 78,
+      "log": {
+        "path": "build/touch-debug-20261022/main-display-fix/kernelcache.verification.json",
+        "sha256": "5ffa18f8923691ebc884aa389c16bfffc1ed41a3c7205a488770031d5019238a",
+        "bytes": 18238
+      }
+    }
+  ],
+  "source_sha256": {
+    "drivers/display/QcomDisplay/QcomDisplay.cpp": "e7ff1896698ce6b197be1ecd7904f48f2bca4cf15dcfe341b4b82f1fda47b7d3",
+    "drivers/display/QcomDisplay/Info.plist": "d9ccc3817a4b9c859270bdcd283ca6d5a57c042ab30ec5756dab7edae119eb63",
+    "drivers/input/SynapticsTouch/TouchHID.h": "762fbf65d3c46ceb7dc13de20cb880f1e193ff927acc4a856989cb165b12ff7e",
+    "drivers/input/SynapticsTouch/SynapticsTouch.cpp": "d2ee1e59bf292b3f74ab49c167a93c3c132aff98a0b81fe97b8fd66dbe61db13",
+    "drivers/input/SynapticsTouch/Info.plist": "5152e06a29ea7ca76ab049009c55c29ea7370e40f4e01d6590d4fa357233fb96",
+    "tests/touch_test.cpp": "c1e5a68e00fa37de83b78c39f8c01fe4ccef9b35840e8061c5d8b6ae13b35d7e"
+  },
+  "excluded_attempts": [
+    {
+      "path": "build/touch-debug-20261022/main-display-menu-actions",
+      "reason": "Initial presumed Cancel tap selected Deutsch; superseded by independent menu Cancel test."
+    },
+    {
+      "path": "build/touch-debug-20261022/main-display-hello-info",
+      "reason": "Apple logo / wallpaper; no visible Hello controls."
+    }
+  ],
+  "final_observed_page": {
+    "path": "build/touch-debug-20261022/main-display-start-over/export-3-0.png",
+    "sha256": "eb4ebf6e8f31a68ed8ebce724e5c5edb460d6ed8f8ec95a51e9821e76ab5f6e4",
+    "bytes": 34250
+  },
+  "final_observed_page_description": "language list; native idle blanking allowed after capture",
+  "limitations": [
+    "No new physical finger or optical camera test; panel sensing, electrical IRQ behavior, dragging and multitouch are outside this remote report test.",
+    "Hello information button skipped at user request."
+  ],
+  "historical_offline_validation": "docs/touch/validation.json"
+}

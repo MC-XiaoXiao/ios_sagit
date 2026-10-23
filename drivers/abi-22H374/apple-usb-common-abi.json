@@ -1,0 +1,284 @@
+{
+  "bundle_identifier": "com.apple.driver.usb.AppleUSBCommon",
+  "bundle_version": "1.0",
+  "image_sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+  "architecture": "arm64",
+  "classes": {
+    "AppleUSBRequest": {
+      "super": "IOCommand",
+      "instance_size": 56,
+      "vtable_slots": 50
+    },
+    "AppleUSBRequestCompleter": {
+      "super": "IOEventSource",
+      "instance_size": 176,
+      "vtable_slots": 39
+    }
+  },
+  "required_symbols": [
+    "__ZN15AppleUSBRequest10gMetaClassE",
+    "__ZN15AppleUSBRequest12initWithPoolEP19AppleUSBRequestPool",
+    "__ZN15AppleUSBRequest6updateEv",
+    "__ZN15AppleUSBRequest12nativeSlot41Ev",
+    "__ZN15AppleUSBRequest12nativeSlot42Ev",
+    "__ZN15AppleUSBRequest12nativeSlot43Ev",
+    "__ZN15AppleUSBRequest12nativeSlot45Ev",
+    "__ZN15AppleUSBRequest12nativeSlot47Ev",
+    "__ZN15AppleUSBRequest12nativeSlot48Ev",
+    "__ZN15AppleUSBRequest12nativeSlot49Ev",
+    "__ZN15AppleUSBRequest12setRequestIDEy",
+    "__ZN15AppleUSBRequest12setTimeStampEy",
+    "__ZN15AppleUSBRequest14setNextRequestEPS_",
+    "__ZN15AppleUSBRequest19setBytesTransferredEj",
+    "__ZN15AppleUSBRequest4freeEv",
+    "__ZN15AppleUSBRequest6cancelEv",
+    "__ZN15AppleUSBRequest6finishEi",
+    "__ZN15AppleUSBRequest8activateEv",
+    "__ZN15AppleUSBRequest8completeEv",
+    "__ZN15AppleUSBRequest9setStatusEi",
+    "__ZN15AppleUSBRequestC2EPK11OSMetaClass",
+    "__ZN15AppleUSBRequestD2Ev",
+    "__ZN24AppleUSBRequestCompleter10gMetaClassE",
+    "__ZN24AppleUSBRequestCompleter12checkForWorkEv",
+    "__ZN24AppleUSBRequestCompleter12nativeSlot27Ev",
+    "__ZN24AppleUSBRequestCompleter12nativeSlot28Ev",
+    "__ZN24AppleUSBRequestCompleter12nativeSlot30Ev",
+    "__ZN24AppleUSBRequestCompleter12nativeSlot31Ev",
+    "__ZN24AppleUSBRequestCompleter12nativeSlot32Ev",
+    "__ZN24AppleUSBRequestCompleter12nativeSlot33Ev",
+    "__ZN24AppleUSBRequestCompleter12nativeSlot34Ev",
+    "__ZN24AppleUSBRequestCompleter12nativeSlot35Ev",
+    "__ZN24AppleUSBRequestCompleter12nativeSlot36Ev",
+    "__ZN24AppleUSBRequestCompleter12nativeSlot37Ev",
+    "__ZN24AppleUSBRequestCompleter12nativeSlot38Ev",
+    "__ZN24AppleUSBRequestCompleter14enqueueRequestEP15AppleUSBRequest",
+    "__ZN24AppleUSBRequestCompleter4freeEv",
+    "__ZN24AppleUSBRequestCompleterC2EPK11OSMetaClass",
+    "__ZN24AppleUSBRequestCompleterD2Ev",
+    "__ZNK15AppleUSBRequest10getRequestEv",
+    "__ZNK15AppleUSBRequest11getIOLengthEv",
+    "__ZNK15AppleUSBRequest12getFrameListEv",
+    "__ZNK15AppleUSBRequest12getNumFramesEv",
+    "__ZNK15AppleUSBRequest12getRequestIDEv",
+    "__ZNK15AppleUSBRequest12getTimestampEv",
+    "__ZNK15AppleUSBRequest13getStartFrameEv",
+    "__ZNK15AppleUSBRequest13isSynchronousEv",
+    "__ZNK15AppleUSBRequest14getNextRequestEv",
+    "__ZNK15AppleUSBRequest17getPreparedBufferEv",
+    "__ZNK15AppleUSBRequest19getBytesTransferredEv",
+    "__ZNK15AppleUSBRequest19getRequestCompleterEv",
+    "__ZNK15AppleUSBRequest20getCompletionContextEv",
+    "__ZNK15AppleUSBRequest20getCompletionTimeoutEv",
+    "__ZNK15AppleUSBRequest9getClientEv",
+    "__ZNK15AppleUSBRequest9getStatusEv",
+    "__ZNK15AppleUSBRequest9isBundledEv"
+  ],
+  "virtual_symbols": {
+    "__ZN15AppleUSBRequest12initWithPoolEP19AppleUSBRequestPool": {
+      "class": "AppleUSBRequest",
+      "slot": 15
+    },
+    "__ZN15AppleUSBRequest6updateEv": {
+      "class": "AppleUSBRequest",
+      "slot": 19
+    },
+    "__ZN15AppleUSBRequest12nativeSlot41Ev": {
+      "class": "AppleUSBRequest",
+      "slot": 41
+    },
+    "__ZN15AppleUSBRequest12nativeSlot42Ev": {
+      "class": "AppleUSBRequest",
+      "slot": 42
+    },
+    "__ZN15AppleUSBRequest12nativeSlot43Ev": {
+      "class": "AppleUSBRequest",
+      "slot": 43
+    },
+    "__ZN15AppleUSBRequest12nativeSlot45Ev": {
+      "class": "AppleUSBRequest",
+      "slot": 45
+    },
+    "__ZN15AppleUSBRequest12nativeSlot47Ev": {
+      "class": "AppleUSBRequest",
+      "slot": 47
+    },
+    "__ZN15AppleUSBRequest12nativeSlot48Ev": {
+      "class": "AppleUSBRequest",
+      "slot": 48
+    },
+    "__ZN15AppleUSBRequest12nativeSlot49Ev": {
+      "class": "AppleUSBRequest",
+      "slot": 49
+    },
+    "__ZN15AppleUSBRequest12setRequestIDEy": {
+      "class": "AppleUSBRequest",
+      "slot": 39
+    },
+    "__ZN15AppleUSBRequest12setTimeStampEy": {
+      "class": "AppleUSBRequest",
+      "slot": 34
+    },
+    "__ZN15AppleUSBRequest14setNextRequestEPS_": {
+      "class": "AppleUSBRequest",
+      "slot": 16
+    },
+    "__ZN15AppleUSBRequest19setBytesTransferredEj": {
+      "class": "AppleUSBRequest",
+      "slot": 33
+    },
+    "__ZN15AppleUSBRequest4freeEv": {
+      "class": "AppleUSBRequest",
+      "slot": 14
+    },
+    "__ZN15AppleUSBRequest6cancelEv": {
+      "class": "AppleUSBRequest",
+      "slot": 22
+    },
+    "__ZN15AppleUSBRequest6finishEi": {
+      "class": "AppleUSBRequest",
+      "slot": 20
+    },
+    "__ZN15AppleUSBRequest8activateEv": {
+      "class": "AppleUSBRequest",
+      "slot": 18
+    },
+    "__ZN15AppleUSBRequest8completeEv": {
+      "class": "AppleUSBRequest",
+      "slot": 21
+    },
+    "__ZN15AppleUSBRequest9setStatusEi": {
+      "class": "AppleUSBRequest",
+      "slot": 32
+    },
+    "__ZNK15AppleUSBRequest10getRequestEv": {
+      "class": "AppleUSBRequest",
+      "slot": 28
+    },
+    "__ZNK15AppleUSBRequest11getIOLengthEv": {
+      "class": "AppleUSBRequest",
+      "slot": 26
+    },
+    "__ZNK15AppleUSBRequest12getFrameListEv": {
+      "class": "AppleUSBRequest",
+      "slot": 30
+    },
+    "__ZNK15AppleUSBRequest12getNumFramesEv": {
+      "class": "AppleUSBRequest",
+      "slot": 31
+    },
+    "__ZNK15AppleUSBRequest12getRequestIDEv": {
+      "class": "AppleUSBRequest",
+      "slot": 38
+    },
+    "__ZNK15AppleUSBRequest12getTimestampEv": {
+      "class": "AppleUSBRequest",
+      "slot": 37
+    },
+    "__ZNK15AppleUSBRequest13getStartFrameEv": {
+      "class": "AppleUSBRequest",
+      "slot": 29
+    },
+    "__ZNK15AppleUSBRequest13isSynchronousEv": {
+      "class": "AppleUSBRequest",
+      "slot": 46
+    },
+    "__ZNK15AppleUSBRequest14getNextRequestEv": {
+      "class": "AppleUSBRequest",
+      "slot": 17
+    },
+    "__ZNK15AppleUSBRequest17getPreparedBufferEv": {
+      "class": "AppleUSBRequest",
+      "slot": 24
+    },
+    "__ZNK15AppleUSBRequest19getBytesTransferredEv": {
+      "class": "AppleUSBRequest",
+      "slot": 36
+    },
+    "__ZNK15AppleUSBRequest19getRequestCompleterEv": {
+      "class": "AppleUSBRequest",
+      "slot": 23
+    },
+    "__ZNK15AppleUSBRequest20getCompletionContextEv": {
+      "class": "AppleUSBRequest",
+      "slot": 44
+    },
+    "__ZNK15AppleUSBRequest9getClientEv": {
+      "class": "AppleUSBRequest",
+      "slot": 27
+    },
+    "__ZNK15AppleUSBRequest9getStatusEv": {
+      "class": "AppleUSBRequest",
+      "slot": 35
+    },
+    "__ZN24AppleUSBRequestCompleter12checkForWorkEv": {
+      "class": "AppleUSBRequestCompleter",
+      "slot": 16
+    },
+    "__ZN24AppleUSBRequestCompleter12nativeSlot27Ev": {
+      "class": "AppleUSBRequestCompleter",
+      "slot": 27
+    },
+    "__ZN24AppleUSBRequestCompleter12nativeSlot28Ev": {
+      "class": "AppleUSBRequestCompleter",
+      "slot": 28
+    },
+    "__ZN24AppleUSBRequestCompleter12nativeSlot30Ev": {
+      "class": "AppleUSBRequestCompleter",
+      "slot": 30
+    },
+    "__ZN24AppleUSBRequestCompleter12nativeSlot31Ev": {
+      "class": "AppleUSBRequestCompleter",
+      "slot": 31
+    },
+    "__ZN24AppleUSBRequestCompleter12nativeSlot32Ev": {
+      "class": "AppleUSBRequestCompleter",
+      "slot": 32
+    },
+    "__ZN24AppleUSBRequestCompleter12nativeSlot33Ev": {
+      "class": "AppleUSBRequestCompleter",
+      "slot": 33
+    },
+    "__ZN24AppleUSBRequestCompleter12nativeSlot34Ev": {
+      "class": "AppleUSBRequestCompleter",
+      "slot": 34
+    },
+    "__ZN24AppleUSBRequestCompleter12nativeSlot35Ev": {
+      "class": "AppleUSBRequestCompleter",
+      "slot": 35
+    },
+    "__ZN24AppleUSBRequestCompleter12nativeSlot36Ev": {
+      "class": "AppleUSBRequestCompleter",
+      "slot": 36
+    },
+    "__ZN24AppleUSBRequestCompleter12nativeSlot37Ev": {
+      "class": "AppleUSBRequestCompleter",
+      "slot": 37
+    },
+    "__ZN24AppleUSBRequestCompleter12nativeSlot38Ev": {
+      "class": "AppleUSBRequestCompleter",
+      "slot": 38
+    },
+    "__ZN24AppleUSBRequestCompleter14enqueueRequestEP15AppleUSBRequest": {
+      "class": "AppleUSBRequestCompleter",
+      "slot": 29
+    },
+    "__ZN24AppleUSBRequestCompleter4freeEv": {
+      "class": "AppleUSBRequestCompleter",
+      "slot": 14
+    },
+    "__ZNK15AppleUSBRequest20getCompletionTimeoutEv": {
+      "class": "AppleUSBRequest",
+      "slot": 25
+    },
+    "__ZNK15AppleUSBRequest9isBundledEv": {
+      "class": "AppleUSBRequest",
+      "slot": 40
+    }
+  },
+  "function_bindings": {
+    "__ZN15AppleUSBRequest6updateEv": {
+      "address": "0xfffffff005ffa114",
+      "bytes": "001040f9800000b4080040f9014d40f920001fd6c0035fd6"
+    }
+  }
+}

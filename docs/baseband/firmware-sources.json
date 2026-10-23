@@ -1,0 +1,37 @@
+{
+  "source_kind": "community extraction; original Xiaomi package identity not established",
+  "files": {
+    "README.md": {
+      "url": "https://raw.githubusercontent.com/dsankouski/firmware-mainline-xiaomi-mi6/d7e0c59ed28700a8662c6a364d99740c26ebf58a/README.md",
+      "commit": "d7e0c59ed28700a8662c6a364d99740c26ebf58a",
+      "sha256": "608238ef9721bb12cd877da4e05aca55835ecbce3f464e8c75ebfa64b60dcfed",
+      "bytes": 556
+    },
+    "mba.mbn": {
+      "url": "https://raw.githubusercontent.com/dsankouski/firmware-mainline-xiaomi-mi6/d7e0c59ed28700a8662c6a364d99740c26ebf58a/qcom/msm8998/xiaomi/mba.mbn",
+      "commit": "d7e0c59ed28700a8662c6a364d99740c26ebf58a",
+      "sha256": "7ed89074fcede91b40657bfadd4d2adb9c5b883f157270ed3cd95f1654296646",
+      "bytes": 230056
+    },
+    "modem.mbn": {
+      "url": "https://raw.githubusercontent.com/dsankouski/firmware-mainline-xiaomi-mi6/d7e0c59ed28700a8662c6a364d99740c26ebf58a/qcom/msm8998/xiaomi/modem.mbn",
+      "commit": "d7e0c59ed28700a8662c6a364d99740c26ebf58a",
+      "sha256": "380248bc2f3068064b40697aef5b6b8376a547c0991cb6d49d084fae4f516eb1",
+      "bytes": 56381664
+    },
+    "modemr.jsn": {
+      "url": "https://raw.githubusercontent.com/dsankouski/firmware-mainline-xiaomi-mi6/d7e0c59ed28700a8662c6a364d99740c26ebf58a/qcom/msm8998/xiaomi/modemr.jsn",
+      "commit": "d7e0c59ed28700a8662c6a364d99740c26ebf58a",
+      "sha256": "44ebb965dd299e798c69914718ae23525db343b5f2169b81e686bdd7db841e3d",
+      "bytes": 405
+    },
+    "modemuw.jsn": {
+      "url": "https://raw.githubusercontent.com/dsankouski/firmware-mainline-xiaomi-mi6/d7e0c59ed28700a8662c6a364d99740c26ebf58a/qcom/msm8998/xiaomi/modemuw.jsn",
+      "commit": "d7e0c59ed28700a8662c6a364d99740c26ebf58a",
+      "sha256": "e75d94b61df3e86c5b3f7a976d93f726cb85f2b897a8ea80a0924b9bb9c1a3bf",
+      "bytes": 713
+    }
+  },
+  "hardware_tested": false,
+  "installed": false
+}

@@ -1,0 +1,44 @@
+{
+  "provider_sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+  "bundle": "com.apple.AppleFSCompression.AppleFSCompressionTypeZlib",
+  "native_table_address": "0xfffffff006b53840",
+  "text_relative_offset": 2112,
+  "bytes": 512,
+  "entries": 256,
+  "entry_format": "signed LE16, relative to table start",
+  "sha256": "7961cfb6d7cc79abd8faf422767b87160b8b30b6d3712b0f9554b88de9163d41",
+  "verified_bti_targets": [
+    "0xfffffff006b53544",
+    "0xfffffff006b53570",
+    "0xfffffff006b535f0",
+    "0xfffffff006b53630",
+    "0xfffffff006b53670",
+    "0xfffffff006b536b0",
+    "0xfffffff006b536e0",
+    "0xfffffff006b53710",
+    "0xfffffff006b53720",
+    "0xfffffff006b537f0",
+    "0xfffffff006b53800"
+  ],
+  "decoder_bounds": "LDRB opcode (0..255), LDRSH [table, opcode, LSL #1]",
+  "literal_pools": [
+    {
+      "name": "kCompressionLz4DecodeLiterals",
+      "text_relative_offset": 4096,
+      "bytes": 528,
+      "sha256": "f7bb30778915b574b63a17573babfdeb97251ae92fb57e7302e69783f454f92a"
+    },
+    {
+      "name": "kCompressionLowBitMasks",
+      "text_relative_offset": 15440,
+      "bytes": 520,
+      "sha256": "c6e1885902aa32d5c3b2371e26d3466ac3c3067671ed55934d4a16646c39681d"
+    },
+    {
+      "name": "kCompressionAdler32Literals",
+      "text_relative_offset": 37488,
+      "bytes": 40,
+      "sha256": "48bdf8e57f8647f2ef3cfda5b500209c4be9b5742632db0ff3614aca8d7ee63d"
+    }
+  ]
+}

@@ -1,0 +1,298 @@
+--- a/bsd/kern/bsd_init.c
++++ b/bsd/kern/bsd_init.c
+@@ -1049,6 +1049,10 @@
+ #endif /* CONFIG_IMAGEBOOT */
+ #endif /* CONFIG_BASESYSTEMROOT */
+ 
++#if CONFIG_IMAGEBOOT && (DEVELOPMENT || DEBUG)
++	imageboot_setup_supplemental();
++#endif
++
+ 	/* Initialize signal state for process 0. */
+ 	bsd_init_kprintf("calling siginit\n");
+ 	siginit(kernproc);
+--- a/bsd/kern/imageboot.c
++++ b/bsd/kern/imageboot.c
+@@ -78,9 +78,118 @@
+ 
+ extern int di_root_image_ext(const char *path, char *devname, size_t devsz, dev_t *dev_p, bool removable);
+ extern int di_root_image(const char *path, char *devname, size_t devsz, dev_t *dev_p);
++extern int di_volume_name(const char *parent_devname, const char *volume_uuid, char *devname, size_t devsz);
+ extern int di_root_ramfile_buf(void *buf, size_t bufsz, char *devname, size_t devsz, dev_t *dev_p);
+ 
+ static boolean_t imageboot_setup_new(imageboot_type_t type);
++
++/*
++ * Development image boot may need a read-only auxiliary filesystem before
++ * init has a dynamic linker. Use the normal DiskImages/VFS path and leave
++ * the root filesystem and filesystem authentication policy intact.
++ */
++void
++imageboot_setup_supplemental(void)
++{
++#if DEVELOPMENT || DEBUG
++	char *url = zalloc(ZV_NAMEI);
++	char *path = zalloc(ZV_NAMEI);
++	char fstype[MFSNAMELEN] = {};
++	uuid_string_t volume_uuid = {};
++	uuid_t volume_id;
++	char devname[DEVMAXNAMESIZE] = {};
++	char device[DEVMAXNAMESIZE + 5] = {};
++	char *devicep = device;
++	dev_t dev = NODEV;
++	int error;
++
++	if (!PE_parse_boot_argn("imageboot-attach", url, MAXPATHLEN)) {
++		goto out;
++	}
++	if (!PE_parse_boot_argn("imageboot-mountpoint", path, MAXPATHLEN) ||
++	    !PE_parse_boot_argn("imageboot-fstype", fstype, sizeof(fstype)) ||
++	    strncmp(url, "file:///", 8) || !url[8] || path[0] != '/' ||
++	    !path[1] || !fstype[0]) {
++		printf("imageboot: invalid supplemental image arguments\n");
++		goto out;
++	}
++	/* Related volumes must use the filesystem's mount-by-role interface.
++	 * A NULL local-args mount instead requests a fresh root container. */
++	{
++		char parent_role[16] = {};
++		if (PE_parse_boot_argn("imageboot-parent-role", parent_role, sizeof(parent_role))) {
++			char *parent_path = zalloc(ZV_NAMEI);
++			uint32_t role_flag = 0;
++			if (!strcmp(parent_role, "preboot")) {
++				role_flag = KERNEL_MOUNT_PREBOOTVOL;
++			} else if (!strcmp(parent_role, "recovery")) {
++				role_flag = KERNEL_MOUNT_RECOVERYVOL;
++			}
++			if (!role_flag ||
++			    !PE_parse_boot_argn("imageboot-parent-mountpoint", parent_path, MAXPATHLEN) ||
++			    parent_path[0] != '/' || !parent_path[1]) {
++				zfree(ZV_NAMEI, parent_path);
++				printf("imageboot: invalid parent volume arguments\n");
++				goto out;
++			}
++			error = kernel_mount(rootvnode->v_mount->mnt_vfsstat.f_fstypename,
++			    NULLVP, NULLVP, parent_path, rootvnode->v_mount, 0,
++			    MNT_RDONLY | MNT_NOSUID | MNT_NODEV | MNT_DONTBROWSE,
++			    role_flag, vfs_context_kernel());
++			printf("imageboot: parent role %s on %s: %d\n", parent_role, parent_path, error);
++			zfree(ZV_NAMEI, parent_path);
++			if (error) {
++				goto out;
++			}
++		}
++	}
++
++	error = di_root_image_ext(url, devname, sizeof(devname), &dev, false);
++	if (error) {
++		printf("imageboot: supplemental attach %s failed: %#x\n", url, error);
++		goto out;
++	}
++	printf("imageboot: supplemental image %s attached as %s\n", url, devname);
++	if (PE_parse_boot_argn("imageboot-volume-uuid", volume_uuid, sizeof(volume_uuid))) {
++		char volume_devname[DEVMAXNAMESIZE] = {};
++		if (uuid_parse(volume_uuid, volume_id)) {
++			printf("imageboot: invalid supplemental volume UUID\n");
++			goto out;
++		}
++		uuid_unparse_upper(volume_id, volume_uuid);
++		error = di_volume_name(devname, volume_uuid, volume_devname, sizeof(volume_devname));
++		if (error) {
++			printf("imageboot: supplemental volume %s on %s not found: %#x\n",
++			    volume_uuid, devname, error);
++			goto out;
++		}
++		strlcpy(devname, volume_devname, sizeof(devname));
++	}
++	strlcpy(device, "/dev/", sizeof(device));
++	strlcat(device, devname, sizeof(device));
++	error = kernel_mount(fstype, NULLVP, NULLVP, path, &devicep, 0,
++	    MNT_RDONLY | MNT_NOSUID | MNT_NODEV | MNT_DONTBROWSE,
++	    KERNEL_MOUNT_KERNEL_DEVPATH, vfs_context_kernel());
++	printf("imageboot: supplemental mount %s on %s (%s): %d\n",
++	    device, path, fstype, error);
++	if (!error && PE_parse_boot_argn("imageboot-probe", path, MAXPATHLEN)) {
++		vnode_t vp = NULLVP;
++		char header[17] = {};
++		int resid = 16;
++		error = vnode_open(path, FREAD, 0, 0, &vp, vfs_context_kernel());
++		if (!error) {
++			error = vn_rdwr(UIO_READ, vp, header, 16, 0, UIO_SYSSPACE,
++			    0, vfs_context_ucred(vfs_context_kernel()), &resid, kernproc);
++			vnode_close(vp, FREAD, vfs_context_kernel());
++		}
++		printf("imageboot: probe %s: error=%d bytes=%d header=%.16s\n",
++		    path, error, 16 - resid, header);
++	}
++out:
++	zfree(ZV_NAMEI, path);
++	zfree(ZV_NAMEI, url);
++#endif
++}
+ 
+ void *ubc_getobject_from_filename(const char *filename, struct vnode **vpp, off_t *file_size);
+ 
+--- a/bsd/sys/imageboot.h
++++ b/bsd/sys/imageboot.h
+@@ -39,6 +39,7 @@
+ imageboot_type_t        imageboot_needed(void);
+ bool    imageboot_desired(void);
+ void    imageboot_setup(imageboot_type_t type);
++void    imageboot_setup_supplemental(void);
+ int     imageboot_format_is_valid(const char *root_path);
+ int     imageboot_mount_image(const char *root_path, int height, imageboot_type_t type);
+ int     imageboot_pivot_image(const char *image_path, imageboot_type_t type, const char *mount_path,
+--- a/bsd/sys/mount_internal.h
++++ b/bsd/sys/mount_internal.h
+@@ -488,6 +488,7 @@
+ #define KERNEL_MOUNT_DEVFS             0x100 /* kernel startup mount of devfs */
+ #define KERNEL_MOUNT_FMOUNT            0x200 /* is fmount() system call */
+ #define KERNEL_MOUNT_KMOUNT            0x400 /* is kernel_mount() call */
++#define KERNEL_MOUNT_KERNEL_DEVPATH   0x800 /* VFSLOCALARGS device path points to kernel memory */
+ 
+ /* mask for checking if any of the "mount volume by role" flags are set */
+ #define KERNEL_MOUNT_VOLBYROLE_MASK (KERNEL_MOUNT_DATAVOL | KERNEL_MOUNT_VMVOL | KERNEL_MOUNT_PREBOOTVOL | KERNEL_MOUNT_RECOVERYVOL)
+--- a/bsd/vfs/vfs_syscalls.c
++++ b/bsd/vfs/vfs_syscalls.c
+@@ -1243,12 +1243,12 @@
+ 	}
+ 
+ 	/*
+-	 * VFC_VFSLOCALARGS is not currently supported for kernel mounts,
+-	 * except in ROSV configs and for the initial BaseSystem root.
++	 * Kernel mounts with local arguments must supply a supported kernel
++	 * argument convention rather than a user-space device pointer.
+ 	 */
+ 	if (kernelmount && (vfsp->vfc_vfsflags & VFC_VFSLOCALARGS) &&
+ 	    ((internal_flags & KERNEL_MOUNT_VOLBYROLE_MASK) == 0) &&
+-	    ((internal_flags & KERNEL_MOUNT_BASESYSTEMROOT) == 0)) {
++	    ((internal_flags & (KERNEL_MOUNT_BASESYSTEMROOT | KERNEL_MOUNT_KERNEL_DEVPATH)) == 0)) {
+ 		error = EINVAL;  /* unsupported request */
+ 		goto out1;
+ 	}
+@@ -1378,7 +1378,7 @@
+ 	 * Snapshot and mount-by-role mounts do not use this path; they are
+ 	 * passing other opaque data in the device path field.
+ 	 *
+-	 * Basesystemroot mounts pass a device path to be resolved here,
++	 * Kernel-device-path mounts pass a device path to be resolved here,
+ 	 * but it's just a char * already inside the kernel, which
+ 	 * kernel_mount() shoved into a user_addr_t to call us. So for such
+ 	 * mounts we must skip copyin (both of the address and of the string
+@@ -1387,14 +1387,17 @@
+ 	if (vfsp->vfc_vfsflags & VFC_VFSLOCALARGS &&
+ 	    !(internal_flags & (KERNEL_MOUNT_SNAPSHOT | KERNEL_MOUNT_VOLBYROLE_MASK))) {
+ 		boolean_t do_copyin_devpath = true;
++		uint32_t kernel_devpath_flags = KERNEL_MOUNT_KERNEL_DEVPATH;
+ #if CONFIG_BASESYSTEMROOT
+-		if (internal_flags & KERNEL_MOUNT_BASESYSTEMROOT) {
+-			// KERNEL_MOUNT_BASESYSTEMROOT implies subtle behavior worh nothing:
++		kernel_devpath_flags |= KERNEL_MOUNT_BASESYSTEMROOT;
++#endif
++		if (internal_flags & kernel_devpath_flags) {
++			// This kernel-only flag supplies the device path without copyin.
+ 			// We have been passed fsmountargs, which is typed as a user_addr_t,
+ 			// but is actually a char ** pointing to a (kernelspace) string.
+ 			// We manually unpack it with a series of casts and dereferences
+ 			// that reverses what was done just above us on the stack in
+-			// imageboot_pivot_image().
++			// an imageboot mount.
+ 			// After retrieving the path to the dev node (which we will NDINIT
+ 			// in a moment), we pass NULL fsmountargs on to the filesystem.
+ 			_Static_assert(sizeof(char **) == sizeof(fsmountargs), "fsmountargs should fit a (kernel) address");
+@@ -1403,8 +1406,9 @@
+ 			devpath = CAST_USER_ADDR_T(devnamep);
+ 			do_copyin_devpath = false;
+ 			fsmountargs = USER_ADDR_NULL;
+-
+-			//Now that we have a mp, denote that this mount is for the basesystem.
++		}
++#if CONFIG_BASESYSTEMROOT
++		if (internal_flags & KERNEL_MOUNT_BASESYSTEMROOT) {
+ 			mp->mnt_supl_kern_flag |= MNTK_SUPL_BASESYSTEM;
+ 		}
+ #endif // CONFIG_BASESYSTEMROOT
+@@ -1430,12 +1434,7 @@
+ 		if ((devpath)) {
+ 			struct nameidata nd;
+ 
+-			enum uio_seg seg = UIO_USERSPACE;
+-#if CONFIG_BASESYSTEMROOT
+-			if (internal_flags & KERNEL_MOUNT_BASESYSTEMROOT) {
+-				seg = UIO_SYSSPACE;
+-			}
+-#endif // CONFIG_BASESYSTEMROOT
++			enum uio_seg seg = do_copyin_devpath ? UIO_USERSPACE : UIO_SYSSPACE;
+ 
+ 			NDINIT(&nd, LOOKUP, OP_MOUNT, FOLLOW, seg, devpath, ctx);
+ 			if (flags & MNT_NOFOLLOW) {
+@@ -1638,7 +1637,7 @@
+ 		error = EINVAL;
+ #endif
+ 	} else if ((internal_flags & KERNEL_MOUNT_PREBOOTVOL) || (internal_flags & KERNEL_MOUNT_RECOVERYVOL)) {
+-#if CONFIG_MOUNT_PREBOOTRECOVERY
++#if CONFIG_MOUNT_PREBOOTRECOVERY || (CONFIG_IMAGEBOOT && (DEVELOPMENT || DEBUG))
+ 		struct mount *origin_mp = (struct mount*)fsmountargs;
+ 		uint32_t mount_role = 0;
+ 		if (internal_flags & KERNEL_MOUNT_PREBOOTVOL) {
+--- a/iokit/bsddev/DINetBootHook.cpp
++++ b/iokit/bsddev/DINetBootHook.cpp
+@@ -143,6 +143,48 @@
+ }
+ 
+ extern "C" {
++/* Resolve a volume UUID, optionally restricted to an ancestor media device. */
++int
++di_volume_name(const char *parent_devname, const char *volume_uuid,
++    char *devname, size_t devsz)
++{
++	OSDictionary *matching = IOService::serviceMatching("IOMedia");
++	OSDictionary *properties = OSDictionary::withCapacity(1);
++	OSString *identifier = OSString::withCString(volume_uuid);
++	OSIterator *iterator = NULL;
++	IOReturn result = kIOReturnNoMemory;
++	if (matching && properties && identifier &&
++	    properties->setObject("UUID", identifier) &&
++	    matching->setObject("IOPropertyMatch", properties)) {
++		iterator = IOService::getMatchingServices(matching);
++		result = kIOReturnNotFound;
++	}
++	if (iterator) {
++		while (IOService *media = OSDynamicCast(IOService, iterator->getNextObject())) {
++			OSString *name = OSDynamicCast(OSString, media->getProperty("BSD Name"));
++			if (!name) {
++				continue;
++			}
++			for (IOService *parent = media; parent; parent = parent->getProvider()) {
++				OSString *ancestor = OSDynamicCast(OSString, parent->getProperty("BSD Name"));
++				if (!parent_devname || (ancestor && ancestor->isEqualTo(parent_devname))) {
++					result = strlcpy(devname, name->getCStringNoCopy(), devsz) < devsz ?
++					    kIOReturnSuccess : kIOReturnNoSpace;
++					break;
++				}
++			}
++			if (result != kIOReturnNotFound) {
++				break;
++			}
++		}
++		iterator->release();
++	}
++	if (identifier) identifier->release();
++	if (properties) properties->release();
++	if (matching) matching->release();
++	return result;
++}
++
+ /* FIXME: removable should be replaced with a struct (so it could be easily
+  * extensible in the future). However, since there is no common header file
+  * between imageboot and NetBoot, we opt for a simple bool for now.
+--- a/iokit/bsddev/DINetBootHook.h
++++ b/iokit/bsddev/DINetBootHook.h
+@@ -96,6 +96,7 @@
+  */
+ int di_root_image(const char *path, char *devname, size_t devsz, dev_t *dev_p);
+ int di_root_image_ext(const char *path, char *devname, size_t devsz, dev_t *dev_p, bool removable);
++int di_volume_name(const char *parent_devname, const char *volume_uuid, char *devname, size_t devsz);
+ void di_root_ramfile( IORegistryEntry * entry );
+ int di_root_ramfile_buf(void *buf, size_t bufsz, char *devname, size_t devsz, dev_t *dev_p);
+ 

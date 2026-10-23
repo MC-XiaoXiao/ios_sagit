@@ -1,0 +1,843 @@
+{
+  "device": "Xiaomi Mi 6",
+  "purpose": "Hardware provenance for generic Apple IOKit USB drivers; these files are not compiled or treated as a live firmware handoff.",
+  "official_repository": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource",
+  "branches_checked": {
+    "sagit-n-oss": "3fb35ef1f0fe1f714be3df39724cbc8eb217181e",
+    "sagit-o-oss": "8da5dc504f4f4cdc929dad60b5e6d3f37e7f5f52",
+    "sagit-p-oss": "5853fcdbec23aa0ea3be20bc7739581e0285eff0"
+  },
+  "pinned_reference_manifest": "docs/usb/reference/sources.json",
+  "pinned_reference_directory": "docs/usb/reference/board",
+  "source_revision": "5853fcdbec23aa0ea3be20bc7739581e0285eff0",
+  "controller": {
+    "source": "board/soc.dtsi",
+    "register_base": "0x0a800000",
+    "dwc3_bytes": "0xcd00",
+    "core_GIC_SPI": 131,
+    "maximum_speed": "high-speed",
+    "maximum_speed_value": 3,
+    "maximum_speed_is_a_board_limit_not_a_SoC_capability": true,
+    "usb2_core_clock_hz": 60000000,
+    "usb2_clock_as_pipe_required": true,
+    "noc_average_bytes_per_second": 240000000,
+    "noc_peak_bytes_per_second": 800000000,
+    "minimum_active_CX_RPM_level": 64,
+    "minimum_active_CX_scope": "USB30 master at60MHz requires64; takeover must additionally cover the actual inherited root rate. This is not a complete AP baseline or measured firmware floor."
+  },
+  "qusb2": {
+    "register_base": "0x0c012000",
+    "register_bytes": "0x2a8",
+    "digital_clamp_address": "0x01fcb24c",
+    "digital_clamp_enabled_value": 1,
+    "digital_clamp_off_value": 0,
+    "rails": [
+      {
+        "name": "pm8998_l1",
+        "id": 257,
+        "operating_microvolts": 880000
+      },
+      {
+        "name": "pm8998_l2",
+        "id": 258,
+        "operating_microvolts": 1200000
+      },
+      {
+        "name": "pm8998_l12",
+        "id": 268,
+        "operating_microvolts": 1800000
+      },
+      {
+        "name": "pm8998_l24",
+        "id": 280,
+        "operating_microvolts": 3088000
+      }
+    ],
+    "device_init_source": "board/port.dtsi",
+    "host_init_source": "board/port.dts",
+    "host_and_device_tables_identical_between_checked_N_and_P_sources": true,
+    "generic_profile_wire_order": "little-endian offset/value uint32 pairs, maximum 16 entries",
+    "device_profile": [
+      [
+        0,
+        128
+      ],
+      [
+        4,
+        19
+      ],
+      [
+        396,
+        124
+      ],
+      [
+        44,
+        128
+      ],
+      [
+        388,
+        10
+      ],
+      [
+        572,
+        240
+      ],
+      [
+        576,
+        13
+      ]
+    ],
+    "host_profile": [
+      [
+        528,
+        99
+      ],
+      [
+        4,
+        19
+      ],
+      [
+        396,
+        124
+      ],
+      [
+        44,
+        128
+      ],
+      [
+        388,
+        10
+      ],
+      [
+        540,
+        140
+      ],
+      [
+        572,
+        5
+      ],
+      [
+        576,
+        3
+      ],
+      [
+        536,
+        255
+      ],
+      [
+        528,
+        98
+      ]
+    ],
+    "board_DTS_supplies_no_efuse_addr": true,
+    "OTP_override_requires_explicit_extra_QFPROM_resource": true,
+    "Host_profile_does_not_apply_Device_OTP_override": true,
+    "firmware_leaf_adoption_requires_actual_controller_and_PHY_BCR_assertion": true,
+    "shared_AHB2PHY_and_oscillator_firmware_pins_not_adopted": true
+  },
+  "connector": {
+    "source": "board/pmic.dtsi",
+    "regulator_source": "board/regulators.dtsi",
+    "PMIC": "PMI8998 SMB2",
+    "SPMI_sid": 2,
+    "RRADC_base": "0x4500",
+    "Type_C_base": "0x1300",
+    "PD_PHY_base": "0x1700",
+    "VBUS_supply": "smb2_vbus",
+    "VCONN_supply": "smb2_vconn",
+    "VCONN_hardware_selection": "SMB2 0x1368 bit4 software control, bit3 enable, bit6 selects inactive CC (Normal=1, Reverse=0)",
+    "VCONN_board_configuration_flag": 1,
+    "input_charging_limit_is_not_an_OTG_output_budget": true,
+    "USB_PD_negotiation_and_debug_audio_accessory_support_claimed": false
+  },
+  "dma": {
+    "USB_iommus_or_stream_ID_in_these_DTS_nodes": false,
+    "no_DMA_coherency_assertion_derived_from_this_absence": true,
+    "no_identity_window_derived_from_this_absence": true,
+    "public_source_establishes_current_firmware_translation_state": false,
+    "required_production_handoff": "Explicit verified handoff, Native exclusive-active-context capture, actual S2CR.TYPE=BYPASS capture, or exact exclusive disabled-stage1/S2-bypass capture under real leases/reset proof. Board resource policy and unused/shared-context ownership remain incomplete. No address window follows from a Linux DMA mask or absent iommus.",
+    "stream_ID_invented": false,
+    "global_SMMU_bypass_written": false,
+    "firmware_IORT_candidate": {
+      "audit": "docs/usb/firmware-topology-audit.json",
+      "source_has_explicit_USB_named_component_stream": true,
+      "named_component": "\\_SB_.USB0",
+      "stream_id": "0x1400",
+      "SMMU_base": "0x1680000",
+      "runtime_installed_table_validation_source_complete": true,
+      "live_context_ownership_or_DMA_grant_established": false,
+      "live_controller_resource_binding_capture_source_integrated": true
+    },
+    "owned_IOMapper_consumer_source_integrated": true,
+    "owned_IOMapper_audit": "docs/usb/iomapper-abi-audit.json",
+    "production_context_handoff_property": "qcom,usb-smmu-handoff: 128-byte version1; exact inherited context/ASID, observed guest CBAR only, no other visible active bank, stopped USB and retained fabric proof; does not grant physical namespace ownership",
+    "post_EFI_pre_XNU_halt_BCR_producer_source_integrated": true,
+    "existing_active_context_producer_source_integrated": true,
+    "existing_context_capture_request": "qcom,usb-smmu-capture=<1>; QcomUSB1.5 checks matching software/hardware stop, installed IORT, actual NoC/GCC leases and BCR before capturing the128-byte record.",
+    "actual_SMMU_bypass_producer_source_integrated": true,
+    "bypass_capture_request": "qcom,usb-dma-capture=<1> exact architected BYPASS64-byte v1; <2> exact exclusive disabled-stage1/S2-bypass80-byte v2; <3> complete no-match and actual USFCFG0,64-byte v3. All retain stop/fabric/reset proof and recheck the observed route.",
+    "bypass_route_retained_and_rechecked": true,
+    "disabled_context_emulated_bypass_supported": true,
+    "unused_context_allocator_source_integrated": false,
+    "disabled_context_bypass_scope": "Inherit exact exclusive existing bank only; no write probe, global change, bank allocation, root/ASID/VMID access, or shared-bank takeover.",
+    "Native_resource_ACK_sequence_source_integrated": true,
+    "Native_resource_ACK_sequence_version": "QcomRPM1.7.0; explicit nonzero rail/domain/clock/NoC ACKs then scaling; QcomUSB1.5 retains pre-GCC preparation and adds edge/level IRQ plus retained PM binding",
+    "complete_board_resource_policy_producer": false,
+    "unified_resource_policy_producer_source_integrated": true,
+    "unified_resource_policy_producer": "scripts/build-bridge.py --usb-resource-profile",
+    "pre_GCC_AP_baseline_ACK_source_integrated": true,
+    "authoritative_production_baseline_dataset_complete": false,
+    "complete_board_resource_policy_producer_meaning": "Source frontend and Native preparation are integrated; complete production AP/board baseline data is still absent.",
+    "ANOC1_context_interrupt_reference": {
+      "source": "docs/usb/reference/msm-arm-smmu-8998.dtsi",
+      "ANOC1_block_same_in_checked_N_and_P": true,
+      "Linux_SPI_numbers": [
+        364,
+        365,
+        366,
+        367,
+        368,
+        369
+      ],
+      "GIC_INTIDs": [
+        396,
+        397,
+        398,
+        399,
+        400,
+        401
+      ],
+      "Linux_trigger": "rising-edge",
+      "reference_is_runtime_IRQ_authority": false,
+      "runtime_authority": "Actual installed and checksummed IORT context IRQ numbers/flags matched to Apple GIC specifiers and provider getInterruptType",
+      "repository_IORT_candidate": "Eight context entries, level flags; never overwrite the installed table based on this DTS reference",
+      "driver_support": "QcomUSB1.5 supports exact edge or level, rejects selected IRQ shared with another bank or DWC3 core"
+    },
+    "Native_IORT_context_IRQ_binding": {
+      "status": "Source integrated and current unified offline validation passed; no Native or hardware execution",
+      "QcomUSB_version": "1.10.0",
+      "runtime_authority": "Actual installed checksummed IORT, Apple GIC specifiers and provider getInterruptType",
+      "IORT_flags": "bit0 edge1/level0; Apple GIC trigger edge0/level1",
+      "routes": [
+        "full bank IRQ list",
+        "one selected bank IRQ"
+      ],
+      "selected_IRQ_exclusive": true,
+      "DWC3_core_IRQ_alias_rejected": true,
+      "unknown_flags_or_native_type_mismatch_rejected": true,
+      "retained_PM_binding": "Validate original IRQ number, trigger and event-source index before enabling source or attaching root; no silent adoption",
+      "SMMU_writes_during_IRQ_validation": 0,
+      "handoff_wire_version_changed": false,
+      "source": "drivers/bus/QcomSMMU/IORT.h:ContextInterruptBinding",
+      "Native_adapter": "drivers/usb/QcomUSB/QcomUSBMapper.cpp:NativeContextInterrupts/activate",
+      "reference": "docs/usb/board-resources.json:ANOC1_context_interrupt_reference",
+      "evidence": "build/usb/context-irq-evidence.json",
+      "evidence_sha256": "a2d4f5c9b1d97c64eb200ab8c3e85003f287db0bab08cb5569a4b4a6f511cda9",
+      "inputs": "build/usb/current-inputs.json",
+      "inputs_sha256": "a0d6816ec1b651f4f5222472c109074ad9739559f12fe865eb5c2e19f81d440c",
+      "Native_workers_executed": false,
+      "hardware_tested": false,
+      "driver_complete": false
+    },
+    "SMMU_guest_namespace_guard": {
+      "QcomUSB_version": "1.10.0",
+      "evidence": "build/usb/stock-smmu-namespace-evidence.json",
+      "evidence_sha256": "2587844798d6b8d412418d9d17d260549aa08caf0754d594d61eda3b7078e511",
+      "policy": "Preserve the observed inherited 8-bit guest CBAR.VMID and effective ASID; these do not prove physical TLB namespace ownership under HYP. Reject all other visible active banks and unknown SCTLR reads; latch runtime proof loss until actual root retirement and rebuild. No unused/shared-bank or namespace allocation is granted.",
+      "record_bytes": 128,
+      "record_version": 1,
+      "other_bank_MMIO_writes": 0,
+      "new_script_entrypoints": 0,
+      "active_bank_rejections": 480,
+      "inactive_bank_controls": 480,
+      "pre_fix_host_counterexample_reproduced": true,
+      "Native_fault_latch_compiled": true,
+      "Native_fault_latch_executed_in_kernel": false,
+      "production_namespace_owner_grants_found": false
+    },
+    "downstream_kernel_namespace_reference": {
+      "file": "docs/usb/reference/board/arm-smmu.c",
+      "functions": [
+        "arm_smmu_init_static_cbndx_list",
+        "arm_smmu_add_static_cbndx",
+        "arm_smmu_alloc_context_idx",
+        "arm_smmu_init_domain_context",
+        "arm_smmu_attach_dynamic"
+      ],
+      "observed_model": "Read existing valid SMRs/S2CRs; reserve their indices and translated context banks in SMMU-wide bitmaps. Reuse exact static SID routes; otherwise allocate from the globally managed bitmap.",
+      "namespace_model": "Ordinary contexts use cbndx+1 ASID and cbndx+2 guest VMID; dynamic ASIDs use a SMMU-wide cyclic ID allocator.",
+      "porting_boundary": "These formulas require the owning SMMU manager and do not grant USB a vacant bank, an ASID/physical VMID namespace, or another client's shared bank under firmware HYP.",
+      "new_production_namespace_grants": 0,
+      "SMMU_probe_writes_performed": 0
+    },
+    "unmatched_stream_bypass_capture_source_integrated": true
+  },
+  "production_board_nodes_enabled": false,
+  "hardware_tested": false,
+  "resource_policy_handoff": {
+    "status": "USB inherited/target clock coverage and shared AP baseline preflight source-integrated and offline-validated; production handoff remains incomplete",
+    "entry": "make usb-bridge USB_RESOURCE_PROFILE=/absolute/path/usb-policy.json",
+    "producer": "scripts/build-bridge.py:load_usb_resource_profile/configure_usb_resources",
+    "source_integrated": true,
+    "additional_script_entrypoints_created": 0,
+    "QcomUSB_version": "1.13.0",
+    "QcomRPM_version": "1.13.0",
+    "strict_explicit_AP_baselines_required": true,
+    "actual_collection_versions_checked": true,
+    "pre_GCC_baseline_ACK_source_integrated": true,
+    "pre_GCC_protocol": "Protocol2 RPM, consumer9, PrepareUSBResources id=max(inherited core Hz,target core Hz), value/flags0; wire layout and vtables unchanged.",
+    "pre_GCC_sequence": "Pinned topology/stop -> actual BCR18 -> inherited GCC root163 rate -> RPM Domains/ResourceHandoff capabilities -> PrepareUSBResources id=covered Hz -> shared preflight and complete AP baseline ACKs/channel check -> ACKed CX level -> unchanged root rate -> BCR18 -> GCC mutations.",
+    "unknown_ACK_ownership": "RPM retains applied or uncertain AP floors; no GCC reference is acquired when preparation fails",
+    "policy_is_runtime_grant": false,
+    "production_baseline_dataset_complete": false,
+    "production_profile_file_created": false,
+    "default_board_nodes_enabled": false,
+    "synthetic_profiles_scope": "Temporary host-model fixtures only; no bootable synthetic-profile EFI produced",
+    "tests": {
+      "ordinary_suites": 17,
+      "sanitized_suites": 17,
+      "bridge_regressions": 48,
+      "toolchain_regressions": 15,
+      "kernelcache_regressions": 30,
+      "Native_bundles": 8,
+      "collection_Kexts": 53,
+      "cpp_ctest_suites": 5,
+      "prepare_failure_cases": 21,
+      "protocol_shape_rejections": 7,
+      "full_ACK_sequence_steps": 88,
+      "actual_collection_version_checks": 9,
+      "inherited_target_combinations": 12,
+      "shared_initializer_cases": 48,
+      "optional_GPU_compile_variants": 2
+    },
+    "evidence": "build/usb/inherited-clock-evidence.json",
+    "evidence_sha256": "f54d94c0c1d3a778003eb058cd8a8757c1061ebdca2c53dd696a4c47770f98a6",
+    "inputs": "build/usb/inherited-clock-final-inputs.json",
+    "inputs_sha256": "0f5e1504b143beacd5bfde2361f91eb09e0461a80ccf9c68373211cd86dc35ca",
+    "Native_workers_executed": false,
+    "hardware_tested": false,
+    "driver_complete": false,
+    "remaining": [
+      "Complete authoritative AP baseline and board policy data for the integrated unified producer; submitted NPA requests and synthetic test profiles do not establish safe production floors.",
+      "Complete authoritative unused-context/namespace allocation or shared-bank ownership when no supported exclusive inherited active, architected BYPASS or disabled-stage1/S2-bypass route exists.",
+      "Enable production board USB matching nodes only after complete source handoff exists; Native kernel and hardware execution follow source completion."
+    ],
+    "IORT_edge_level_and_retained_PM_IRQ_binding_source_integrated": true,
+    "clock_policy": {
+      "count": 27,
+      "record_bytes": 16,
+      "PIMEM_index": 26,
+      "PIMEM_resource_type": "pmem",
+      "PIMEM_resource_id": 0,
+      "key": "KHz",
+      "explicit_active_sleep_values_required": true,
+      "firmware_low_power_value_is_not_default": true,
+      "old_26_record_policy_rejected": true,
+      "ACKs_before_global_scaling": true,
+      "limit_count": 12,
+      "limit_record_bytes": 16,
+      "limits_explicit_in_both_sets": true
+    },
+    "firmware_resource_research": {
+      "evidence": "build/usb/firmware-clock-namespace-evidence.json",
+      "public_repository": "https://github.com/David112x/android-firmware-qti-sdm660",
+      "commit": "b5e5bb9ed6c92442fd502b3e726d7c8024dc0763",
+      "target_scope": "primarily SDM660; common protocol semantics only, not production MSM8998 AP baseline values",
+      "available_firmware_modules_scanned": 30,
+      "standard_or_Qcom_SMMU_literal_GUID_matches": 0,
+      "literal_scan_proves_protocol_absence": false,
+      "DALSys_region_table_grants_bank_or_namespace": false,
+      "production_AP_baselines_derived": false
+    },
+    "QDSS_STATE_policy": {
+      "QcomRPM_version": "1.11.0",
+      "evidence": "build/usb/clock-state-evidence.json",
+      "evidence_sha256": "9e718a345d172a9fadf6da956981a1dffeb558e3d53011e9255412899810960a",
+      "policy_index": 19,
+      "units": "STATE",
+      "wire_key": "STAT",
+      "allowed_values": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "clock_records": 27,
+      "record_bytes": 16,
+      "Native_legal_state_pairs": 25,
+      "USB_GPU_legal_state_pairs": 50,
+      "actual_collection_minimum_RPM": "1.11.0",
+      "new_script_entrypoints": 0,
+      "production_AP_baselines_inferred": false,
+      "firmware_or_Native_workers_executed": false
+    },
+    "RPM_clock_limit_handoff": {
+      "QcomRPM_version": "1.11.0",
+      "evidence": "build/usb/clock-limit-evidence.json",
+      "evidence_sha256": "64d03588d157584ef0729a698209af5c0d2e8e828c095e1a732caa9fe900339b",
+      "policy_schema_version": 2,
+      "request_records": 27,
+      "limit_records": 12,
+      "limit_record_bytes": 16,
+      "limit_property": "qcom,rpm-clock-limit-handoff",
+      "wire_key": "max",
+      "explicit_caps_with_primary_in_same_message": true,
+      "omitted_caps_rejected_before_connect": true,
+      "NoC_request_ceiling_fits_both_sets": true,
+      "firmware_observation": {
+        "version": 2,
+        "bytes": 20544,
+        "capacity": 160,
+        "selected_keys": 134,
+        "grants": 0
+      },
+      "cold_transport_ABI_changed": false,
+      "Native_firmware_or_hardware_executed": false,
+      "new_script_entrypoints": 0
+    },
+    "policy_schema_version": 2,
+    "PMIC_clock_control_order": {
+      "QcomRPM_version": "1.11.0",
+      "introduced_version": "1.11.0",
+      "evidence": "build/usb/clock-order-evidence.json",
+      "evidence_sha256": "353b72b0d795e9b74e91e1321785b0eeadb8b7a7b1d8a96ee421bdeeda5ce4c2",
+      "paired_resources": 6,
+      "control_keys": [
+        "swen",
+        "pccb"
+      ],
+      "set_count": 2,
+      "ordering": "Desired enabled control ACK precedes withdrawing its peer; both-off never adds an enable",
+      "definitive_NACK_retries_current_step": true,
+      "unknown_ACK_latches_before_next_request": true,
+      "combined_KVP_not_sufficient_due_to_firmware_SW_before_PIN": true,
+      "policy_schema_version_unchanged": 2,
+      "clock_messages_unchanged": 56,
+      "full_model_ACK_steps": 88,
+      "Native_and_EFI_share_implementation": true,
+      "hardware_or_firmware_executed": false,
+      "new_script_entrypoints": 0
+    },
+    "Native_bundled_completion": {
+      "QcomUSB_version": "1.10.0",
+      "introduced_version": "1.7.0",
+      "evidence": "build/usb/bundled-evidence.json",
+      "evidence_sha256": "46c3d64cc67efa6c7d4403b9223cfc38b3fcc2cfc5f4d00231bb2b52a3444d4e",
+      "Native_completion_kind": 3,
+      "one_prepared_MD_and_TD_per_submitted_request": true,
+      "HCD_does_not_construct_Native_bundle_arrays": true,
+      "Family_owns_grouping_and_MD_completion": true,
+      "Family_group_keys": [
+        "target",
+        "action",
+        "context"
+      ],
+      "Native_maximum_requests_per_callback": 16,
+      "independent_timeout_abort_and_DMA_retirement": true,
+      "ISO_bundled_shape_rejected": true,
+      "bulk_streams_not_advertised": true,
+      "ordinary_transfer_scenarios": 32,
+      "TD_retirements_in_new_models": 536,
+      "uncertain_enqueue_cases": 2,
+      "Native_workers_executed": false,
+      "hardware_tested": false,
+      "new_script_entrypoints": 0
+    },
+    "Native_Host_current": {
+      "QcomUSB_version": "1.10.0",
+      "QcomPMIC_version": "1.1.0",
+      "introduced_version": "1.8.0",
+      "evidence": "build/usb/current-evidence.json",
+      "evidence_sha256": "4ba63306edce888a4b8ddf74eddbf6d391114cf0415e1f53a91c87fc58dba12e",
+      "leased_connector_budget": true,
+      "IORegistry_diagnostic_is_not_budget_authority": true,
+      "connector_RPC_version": 2,
+      "connector_RPC_bytes": 56,
+      "platform_RPC_version": 5,
+      "platform_RPC_bytes": 80,
+      "resource_contract_version": 2,
+      "resource_contract_bytes": 32,
+      "connector_notice_bytes": 24,
+      "platform_notice_bytes": 24,
+      "Native_pool_unit": "mA",
+      "Source_property_unit": "microamps",
+      "one_shared_Native_pool_per_controller": true,
+      "Native_pool_owns_allocate_release": true,
+      "Native_initBusCurrent_slot": 214,
+      "Native_minimum_current_offset": 624,
+      "USB2_enumeration_mA": 100,
+      "USB3_enumeration_mA": 150,
+      "USB2_port_ceiling_mA": 500,
+      "USB3_port_ceiling_mA": 900,
+      "sleep_supply_and_port_limits_mA": 0,
+      "fresh_contract_and_pool_on_connection_and_cold_PM": true,
+      "Source_budget_does_not_enable_VBUS": true,
+      "fake_hardware_guaranteed_power_flag": false,
+      "legacy_OSData_port_current_limit_used": false,
+      "offline_model_cases": 51,
+      "Native_workers_executed": false,
+      "hardware_tested": false,
+      "new_script_entrypoints": 0
+    },
+    "Native_companion_ports": {
+      "QcomUSB_version": "1.10.0",
+      "introduced_version": "1.9.0",
+      "evidence": "build/usb/companion-evidence.json",
+      "evidence_sha256": "5cb26172a439793ccc58cc6c1d483745ac9d1c45d84a978a1568cce5f5165364",
+      "controller_query_slot": 235,
+      "Native_cached_query_slot": 219,
+      "borrowed_return_and_Native_retain_atomic_under_controller_gate": true,
+      "Native_cache_slots": 6,
+      "Native_handleStopPhase2_releases_caches": true,
+      "single_connector_protocol_pair_without_fixed_port_order": true,
+      "partial_port_table_not_exposed": true,
+      "unsupported_SuperPlus_queries_return_no_peer": true,
+      "topology_speed_queries": 343,
+      "invalid_topologies": 8,
+      "cache_stop_cold_PM_lifecycles": 16,
+      "Native_workers_executed": false,
+      "hardware_tested": false
+    },
+    "Native_routed_ports_and_PM": {
+      "QcomUSB_version": "1.10.0",
+      "introduced_version": "1.10.0",
+      "evidence": "build/usb/routed-evidence.json",
+      "evidence_sha256": "b47a6b096fa34d3340e61a4ec369fd7671c1f2bc6a5507003d144c6e583e876a",
+      "original_hardware_port_numbers_preserved": true,
+      "unrouted_USB3_Native_service_and_current_reserve_absent": true,
+      "Native_reset_stop_accept_null_entries": true,
+      "USB2_500mA_budget_restored": true,
+      "UsbConnector_OSNumber_before_Native_start": true,
+      "physical_USB_C_HS_code": 8,
+      "physical_USB_C_SS_switched_code": 9,
+      "Native_driver_state3_request_after_PM_registration": true,
+      "vote_failure_faults_before_PortsCreated_admission": true,
+      "current_policy_cases": 51,
+      "routed_publication_lifecycles": 16,
+      "property_failure_positions": 18,
+      "PM_registration_scenarios": 16,
+      "Native_workers_executed": false,
+      "hardware_tested": false,
+      "new_script_entrypoints": 0
+    },
+    "GenericARMPlatform_minimum": "1.1.0",
+    "GenericClockController_minimum": "1.3.0",
+    "USB_clock_CX_policy": {
+      "introduced_QcomUSB_version": "1.11.0",
+      "introduced_QcomRPM_version": "1.12.0",
+      "GenericARMPlatform_minimum": "1.1.0",
+      "GenericClockController_minimum": "1.3.0",
+      "USB_master_FMAX_source": {
+        "file": "docs/usb/reference/board/gcc.c",
+        "lines": [
+          252,
+          265
+        ]
+      },
+      "CX_supply_source": {
+        "file": "docs/usb/reference/board/soc.dtsi",
+        "lines": [
+          799,
+          799
+        ]
+      },
+      "RPM_level_source": {
+        "file": "docs/usb/reference/board/regulator-level.h",
+        "lines": [
+          55,
+          58
+        ]
+      },
+      "rate_to_minimum_persistent_active_CX": [
+        [
+          60000000,
+          64
+        ],
+        [
+          120000000,
+          128
+        ],
+        [
+          150000000,
+          256
+        ]
+      ],
+      "before": "A nonzero active CX policy, including retention levels, could authorize a faster USB clock without a sufficient persistent floor.",
+      "producer": "Reject insufficient rpm_domains CX active floor; never substitute sleep or another AP domain.",
+      "pre_GCC_protocol": "Protocol2 RPM, consumer9, PrepareUSBResources id=max(inherited core Hz,target core Hz), value/flags0; wire layout and vtables unchanged.",
+      "RPM_preflight": "Check immutable configured CX floor before connect/write; a temporary ACKed NOM vote by another consumer cannot authorize 150MHz over LOW_SVS floor.",
+      "Native_sequence": "Pinned topology/stop -> actual BCR18 -> inherited GCC root163 rate -> RPM Domains/ResourceHandoff capabilities -> PrepareUSBResources id=covered Hz -> shared preflight and complete AP baseline ACKs/channel check -> ACKed CX level -> unchanged root rate -> BCR18 -> GCC mutations.",
+      "insufficient_policy_transport_writes": 0,
+      "preparation_failure_GCC_references": 0,
+      "sleep_policy": "Explicit sleep policy retained; cold PM isolates the controller before resource suspension.",
+      "complete_AP_baseline_inferred": false,
+      "validation": {
+        "producer_rate_level_cases": 30,
+        "RPM_preflight_rate_level_cases": 30,
+        "temporary_other_consumer_vote_rejected": true,
+        "invalid_rate_no_write_cases": 4,
+        "preparation_failure_cases": 19,
+        "protocol_shape_rejections": 7,
+        "ordinary_suites": 17,
+        "sanitized_suites": 17,
+        "bridge_regressions": 48,
+        "toolchain_regressions": 15
+      },
+      "scope": "Minimum required by the intended USB master rate. The complete AP baseline must additionally preserve inherited clocks and every other live AP resource until their owners stop or adopt them.",
+      "current_QcomUSB_version": "1.12.0",
+      "current_QcomRPM_version": "1.13.0",
+      "inherited_clock_followup": {
+        "status": "USB inherited/target clock coverage and shared AP baseline preflight source-integrated and offline-validated; production handoff remains incomplete",
+        "QcomUSB_version": "1.12.0",
+        "QcomRPM_version": "1.13.0",
+        "introduced_QcomUSB_version": "1.12.0",
+        "introduced_QcomRPM_version": "1.13.0",
+        "before": "The EFI hardware-stop owner asserts BCR but preserves inherited clocks. A target-only60MHz request could admit LOW_SVS64 or SVS128 while the root still runs150MHz and requires NOM256. Another AP consumer could activate the same policy before the USB-specific preparation call.",
+        "GCC_root": {
+          "id": 163,
+          "name": "usb30_master_clk_src",
+          "register": "0xf014",
+          "supported_observed_Hz": [
+            19200000,
+            60000000,
+            120000000,
+            150000000
+          ],
+          "unknown_or_unavailable_rate_grants_no_AP_baseline": true
+        },
+        "coverage": "max(observed inherited USB root rate, intended USB core rate); persistent active CX floor, not a temporary vote or a sleep-set value",
+        "Native_sequence": "Pinned topology/stop -> actual BCR18 -> inherited GCC root163 rate -> RPM Domains/ResourceHandoff capabilities -> PrepareUSBResources id=covered Hz -> shared preflight and complete AP baseline ACKs/channel check -> ACKed CX level -> unchanged root rate -> BCR18 -> GCC mutations.",
+        "pre_GCC_protocol": "Protocol2 RPM, consumer9, PrepareUSBResources id=max(inherited core Hz,target core Hz), value/flags0; wire layout and vtables unchanged.",
+        "shared_initializer": {
+          "property": "qcom,rpm-usb-core-clock-hz",
+          "Apple_DT_bytes": 4,
+          "Apple_DT_endian": "little",
+          "value": "intended USB core Hz",
+          "producer": "scripts/build-bridge.py:configure_usb_resources",
+          "Native": "QcomRPM::initializeResources and PrepareUSBResources; all voltage/domain/clock/bandwidth/GPU activation callers",
+          "EFI": "State::startPower in boot/bridge/gpu_handoff.cpp, after EFI exit and USB hardware-stop fence",
+          "predicate": "validateUSBClockBaseline checks immutable configured active CX floor against current GCC root and target before any AP resource request. The existing GLINK hello is not a resource ACK.",
+          "missing_policy_for_USB_prepare": "Unsupported; external retained-resource paths keep their existing contract."
+        },
+        "source_references": {
+          "boot/bridge/usb_hardware_stop.h": "fd67a2b02d1137ec8f675fadf3d669a5aa53f8305f68689b7e039a7526c1c7b6",
+          "docs/usb/reference/board/gcc.c": "c56f9115bba341c8ff30017164a30cc99750ce88a3c69b00d50b3adbc18aa68c",
+          "docs/usb/reference/board/vdd-level.h": "cdd74dd17e65c49ba0d039edfa65874c58c46a7d7bccfa877a17091fef4be4bd",
+          "docs/usb/reference/board/regulator-level.h": "6f5461eae8eddaedb429700861388e64d1277f6597895b5180d852df0c547627",
+          "docs/power/reference/gcc-msm8998.c": "b76f60946140ca6387979222ef4ea8a7a3530d09e1ddf6c1e5a431b6e132745b"
+        },
+        "validation": {
+          "inherited_target_combinations": 12,
+          "inherited_target_insufficient_floor_controls": 12,
+          "unknown_rate_controls": 6,
+          "post_ACK_rate_mutation_controls": 1,
+          "preparation_failure_cases": 21,
+          "shared_initializer_bus_voltage_and_floor_cases": 48,
+          "shared_preflight_error_cases": 8,
+          "before_model_FMAX_violations": 2,
+          "after_model_FMAX_violations": 0,
+          "ordinary_suites": 17,
+          "sanitized_suites": 17,
+          "bridge_regressions": 48,
+          "toolchain_regressions": 15,
+          "kernelcache_regressions": 30,
+          "cpp_ctest_suites": 5,
+          "collection_Kexts": 53,
+          "optional_GPU_compile_variants": 2
+        },
+        "evidence": "build/usb/inherited-clock-evidence.json",
+        "scope": "A necessary USB preservation check. Complete authoritative AP/board baselines and unused/shared SMMU namespace ownership remain separate requirements.",
+        "new_script_entrypoints": 0,
+        "production_AP_dataset_complete": false,
+        "production_profile_created": false,
+        "production_USB_nodes_enabled": false,
+        "firmware_executed": false,
+        "Native_kernel_executed": false,
+        "hardware_tested": false,
+        "driver_complete": false
+      }
+    },
+    "previous_resource_policy_evidence": {
+      "evidence": "build/usb/resource-policy-evidence.json",
+      "evidence_sha256": "c723c8c67bba234888e9384fe750f865f72ae9c4f4f5819e0f5b76ed0358ea27",
+      "inputs": "build/usb/current-inputs.json",
+      "inputs_sha256": "a0d6816ec1b651f4f5222472c109074ad9739559f12fe865eb5c2e19f81d440c"
+    },
+    "prior_clock_policy_evidence": {
+      "evidence": "build/usb/open-kernel-evidence.json",
+      "evidence_sha256": "1092acc972b4bb5ee6daf3565c7e8a81a3e06f793cdf4fc96e6e722ba803a4a7",
+      "inputs": "build/usb/cx-final-build-inputs.json",
+      "inputs_sha256": "53d0237c2bca16ef1a756c26debd46b0d4bd78b2afd0ae9fef34a479483e6869"
+    },
+    "USB_inherited_clock_policy": {
+      "status": "USB inherited/target clock coverage and shared AP baseline preflight source-integrated and offline-validated; production handoff remains incomplete",
+      "QcomUSB_version": "1.12.0",
+      "QcomRPM_version": "1.13.0",
+      "introduced_QcomUSB_version": "1.12.0",
+      "introduced_QcomRPM_version": "1.13.0",
+      "before": "The EFI hardware-stop owner asserts BCR but preserves inherited clocks. A target-only60MHz request could admit LOW_SVS64 or SVS128 while the root still runs150MHz and requires NOM256. Another AP consumer could activate the same policy before the USB-specific preparation call.",
+      "GCC_root": {
+        "id": 163,
+        "name": "usb30_master_clk_src",
+        "register": "0xf014",
+        "supported_observed_Hz": [
+          19200000,
+          60000000,
+          120000000,
+          150000000
+        ],
+        "unknown_or_unavailable_rate_grants_no_AP_baseline": true
+      },
+      "coverage": "max(observed inherited USB root rate, intended USB core rate); persistent active CX floor, not a temporary vote or a sleep-set value",
+      "Native_sequence": "Pinned topology/stop -> actual BCR18 -> inherited GCC root163 rate -> RPM Domains/ResourceHandoff capabilities -> PrepareUSBResources id=covered Hz -> shared preflight and complete AP baseline ACKs/channel check -> ACKed CX level -> unchanged root rate -> BCR18 -> GCC mutations.",
+      "pre_GCC_protocol": "Protocol2 RPM, consumer9, PrepareUSBResources id=max(inherited core Hz,target core Hz), value/flags0; wire layout and vtables unchanged.",
+      "shared_initializer": {
+        "property": "qcom,rpm-usb-core-clock-hz",
+        "Apple_DT_bytes": 4,
+        "Apple_DT_endian": "little",
+        "value": "intended USB core Hz",
+        "producer": "scripts/build-bridge.py:configure_usb_resources",
+        "Native": "QcomRPM::initializeResources and PrepareUSBResources; all voltage/domain/clock/bandwidth/GPU activation callers",
+        "EFI": "State::startPower in boot/bridge/gpu_handoff.cpp, after EFI exit and USB hardware-stop fence",
+        "predicate": "validateUSBClockBaseline checks immutable configured active CX floor against current GCC root and target before any AP resource request. The existing GLINK hello is not a resource ACK.",
+        "missing_policy_for_USB_prepare": "Unsupported; external retained-resource paths keep their existing contract."
+      },
+      "source_references": {
+        "boot/bridge/usb_hardware_stop.h": "fd67a2b02d1137ec8f675fadf3d669a5aa53f8305f68689b7e039a7526c1c7b6",
+        "docs/usb/reference/board/gcc.c": "c56f9115bba341c8ff30017164a30cc99750ce88a3c69b00d50b3adbc18aa68c",
+        "docs/usb/reference/board/vdd-level.h": "cdd74dd17e65c49ba0d039edfa65874c58c46a7d7bccfa877a17091fef4be4bd",
+        "docs/usb/reference/board/regulator-level.h": "6f5461eae8eddaedb429700861388e64d1277f6597895b5180d852df0c547627",
+        "docs/power/reference/gcc-msm8998.c": "b76f60946140ca6387979222ef4ea8a7a3530d09e1ddf6c1e5a431b6e132745b"
+      },
+      "validation": {
+        "inherited_target_combinations": 12,
+        "inherited_target_insufficient_floor_controls": 12,
+        "unknown_rate_controls": 6,
+        "post_ACK_rate_mutation_controls": 1,
+        "preparation_failure_cases": 21,
+        "shared_initializer_bus_voltage_and_floor_cases": 48,
+        "shared_preflight_error_cases": 8,
+        "before_model_FMAX_violations": 2,
+        "after_model_FMAX_violations": 0,
+        "ordinary_suites": 17,
+        "sanitized_suites": 17,
+        "bridge_regressions": 48,
+        "toolchain_regressions": 15,
+        "kernelcache_regressions": 30,
+        "cpp_ctest_suites": 5,
+        "collection_Kexts": 53,
+        "optional_GPU_compile_variants": 2
+      },
+      "evidence": "build/usb/inherited-clock-evidence.json",
+      "scope": "A necessary USB preservation check. Complete authoritative AP/board baselines and unused/shared SMMU namespace ownership remain separate requirements.",
+      "new_script_entrypoints": 0,
+      "production_AP_dataset_complete": false,
+      "production_profile_created": false,
+      "production_USB_nodes_enabled": false,
+      "firmware_executed": false,
+      "Native_kernel_executed": false,
+      "hardware_tested": false,
+      "driver_complete": false
+    },
+    "actual_collection_versions": {
+      "org.darwin.driver.QcomUSB": "1.13.0",
+      "org.darwin.driver.QcomRPM": "1.13.0",
+      "org.darwin.driver.QcomGCC": "1.3.0",
+      "org.darwin.driver.GenericClockController": "1.3.0",
+      "org.mi6.driver.GenericARMPlatform": "1.1.0",
+      "org.darwin.driver.QcomPowerController": "1.2.0",
+      "org.darwin.driver.QcomSPMI": "1.3.0",
+      "org.darwin.driver.QcomPMIC": "1.1.0",
+      "org.darwin.driver.QcomInterconnect": "1.0.0"
+    }
+  },
+  "Native_unmatched_stream_bypass": {
+    "QcomUSB_version": "1.13.0",
+    "source_integrated": true,
+    "evidence": "build/usb/unmatched-bypass-evidence.json",
+    "implementation": "drivers/bus/QcomSMMU/BypassHandoff.h",
+    "Native_adapter": "drivers/usb/QcomUSB/QcomUSBMapper.cpp",
+    "selector": "qcom,usb-dma-capture=<3>",
+    "resource_profile_mode": "unmatched-bypass",
+    "record": {
+      "property": "qcom,usb-smmu-bypass",
+      "version": 3,
+      "bytes": 64,
+      "slot": "UINT32_MAX",
+      "SMR": 0,
+      "S2CR": 0
+    },
+    "runtime_preconditions": [
+      "Actual installed IORT/controller and software/hardware stop match",
+      "Retained NoC/GCC lease and USB BCR asserted for capture",
+      "Stream matching enabled and every valid SMR excludes the actual USB SID",
+      "Actual sCR0.USFCFG=0 and unchanged global ID/control registers"
+    ],
+    "context_reads": 0,
+    "namespace_allocation": false,
+    "SMMU_writes": 0,
+    "mode_selected_automatically": false,
+    "complete_AP_baseline_required": true,
+    "runtime_route_rechecked": true,
+    "fault_retains_original_DMA_and_fabric_lease": true,
+    "cold_PM_must_preserve_original_observation": true,
+    "firmware_static_mode_is_runtime_grant": false,
+    "production_USB_nodes_enabled": false,
+    "hardware_tested": false,
+    "architecture": "ARM IHI0062D.c2.3.6 https://documentation-service.arm.com/static/5f900d34f86e16515cdc08fb",
+    "status": "source integrated; full offline validation and current toolchain revalidation passed; no execution",
+    "evidence_sha256": "d06f0d02d224b8ba31fe6ef8f0cf56a8657474d2702279117188d2d26cd01a9a",
+    "checks": "build/usb/unmatched-bypass-toolchain-checks.json",
+    "test_counts": {
+      "normal_model_suites": 17,
+      "sanitized_model_suites": 17,
+      "bridge_python": 48,
+      "driver_toolchain_python": 19,
+      "kernelcache_python": 30,
+      "Cpp_CTest": 5,
+      "standalone_arm64_Kexts": 8,
+      "local_collection_Kexts": 11,
+      "full_collection_Kexts": 53
+    }
+  },
+  "stock_resource_extraction": {
+    "command": "make analyze-usb-resources",
+    "implementation": "scripts/toolchain.py:analyze_usb_resources",
+    "report": "build/usb/firmware-resource-extraction.json",
+    "interface_analysis": "build/usb/firmware-interface-analysis.json",
+    "pinned_original_firmware_files": 5,
+    "pinned_kernel_sources": 5,
+    "SMMU_device_descriptors": 6,
+    "USB_SID_reference": "0x1400",
+    "USB_static_assignment": {
+      "device": "ANOC1",
+      "assignment_index": 6,
+      "declared_VMID": 3,
+      "lookup_guard_word": 0,
+      "is_context_grant": false
+    },
+    "dynamic_SID_SMC": "0x02000c18",
+    "dynamic_SID_supported_internal_device": "MMNOC4; ANOC1 internal0 is outside this reviewed path",
+    "complete_AP_readback_contract_proven": false,
+    "production_policy_values_guessed": false,
+    "missing_production_values": "null",
+    "new_script_entrypoints": 0,
+    "offline_only": true,
+    "report_sha256": "afdb316c67fcda0b8f97e1d46050be09e1d043e4fb0f0da4d107a3655757fbaf",
+    "interface_analysis_sha256": "0609974b6d68bfe66046e78801b2b0492d6c6762ef43cfc60d496b1661613edc"
+  },
+  "Disabled_context_FSR_format": {
+    "QcomUSB_version": "1.13.0",
+    "implementation": "drivers/bus/QcomSMMU/BypassHandoff.h",
+    "FSR_ignored_mask": "0x600",
+    "required_status": "Every other FSR bit must be0; SCTLR must remain0 and existing S2-bypass/ownership checks are unchanged",
+    "format_zero_assumed": false,
+    "wire_layout_changed": false,
+    "regression_witness": "build/usb/unmatched-bypass-fsr-counterexample.json",
+    "evidence": "build/usb/unmatched-bypass-evidence.json",
+    "hardware_tested": false,
+    "status": "saved/current headers replayed with the same model; corrected ordinary and ASan/UBSan models passed",
+    "evidence_sha256": "d06f0d02d224b8ba31fe6ef8f0cf56a8657474d2702279117188d2d26cd01a9a"
+  }
+}

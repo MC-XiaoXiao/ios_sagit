@@ -1,0 +1,28 @@
+{
+  "status": "passed",
+  "cases": 2944,
+  "original_cpu": "max",
+  "lowered_cpu": "cortex-a53",
+  "compared": "all 31 GPRs, SP, NZCV, all 32 SIMD registers, atomic memory",
+  "kinds": [
+    "bcax",
+    "cas",
+    "eor3",
+    "ldadd",
+    "ldapr",
+    "ldclr",
+    "ldeor",
+    "ldset",
+    "ldsmax",
+    "ldsmin",
+    "ldumax",
+    "ldumin",
+    "rax1",
+    "sha512h",
+    "sha512h2",
+    "sha512su0",
+    "sha512su1",
+    "swp",
+    "xar"
+  ]
+}

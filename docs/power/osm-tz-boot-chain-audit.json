@@ -1,0 +1,179 @@
+{
+  "scope": "Offline static audit of stock sagit TZ and stock XBL ClockDxe; no device access, no runtime measurement and no secure-boot attestation.",
+  "inputs": [
+    {
+      "path": "build/usb/firmware/stock/tz.mbn",
+      "bytes": 1912832,
+      "sha256": "d2c417987bb4210eb774b11c3cd61aa5cd4b1260d1dd3313506490ee9026d911"
+    },
+    {
+      "path": "build/usb/firmware/stock/xbl.elf",
+      "bytes": 4072252,
+      "sha256": "89e9d225db731fd3c7139ec0070eb234cd5c0aa3adbe124388727b55b1c764b7"
+    },
+    {
+      "path": "build/usb/firmware/stock/modules/ClockDxe.efi",
+      "bytes": 126976,
+      "sha256": "bbad29bc0a6fb9154eade6d871de2619d2f88286807facbf122fe9397d660926"
+    },
+    {
+      "path": "build/usb/firmware/ClockDxe.efi",
+      "bytes": 131072,
+      "sha256": "b4020fc78a80d9335bfaf74ad7831a096c4e2a2a978a0f2b2178e132f73a0ac6"
+    },
+    {
+      "path": "build/osm-tz-audit/agent-handoff/stock-clock-decompilation.json",
+      "bytes": 73245,
+      "sha256": "05c85fcc86f5a662de55ea8ca47ed547f12bdbd0e7d44b21d6309170c6a60c2d"
+    },
+    {
+      "path": "build/osm-tz-audit/agent-handoff/tz-init-failure-chain.json",
+      "bytes": 32768,
+      "sha256": "4f4114e1a40b844f1d9d92826ba161463b4a460fc01c234f53c86312bee168fe"
+    }
+  ],
+  "analysis_copy": {
+    "path": "build/osm-tz-audit/agent-handoff/stock-ClockDxe.normalized.efi",
+    "sha256": "d9b3cd9b69264613da2cd8c7afa3e37208ac1d1a1eb80d979244452560f97948",
+    "normalization": "Only clear malformed PE debug-directory RVA/size in the analysis copy. Original debug directory size is 225, not a multiple of IMAGE_DEBUG_DIRECTORY size. Code and data bytes from RVA/file offset 0x1000 onward are byte-identical to stock. Original firmware remains unchanged."
+  },
+  "stock_clockdxe": {
+    "image_initialization": "0x7adc",
+    "entry_install_protocol": "0x1844",
+    "cpu_source_registration": "0x8ab0 registers source IDs 105 and 106 using base 0x17800000 plus descriptors at 0x17350/0x17370.",
+    "cpu_pll_phys": [
+      "0x17916000",
+      "0x17816000"
+    ],
+    "cpu_rcgr_phys": [
+      "0x17911050",
+      "0x17811050"
+    ],
+    "cpu_domain_descriptors": [
+      "0x177b0",
+      "0x177e0"
+    ],
+    "cpu_source_selector_table": {
+      "rva": "0x17748",
+      "entries": [
+        {
+          "source_id": 1,
+          "selector": 0
+        },
+        {
+          "source_id": 28,
+          "selector": 1
+        },
+        {
+          "source_id": 105,
+          "selector": 3
+        },
+        {
+          "source_id": 17,
+          "selector": 4
+        },
+        {
+          "source_id": 107,
+          "selector": 5
+        }
+      ]
+    },
+    "initial_sequence": [
+      "Clock_InitImage calls PLL Config enums 10 and 12 for sources 105/106; Agera HAL 0xddec sets USER_CTL(+0x0c) output bits 3 and 0.",
+      "Cluster0 is enabled, switched to auxiliary mux record 0x15570, then switched to the version-selected local PLL record from 0x7a20.",
+      "The chip version query is DalChipInfo method offset 0x48 (or remote method offset 0x58). 0x7ac0 compares version with 0x20000; 0x7ac4 selects the v2 record at 0x15538 for version >=2.0.",
+      "The v1 local PLL record at 0x15458 uses L=77. The v2 record at 0x154a8 uses L=81. With 19.2MHz reference these correspond to 1478.4MHz and 1555.2MHz; these are configured rates, not measurements.",
+      "Cluster1 is enabled and switched to auxiliary record 0x155a8; it need not be using its local PLL at handoff."
+    ],
+    "cpu_mux_update": {
+      "function": "0x904c",
+      "behavior": "Preserves unrelated CFG bits, maps source ID to selector, encodes HID as nDiv2x-1, writes CMD UPDATE and loops until UPDATE clears. Local PLL record implies CFG fields 0x301; auxiliary record implies fields 0x403. No claim that these exact values remain live after later firmware clients run."
+    },
+    "cpu_pll_lock": {
+      "functions": [
+        "0xdc60",
+        "0xdf40"
+      ],
+      "enable_mode_low_bits": 7,
+      "lock_register_offset": "0x2c",
+      "lock_mask": "0x10000",
+      "warning": "CPU sources 105/106 select the Agera status-register lock path. GCC GPLL0 Fabia MODE bit31 is not the CPU PLL lock predicate. A disabled local PLL is valid while the cluster uses an auxiliary clock."
+    },
+    "current_efi_compatible_table_matches": [
+      {
+        "stock_rva": "0x15458",
+        "current_efi_rva": "0x16420",
+        "bytes": 80,
+        "note": "Mux prefixes omit the relocated PLL-configuration pointer where necessary."
+      },
+      {
+        "stock_rva": "0x154a8",
+        "current_efi_rva": "0x16470",
+        "bytes": 80,
+        "note": "Mux prefixes omit the relocated PLL-configuration pointer where necessary."
+      },
+      {
+        "stock_rva": "0x15500",
+        "current_efi_rva": "0x164c0",
+        "bytes": 48,
+        "note": "Mux prefixes omit the relocated PLL-configuration pointer where necessary."
+      },
+      {
+        "stock_rva": "0x15538",
+        "current_efi_rva": "0x164f8",
+        "bytes": 48,
+        "note": "Mux prefixes omit the relocated PLL-configuration pointer where necessary."
+      },
+      {
+        "stock_rva": "0x15570",
+        "current_efi_rva": "0x16530",
+        "bytes": 56,
+        "note": "Mux prefixes omit the relocated PLL-configuration pointer where necessary."
+      },
+      {
+        "stock_rva": "0x155a8",
+        "current_efi_rva": "0x16568",
+        "bytes": 56,
+        "note": "Mux prefixes omit the relocated PLL-configuration pointer where necessary."
+      },
+      {
+        "stock_rva": "0x17748",
+        "current_efi_rva": "0x18708",
+        "bytes": 48,
+        "note": "Mux prefixes omit the relocated PLL-configuration pointer where necessary."
+      },
+      {
+        "stock_rva": "0x17350",
+        "current_efi_rva": "0x18310",
+        "bytes": 64,
+        "note": "Mux prefixes omit the relocated PLL-configuration pointer where necessary."
+      }
+    ],
+    "exit_boot_services": "The stock image does not contain standard ExitBootServices or ReadyToBoot event-group GUID byte strings. This absence alone does not prove the absence of a legacy event callback or later secure-firmware ownership. EFI exit is not a hardware PLL/OSM ownership acknowledgment."
+  },
+  "tz_initialization_failure": {
+    "initializer": "0x1c094058",
+    "post_table_initializer": "0x1c094d14",
+    "post_table_failure": "After descriptor-driven writes, 0x1c094058 calls 0x1c094d14. That function can return -1 if lookup, frequency setup or enable of gcc_glm_clk / apcs_common_lmh_clk fails. The parent returns -1 without setting its private once flag.",
+    "success_tail": "Only the successful post-table path programs fuse-derived OSM offsets 0x404/0x410 and writes 0x179d4020 to 0x179c1050 and 0x179c3050. The initializer then sets private byte 0x1c109e20 to 1.",
+    "return_value_discarded": {
+      "caller": "0x1c0664c8",
+      "call": "0x1c0664e8 BL sub_1C094058",
+      "next_instruction": "0x1c0664ec MOV W0,#1",
+      "return": "0x1c066544 MOV W0,WZR"
+    },
+    "outer_fatal_checks": [
+      "0x1c01b770 checks sub_1c0664c8 and has a fatal loop",
+      "0x1c01bb64 checks sub_1c0664c8 and has a fatal path"
+    ],
+    "conclusion": "The outer fatal branches do not propagate the OSM initializer error because the intervening wrapper discards it and returns zero. Reaching HLOS therefore is not proof that the full OSM/TZ initialization succeeded. This conclusion is specific to the observed return chain; it is not a claim that every failure in the firmware is recoverable.",
+    "success_tail_not_written_earlier": "Independent descriptor review found no earlier write to either +0x1050: v2 block destinations are +0x500 (192 words), +0x170 (49 words), +0x300 (95 words); matching single-register descriptors are +0x4,+0x12c,+0x134,+0x260,+0x268,+0x120,+0x128,+0x130. The vendor Linux clock-osm source has no +0x1050 read precedent; nonsecure access must not be inferred merely from a mapped aperture."
+  },
+  "handoff_boundary": [
+    "The bridge may establish compatible retained register state and an HLOS lifecycle policy. A small set of permitted SEQ parameter reads is not a checksum of all sequencer code/branches, proof of completed PLL setup, or proof that no secure master can alter hardware.",
+    "The audited legacy XBL ClockDxe actively changes CPU mux and PLL configuration after the secure boot stage. CPU PLL ownership cannot be assigned wholly to TZ from the no-TZ Linux fallback implementation.",
+    "Do not require both cluster PLLs to be enabled at admission; cluster1 can validly use the auxiliary clock. Do not add speculative CPU MMIO admission gates without a supported nonsecure access contract.",
+    "A tail-state read such as both OSM+0x1050 pointers can distinguish some post-table failures if proven HLOS-readable and absent from earlier matching descriptor writes. It remains compatibility evidence, not a completion attestation.",
+    "The original boot chain remains a prerequisite. No post-ExitBootServices EFI Clock protocol calls, no 0x10009 suffix calls, and no direct CPU PLL retuning are justified by this audit."
+  ]
+}

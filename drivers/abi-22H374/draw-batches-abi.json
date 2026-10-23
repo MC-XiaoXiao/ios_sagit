@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "versions": {
+    "gpu": "1.60.0",
+    "metal": "0.52.0",
+    "shader": 36,
+    "jit": 33,
+    "surface_metadata": 2
+  },
+  "native_api": "One unchanged Metal draw and native IOGPU submit/event-fence ticket; batching is internal to the A540 backend, with no public raw-IB interface or substitute Apple queue",
+  "encoding": {
+    "primitive_boundary": "Encoder checkpoints include PM4 command head, uploaded-data tail and reserved footer space. On capacity exhaustion roll back all commands/data for the current primitive, seal the preceding IB and retry the same primitive in a fresh buffer. Never post a partial logical draw.",
+    "shader_state": "Each primitive retains complete native state. Reset the per-IB border-table address on rollover; retain monotonically increasing flush sequence values across all buffers and retries.",
+    "topology": "existing immutable index snapshot/primitive iterator preserves triangle strips/restart/winding and instance order across buffer boundaries",
+    "footer": "reserve two command DWORDs per IB for the existing wait-write/idle footer",
+    "single_primitive_limit": "If one complete primitive and its attachment copies cannot fit an empty64 KiB IB, return NoResources before any GPU submission",
+    "stack": "Separate primitive expansion from nonrecursive raster state emission; no repeated draw() stack frame"
+  },
+  "resources": {
+    "collections": "Apple OSArray retains the private QcomGPUBuffer objects; OSData owns the trusted immutable16-byte address/word-count descriptors",
+    "bytes_per_ib": 65536,
+    "maximum_ib_count_per_draw": 256,
+    "maximum_ib_storage_per_draw": 16777216,
+    "maximum_live_framebuffer_ib_storage": 67108864,
+    "snapshot_allocation_and_quota": "existing16 MiB per allocation /64 MiB live snapshot budget unchanged and independent",
+    "address_space": "every command/code/constants IB mapped read-only in the same isolated job address space; existing index, scratch and user-resource permissions retained",
+    "lifetime": "all IB objects retained until real GPU retirement, or until a proved halt/drain on error; failed halt/address-space retirement retains/quarantines all command buffers",
+    "command_snapshot": "Single bounded OSData copy, at most2864 bytes, held only during CPU admission/encoding; replaces stacked command-array and shader-union copies"
+  },
+  "submission": {
+    "ring_packets": "all validated CP_INDIRECT_BUFFER_PFE calls appended at the same ring level; one enter-to-private and leave-to-kernel page-table pair",
+    "ring_atomicity": "validate every descriptor and entire ring capacity before changing published ring write pointer; no nested IB or per-chunk doorbell",
+    "completion": "one engine timestamp/IRQ after the final IB and kernel-table restoration; existing Family fence/end token and IOSurface publication occur only after that retirement",
+    "allocation_failure": "release staged buffers and quota without posting any part of the draw"
+  },
+  "watchdog": {
+    "timeout_without_progress_ms": 500,
+    "head_only": "arm when a job becomes the monitored FIFO head, so time queued behind another job does not count as a GPU stall",
+    "progress_source": "CP-written UCHE flush sequence at the private scratch timestamp page, bounded by the final encoded sequence",
+    "faults": "out-of-range or backwards progress faults; no progress for500 ms times out; intermediate progress never advances a native completion token"
+  },
+  "abi": "Native command, Shader36/JIT33, Surface metadata2, program/image and draw/dispatch sizes unchanged; private IB descriptors never cross the user/kernel boundary",
+  "evidence": {
+    "existing_submit_check": "build/drivers/gpu-draw-batches/submit-check-final.log",
+    "native_compile": "build/drivers/gpu-draw-batches/native-build-first.log",
+    "native_runtime": "build/drivers/gpu-draw-batches/native-runtime.json",
+    "scope": "CPU checks of production encoder/ring/MMU fabric and actual A540 compiler output; not iOS Metal or A540 execution",
+    "kernel_stack": "build/drivers/gpu-draw-batches/kernel-stack.json"
+  },
+  "remaining": [
+    "per-primitive full-plane snapshot cost remains; coherent native tile fetch has not been established for A540",
+    "more native color formats, raster-order groups/imageblocks, native pipeline/function SPI, display shared fences/scanout and target execution"
+  ],
+  "hardware_executed": false,
+  "ios_metal_executed": false,
+  "system_ui_gpu_acceleration_verified": false,
+  "references": [
+    "https://developer.apple.com/documentation/metal/mtlcommandbuffer/addcompletedhandler(_:)",
+    "https://gitlab.freedesktop.org/mesa/mesa/-/blob/mesa-24.3.4/src/freedreno/registers/adreno/adreno_pm4.xml"
+  ]
+}

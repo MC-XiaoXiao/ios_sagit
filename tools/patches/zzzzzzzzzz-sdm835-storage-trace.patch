@@ -1,0 +1,58 @@
+--- a/iokit/Kernel/IOService.cpp
++++ b/iokit/Kernel/IOService.cpp
+@@ -1036,9 +1036,21 @@
+  * Register instance - publish it for matching
+  */
+ 
++#if (DEVELOPMENT || DEBUG) && defined(ARM64_BOARD_CONFIG_SDM835)
++static bool sdm835_storage_trace(IOService *service)
++{
++	int enabled=0;
++	return !strncmp(service->getMetaClass()->getClassName(),"AppleAPFS",9) &&
++	    PE_parse_boot_argn("storage-trace",&enabled,sizeof(enabled)) && enabled==1;
++}
++#endif
++
+ void
+ IOService::registerService( IOOptionBits options )
+ {
++#if (DEVELOPMENT || DEBUG) && defined(ARM64_BOARD_CONFIG_SDM835)
++	if(sdm835_storage_trace(this))IOLog("[APFS trace] %s registerService begin options=%x\n",getMetaClass()->getClassName(),options);
++#endif
+ 	OSDataAllocation<char> pathBuf;
+ 	const char *        path;
+ 	const char *        skip;
+@@ -1059,6 +1071,9 @@
+ 
+ 	// Allow the Platform Expert to adjust this node.
+ 	if (gIOPlatform && (!gIOPlatform->platformAdjustService(this))) {
++#if (DEVELOPMENT || DEBUG) && defined(ARM64_BOARD_CONFIG_SDM835)
++		if(sdm835_storage_trace(this))IOLog("[APFS trace] platformAdjustService declined %s\n",getMetaClass()->getClassName());
++#endif
+ 		return;
+ 	}
+ 
+@@ -1090,6 +1105,9 @@
+ 	}
+ 
+ 	startMatching( options );
++#if (DEVELOPMENT || DEBUG) && defined(ARM64_BOARD_CONFIG_SDM835)
++	if(sdm835_storage_trace(this))IOLog("[APFS trace] %s registerService done\n",getMetaClass()->getClassName());
++#endif
+ }
+ 
+ void
+@@ -4967,7 +4985,13 @@
+ 		clock_get_uptime(&startTime);
+ 	}
+ 
++#if (DEVELOPMENT || DEBUG) && defined(ARM64_BOARD_CONFIG_SDM835)
++	if(sdm835_storage_trace(service))IOLog("[APFS trace] %s start on %s begin\n",service->getMetaClass()->getClassName(),getMetaClass()->getClassName());
++#endif
+ 	ok = service->start(this);
++#if (DEVELOPMENT || DEBUG) && defined(ARM64_BOARD_CONFIG_SDM835)
++	if(sdm835_storage_trace(service))IOLog("[APFS trace] %s start returned %u\n",service->getMetaClass()->getClassName(),ok);
++#endif
+ 
+ 	if (recordTime) {
+ 		clock_get_uptime(&endTime);

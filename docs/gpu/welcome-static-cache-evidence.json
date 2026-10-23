@@ -1,0 +1,710 @@
+{
+  "selector_refs": [
+    {
+      "stub": "0x1d3245320",
+      "selector_ref": "0x1ee421298",
+      "selector_address": "0x1faf6b878",
+      "selector": "setFrame:",
+      "cache": "/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.33.dylddata",
+      "cache_offset": "0x8789298"
+    },
+    {
+      "stub": "0x1d32531c0",
+      "selector_ref": "0x1ee424a40",
+      "selector_address": "0x1fb22debe",
+      "selector": "setShadowRadius:",
+      "cache": "/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.33.dylddata",
+      "cache_offset": "0x878ca40"
+    },
+    {
+      "stub": "0x1d3253160",
+      "selector_ref": "0x1ee424a28",
+      "selector_address": "0x1fb497ce4",
+      "selector": "setShadowOpacity:",
+      "cache": "/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.33.dylddata",
+      "cache_offset": "0x878ca28"
+    },
+    {
+      "stub": "0x1d3253140",
+      "selector_ref": "0x1ee424a20",
+      "selector_address": "0x1faa87a78",
+      "selector": "setShadowOffset:",
+      "cache": "/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.33.dylddata",
+      "cache_offset": "0x878ca20"
+    },
+    {
+      "stub": "0x1d324e0e0",
+      "selector_ref": "0x1ee423608",
+      "selector_address": "0x1fa96ea78",
+      "selector": "setPath:",
+      "cache": "/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.33.dylddata",
+      "cache_offset": "0x878b608"
+    },
+    {
+      "stub": "0x1d3253180",
+      "selector_ref": "0x1ee424a30",
+      "selector_address": "0x1faab4c96",
+      "selector": "setShadowPath:",
+      "cache": "/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.33.dylddata",
+      "cache_offset": "0x878ca30"
+    },
+    {
+      "stub": "0x1d324f340",
+      "selector_ref": "0x1ee423aa0",
+      "selector_address": "0x1fa98c884",
+      "selector": "setPreferredFrameRateRange:",
+      "cache": "/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.33.dylddata",
+      "cache_offset": "0x878baa0"
+    },
+    {
+      "stub": "0x1d3246720",
+      "selector_ref": "0x1ee421798",
+      "selector_address": "0x1fb028178",
+      "selector": "setHighFrameRateReason:",
+      "cache": "/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.33.dylddata",
+      "cache_offset": "0x8789798"
+    },
+    {
+      "stub": "0x1d3224c40",
+      "selector_ref": "0x1ee4190e0",
+      "selector_address": "0x1fca90bb0",
+      "selector": "pathForTime:",
+      "cache": "/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.33.dylddata",
+      "cache_offset": "0x87810e0"
+    },
+    {
+      "stub": "0x1d3219d00",
+      "selector_ref": "0x1ee416510",
+      "selector_address": "0x1fca8c4f2",
+      "selector": "loadText:pointSize:",
+      "cache": "/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.33.dylddata",
+      "cache_offset": "0x877e510"
+    },
+    {
+      "stub": "0x1d323a360",
+      "selector_ref": "0x1ee41e6a8",
+      "selector_address": "0x1fa9f4e45",
+      "selector": "setAccessibilityLabel:",
+      "cache": "/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.33.dylddata",
+      "cache_offset": "0x87866a8"
+    },
+    {
+      "stub": "0x1d323a380",
+      "selector_ref": "0x1ee41e6b0",
+      "selector_address": "0x1fb9b2918",
+      "selector": "setAccessibilityLanguage:",
+      "cache": "/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.33.dylddata",
+      "cache_offset": "0x87866b0"
+    },
+    {
+      "stub": "0x1d319b580",
+      "selector_ref": "0x1ee3f6b30",
+      "selector_address": "0x1fca4fcdb",
+      "selector": "_createDisplayLink",
+      "cache": "/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.33.dylddata",
+      "cache_offset": "0x875eb30"
+    },
+    {
+      "stub": "0x1d31b61c0",
+      "selector_ref": "0x1ee3fd640",
+      "selector_address": "0x1fc65a16f",
+      "selector": "_removeDisplayLink",
+      "cache": "/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.33.dylddata",
+      "cache_offset": "0x8765640"
+    },
+    {
+      "stub": "0x1d3257920",
+      "selector_ref": "0x1ee425c18",
+      "selector_address": "0x1fab34cf8",
+      "selector": "setTime:",
+      "cache": "/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.33.dylddata",
+      "cache_offset": "0x878dc18"
+    },
+    {
+      "stub": "0x1d3193da0",
+      "selector_ref": "0x1ee3f4d38",
+      "selector_address": "0x1fca4af43",
+      "selector": "_animateCursiveForTimePassed",
+      "cache": "/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.33.dylddata",
+      "cache_offset": "0x875cd38"
+    }
+  ],
+  "ida_bytes": {
+    "result": [
+      {
+        "addr": "0x1d2bf318c",
+        "ida_matches_original_64bytes": true,
+        "original_sha256_64bytes": "f9477d934699492717205a4f45823aa66b9417c32633b7f27e3d0cbe8d22c9c4",
+        "cache": "/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.25",
+        "cache_offset": "0x602318c"
+      },
+      {
+        "addr": "0x1d2c5dd64",
+        "ida_matches_original_64bytes": true,
+        "original_sha256_64bytes": "61d4b75ed0fc2eb49c46ec3cccce2f7cde83f007c5f653c3c91459c2f79a6777",
+        "cache": "/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.25",
+        "cache_offset": "0x608dd64"
+      },
+      {
+        "addr": "0x1d2c5df34",
+        "ida_matches_original_64bytes": true,
+        "original_sha256_64bytes": "744a8bdbdb332c2694a7bd5a1914a4582d96e8cf90986319001764261e4ca026",
+        "cache": "/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.25",
+        "cache_offset": "0x608df34"
+      },
+      {
+        "addr": "0x1d263f154",
+        "ida_matches_original_64bytes": true,
+        "original_sha256_64bytes": "6adee7b1c6f6ee58e846337f4b2882a2ffd7dc40cf7adc78d8ab3801f24be7ac",
+        "cache": "/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64.25",
+        "cache_offset": "0x5a6f154"
+      }
+    ]
+  },
+  "source_image": "build/apfs/firmware/094-33089-038.dmg",
+  "source_mode": "read-only APFS file/extent reader; no firmware or device writes",
+  "callback": "_onDisplayLink:",
+  "setup_class_methods": {
+    "SBDashBoardSetupViewController": {
+      "class": "0x1f35e20c8",
+      "ro": "0x1ee1de008",
+      "method_flags": "0xc000000f",
+      "methods": [
+        {
+          "name": "presentationPriority",
+          "imp": "0x1d2682680"
+        },
+        {
+          "name": "viewDidLoad",
+          "imp": "0x1d268209c"
+        },
+        {
+          "name": "aggregateBehavior:",
+          "imp": "0x1d2682a98"
+        },
+        {
+          "name": "viewDidAppear:",
+          "imp": "0x1d26821c4"
+        },
+        {
+          "name": "presentationType",
+          "imp": "0x1d2682678"
+        },
+        {
+          "name": "gestureRecognizer:shouldReceiveTouch:",
+          "imp": "0x1d2681a90"
+        },
+        {
+          "name": "_isSecurityResearchDevice",
+          "imp": "0x1d2684fc8"
+        },
+        {
+          "name": "viewDidDisappear:",
+          "imp": "0x1d26822d8"
+        },
+        {
+          "name": "handleEvent:",
+          "imp": "0x1d2681be0"
+        },
+        {
+          "name": ".cxx_destruct",
+          "imp": "0x1d2685220"
+        },
+        {
+          "name": "subscriptionInfoDidChangeForStateProvider:slot:",
+          "imp": "0x1d2685158"
+        },
+        {
+          "name": "dealloc",
+          "imp": "0x1d26819e0"
+        },
+        {
+          "name": "viewWillAppear:",
+          "imp": "0x1d268217c"
+        },
+        {
+          "name": "initWithCoverSheetViewController:",
+          "imp": "0x1d2681700"
+        },
+        {
+          "name": "loadView",
+          "imp": "0x1d2681da4"
+        },
+        {
+          "name": "viewWillDisappear:",
+          "imp": "0x1d268228c"
+        },
+        {
+          "name": "aggregateAppearance:",
+          "imp": "0x1d2682688"
+        },
+        {
+          "name": "setupView",
+          "imp": "0x1d2682178"
+        },
+        {
+          "name": "_infoButtonTapped:",
+          "imp": "0x1d2684b0c"
+        },
+        {
+          "name": "_startWifiScan",
+          "imp": "0x1d2684fd4"
+        },
+        {
+          "name": "_cancelWifiScan",
+          "imp": "0x1d2685124"
+        },
+        {
+          "name": "_alignedMarketingOrdering",
+          "imp": "0x1d268374c"
+        },
+        {
+          "name": "_animateComponentsForNewCycle",
+          "imp": "0x1d2682cec"
+        },
+        {
+          "name": "_applicableIdentifierForDictionary:identifier:",
+          "imp": "0x1d2683664"
+        },
+        {
+          "name": "_checkIfActivationLocked",
+          "imp": "0x1d2684860"
+        },
+        {
+          "name": "_componentsRelevantToPointerSuppression",
+          "imp": "0x1d2681bd8"
+        },
+        {
+          "name": "_componentsToStartCycling",
+          "imp": "0x1d2684aec"
+        },
+        {
+          "name": "_currentActivationLockStringsDictionary",
+          "imp": "0x1d26839a4"
+        },
+        {
+          "name": "_currentLanguageIdentifier",
+          "imp": "0x1d26839f0"
+        },
+        {
+          "name": "_currentStoreRestrictedStringsDictionary",
+          "imp": "0x1d2683958"
+        },
+        {
+          "name": "_didClickHomeAffordance:",
+          "imp": "0x1d2681a44"
+        },
+        {
+          "name": "_displayStringForLocalizedString:fallbackString:",
+          "imp": "0x1d26835d4"
+        },
+        {
+          "name": "_evaluateUpdatingLanguageForImportantLanguageChanges",
+          "imp": "0x1d2684830"
+        },
+        {
+          "name": "_handleHoverEvent:",
+          "imp": "0x1d2681ab4"
+        },
+        {
+          "name": "_haveImportantLanguagesChangedFrom:",
+          "imp": "0x1d2684748"
+        },
+        {
+          "name": "_importantLanguageIdentifiers",
+          "imp": "0x1d2683a10"
+        },
+        {
+          "name": "_incrementLocalizedStringsForNewCycle",
+          "imp": "0x1d2682f68"
+        },
+        {
+          "name": "_regulatoryInfoButtonTapped:",
+          "imp": "0x1d2684e64"
+        },
+        {
+          "name": "_resetDisplayedLocalizedStringsImmediately:",
+          "imp": "0x1d2683014"
+        },
+        {
+          "name": "_retrieveChildIconIfNecessaryWithCompletion:",
+          "imp": "0x1d2682374"
+        },
+        {
+          "name": "_startCyclingComponents:withDelay:",
+          "imp": "0x1d2682b40"
+        },
+        {
+          "name": "_stopCyclingComponents:",
+          "imp": "0x1d2682eb0"
+        },
+        {
+          "name": "_subcriptionDataSourceDescription:",
+          "imp": "0x1d2683c24"
+        },
+        {
+          "name": "_subscriptionInfoForSubscriptionDataSource:",
+          "imp": "0x1d2683bd4"
+        },
+        {
+          "name": "_supportedLanguageIdentifierFromRegionalLanguageIdentifier:countryCode:",
+          "imp": "0x1d268408c"
+        },
+        {
+          "name": "_updateDisplayedStrings",
+          "imp": "0x1d26830e8"
+        },
+        {
+          "name": "_updateForLockInfo:",
+          "imp": "0x1d2684a00"
+        },
+        {
+          "name": "_updateLanguageFromSubscriptionDataSource:",
+          "imp": "0x1d2683c40"
+        },
+        {
+          "name": "_updateLanguageFromTelephony",
+          "imp": "0x1d2683ec4"
+        },
+        {
+          "name": "_updateStringOrderingForLanguageChange",
+          "imp": "0x1d2683908"
+        },
+        {
+          "name": "_updateWifiPrimaryLanguageFromDiscoveredCountryCodes:",
+          "imp": "0x1d268424c"
+        },
+        {
+          "name": "firstSupportedLanguageIdentifierInRegionalLanguageIdentifiers:countryCode:",
+          "imp": "0x1d2683f0c"
+        },
+        {
+          "name": "initWithCoverSheetViewController:telephonyManager:",
+          "imp": "0x1d2681764"
+        },
+        {
+          "name": "isCyclingComponents:",
+          "imp": "0x1d2682e98"
+        }
+      ]
+    },
+    "SBDashBoardSetupController": {
+      "class": "0x1f35e2078",
+      "ro": "0x1ee2ce350",
+      "method_flags": "0xc000000f",
+      "methods": [
+        {
+          "name": "conformsToCSEventHandling",
+          "imp": "0x1d29acbd0"
+        },
+        {
+          "name": "conformsToCSBehaviorProviding",
+          "imp": "0x1d29acb40"
+        },
+        {
+          "name": "restrictedCapabilities",
+          "imp": "0x1d29acb48"
+        },
+        {
+          "name": "_setupModeChanged:",
+          "imp": "0x1d29acc68"
+        },
+        {
+          "name": "proximityDetectionMode",
+          "imp": "0x1d29acbc0"
+        },
+        {
+          "name": "initWithCoverSheetViewController:setupManager:",
+          "imp": "0x1d29ac994"
+        },
+        {
+          "name": "handleEvent:",
+          "imp": "0x1d29acbd4"
+        },
+        {
+          "name": ".cxx_destruct",
+          "imp": "0x1d29acdd8"
+        },
+        {
+          "name": "dealloc",
+          "imp": "0x1d29aca80"
+        },
+        {
+          "name": "wouldHandleButtonEvent:",
+          "imp": "0x1d29acc60"
+        },
+        {
+          "name": "_clearSetupViewIfNecessaryAnimated:",
+          "imp": "0x1d29acd3c"
+        },
+        {
+          "name": "participantState",
+          "imp": "0x1d29acb1c"
+        },
+        {
+          "name": "_addOrRemoveSetupViewIfNecessaryAnimated:",
+          "imp": "0x1d29acc9c"
+        },
+        {
+          "name": "coverSheetIdentifier",
+          "imp": "0x1d29acb08"
+        },
+        {
+          "name": "_configureForCurrentSetupMode",
+          "imp": "0x1d29acc6c"
+        },
+        {
+          "name": "scrollingStrategy",
+          "imp": "0x1d29acbc8"
+        },
+        {
+          "name": "init",
+          "imp": "0x1d29ac968"
+        },
+        {
+          "name": "conformsToCSExternalBehaviorProviding",
+          "imp": "0x1d29acb44"
+        },
+        {
+          "name": "notificationBehavior",
+          "imp": "0x1d29acba0"
+        }
+      ]
+    },
+    "SBDashBoardSetupView": {
+      "class": "0x1f35e20a0",
+      "ro": "0x1ee3a6f28",
+      "method_flags": "0xc000000f",
+      "methods": [
+        {
+          "name": "homeAffordanceView",
+          "imp": "0x1d2bf3764"
+        },
+        {
+          "name": "animationDidStop:finished:",
+          "imp": "0x1d2befd90"
+        },
+        {
+          "name": "_removeResetAnimationForKeyPath:onLayer:",
+          "imp": "0x1d2bf30cc"
+        },
+        {
+          "name": "setHomeAffordanceView:",
+          "imp": "0x1d2bf3774"
+        },
+        {
+          "name": "_onDisplayLink:",
+          "imp": "0x1d2bf3294"
+        },
+        {
+          "name": "setLegibilitySettings:",
+          "imp": "0x1d2beef0c"
+        },
+        {
+          "name": ".cxx_destruct",
+          "imp": "0x1d2bf37e8"
+        },
+        {
+          "name": "_titleView",
+          "imp": "0x1d2bf1484"
+        },
+        {
+          "name": "dealloc",
+          "imp": "0x1d2beedb4"
+        },
+        {
+          "name": "_setupConstraints",
+          "imp": "0x1d2bf186c"
+        },
+        {
+          "name": "layoutSubviews",
+          "imp": "0x1d2befc88"
+        },
+        {
+          "name": "legibilitySettings",
+          "imp": "0x1d2bf37a8"
+        },
+        {
+          "name": "_layoutHomeAffordance",
+          "imp": "0x1d2bf22b8"
+        },
+        {
+          "name": "_updateLegibilitySettings",
+          "imp": "0x1d2bf3498"
+        },
+        {
+          "name": "infoButton",
+          "imp": "0x1d2bf37b8"
+        },
+        {
+          "name": "_addTitleLabel",
+          "imp": "0x1d2befe94"
+        },
+        {
+          "name": "_removeDisplayLink",
+          "imp": "0x1d2bf3260"
+        },
+        {
+          "name": "isActivationLocked",
+          "imp": "0x1d2bf37c8"
+        },
+        {
+          "name": "_actsLikeStoreRestricted",
+          "imp": "0x1d2bf3730"
+        },
+        {
+          "name": "_addActivationLockLabels",
+          "imp": "0x1d2bf078c"
+        },
+        {
+          "name": "_addHomeAffordanceCallToAction",
+          "imp": "0x1d2bf1354"
+        },
+        {
+          "name": "_addHomeAffordanceForCoverSheetContext:",
+          "imp": "0x1d2bf12b4"
+        },
+        {
+          "name": "_addHomeButtonCallToAction",
+          "imp": "0x1d2bf1208"
+        },
+        {
+          "name": "_addInfoButton",
+          "imp": "0x1d2befdcc"
+        },
+        {
+          "name": "_addResetAnimationForKeyPath:onLayer:dispatchGroup:",
+          "imp": "0x1d2bf2f0c"
+        },
+        {
+          "name": "_addSecurityResearchLabels",
+          "imp": "0x1d2bf0bcc"
+        },
+        {
+          "name": "_addStoreRestrictedLabels",
+          "imp": "0x1d2beffdc"
+        },
+        {
+          "name": "_adjustTitleVisibilityForInfoViews",
+          "imp": "0x1d2bf3358"
+        },
+        {
+          "name": "_animateCursiveForTimePassed",
+          "imp": "0x1d2bf32b0"
+        },
+        {
+          "name": "_animateHomeAffordanceCallToActionToActive:withDispatchGroup:",
+          "imp": "0x1d2bf28e0"
+        },
+        {
+          "name": "_animateHomeAffordanceToActive:withDispatchGroup:",
+          "imp": "0x1d2bf2c8c"
+        },
+        {
+          "name": "_animateHomeButtonCallToActionToActive:withDispatchGroup:",
+          "imp": "0x1d2bf25a0"
+        },
+        {
+          "name": "_animateView:toActive:withDispatchGroup:",
+          "imp": "0x1d2bf2390"
+        },
+        {
+          "name": "_createDisplayLink",
+          "imp": "0x1d2bf318c"
+        },
+        {
+          "name": "_isShowingModalTakeoverUI",
+          "imp": "0x1d2bf3328"
+        },
+        {
+          "name": "_layoutActivationInfoView",
+          "imp": "0x1d2bf20fc"
+        },
+        {
+          "name": "_layoutHomeAffordanceCallToAction",
+          "imp": "0x1d2bf2200"
+        },
+        {
+          "name": "_layoutHomeButtonCallToAction",
+          "imp": "0x1d2bf2164"
+        },
+        {
+          "name": "_layoutRegulatoryInfo",
+          "imp": "0x1d2bf209c"
+        },
+        {
+          "name": "_removeNormalAnimationForKeyPath:onLayer:",
+          "imp": "0x1d2bf312c"
+        },
+        {
+          "name": "_setupActivationInfoConstraintsIfNeeded",
+          "imp": "0x1d2bf1e28"
+        },
+        {
+          "name": "_updateBaselineAndChildIconConstraints",
+          "imp": "0x1d2bf14a8"
+        },
+        {
+          "name": "activationInfoView",
+          "imp": "0x1d2bf3788"
+        },
+        {
+          "name": "animateComponents:toActive:withCompletion:",
+          "imp": "0x1d2befa50"
+        },
+        {
+          "name": "childIconView",
+          "imp": "0x1d2bf37d8"
+        },
+        {
+          "name": "initWithFrame:usingHomeAffordance:coverSheetContext:isStoreRestricted:isSecurityResearchDevice:",
+          "imp": "0x1d2beec4c"
+        },
+        {
+          "name": "regulatoryInfoView",
+          "imp": "0x1d2bf3798"
+        },
+        {
+          "name": "setActivationInfoView:",
+          "imp": "0x1d2beee14"
+        },
+        {
+          "name": "setActivationLockWarningString:detailString:forLanguage:",
+          "imp": "0x1d2bef38c"
+        },
+        {
+          "name": "setActivationLocked:",
+          "imp": "0x1d2bef910"
+        },
+        {
+          "name": "setCallToActionString:forLanguage:",
+          "imp": "0x1d2bef4e4"
+        },
+        {
+          "name": "setChildIconView:",
+          "imp": "0x1d2bef9ac"
+        },
+        {
+          "name": "setChildIconVisible:animated:withDelay:",
+          "imp": "0x1d2bef778"
+        },
+        {
+          "name": "setInfoButtonVisible:animated:withDelay:",
+          "imp": "0x1d2bef5e0"
+        },
+        {
+          "name": "setRegulatoryInfoView:",
+          "imp": "0x1d2beee8c"
+        },
+        {
+          "name": "setStoreRestrictedStrings:bodyString:linkString:forLanguage:",
+          "imp": "0x1d2bef1b8"
+        },
+        {
+          "name": "setTitleString:forLanguage:",
+          "imp": "0x1d2beef70"
+        }
+      ]
+    }
+  }
+}

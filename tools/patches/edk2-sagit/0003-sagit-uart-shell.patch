@@ -1,0 +1,284 @@
+diff --git a/Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.c b/Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.c
+index 6c3c911..f386a1e 100644
+--- a/Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.c
++++ b/Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.c
+@@ -9,6 +9,9 @@
+ #include <Resources/FbColor.h>
+ 
+ #include "FrameBufferSerialPortLib.h"
++#ifdef SAGIT_UART_CONSOLE
++#include "SagitUart.h"
++#endif
+ 
+ FBCON_POSITION m_Position;
+ FBCON_POSITION m_MaxPosition;
+@@ -58,6 +61,9 @@ SerialPortInitialize
+ 	ArmDisableInterrupts();
+ 
+ 	// Reset console
++#ifdef SAGIT_UART_CONSOLE
++	UartInit();
++#endif
+ 	FbConReset();
+ 
+ 	// Set flag
+@@ -363,6 +369,9 @@ SerialPortWrite
+ 
+ 	while (Buffer < Final)
+ 	{
++#ifdef SAGIT_UART_CONSOLE
++		if (!UartPut(*Buffer)) break;
++#endif
+ 		FbConPutCharWithFactor(*Buffer++, FBCON_COMMON_MSG, SCALE_FACTOR);
+ 	}
+ 
+@@ -387,6 +396,9 @@ SerialPortWriteCritical
+ 
+ 	while (Buffer < Final)
+ 	{
++#ifdef SAGIT_UART_CONSOLE
++		if (!UartPut(*Buffer)) break;
++#endif
+ 		FbConPutCharWithFactor(*Buffer++, FBCON_COMMON_MSG, SCALE_FACTOR);
+ 	}
+ 
+@@ -404,7 +416,17 @@ SerialPortRead
+ 	IN  UINTN     NumberOfBytes
+ )
+ {
++#ifdef SAGIT_UART_CONSOLE
++	UINTN Count = 0;
++	while (Count < NumberOfBytes && UartPoll()) {
++		Buffer[Count++] = (UINT8)mRxWord;
++		mRxWord >>= 8;
++		mRxCount--;
++	}
++	return Count;
++#else
+ 	return 0;
++#endif
+ }
+ 
+ BOOLEAN
+@@ -414,7 +436,11 @@ SerialPortPoll
+ 	VOID
+ )
+ {
++#ifdef SAGIT_UART_CONSOLE
++	return UartPoll();
++#else
+ 	return FALSE;
++#endif
+ }
+ 
+ RETURN_STATUS
+@@ -424,7 +450,11 @@ SerialPortSetControl
+ 	IN UINT32 Control
+ )
+ {
++#ifdef SAGIT_UART_CONSOLE
++	return Control == 0 ? RETURN_SUCCESS : RETURN_UNSUPPORTED;
++#else
+ 	return RETURN_UNSUPPORTED;
++#endif
+ }
+ 
+ RETURN_STATUS
+@@ -434,7 +464,14 @@ SerialPortGetControl
+ 	OUT UINT32 *Control
+ )
+ {
++#ifdef SAGIT_UART_CONSOLE
++	if (Control == NULL) return RETURN_INVALID_PARAMETER;
++	*Control = UartPoll() ? 0 : EFI_SERIAL_INPUT_BUFFER_EMPTY;
++	if (UartRead(UART_SR) & 8) *Control |= EFI_SERIAL_OUTPUT_BUFFER_EMPTY;
++	return RETURN_SUCCESS;
++#else
+ 	return RETURN_UNSUPPORTED;
++#endif
+ }
+ 
+ RETURN_STATUS
+@@ -449,7 +486,21 @@ SerialPortSetAttributes
+ 	IN OUT EFI_STOP_BITS_TYPE *StopBits
+ )
+ {
++#ifdef SAGIT_UART_CONSOLE
++	if ((*BaudRate != 0 && *BaudRate != 115200) ||
++	    (*DataBits != 0 && *DataBits != 8) ||
++	    (*Parity != DefaultParity && *Parity != NoParity) ||
++	    (*StopBits != DefaultStopBits && *StopBits != OneStopBit))
++		return RETURN_UNSUPPORTED;
++	*BaudRate = 115200;
++	*DataBits = 8;
++	*Parity = NoParity;
++	*StopBits = OneStopBit;
++	*ReceiveFifoDepth = 32;
++	return RETURN_SUCCESS;
++#else
+ 	return RETURN_UNSUPPORTED;
++#endif
+ }
+ 
+ UINTN SerialPortFlush(VOID)
+@@ -461,4 +512,4 @@ VOID
+ EnableSynchronousSerialPortIO(VOID)
+ {
+ 	// Already synchronous
+-}
+\ No newline at end of file
++}
+diff --git a/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/PlatformBm.c b/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/PlatformBm.c
+index 50981ff..a81f2e8 100644
+--- a/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/PlatformBm.c
++++ b/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/PlatformBm.c
+@@ -666,6 +666,22 @@ VOID EFIAPI PlatformBootManagerAfterConsole(VOID)
+   PlatformRegisterFvBootOption(
+       &gUefiShellFileGuid, L"UEFI Shell", LOAD_OPTION_ACTIVE);
+ 
++#ifdef SAGIT_UART_CONSOLE
++  {
++    EFI_BOOT_MANAGER_LOAD_OPTION *Options;
++    UINTN Count, Index;
++    Options = EfiBootManagerGetLoadOptions(&Count, LoadOptionTypeBoot);
++    for (Index = 0; Index < Count; Index++) {
++      if (StrCmp(Options[Index].Description, L"UEFI Shell") == 0) {
++        Print(L"Entering sagit UART Shell (115200 8N1)\r\n");
++        EfiBootManagerBoot(&Options[Index]);
++        break;
++      }
++    }
++    EfiBootManagerFreeLoadOptions(Options, Count);
++  }
++#endif
++
+ #ifdef ENABLE_LINUX_SIMPLE_MASS_STORAGE
+   //
+   // Register Built-in Linux Kernel
+diff --git a/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.dsc b/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.dsc
+index 974bac7..a492249 100644
+--- a/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.dsc
++++ b/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.dsc
+@@ -12,6 +12,9 @@
+ 
+ !include Platforms/Msm8998Pkg/Msm8998.dsc
+ 
++[BuildOptions]
++  GCC:*_*_AARCH64_CC_FLAGS = -DSAGIT_UART_CONSOLE
++
+ [PcdsFixedAtBuild.common]
+   gMSM8998PkgTokenSpaceGuid.PcdMipiFrameBufferWidth|1080
+   gMSM8998PkgTokenSpaceGuid.PcdMipiFrameBufferHeight|1920
+diff --git a/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.fdf b/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.fdf
+index 73c5b3c..8b55682 100755
+--- a/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.fdf
++++ b/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.fdf
+@@ -129,6 +129,7 @@ READ_LOCK_STATUS   = TRUE
+     INF MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitterDxe.inf
+     INF MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsoleDxe.inf
+     INF MdeModulePkg/Universal/Console/TerminalDxe/TerminalDxe.inf
++    INF MdeModulePkg/Universal/SerialDxe/SerialDxe.inf
+ 
+ 
+     INF ArmPkg/Drivers/ArmGic/ArmGicDxe.inf
+diff --git a/Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/SagitUart.h b/Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/SagitUart.h
+new file mode 100644
+--- /dev/null
++++ b/Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/SagitUart.h
+@@ -0,0 +1,96 @@
++// SPDX-License-Identifier: BSD-2-Clause-Patent
++// Polled UARTDM v1.4 console. Stock firmware owns clocks, pinmux and divisor.
++#include <Library/IoLib.h>
++
++#define UART_BASE 0x0C1B0000
++#define UART_SR 0x08
++#define UART_CR 0x10
++#define UART_ISR 0x14
++#define UART_DMRX 0x34
++#define UART_FIFO 0x70
++#define UART_RX_LIMIT 0xFFFFFF
++STATIC UINT32 mRxWord, mRxCount, mRxConsumed, mRxRemaining;
++STATIC BOOLEAN mStaleRequested;
++
++STATIC UINT32 UartRead(UINTN Reg) { return MmioRead32(UART_BASE + Reg); }
++STATIC VOID UartWrite(UINTN Reg, UINT32 Value) {
++  MmioWrite32(UART_BASE + Reg, Value);
++  __asm__ volatile("dsb sy" ::: "memory");
++}
++
++STATIC VOID UartInit(VOID) {
++  UartWrite(0x14, 0); // Interrupt mask
++  UartWrite(0x3C, 0); // DMA disabled
++  UartWrite(UART_CR, 0x0A);
++  UartWrite(UART_CR, 0x10); // Reset RX
++  UartWrite(UART_CR, 0x20); // Reset TX
++  UartWrite(UART_CR, 0x30); // Reset errors
++  UartWrite(UART_CR, 0x600); // Disable automatic stale events
++  UartWrite(UART_CR, 0x80);
++  UartWrite(0, 0); // No hardware flow control
++  UartWrite(4, 0x34); // 8N1
++  UartWrite(0x18, 1);
++  UartWrite(0x20, 0);
++  UartWrite(0x1C, 0);
++  UartWrite(UART_DMRX, UART_RX_LIMIT);
++  UartWrite(UART_CR, 5); // RX + TX enable
++  mRxCount = mRxConsumed = mRxRemaining = 0;
++  mStaleRequested = FALSE;
++}
++
++STATIC BOOLEAN UartPut(UINT8 Byte) {
++  UINTN Budget = 1000000;
++  while (!(UartRead(UART_SR) & 8)) {
++    if (--Budget == 0) return FALSE;
++    __asm__ volatile("yield");
++  }
++  UartWrite(0x40, 1); // NCF_TX: one byte, one FIFO word
++  (VOID)UartRead(0x40);
++  Budget = 1000000;
++  while (!(UartRead(UART_SR) & 4)) {
++    if (--Budget == 0) return FALSE;
++    __asm__ volatile("yield");
++  }
++  UartWrite(UART_FIFO, Byte);
++  return TRUE;
++}
++
++STATIC BOOLEAN UartPoll(VOID) {
++  UINT32 Status, Snapshot;
++  if (mRxCount != 0) return TRUE;
++  Status = UartRead(UART_SR);
++  if (Status & 0x10) UartWrite(UART_CR, 0x30);
++  if (!mStaleRequested && (Status & 1)) {
++    mRxWord = UartRead(UART_FIFO);
++    mRxCount = 4;
++    mRxConsumed += 4;
++    return TRUE;
++  }
++  if (!mStaleRequested) {
++    if (((UartRead(0x50) >> 7) & 7) == 0) return FALSE;
++    UartWrite(UART_CR, 0x400); // Flush a partial FIFO word
++    mStaleRequested = TRUE;
++  }
++  if (!(UartRead(UART_ISR) & 8)) return FALSE;
++  if (mRxRemaining == 0) {
++    Snapshot = UartRead(0x38);
++    if (Snapshot < mRxConsumed || Snapshot > UART_RX_LIMIT) {
++      UartInit();
++      return FALSE;
++    }
++    mRxRemaining = Snapshot - mRxConsumed;
++  }
++  if (mRxRemaining != 0) {
++    mRxWord = UartRead(UART_FIFO);
++    mRxCount = MIN(mRxRemaining, 4);
++    mRxRemaining -= mRxCount;
++    mRxConsumed += mRxCount;
++  }
++  if (mRxRemaining == 0) {
++    UartWrite(UART_CR, 0x80);
++    UartWrite(UART_DMRX, UART_RX_LIMIT);
++    mRxConsumed = 0;
++    mStaleRequested = FALSE;
++  }
++  return mRxCount != 0;
++}

@@ -1,0 +1,28 @@
+{
+  "source": {
+    "url": "https://github.com/BigfootACA/linux-simple-mass-storage.git",
+    "commit": "d8a7102b31211b675c1997161f11b56eb7b5a84f",
+    "license": "LGPL-3.0-or-later"
+  },
+  "archives": {
+    "kernel": {
+      "commit": "820b689b4a7a6ca1b4fdabf26a17196a2e379a97",
+      "url": "https://codeload.github.com/torvalds/linux/tar.gz/820b689b4a7a6ca1b4fdabf26a17196a2e379a97",
+      "file": "linux-820b689b4a7a6ca1b4fdabf26a17196a2e379a97.tar.gz",
+      "sha256": "53d78f066f10d19266362a52c6f0b2e9e4535bb7067c5b18bf6bff2e4d9b4dfb",
+      "license": "GPL-2.0-only"
+    },
+    "musl": {
+      "commit": "7a43f6fea9081bdd53d8a11cef9e9fab0348c53d",
+      "url": "https://git.musl-libc.org/cgit/musl/snapshot/musl-7a43f6fea9081bdd53d8a11cef9e9fab0348c53d.tar.gz",
+      "file": "musl-7a43f6fea9081bdd53d8a11cef9e9fab0348c53d.tar.gz",
+      "sha256": "3de7ae1c700d0c88cec7abe2a721d00a8fd1c0d34b54afbe98cfb51b6297971f",
+      "license": "MIT"
+    }
+  },
+  "patches": [
+    "linux-storage-serial-control.patch"
+  ],
+  "original_efi_sha256": "86a1b13faf8df127851f8db2a862f1b8c5c86fc6d5a261ae98c817db68da4509",
+  "uart_address": "0x0c1b0000"
+}

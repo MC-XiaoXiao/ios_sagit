@@ -1,0 +1,21 @@
+diff --git a/Platforms/Msm8998FamilyPkg/Library/ArmPlatformLib/ArmPlatformLibMem.c b/Platforms/Msm8998FamilyPkg/Library/ArmPlatformLib/ArmPlatformLibMem.c
+index 2e3f9f2..d2ba91a 100644
+--- a/Platforms/Msm8998FamilyPkg/Library/ArmPlatformLib/ArmPlatformLibMem.c
++++ b/Platforms/Msm8998FamilyPkg/Library/ArmPlatformLib/ArmPlatformLibMem.c
+@@ -33,7 +33,8 @@ ArmPlatformGetVirtualMemoryMap (
+   //TO-DO:ADD MEMORY MAP HERE
+   PARM_MEMORY_REGION_DESCRIPTOR_EX MemoryDescriptorEx =
+       GetPlatformMemoryMap();
+-  ARM_MEMORY_REGION_DESCRIPTOR
++  // The caller uses this table after the function returns.
++  STATIC ARM_MEMORY_REGION_DESCRIPTOR
+         MemoryTable[MAX_ARM_MEMORY_REGION_DESCRIPTOR_COUNT];
+   UINTN Index = 0;
+ 
+@@ -64,4 +65,4 @@ ArmPlatformGetVirtualMemoryMap (
+ 
+   *VirtualMemoryMap = MemoryTable;
+ 
+-}
+\ No newline at end of file
++}

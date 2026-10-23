@@ -1,0 +1,797 @@
+--- a/iokit/Kernel/IOPlatformExpert.cpp
++++ b/iokit/Kernel/IOPlatformExpert.cpp
+@@ -42,7 +42,7 @@
+ #include <IOKit/IOUserClient.h>
+ #include <IOKit/IOKitDiagnosticsUserClient.h>
+ #include <IOKit/IOUserServer.h>
+-#if defined(ARM64_BOARD_CONFIG_SDM835)
++#if defined(ARM64_BOARD_CONFIG_SDM835) || defined(ARM64_BOARD_CONFIG_SM8150)
+ #include <IOKit/PassthruInterruptController.h>
+ #endif
+ 
+@@ -178,7 +178,7 @@
+ 	setPlatform( this );
+ 	gIOPlatform = this;
+ 
+-#if defined(ARM64_BOARD_CONFIG_SDM835)
++#if defined(ARM64_BOARD_CONFIG_SDM835) || defined(ARM64_BOARD_CONFIG_SM8150)
+ 	/* Publish Apple's parent-controller service before arm-io nubs match.
+ 	 * Timer/IPI bootstrap is independent of this IOKit peripheral path. */
+ 	PassthruInterruptController *interruptController = new PassthruInterruptController;
+--- a/iokit/Kernel/PassthruInterruptController.cpp
++++ b/iokit/Kernel/PassthruInterruptController.cpp
+@@ -35,7 +35,7 @@
+ #include <IOKit/IOPlatformExpert.h>
+ #include <IOKit/IOService.h>
+ #include <IOKit/PassthruInterruptController.h>
+-#if defined(ARM64_BOARD_CONFIG_SDM835)
++#if defined(ARM64_BOARD_CONFIG_SDM835) || defined(ARM64_BOARD_CONFIG_SM8150)
+ #include <os/atomic_private.h>
+ 
+ /* Internal bridge only: no added KPI or change to the class/vtable ABI. */
+@@ -56,7 +56,7 @@
+ bool
+ PassthruInterruptController::init(void)
+ {
+-#if defined(ARM64_BOARD_CONFIG_SDM835)
++#if defined(ARM64_BOARD_CONFIG_SDM835) || defined(ARM64_BOARD_CONFIG_SM8150)
+ 	platformIRQRegistrationLock = IOLockAlloc();
+ 	if (!platformIRQRegistrationLock) {
+ 		return false;
+@@ -106,7 +106,7 @@
+     IOInterruptHandler handler,
+     void *refCon)
+ {
+-#if defined(ARM64_BOARD_CONFIG_SDM835)
++#if defined(ARM64_BOARD_CONFIG_SDM835) || defined(ARM64_BOARD_CONFIG_SM8150)
+ 	IOLockLock(platformIRQRegistrationLock);
+ 	if (!nub || target != nub || !handler || source != 0 || child_handler) {
+ 		IOLockUnlock(platformIRQRegistrationLock);
+@@ -120,7 +120,7 @@
+ 	child_target = target;
+ 	child_refCon = refCon;
+ 
+-#if defined(ARM64_BOARD_CONFIG_SDM835)
++#if defined(ARM64_BOARD_CONFIG_SDM835) || defined(ARM64_BOARD_CONFIG_SM8150)
+ 	os_atomic_store(&platformIRQController, this, release);
+ 	IOLockUnlock(platformIRQRegistrationLock);
+ #endif
+@@ -182,7 +182,7 @@
+     IOService */*nub*/,
+     int source)
+ {
+-#if defined(ARM64_BOARD_CONFIG_SDM835)
++#if defined(ARM64_BOARD_CONFIG_SDM835) || defined(ARM64_BOARD_CONFIG_SM8150)
+ 	/* The bootstrap already read ICC_IAR1. Forward the INTID unchanged;
+ 	 * it also owns the sole EOI after the child handler finishes. */
+ 	child_handler(child_target, child_refCon, child_nub, source);
+--- a/config/MASTER.arm64.iPhoneOS
++++ b/config/MASTER.arm64.iPhoneOS
+@@ -16,7 +16,7 @@
+ #  Standard Apple OS Configurations:
+ #  -------- ----- -- ---------------
+ #
+-#if SOC_CONFIG_sdm835
++#if (SOC_CONFIG_sdm835 || SOC_CONFIG_sm8150)
+ #  ARM_EXTRAS_BASE = [ config_pmap_ppl nos_arm_asm nos_arm_pmap ]
+ #elif SOC_IS_VIRTUALIZED
+ #  ARM_EXTRAS_BASE = [ config_pmap_ppl nos_arm_asm nos_arm_pmap ]
+@@ -61,7 +61,7 @@
+ #  LIBKERN_DEV =    [ LIBKERN_BASE iotracking ]
+ #  LIBKERN_DEBUG =  [ LIBKERN_BASE iotracking ]
+ 
+-#if SOC_IS_VIRTUALIZED || SOC_CONFIG_sdm835
++#if SOC_IS_VIRTUALIZED || (SOC_CONFIG_sdm835 || SOC_CONFIG_sm8150)
+ #  CPU_COUNTERS_BASE = [ ]
+ #else /*!SOC_IS_VIRTUALIZED*/
+ #  CPU_COUNTERS_BASE = [ config_cpu_counters config_pervasive_cpi config_pervasive_energy ]
+--- a/makedefs/MakeInc.def
++++ b/makedefs/MakeInc.def
+@@ -29,7 +29,7 @@
+ else ifneq ($(findstring _host,$(RC_ProjectName)),)
+ SUPPORTED_ARM64_MACHINE_CONFIGS = NONE
+ else
+-SUPPORTED_ARM64_MACHINE_CONFIGS = T6000 T6020 T6030 T6031 T6041 T8101 T8103 T8112 T8122 T8132 VMAPPLE SDM835
++SUPPORTED_ARM64_MACHINE_CONFIGS = T6000 T6020 T6030 T6031 T6041 T8101 T8103 T8112 T8122 T8132 VMAPPLE SDM835 SM8150
+ 
+ SPTM_ENABLED_SOCS_MacOSX = t6041 t8132
+ 
+@@ -52,7 +52,7 @@
+ endif
+ 
+ # Enable BTI by default for all ARM64 targets
+-BTI_BUILD = $(if $(filter SDM835,$(CURRENT_MACHINE_CONFIG)),0,1)
++BTI_BUILD = $(if $(filter SDM835 SM8150,$(CURRENT_MACHINE_CONFIG)),0,1)
+ 
+ 
+ # -mkernel contains BTI by default
+@@ -81,6 +81,7 @@
+ MACHINE_FLAGS_ARM64_T8122 = -DARM64_BOARD_CONFIG_T8122_T8130		-mcpu=apple-m3
+ MACHINE_FLAGS_ARM64_T8132 = -DARM64_BOARD_CONFIG_T8132			-mcpu=apple-m4
+ MACHINE_FLAGS_ARM64_SDM835 = -DARM64_BOARD_CONFIG_SDM835 -march=armv8-a+crc+crypto
++MACHINE_FLAGS_ARM64_SM8150 = -DARM64_BOARD_CONFIG_SM8150 -march=armv8-a+crc+crypto
+ MACHINE_FLAGS_ARM64_VMAPPLE = -DARM64_BOARD_CONFIG_VMAPPLE              -march=armv8.5a+sme2
+ 
+ 
+--- a/osfmk/arm/arm_init.c
++++ b/osfmk/arm/arm_init.c
+@@ -182,7 +182,7 @@
+ static SECURITY_READ_ONLY_LATE(bool) enable_sme = true;
+ #endif
+ 
+-#if APPLEVIRTUALPLATFORM || defined(ARM64_BOARD_CONFIG_SDM835)
++#if APPLEVIRTUALPLATFORM || defined(QCOM_ARM64)
+ SECURITY_READ_ONLY_LATE(vm_offset_t) reset_vector_vaddr = 0;
+ #endif /* APPLEVIRTUALPLATFORM */
+ 
+@@ -373,7 +373,7 @@
+ 	const_boot_args = *args;
+ 	BootArgs = args = &const_boot_args;
+ 
+-#if APPLEVIRTUALPLATFORM || defined(ARM64_BOARD_CONFIG_SDM835)
++#if APPLEVIRTUALPLATFORM || defined(QCOM_ARM64)
+ 	reset_vector_vaddr = (vm_offset_t) &LowResetVectorBase;
+ #endif /* APPLEVIRTUALPLATFORM */
+ 
+--- a/osfmk/arm/cpu_common.c
++++ b/osfmk/arm/cpu_common.c
+@@ -482,7 +482,7 @@
+ 		assert3u(os_atomic_load(&target_proc->cpu_flags, relaxed) & (InitState | StartedState),
+ 		    ==, InitState | StartedState);
+ 
+-#if defined(ARM64_BOARD_CONFIG_SDM835)
++#if defined(QCOM_ARM64)
+ 		extern void pe_sdm835_send_ipi(uint32_t);
+ 		/* GIC SGIs have no deferred/retract service: send immediately. */
+ 		pe_sdm835_send_ipi(target_proc->cpu_phys_id);
+@@ -540,7 +540,7 @@
+ 
+ 
+ 	if (!(current_signals & SIGPdisabled)) {
+-#if defined(ARM64_BOARD_CONFIG_SDM835)
++#if defined(QCOM_ARM64)
+ 		/* The pending software signal is cleared above; an in-flight SGI may still arrive. */
+ #else
+ #if defined(HAS_IPI)
+@@ -706,7 +706,7 @@
+ 	PE_cpu_machine_init(cpu_data_ptr->cpu_id, !started);
+ 
+ 	ml_init_interrupt();
+-#if defined(ARM64_BOARD_CONFIG_SDM835)
++#if defined(QCOM_ARM64)
+ 	/* XNU keeps SIGPdisabled set until the CPU handles its first IPI.
+ 	 * Queue a real self-SGI after StartedState and the IOCPU callback;
+ 	 * don't enable cross-calls by clearing the software bit directly. */
+--- a/osfmk/arm/pmap/pmap.c
++++ b/osfmk/arm/pmap/pmap.c
+@@ -131,7 +131,7 @@
+ static pt_entry_t wimg_to_pte(unsigned int wimg, pmap_paddr_t pa);
+ MARK_AS_PMAP_TEXT static void pmap_phys_write_disable(vm_address_t va);
+ 
+-#if (defined(ARM64_BOARD_CONFIG_VMAPPLE) || defined(ARM64_BOARD_CONFIG_SDM835)) && !XNU_MONITOR
++#if (defined(ARM64_BOARD_CONFIG_VMAPPLE) || defined(QCOM_ARM64)) && !XNU_MONITOR
+ /* No monitor exists on VMAPPLE. */
+ void ml_enable_monitor(void) {}
+ 
+--- a/osfmk/arm64/arm_vm_init.c
++++ b/osfmk/arm64/arm_vm_init.c
+@@ -286,7 +286,7 @@
+ SECURITY_READ_ONLY_LATE(static vm_offset_t)   segPLKTEXTEXECB;
+ SECURITY_READ_ONLY_LATE(static unsigned long) segSizePLKTEXTEXEC;
+ 
+-#if defined(ARM64_BOARD_CONFIG_SDM835)
++#if defined(QCOM_ARM64)
+ /* Static ARMv8.0 helpers inserted by kernelcache_patcher; no trap emulation. */
+ __attribute__((used)) const char sdm835_armv8_aot_v1[] = "MI6_ARMV8_AOT_V1";
+ SECURITY_READ_ONLY_LATE(static vm_offset_t) segARMV8EXECB;
+@@ -1409,7 +1409,7 @@
+ 
+ 	/* Map coalesced kext TEXT_EXEC segment RX (could be empty) */
+ 	arm_vm_page_granular_ROX(segPLKTEXTEXECB, segSizePLKTEXTEXEC, ARM64_GRANULE_ALLOW_BLOCK | ARM64_GRANULE_ALLOW_HINT, ARM64_PAGE_GUARDED); // Refined in OSKext::readPrelinkedExtensions
+-#if defined(ARM64_BOARD_CONFIG_SDM835)
++#if defined(QCOM_ARM64)
+ 	/* Helpers remain pinned below end_kern and executable after bootstrap MMU teardown. */
+ 	if (segSizeARMV8EXEC) {
+ 		arm_vm_page_granular_ROX(segARMV8EXECB, segSizeARMV8EXEC, 0, ARM64_PAGE_UNGUARDED);
+@@ -2133,7 +2133,7 @@
+ 	segPRELINKTEXTB  = (vm_offset_t) getsegdatafromheader(&_mh_execute_header, "__PRELINK_TEXT", &segSizePRELINKTEXT);
+ 	segPLKDATACONSTB = (vm_offset_t) getsegdatafromheader(&_mh_execute_header, "__PLK_DATA_CONST", &segSizePLKDATACONST);
+ 	segPLKTEXTEXECB  = (vm_offset_t) getsegdatafromheader(&_mh_execute_header, "__PLK_TEXT_EXEC", &segSizePLKTEXTEXEC);
+-#if defined(ARM64_BOARD_CONFIG_SDM835)
++#if defined(QCOM_ARM64)
+ 	segARMV8EXECB = (vm_offset_t) getsegdatafromheader(&_mh_execute_header, "__ARMV8_EXEC", &segSizeARMV8EXEC);
+ #endif
+ 	segTEXTB         = (vm_offset_t) getsegdatafromheader(&_mh_execute_header, "__TEXT", &segSizeTEXT);
+--- a/osfmk/arm64/caches_asm.s
++++ b/osfmk/arm64/caches_asm.s
+@@ -310,7 +310,7 @@
+ 	dsb		sy
+ 	ret
+ 
+-#if defined(ARM64_BOARD_CONFIG_VMAPPLE) || defined(ARM64_BOARD_CONFIG_SDM835)
++#if defined(ARM64_BOARD_CONFIG_VMAPPLE) || defined(QCOM_ARM64)
+ /* Force cache maintenance using the existing Arm loop, without private HID writes. */
+     .text
+     .align 2
+--- a/osfmk/arm64/cpu.c
++++ b/osfmk/arm64/cpu.c
+@@ -94,7 +94,7 @@
+ extern void exc_vectors_table;
+ #endif /* __ARM_KERNEL_PROTECT__ */
+ 
+-#if APPLEVIRTUALPLATFORM || defined(ARM64_BOARD_CONFIG_SDM835)
++#if APPLEVIRTUALPLATFORM || defined(QCOM_ARM64)
+ extern vm_offset_t reset_vector_vaddr;
+ #endif /* APPLEVIRTUALPLATFORM */
+ 
+@@ -342,7 +342,7 @@
+ 
+ 	CleanPoC_Dcache();
+ 
+-#if defined(ARM64_BOARD_CONFIG_SDM835)
++#if defined(QCOM_ARM64)
+ 	extern void pe_sdm835_cpu_off(void);
+ 	pe_sdm835_cpu_off();
+ #elif USE_APPLEARMSMP
+@@ -581,7 +581,7 @@
+ #endif /* CONFIG_CPU_COUNTERS */
+ 
+ 	if (wfi) {
+-#if !defined(APPLE_ARM64_ARCH_FAMILY) && !defined(ARM64_BOARD_CONFIG_SDM835)
++#if !defined(APPLE_ARM64_ARCH_FAMILY) && !defined(QCOM_ARM64)
+ 		platform_cache_idle_enter();
+ #endif
+ 
+@@ -945,7 +945,7 @@
+ #endif
+ #endif /* CONFIG_SPTM */
+ 
+-#if defined(ARM64_BOARD_CONFIG_SDM835)
++#if defined(QCOM_ARM64)
+ 		extern int64_t pe_sdm835_cpu_on(uint32_t, uint64_t);
+ 		extern uint8_t bootstrap_pagetables[BOOTSTRAP_TABLE_SIZE];
+ 		extern boot_args const_boot_args;
+@@ -960,7 +960,7 @@
+ 		flush_dcache((vm_offset_t)bootstrap_pagetables, BOOTSTRAP_TABLE_SIZE, FALSE);
+ 		int64_t status = pe_sdm835_cpu_on(cpu_data_ptr->cpu_phys_id, ml_static_vtop(reset_vector_vaddr));
+ 		if (status != 0) {
+-			panic("SDM835: PSCI CPU_ON failed for MPIDR 0x%x: %lld", cpu_data_ptr->cpu_phys_id, status);
++			panic(QCOM_PLATFORM_NAME ": PSCI CPU_ON failed for MPIDR 0x%x: %lld", cpu_data_ptr->cpu_phys_id, status);
+ 		}
+ #else
+ 		PE_cpu_start_internal(cpu_data_ptr->cpu_id, (vm_offset_t)NULL, (vm_offset_t)NULL);
+--- a/osfmk/arm64/machine_routines.c
++++ b/osfmk/arm64/machine_routines.c
+@@ -102,6 +102,10 @@
+ #define MPIDR_CPU_ID(mpidr_el1_val)             (((mpidr_el1_val) & MPIDR_AFF0_MASK) >> MPIDR_AFF0_SHIFT)
+ #define MPIDR_CLUSTER_ID(mpidr_el1_val)         (((mpidr_el1_val) & MPIDR_AFF1_MASK) >> MPIDR_AFF1_SHIFT)
+ 
++#if defined(ARM64_BOARD_CONFIG_SM8150)
++#include <pexpert/arm64/sm8150_topology.h>
++#endif
++
+ #if HAS_CLUSTER
+ static uint8_t cluster_initialized = 0;
+ #endif
+@@ -1150,6 +1154,26 @@
+ 	}
+ 
+ 	while (kSuccess == SecureDTIterateEntries(&iter, &child)) {
++#if defined(ARM64_BOARD_CONFIG_SM8150)
++		void const *property;
++		unsigned int property_size;
++		/* Board DTs may contain cache/cpu-map children and disabled PEs.
++		 * Keep XNU's CPU list consistent with the platform driver's list. */
++		if (SecureDTGetProperty(child, "device_type", &property, &property_size) != kSuccess ||
++		    property_size < 3 || strncmp(property, "cpu", 3) ||
++		    (property_size > 3 && ((const char *)property)[3])) {
++			continue;
++		}
++		if (SecureDTGetProperty(child, "status", &property, &property_size) == kSuccess) {
++			bool okay = (property_size >= 2 && !strncmp(property, "ok", 2) &&
++			    (property_size == 2 || !((const char *)property)[2])) ||
++			    (property_size >= 4 && !strncmp(property, "okay", 4) &&
++			    (property_size == 4 || !((const char *)property)[4]));
++			if (!okay) {
++				continue;
++			}
++		}
++#endif
+ 		boolean_t is_boot_cpu = ml_is_boot_cpu(child);
+ 		boolean_t cpu_enabled = cpumask_boot_arg & 1;
+ 		cpumask_boot_arg >>= 1;
+@@ -1188,6 +1212,19 @@
+ 		topology_info.max_die_id = MAX(topology_info.max_die_id, cpu->die_id);
+ 
+ 		cpu->phys_id = (uint32_t)ml_readprop(child, "reg", ML_READPROP_MANDATORY);
++#if defined(ARM64_BOARD_CONFIG_SM8150)
++		if (!sm8150_valid_affinity(cpu->phys_id)) {
++			panic("SM8150: unsupported CPU affinity 0x%x", cpu->phys_id);
++		}
++		if (is_boot_cpu && cpu->phys_id != (__builtin_arm_rsr64("MPIDR_EL1") & 0xffffff)) {
++			panic("SM8150: DT running CPU does not match the boot CPU");
++		}
++		for (unsigned int previous = 0; previous < cpu->cpu_id; previous++) {
++			if (topology_info.cpus[previous].phys_id == cpu->phys_id) {
++				panic("SM8150: duplicate CPU affinity 0x%x", cpu->phys_id);
++			}
++		}
++#endif
+ 
+ 		cpu->l2_cache_size = (uint32_t)ml_readprop(child, "l2-cache-size", 0);
+ 		cpu->l2_cache_id = (uint32_t)ml_readprop(child, "l2-cache-id", 0);
+@@ -1200,6 +1237,15 @@
+ 		cpu->cluster_type = CLUSTER_TYPE_SMP;
+ 
+ 		int cluster_type = (int)ml_readprop(child, "cluster-type", 0);
++#if defined(ARM64_BOARD_CONFIG_SM8150)
++		/* Frequency domains are fixed by this SoC; derive types even if the
++		 * loader omitted them, and reject contradictory DT assignments. */
++		int expected_type = sm8150_scheduler_group(cpu->phys_id) == 0 ? 'E' : 'P';
++		if (cluster_type && cluster_type != expected_type) {
++			panic("SM8150: CPU 0x%x has incorrect cluster type", cpu->phys_id);
++		}
++		cluster_type = expected_type;
++#endif
+ 		if (cluster_type == 'E') {
+ 			cpu->cluster_type = CLUSTER_TYPE_E;
+ 		} else if (cluster_type == 'P') {
+@@ -1217,7 +1263,9 @@
+ 		 * on the value provided by EDT. Instead, use the MPIDR value to see if we have
+ 		 * seen this exact cluster before. If so, then reuse that cluster ID for this CPU.
+ 		 */
+-#if HAS_CLUSTER
++#if defined(ARM64_BOARD_CONFIG_SM8150)
++		uint32_t phys_cluster_id = sm8150_scheduler_group(cpu->phys_id);
++#elif HAS_CLUSTER
+ 		uint32_t phys_cluster_id = MPIDR_CLUSTER_ID(cpu->phys_id);
+ #else
+ 		uint32_t phys_cluster_id = (cpu->cluster_type == CLUSTER_TYPE_P);
+@@ -1262,6 +1310,11 @@
+ 		cluster->die_cluster_id = cpu->die_cluster_id;
+ 
+ 		cpu->cluster_core_id = (int)ml_readprop(child, "cluster-core-id", MPIDR_CPU_ID(cpu->phys_id));
++#if defined(ARM64_BOARD_CONFIG_SM8150)
++		cpu->die_cluster_id = phys_cluster_id;
++		cluster->die_cluster_id = phys_cluster_id;
++		cpu->cluster_core_id = sm8150_group_core(cpu->phys_id);
++#endif
+ 
+ 		cluster->num_cpus++;
+ 		cluster->cpu_mask |= 1ULL << cpu->cpu_id;
+@@ -1277,7 +1330,14 @@
+ #endif
+ 	}
+ 
+-#if HAS_CLUSTER
++#if defined(ARM64_BOARD_CONFIG_SM8150)
++	/* Assembly LOAD_PMAP_CPU_DATA indexes with raw Aff1, not the scheduler
++	 * group. Each SM8150 PE has Aff0=0 and a distinct Aff1. Retain that
++	 * physical indexing even when cpus=/cpumask= selects a sparse subset. */
++	for (unsigned int i = 0; i <= MAX_CPU_CLUSTER_PHY_ID; i++) {
++		cluster_offsets[i] = i;
++	}
++#elif HAS_CLUSTER
+ 	/*
+ 	 * Build the cluster offset array, ensuring that the region reserved
+ 	 * for each physical cluster contains enough entries to be indexed
+--- a/osfmk/arm64/proc_reg.h
++++ b/osfmk/arm64/proc_reg.h
+@@ -227,7 +227,7 @@
+ /* D-Cache, 128KB for AppleH16 PCore, 8-way. 64KB for ECore, 8-way. */
+ #define MMU_CLINE   6                      /* cache line size is 1<<MMU_CLINE (64) */
+ 
+-#elif defined (SDM835)
++#elif defined (SDM835) || defined (SM8150)
+ #define MMU_I_CLINE 6
+ #define MMU_CLINE   6
+ 
+--- a/osfmk/arm64/sdm835.c
++++ b/osfmk/arm64/sdm835.c
+@@ -1,6 +1,7 @@
+-/* SDM835 non-secure GICv3 bootstrap. Only timer/IPI sources are enabled. */
++/* Qualcomm ARMv8 non-secure GICv3/PSCI bootstrap. Only timer/IPI sources
++ * are enabled. pe_sdm835_* symbol names are retained for existing kext ABI. */
+ #include <pexpert/arm64/board_config.h>
+-#if defined(ARM64_BOARD_CONFIG_SDM835)
++#if defined(QCOM_ARM64)
+ #include <stdint.h>
+ #include <arm64/proc_reg.h>
+ #include <kern/debug.h>
+@@ -68,43 +69,43 @@
+ 		/* Only the boot CPU may allocate this shared mapping. All subsequent
+ 		 * CPU starts consume it after release/acquire publication. */
+ 		if (cpu_number() != master_cpu) {
+-			panic("SDM835: secondary CPU reached GIC before bootstrap");
++			panic(QCOM_PLATFORM_NAME ": secondary CPU reached GIC before bootstrap");
+ 		}
+ 		PE_parse_boot_argn("storage-trace", &sdm835_timer_trace, sizeof(sdm835_timer_trace));
+-		vm_offset_t distributor = ml_io_map(SDM835_GICD_BASE, SDM835_GICD_SIZE);
++		vm_offset_t distributor = ml_io_map(QCOM_GICD_BASE, QCOM_GICD_SIZE);
+ 		if (!distributor) {
+-			panic("SDM835: cannot map distributor");
++			panic(QCOM_PLATFORM_NAME ": cannot map distributor");
+ 		}
+ 		uint32_t control = sdm835_read32((void *)distributor, 0);
+ 		if ((control & 0x12) != 0x12) {
+-			panic("SDM835: firmware must enable affinity routing and Group1NS (0x%x)", control);
++			panic(QCOM_PLATFORM_NAME ": firmware must enable affinity routing and Group1NS (0x%x)", control);
+ 		}
+ 		sdm835_gic_security_disabled = (control & 0x40) != 0;
+-		base = ml_io_map(SDM835_GICR_BASE, SDM835_GICR_SIZE);
++		base = ml_io_map(QCOM_GICR_BASE, QCOM_GICR_SIZE);
+ 		if (!base) {
+-			panic("SDM835: cannot map redistributors");
++			panic(QCOM_PLATFORM_NAME ": cannot map redistributors");
+ 		}
+ 		os_atomic_store(&sdm835_gicr, base, release);
+ 	}
+ 	uint32_t affinity = __builtin_arm_rsr64("MPIDR_EL1") & 0xffffff;
+ 	if (!arm_smp_valid_affinity(affinity)) {
+-		panic("SDM835: unsupported CPU affinity 0x%x", affinity);
++		panic(QCOM_PLATFORM_NAME ": unsupported CPU affinity 0x%x", affinity);
+ 	}
+ 	struct arm_gic_io io = { (void *)base, sdm835_read32, sdm835_read64,
+ 	                        sdm835_write32, sdm835_barrier, sdm835_counter, sdm835_relax };
+ 	uint32_t local = 0;
+-	enum arm_gic_result result = arm_gic_find_cpu(&io, SDM835_GICR_SIZE, affinity, &local);
++	enum arm_gic_result result = arm_gic_find_cpu(&io, QCOM_GICR_SIZE, affinity, &local);
+ 	if (result == ARM_GIC_OK) {
+-		result = arm_gic_init_cpu(&io, local, SDM835_VTIMER_INTID,
+-		    SDM835_IPI_INTID, SDM835_TIMER_HZ, sdm835_gic_security_disabled);
++		result = arm_gic_init_cpu(&io, local, QCOM_VTIMER_INTID,
++		    QCOM_IPI_INTID, QCOM_TIMER_HZ, sdm835_gic_security_disabled);
+ 	}
+ 	if (result != ARM_GIC_OK) {
+-		panic("SDM835: CPU 0x%x local GIC initialization failed (%u)", affinity, result);
++		panic(QCOM_PLATFORM_NAME ": CPU 0x%x local GIC initialization failed (%u)", affinity, result);
+ 	}
+ 	__builtin_arm_wsr64("ICC_SRE_EL1", __builtin_arm_rsr64("ICC_SRE_EL1") | 1);
+ 	__builtin_arm_isb(ISB_SY);
+ 	if (!(__builtin_arm_rsr64("ICC_SRE_EL1") & 1)) {
+-		panic("SDM835: firmware did not permit GIC system registers");
++		panic(QCOM_PLATFORM_NAME ": firmware did not permit GIC system registers");
+ 	}
+ 	__builtin_arm_wsr64("ICC_IGRPEN1_EL1", 0);
+ 	__builtin_arm_isb(ISB_SY);
+@@ -116,7 +117,7 @@
+ 	kprintf("[ARM SMP] interrupts cpu=%u affinity=0x%x redistributor=0x%x\n",
+ 	    cpu_number(), affinity, local);
+ 	if (sdm835_timer_trace) {
+-		kprintf("[SDM835 timer] group=%08x enable=%08x CTL=%llx TVAL=%llx\n",
++		kprintf("[" QCOM_PLATFORM_NAME " timer] group=%08x enable=%08x CTL=%llx TVAL=%llx\n",
+ 		    io.read32(io.context, local + ARM_GICR_IGROUPR0),
+ 		    io.read32(io.context, local + ARM_GICR_ISENABLER0),
+ 		    __builtin_arm_rsr64("CNTV_CTL_EL0"), __builtin_arm_rsr64("CNTV_TVAL_EL0"));
+@@ -131,15 +132,15 @@
+ 	if (id >= 1020 && id <= 1023) {
+ 		return;
+ 	}
+-	if (id == SDM835_VTIMER_INTID) {
++	if (id == QCOM_VTIMER_INTID) {
+ 		uint32_t bit = 1U << cpu_number();
+ 		if (!(os_atomic_or_orig(&sdm835_timer_cpus, bit, relaxed) & bit)) {
+ 			kprintf("[ARM SMP] timer cpu=%u\n", cpu_number());
+ 		}
+-		if(sdm835_timer_trace && !(__builtin_arm_rsr64("MPIDR_EL1")&0xffff) && sdm835_boot_timer_ticks++<3)kprintf("[SDM835 timer] IRQ%u tick %u\n",SDM835_VTIMER_INTID,sdm835_boot_timer_ticks);
++		if(sdm835_timer_trace && !(__builtin_arm_rsr64("MPIDR_EL1")&0xffff) && sdm835_boot_timer_ticks++<3)kprintf("[" QCOM_PLATFORM_NAME " timer] IRQ%u tick %u\n",QCOM_VTIMER_INTID,sdm835_boot_timer_ticks);
+ 		getCpuDatap()->cpu_decrementer = -1;
+ 		rtclock_intr(TRUE);
+-	} else if (id == SDM835_IPI_INTID) {
++	} else if (id == QCOM_IPI_INTID) {
+ 		/* Retire this SGI before consuming the software signal mask so
+ 		 * another core can deliver a fresh SGI while we process it. */
+ 		__builtin_arm_wsr64("ICC_EOIR1_EL1", iar);
+@@ -154,7 +155,7 @@
+ 		/* Apple PassthruInterruptController forwards the acknowledged INTID
+ 		 * to the IOKit GIC driver. Do not read IAR again in the child. */
+ 	} else {
+-		panic("SDM835: unregistered GIC interrupt %u", id);
++		panic(QCOM_PLATFORM_NAME ": unregistered GIC interrupt %u", id);
+ 	}
+ 	/* Complete peripheral writes before priority drop/deactivation. */
+ 	__builtin_arm_dsb(DSB_SY);
+@@ -163,8 +164,8 @@
+ }
+ #endif
+ 
+-#if defined(ARM64_BOARD_CONFIG_SDM835)
+-/* SMCCC 1.0: PSCI on MSM8998 uses SMC, not Apple's virtual HVC conduit. */
++#if defined(QCOM_ARM64)
++/* SMCCC 1.0: MSM8998 and SM8150 PSCI firmware use the SMC conduit. */
+ static int64_t
+ sdm835_psci(uint64_t function, uint64_t arg1, uint64_t arg2)
+ {
+@@ -200,15 +201,15 @@
+ pe_sdm835_cpu_off(void)
+ {
+ 	int64_t status = sdm835_psci(0x84000002, 0, 0);
+-	panic("SDM835: PSCI CPU_OFF returned %lld", status);
++	panic(QCOM_PLATFORM_NAME ": PSCI CPU_OFF returned %lld", status);
+ }
+ 
+ void
+ pe_sdm835_send_ipi(uint32_t mpidr)
+ {
+ 	uint64_t sgi;
+-	if (!arm_smp_sgi(mpidr, SDM835_IPI_INTID, &sgi)) {
+-		panic("SDM835: invalid IPI affinity 0x%x", mpidr);
++	if (!arm_smp_sgi(mpidr, QCOM_IPI_INTID, &sgi)) {
++		panic(QCOM_PLATFORM_NAME ": invalid IPI affinity 0x%x", mpidr);
+ 	}
+ 	__builtin_arm_dsb(DSB_ISHST);
+ 	__builtin_arm_wsr64("ICC_SGI1R_EL1", sgi);
+--- a/osfmk/arm64/sleh.c
++++ b/osfmk/arm64/sleh.c
+@@ -2537,7 +2537,7 @@
+ 
+ 	sleh_interrupt_handler_prologue(state, DBG_INTR_TYPE_OTHER);
+ 
+-#if defined(ARM64_BOARD_CONFIG_SDM835)
++#if defined(QCOM_ARM64)
+ 	extern void pe_sdm835_handle_irq(void);
+ 	pe_sdm835_handle_irq();
+ #elif USE_APPLEARMSMP
+--- a/osfmk/console/video_console.c
++++ b/osfmk/console/video_console.c
+@@ -2860,7 +2860,7 @@
+ 			gc_acquired = TRUE;
+ 		} else {
+ 			if (makeMapping) {
+-#if HAS_UCNORMAL_MEM || APPLEVIRTUALPLATFORM || defined(ARM64_BOARD_CONFIG_SDM835)
++#if HAS_UCNORMAL_MEM || APPLEVIRTUALPLATFORM || defined(QCOM_ARM64)
+ 				/*
+ 				 * Framebuffers would normally use VM_WIMG_RT, which
+ 				 * io_map doesn't support.  However this buffer is set up
+--- a/pexpert/arm/hwtrace/hwtrace.c
++++ b/pexpert/arm/hwtrace/hwtrace.c
+@@ -503,7 +503,7 @@
+ 	uintptr_t const *reg_prop;
+ 	uint32_t        prop_size;
+ 
+-#if !defined(ARM64_BOARD_CONFIG_SDM835)
++#if !defined(QCOM_ARM64)
+ 	/* Require gSocPhys to be initialized. SDM835 uses absolute MMIO
+ 	 * addresses and has no Apple cpu-debug-interface to map. */
+ 	if (gSocPhys == 0) {
+--- a/pexpert/arm/pe_fiq.c
++++ b/pexpert/arm/pe_fiq.c
+@@ -12,7 +12,7 @@
+ #include <pexpert/arm64/board_config.h>
+ 
+ 
+-#if defined(ARM64_BOARD_CONFIG_SDM835)
++#if defined(QCOM_ARM64)
+ extern void pe_sdm835_init_interrupts(void);
+ void pe_init_fiq(void) { pe_sdm835_init_interrupts(); }
+ #elif HAS_GIC_V3
+--- a/pexpert/arm/pe_identify_machine.c
++++ b/pexpert/arm/pe_identify_machine.c
+@@ -42,7 +42,7 @@
+ 
+ 	(void)bootArgs;
+ 
+-#if !defined(ARM64_BOARD_CONFIG_SDM835)
++#if !defined(QCOM_ARM64)
+ 	if (pe_arm_get_soc_base_phys() == 0) {
+ 		return;
+ 	}
+@@ -52,13 +52,22 @@
+ 	bzero((void *)&gPEClockFrequencyInfo, sizeof(clock_frequency_info_t));
+ 
+ 	/* Start with default values. */
+-#if defined(ARM64_BOARD_CONFIG_SDM835)
+-	gPEClockFrequencyInfo.timebase_frequency_hz = SDM835_TIMER_HZ;
++#if defined(QCOM_ARM64)
++	gPEClockFrequencyInfo.timebase_frequency_hz = QCOM_TIMER_HZ;
+ #else
+ 	gPEClockFrequencyInfo.timebase_frequency_hz = 24000000;
+ #endif
+ 	gPEClockFrequencyInfo.bus_clock_rate_hz = 100000000;
+ 	gPEClockFrequencyInfo.cpu_clock_rate_hz = 400000000;
++#if defined(QCOM_ARM64)
++	/* Preserve XNU's nominal bookkeeping defaults when a board does not
++	 * supply measured CPU/bus clocks. These values do not program hardware.
++	 * Otherwise the zeroed 64-bit fields below erase the defaults and the
++	 * final ratio calculation divides by zero. */
++	gPEClockFrequencyInfo.bus_frequency_hz = gPEClockFrequencyInfo.bus_clock_rate_hz;
++	gPEClockFrequencyInfo.cpu_frequency_hz = gPEClockFrequencyInfo.cpu_clock_rate_hz;
++	gPEClockFrequencyInfo.dec_clock_rate_hz = gPEClockFrequencyInfo.timebase_frequency_hz;
++#endif
+ 
+ 	err = SecureDTLookupEntry(NULL, "/cpus", &cpus);
+ 	assert(err == kSuccess);
+@@ -152,6 +161,13 @@
+ 		}
+ 	}
+ 
++#if defined(QCOM_ARM64)
++	if (!gPEClockFrequencyInfo.bus_clock_rate_hz ||
++	    !gPEClockFrequencyInfo.cpu_clock_rate_hz ||
++	    !gPEClockFrequencyInfo.dec_clock_rate_hz) {
++		panic(QCOM_PLATFORM_NAME ": invalid zero CPU, bus or timer frequency");
++	}
++#endif
+ 	/* Set the num / den pairs form the hz values. */
+ 	gPEClockFrequencyInfo.bus_clock_rate_num = gPEClockFrequencyInfo.bus_clock_rate_hz;
+ 	gPEClockFrequencyInfo.bus_clock_rate_den = 1;
+@@ -241,7 +257,7 @@
+ 
+ 	/* Set up mappings for interrupt controller and possibly timers (if they haven't been set up already) */
+ 	if (args != NULL) {
+-#if !defined(ARM64_BOARD_CONFIG_SDM835)
++#if !defined(QCOM_ARM64)
+ 		if (!pe_arm_map_interrupt_controller()) {
+ 			return 0;
+ 		}
+--- a/pexpert/pexpert/arm64/Makefile
++++ b/pexpert/pexpert/arm64/Makefile
+@@ -33,6 +33,8 @@
+ 	H15.h \
+ 	H16.h \
+ 	SDM835.h \
++	SM8150.h \
++	sm8150_topology.h \
+ 	arm_smp.h \
+ 	qcom_uartdm.h \
+ 	VMAPPLE.h
+--- a/pexpert/pexpert/arm64/SDM835.h
++++ b/pexpert/pexpert/arm64/SDM835.h
+@@ -31,6 +31,16 @@
+ #define SDM835_IPI_INTID 0
+ #define SDM835_UART_BASE 0x0c1b0000
+ #define SDM835_UART_SIZE 0x1000
++/* Common Qualcomm GIC/PSCI backend; keep board constants public. */
++#define QCOM_ARM64 1
++#define QCOM_PLATFORM_NAME "SDM835"
++#define QCOM_GICD_BASE SDM835_GICD_BASE
++#define QCOM_GICD_SIZE SDM835_GICD_SIZE
++#define QCOM_GICR_BASE SDM835_GICR_BASE
++#define QCOM_GICR_SIZE SDM835_GICR_SIZE
++#define QCOM_TIMER_HZ SDM835_TIMER_HZ
++#define QCOM_VTIMER_INTID SDM835_VTIMER_INTID
++#define QCOM_IPI_INTID SDM835_IPI_INTID
+ #ifndef ASSEMBLER
+ #define QCOM_UARTDM
+ #define PLATFORM_PANIC_LOG_DISABLED
+--- /dev/null
++++ b/pexpert/pexpert/arm64/SM8150.h
+@@ -0,0 +1,49 @@
++/* Snapdragon 855 / SM8150 Kryo 485 bring-up.
++ * Register/topology source: Linux v6.12 arch/arm64/boot/dts/qcom/sm8150.dtsi.
++ * Firmware must preserve DRAM, clocks and the non-secure GIC/PSCI handoff.
++ */
++#ifndef _PEXPERT_ARM64_SM8150_H
++#define _PEXPERT_ARM64_SM8150_H
++#define SM8150 1
++#define QCOM_ARM64 1
++#define QCOM_PLATFORM_NAME "SM8150"
++#define NO_MONITOR 1
++#define NO_CPU_OVRD 1
++#define __ARM_AMP__ 1
++#define __ARM_ARCH__ 8
++#define __ARM_VMSA__ 8
++#define __ARM_VFP__ 4
++#define __ARM_COHERENT_CACHE__ 1
++/* Keep device DMA cache maintenance enabled. */
++#define __ARM_IC_NOALIAS_ICACHE__ 1
++#define __ARM_DEBUG__ 7
++#define __ARM_ENABLE_SWAP__ 1
++#define __ARM_V8_CRYPTO_EXTENSIONS__ 1
++#define ARM_ARCH_TIMER
++#define HAS_GIC_V3 1
++#define HAS_CLUSTER 1
++#define CORE_NCTRS 0
++#define BTI_ENFORCED 0
++/* Conservative 4K/40-bit ARMv8-A profile until runtime feature probing exists.
++ * Do not opt in to Apple registers, PAC, LSE, PAN or range TLBI implicitly. */
++#define SM8150_GICD_BASE 0x17a00000
++#define SM8150_GICD_SIZE 0x10000
++#define SM8150_GICR_BASE 0x17a60000
++#define SM8150_GICR_SIZE 0x100000
++#define SM8150_TIMER_HZ 19200000
++#define SM8150_VTIMER_INTID 19
++#define SM8150_IPI_INTID 0
++#define QCOM_GICD_BASE SM8150_GICD_BASE
++#define QCOM_GICD_SIZE SM8150_GICD_SIZE
++#define QCOM_GICR_BASE SM8150_GICR_BASE
++#define QCOM_GICR_SIZE SM8150_GICR_SIZE
++#define QCOM_TIMER_HZ SM8150_TIMER_HZ
++#define QCOM_VTIMER_INTID SM8150_VTIMER_INTID
++#define QCOM_IPI_INTID SM8150_IPI_INTID
++#ifndef ASSEMBLER
++/* Bounded GENI handoff is available only for an explicitly enabled DT UART.
++ * GENI is not UARTDM; never reuse the SDM835 physical UART accessors. */
++#define QCOM_GENI_UART
++#define PLATFORM_PANIC_LOG_DISABLED
++#endif
++#endif
+--- /dev/null
++++ b/pexpert/pexpert/arm64/sm8150_topology.h
+@@ -0,0 +1,30 @@
++/* SPDX-License-Identifier: BSD-2-Clause
++ * SM8150 raw MPIDR affinity and scheduler frequency-domain mapping.
++ * Linux describes one DSU cluster and three CPU frequency domains (4+3+1).
++ * These scheduler groups are not hardware MPIDR Aff1 clusters.
++ */
++#ifndef _PEXPERT_ARM64_SM8150_TOPOLOGY_H
++#define _PEXPERT_ARM64_SM8150_TOPOLOGY_H
++#include <stdint.h>
++#include <stdbool.h>
++
++static inline bool
++sm8150_valid_affinity(uint32_t affinity)
++{
++	return (affinity & ~0x700U) == 0;
++}
++
++static inline unsigned int
++sm8150_scheduler_group(uint32_t affinity)
++{
++	unsigned int core = affinity >> 8;
++	return core < 4 ? 0 : core < 7 ? 1 : 2;
++}
++
++static inline unsigned int
++sm8150_group_core(uint32_t affinity)
++{
++	unsigned int core = affinity >> 8;
++	return core < 4 ? core : core < 7 ? core - 4 : 0;
++}
++#endif
+--- a/pexpert/pexpert/arm64/arm_smp.h
++++ b/pexpert/pexpert/arm64/arm_smp.h
+@@ -5,6 +5,9 @@
+ #define _PEXPERT_ARM64_ARM_SMP_H
+ #include <stdint.h>
+ #include <stdbool.h>
++#if defined(ARM64_BOARD_CONFIG_SM8150)
++#include <pexpert/arm64/sm8150_topology.h>
++#endif
+ 
+ #define ARM_GICR_STRIDE       0x20000U
+ #define ARM_GICR_TYPER        0x00008U
+@@ -37,15 +40,23 @@
+ static inline bool
+ arm_smp_valid_affinity(uint32_t affinity)
+ {
++#if defined(ARM64_BOARD_CONFIG_SM8150)
++	return sm8150_valid_affinity(affinity);
++#else
+ 	/* MSM8998: Aff1 0/1, Aff0 0..3; no Aff2/Aff3 CPUs. */
+ 	return (affinity & ~0x103U) == 0;
++#endif
+ }
+ 
+ static inline uint32_t
+ arm_smp_cpu_bit(uint32_t affinity)
+ {
++#if defined(ARM64_BOARD_CONFIG_SM8150)
++	return arm_smp_valid_affinity(affinity) ? 1U << (affinity >> 8) : 0;
++#else
+ 	return arm_smp_valid_affinity(affinity) ?
+ 	       1U << (((affinity >> 8) * 4) + (affinity & 3)) : 0;
++#endif
+ }
+ 
+ static inline bool
+--- a/pexpert/pexpert/arm64/board_config.h
++++ b/pexpert/pexpert/arm64/board_config.h
+@@ -281,6 +281,17 @@
+ #define NO_XNU_PLATFORM_ERROR_HANDLER  1
+ #endif
+ 
++#ifdef ARM64_BOARD_CONFIG_SM8150
++#include <pexpert/arm64/SM8150.h>
++#define MAX_L2_CLINE                   6
++#define MAX_CPUS                       8
++/* Scheduler frequency domains: four little, three big, one prime. */
++#define MAX_CPU_CLUSTERS               3
++/* Raw MPIDR Aff1 identifies individual cores, not the scheduler groups. */
++#define MAX_CPU_CLUSTER_PHY_ID         7
++#define NO_XNU_PLATFORM_ERROR_HANDLER  1
++#endif
++
+ #ifdef ARM64_BOARD_CONFIG_VMAPPLE
+ #include <pexpert/arm64/VMAPPLE.h>
+ 

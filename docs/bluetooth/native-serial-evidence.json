@@ -1,0 +1,206 @@
+{
+  "schema": 1,
+  "provider_sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+  "method": "Existing kernelcache_patcher inspect-abi metaclass/vtable recovery, compiler vtable contracts, and focused read-only IDA disassembly/decompilation.",
+  "classes": [
+    {
+      "name": "IOSerialBSDClient",
+      "super": "IOService",
+      "instance_size": 464,
+      "vtable_slots": 169
+    },
+    {
+      "name": "IOSerialDriverSync",
+      "super": "IOService",
+      "instance_size": 136,
+      "vtable_slots": 180,
+      "serial_methods": {
+        "168": {
+          "method": "acquirePort",
+          "address": "0xfffffff0078009d8"
+        },
+        "169": {
+          "method": "releasePort",
+          "address": "0xfffffff0078009d8"
+        },
+        "170": {
+          "method": "setState",
+          "address": "0xfffffff0078009d8"
+        },
+        "171": {
+          "method": "getState",
+          "address": "0xfffffff0078009d8"
+        },
+        "172": {
+          "method": "watchState",
+          "address": "0xfffffff0078009d8"
+        },
+        "173": {
+          "method": "nextEvent",
+          "address": "0xfffffff0078009d8"
+        },
+        "174": {
+          "method": "executeEvent",
+          "address": "0xfffffff0078009d8"
+        },
+        "175": {
+          "method": "requestEvent",
+          "address": "0xfffffff0078009d8"
+        },
+        "176": {
+          "method": "enqueueEvent",
+          "address": "0xfffffff0078009d8"
+        },
+        "177": {
+          "method": "dequeueEvent",
+          "address": "0xfffffff0078009d8"
+        },
+        "178": {
+          "method": "enqueueData",
+          "address": "0xfffffff0078009d8"
+        },
+        "179": {
+          "method": "dequeueData",
+          "address": "0xfffffff0078009d8"
+        }
+      }
+    },
+    {
+      "name": "IOSerialStreamSync",
+      "super": "IOService",
+      "instance_size": 152,
+      "vtable_slots": 181,
+      "serial_methods": {
+        "168": {
+          "method": "acquirePort",
+          "address": "0xfffffff005da43ec"
+        },
+        "169": {
+          "method": "releasePort",
+          "address": "0xfffffff005da4478"
+        },
+        "170": {
+          "method": "setState",
+          "address": "0xfffffff005da44f4"
+        },
+        "171": {
+          "method": "getState",
+          "address": "0xfffffff005da4588"
+        },
+        "172": {
+          "method": "watchState",
+          "address": "0xfffffff005da45f8"
+        },
+        "173": {
+          "method": "nextEvent",
+          "address": "0xfffffff005da468c"
+        },
+        "174": {
+          "method": "executeEvent",
+          "address": "0xfffffff005da46fc"
+        },
+        "175": {
+          "method": "requestEvent",
+          "address": "0xfffffff005da4790"
+        },
+        "176": {
+          "method": "enqueueEvent",
+          "address": "0xfffffff005da4824"
+        },
+        "177": {
+          "method": "dequeueEvent",
+          "address": "0xfffffff005da48c8"
+        },
+        "178": {
+          "method": "enqueueData",
+          "address": "0xfffffff005da496c"
+        },
+        "179": {
+          "method": "dequeueData",
+          "address": "0xfffffff005da4a18"
+        }
+      }
+    }
+  ],
+  "required_symbols": {
+    "__ZN18IOSerialDriverSync10gMetaClassE": "0xfffffff007be78e8",
+    "__ZN18IOSerialDriverSyncC2EPK11OSMetaClass": "0xfffffff005da3c50",
+    "__ZN18IOSerialDriverSyncD2Ev": "0xfffffff005da3c74",
+    "__ZN18IOSerialStreamSync10gMetaClassE": "0xfffffff007be7910",
+    "__ZN18IOSerialStreamSyncC1EPK11OSMetaClass": "0xfffffff005da3d50",
+    "__ZN18IOSerialStreamSyncD2Ev": "0xfffffff005da3d74",
+    "__ZTV18IOSerialDriverSync": "0xfffffff006db34d0",
+    "__ZN18IOSerialStreamSync9metaClassE": "0xfffffff006db3b10"
+  },
+  "native_stream_init": {
+    "address": "0xfffffff005da4314",
+    "observation": "Calls IOService::init and stores refcon at byte offset144; provider is at136."
+  },
+  "user_space_evidence": [
+    {
+      "image": "bluetoothd",
+      "address": "0x1000b0fcc",
+      "observation": "Entry checks /dev/cu.bluetooth and /dev/uart.bluetooth and calls address discovery for service name bluetooth."
+    },
+    {
+      "image": "bluetoothd",
+      "address": "0x1000b2338",
+      "observation": "IOServiceNameMatching followed by IORegistryEntrySearchCFProperty in IODeviceTree for local-mac-address; copies six canonical-order bytes."
+    },
+    {
+      "image": "bluetoothd",
+      "address": "0x10034941c",
+      "observation": "XPC com.apple.BlueTool RunBuiltinScript with script and optional btaddress; result checked by caller."
+    },
+    {
+      "image": "bluetoothd",
+      "address": "0x10034a1bc",
+      "observation": "Boot method may invoke script boot; init/deepsleep methods at0x10034aac8/0x10034ab6c use the same XPC path."
+    },
+    {
+      "image": "bluetoothd",
+      "address": "0x1004a861c",
+      "observation": "Initialization includes a failure branch for unknown platform/chipset/manufacturer; VM skip is separate and is not used by this driver."
+    },
+    {
+      "image": "bluetoothd",
+      "address": "0x100211ad8",
+      "observation": "Parses BT_HCI_TRANSPORT as transport:driver:argument. H4 table is at0x1009bfd40; POSIX driver table is at0x1009bfc40."
+    },
+    {
+      "image": "bluetoothd",
+      "address": "0x100116c60",
+      "observation": "POSIX driver opens PF_SYSTEM/SOCK_STREAM/SYSPROTO_CONTROL, resolves a supplied control name with CTLIOCGINFO, and uses Skywalk only for the exact default com.apple.uart.sk.bluetooth. Other names use read/write and termios socket options."
+    },
+    {
+      "image": "bluetoothd",
+      "address": "0x100117624",
+      "observation": "Without an os_channel, HCI bytes are sent with write on the control socket."
+    },
+    {
+      "image": "bluetoothd",
+      "address": "0x100117920",
+      "observation": "Without an os_channel, HCI bytes are received with read on the control socket."
+    }
+  ],
+  "hardware_tested": false,
+  "native_daemon_compatibility": "H4 socket and BlueTool boot/init/shutdown backend are implemented and checked offline. The independent native chipset capability/VSC factory is not ported; system operation is not established.",
+  "native_control": {
+    "name": "com.apple.uart.bluetooth",
+    "configuration": "H4:POSIX:com.apple.uart.bluetooth,3200000",
+    "kernel_api": "XNU ctl_register/ctl_enqueuedata and mbuf KPI",
+    "termios_bytes": 72,
+    "get_option": "0x40487413 (TIOCGETA)",
+    "set_option": "0x80487414 (TIOCSETA)",
+    "socket_api_references": "kernel/bsd/sys/kern_control.h; kernel/bsd/kern/kern_control.c",
+    "native_name_formats_observed": [
+      "com.apple.uart.%s",
+      "com.apple.uart.sk.%s"
+    ],
+    "authorization": "com.apple.bluetooth.control entitlement observed in the pinned bluetoothd code signature",
+    "callback_locking": "Local XNU releases the socket lock around connect/send/set/get callbacks; gate-to-enqueue does not invert it.",
+    "skywalk_implemented": false,
+    "daemon_configuration_installed": false
+  },
+  "bootstrap_evidence": "docs/bluetooth/native-bootstrap-evidence.json"
+}

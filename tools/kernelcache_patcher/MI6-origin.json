@@ -1,0 +1,92 @@
+{
+  "upstream_file_sha256": {
+    ".gitignore": "00d7200ccc64687322225abc98336394341657cbc7775fea20ae5c5703c63248",
+    "CMakeLists.txt": "b1134843de06bd2c2a2b4bf4fc65a65e564e2910e7a923c762bd3d045994ca1e",
+    "CppAnalyzer.cpp": "1b0bb4e2d0b1784c8e4a0b7dd278b3c98f0daaf7c216d04ed0f6cdccf826cd6b",
+    "KernelMacho.cpp": "4b35bb368406a5155adcb82acf359c7335eab1f9f64b827ea39ac7337d0aecf6",
+    "Kext.cpp": "dd3e67b1374810f43e32fe4caa876046bd7f8f32e746a38b6f88fea9033f8f6c",
+    "KextMacho.cpp": "d4e1672ae4ff9a847737f901c91ab3b41d477c713efdc5f08b78d1e2ad5548ec",
+    "Macho.cpp": "820cf3283f19ae13b056833ed7dd41795a3dac3f283d6db769974d5fe948e049",
+    "Patcher.cpp": "433c8c4cf6b5c7f6b03c8df7a628c2da2a80d6823a3378415bfe34c44a0bad5c",
+    "Plist.cpp": "49e15b3734962ccd4e9512042d0a818d8eff521388f1048db98416c5a34fd863",
+    "README.md": "30ced171e85d5cf5ebd85da296f5708be10eb7f693f2f607c5273a93b11851b3",
+    "Resolver.cpp": "69d7de6a5869fa3645caa7aa2255a8b74212b630511ad3468b45a2c3af8c2a13",
+    "StructorRebase.cpp": "59a7cf1d472be3e546e9f79393ab81a616615efc71d5e904344bca17fbc42d97",
+    "ida_find_cpu_validation.py": "4a8c826aef2326e78dce7b91d6f60e35aab41f400625c308580751fd28b36856",
+    "include/CppAnalyzer.h": "ad983945fac71e61cd92cffd87bbee7dc98d731f2685e52d65fd9a66fd4f7757",
+    "include/KernelMacho.h": "c84bdf0caba777c493cc124fc0141104fcb89e5e7c608605a3cffab2833b96c8",
+    "include/Kext.h": "4628d84addf88a4e1a79f5b4e7b10a50f3be47d1359defedd026690699396278",
+    "include/KextMacho.h": "a652b5dc967c9624c8339c9d8aa3566c43b82b3dbc58c82f5d40882da696d965",
+    "include/Macho.h": "d3ab1619786726471f20a55557fcbb7a77aca09ecc94df43fe406879f2bb6e26",
+    "include/Patcher.h": "f39f058768faea7713831cce5bbcd54be9229bb2293a9b1448e9f5827d3df3e5",
+    "include/Plist.h": "15edf78293dcd119bdb02a084c0a547aff82a03899a4f78fb651e8f46ad384ff",
+    "include/Resolver.h": "7a286e32ff03189df18e229151de96c926439884b33a16b984f657b165b6040b",
+    "include/StructorRebase.h": "8424a6850e087d0263528ddeb74a8f81457510e44627b90651395ba6c0e8c7bf",
+    "main.cpp": "cf637c77c12e0c04f53835963a1b4f2eed40414c62fe2a0efb2e83274e545406",
+    "tests/CppAnalyzerTests.cpp": "c9507e1754bcf502e5999102002247dd40cc60ff53330aa89568a8b39a0121ca",
+    "tests/ResolverTests.cpp": "50833ad1d054f86cbcd0683446099235e2cc5173310a8d88462584ada7860cb5",
+    "tests/StructorRebaseTests.cpp": "b26310b9dcd5a32c7deb5722a5c34ba4d13bb84628b759764e536cd6a29000bd"
+  },
+  "host_dependencies": {
+    "tinyxml2": "11.0.0",
+    "capstone": "5.0.9",
+    "keystone": "0.9",
+    "LLVM": "23.1 (AArch64 C disassembler; mandatory ISA gate)"
+  },
+  "ipsw_tool": {
+    "version": "3.1.710",
+    "build_commit": "043b6a5954a19a90bf6c8e9203cbaea07594204a",
+    "sha256": "0664017d3fc7b41fedd65c3fe75b2eaf61175eacca0f22614064c9ea5555afe9"
+  },
+  "local_changes": [
+    "Prefer native instance vtable exports and skip named neighboring MetaClass tables",
+    "Preserve existing native and sidecar symbols during inference",
+    "Reject unequal virtual counts before positional mapping or method-name inference",
+    "Report rejection names, reasons, addresses and counts; --native-only bypasses inference",
+    "Include recovered instance sizes in --details",
+    "Mandatory Python offline verification before atomic publication; fail closed if verifier unavailable",
+    "Complete resource-only KPI header allocation and serialized header normalization",
+    "Set outer prelink protections, canonical zerofill offsets and removed LINKEDIT payloads",
+    "Expand plist dictionary/array and forward IDREFs; reject missing, duplicate or cyclic IDs",
+    "Canonical kmod name/version from bundle metadata",
+    "Preserve complete standard SHA256 tables as data; resolve backward ADRP control flow",
+    "Independent section/symbol/relocation/dependency/GOT/stub/kmod checks, native-byte and source-constant preservation",
+    "Static ARMv8 AOT Kext lowering with source-bound embedded helper records, mandatory ISA gate, and XNU KCGEN resource-header stride verification; see docs/sdm835/ios18/armv8-validation.json."
+  ],
+  "modified_file_sha256": {
+    "CMakeLists.txt": "9750f99ef1405afc64c718d8f652d498cf80d04cd35e860be9d9e04440fc0e14",
+    "CodeData.cpp": "c7d241873c33bc36aed6dc45ec7e853eaa07fad157811791220608169f58ba36",
+    "CppAnalyzer.cpp": "be9de69e22232e734d7e9cad88b4ba19b8422fb680b9f67cd75b09fab8cbebb5",
+    "KernelMacho.cpp": "4a7921b01b25627f0e66bcd2a44319781c8320255a31e42cb9e9c9b4e1bc1a5a",
+    "Patcher.cpp": "aee1cf4694b117cf407bc6ed8c7b261e486fb315337932d3a7380b2e474a2db5",
+    "Plist.cpp": "6dcd39650a7ea9eb61c68fb97f261bf4c083c61dcc804accee439bae4c229873",
+    "README.md": "b72b4b988c4b7605bd92d409d870598dd09b7fff1c553f976ce3d0204fc3b189",
+    "Resolver.cpp": "fa5e9522b4016aca12516dfc83ef741262cbf3843a4641766f56c992736dac89",
+    "include/CodeData.h": "9f725fb797873289105bd649b4d907ba0e8fb78db23c847ded178b5e56db4f45",
+    "include/CppAnalyzer.h": "367c8324fcda01fa459ff5d3d88ac57d1b089f2fffab53f844937bb4a6e7d5c9",
+    "include/Kext.h": "5ac322340992e17abb7b9996f745a21d2b0dc8b8cb3654a2f4d5ccfd37b00f5c",
+    "include/Patcher.h": "df8e353f67681f8cac5534c142be8360ce6df7162475ec545dab0ca67e50bbe2",
+    "include/Plist.h": "9ac4168ab3686a9deac3893cb01dc02e60f5594649b71a30c3b554ec95b47e0e",
+    "include/Resolver.h": "fc06b48dc5460b5bf5eacff2656813a1a683598172bd62fc9c94f0e7a21cd912",
+    "main.cpp": "004503c0de6697d18c12cf41175f7a78af972d3ae7ff2608402a5ca2677becad",
+    "tests/CppAnalyzerTests.cpp": "6d71f197793ab28a56772d957d2675ebc489e9544fe2590b96b85f163ccf4c7a",
+    "tests/PatcherControlFlowTests.cpp": "8ce6a8890362b1f01b95972a21f2718efeb74f66dce39689e6220d6541673802",
+    "tests/PlistTests.cpp": "fba8e3f8f029360d96db1cc2b9a1098d767b66265056314e390b7eb94b5323ca",
+    "tests/ResolverTests.cpp": "a259b9e046728eb9f78d02a2021dcdd6b3d7d53e1fa5bca25059f2ebac4a78a6"
+  },
+  "armv8_integration_sha256": {
+    "scripts/armv8_compat.py": "6402defbf6c48ac0d9e217b7381071d8d0063e6bd2cd84fb0a3b041653015cdb",
+    "scripts/test-armv8-compat.py": "d788a7bddf9ed4aa1f2db7f86bb5b1466e9fb6c0adc45e49d60b6e34200eafac",
+    "scripts/verify-kernelcache.py": "319189dc94f656904ebaf34936a72959c20d6534a2937d47effd5110a9637872",
+    "tests/test_kernelcache_armv8.py": "5605de1fc6c266a780eddb85dac7ccf277c58ff12a55f7202b030440fb3f5b03",
+    "tools/patches/zzzzzz-sdm835-armv8-aot.patch": "e6bc60501fe380bbcb127a7f713a86aa9bfee889b116e33d9e815cc23ab0ed8b",
+    "tools/patches/zzzzzzz-sdm835-iokit-trace.patch": "14396bd4d9dd1e4ad43fd37994aee607c174b4feea6d911d4557c65a78453bfa",
+    "Makefile": "f613f0776b4d9e29e4f742331ccbb877cf43c68683e151545cefdafe62284ff1",
+    "tests/test_kernelcache_verifier.py": "7273c44a1e85c109bbce96923c6e4471c38b5213028bab29ad8a813cfba85be1"
+  },
+  "reference_repository": {
+    "repository": "https://github.com/MC-XiaoXiao/kernelcache_patcher.git",
+    "base_commit": "326c9448f83e3587c85dd2defd2c67a9fbbdd6a0",
+    "source": "Current source snapshot, including local changes"
+  }
+}

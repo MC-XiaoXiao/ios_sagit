@@ -1,0 +1,108 @@
+{
+  "date": "2026-10-20",
+  "timezone": "America/Los_Angeles",
+  "scope": "offline only",
+  "hardware_tested": false,
+  "summary": "GenericI2C + QUP5 + Synaptics RMI4 + native IOHIDEventDriver; no device flashing or boot",
+  "checks": [
+    {
+      "command": "make touch-drivers",
+      "status": "passed",
+      "local_kexts_verified": 6
+    },
+    {
+      "command": "make test-touch",
+      "status": "passed",
+      "host_suites": [
+        "i2c",
+        "touch"
+      ],
+      "python_tests": 8
+    },
+    {
+      "command": "make test-touch-sanitized",
+      "status": "passed",
+      "sanitizers": [
+        "AddressSanitizer",
+        "UndefinedBehaviorSanitizer"
+      ]
+    },
+    {
+      "command": "python3 scripts/toolchain.py test-drivers --target SDM835 --test gcc --test gpio --test pmic-input --test buttons --test fingerprint-home",
+      "status": "passed",
+      "host_suites": 5
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p 'test_input_integration.py'",
+      "status": "passed",
+      "tests": 6
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p 'test_boot_bridge.py'",
+      "status": "passed",
+      "tests": 49,
+      "notes": "Existing dtc warnings for logical service nodes/duplicate unit-addresses remain."
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p 'test_driver_toolchain.py'",
+      "status": "passed",
+      "tests": 19
+    },
+    {
+      "command": "make touch",
+      "status": "passed",
+      "local_kexts_verified": 17,
+      "linker_tests": 5
+    },
+    {
+      "command": "make verify-touch",
+      "status": "passed",
+      "kext_count": 37,
+      "errors": [],
+      "warnings": []
+    }
+  ],
+  "artifact": {
+    "path": "build/output/kernelcache.touch",
+    "sha256": "c16827c3343ad985e0befcb4a8e3115ee53e0859279bd29f30a1d1c56c4e5053",
+    "bytes": 24412160,
+    "manifest": "build/output/kernelcache.touch.manifest.json",
+    "verification": "build/output/kernelcache.touch.verification.json"
+  },
+  "source_sha256": {
+    "Makefile": "de765a665c35f856c856c6932da1079f1197806a208e2df00419f1a3a124ff35",
+    "device_trees/xiaomi-sagit.dts": "ab06676ac96f76bddbbdd12e4a0c3731723675ffa55b7ec3a0b61ad8f152371b",
+    "scripts/build-bridge.py": "85c3350d7b0fb7fca56170d7e9988a9c128edaae06b965e7bab9098a96a6deae",
+    "scripts/touch_handoff.py": "3dd0776992924d852f0346476827b2a3dc7f92fe73af55157b864049269bcd90",
+    "drivers/Build.json": "36999291c2c2da7a83ac557e5ad0932c5bd5f9a09e10b1dfcf2e499f54f3c442",
+    "drivers/bus/GenericI2C/GenericI2C.cpp": "64618e957e03c5aa2bf0e7259aa5af50549eaf60d8bf3f356c22f1db06a5086e",
+    "drivers/bus/GenericI2C/GenericI2C.h": "b47beae507b7e49796ad7ecda9501f095f278c85177bee053962a04479d47ce6",
+    "drivers/bus/GenericI2C/Info.plist": "136220f63b00b6a6419e59f6bba533dfcde5668ec0282f8a4f2d9d2122c39883",
+    "drivers/bus/QcomI2C/Info.plist": "5cdde8b29d3e13a0dd3a97569af3788e29386816bb8e2f82b4312c9898338462",
+    "drivers/bus/QcomI2C/QUPI2C.h": "beeb472e1433f13057d54c528593c985fc5ce44e5a66be81e333b38ea6ac53a7",
+    "drivers/bus/QcomI2C/QcomI2C.cpp": "ec600627f378e4c01046061f7c8fbd5a1519c49393c58985f2df9b460a23e596",
+    "drivers/bus/QcomI2C/QcomI2C.h": "28c760f2302e4623dbb62fc2ebf9031b78461bf8be1277939aed20d06af7f294",
+    "drivers/input/SynapticsTouch/Info.plist": "cd0961d8aa36fc688f48f3451dff504124b9c602b0a4d950e14b5d2e7b942441",
+    "drivers/input/SynapticsTouch/RMI4.h": "7dec5bf1d0740bb812aae455cb0c845b6bb5c1e279c8bc93b9657f981f58b14d",
+    "drivers/input/SynapticsTouch/SynapticsTouch.cpp": "427dcfb7de9b48e820bf4702d842b0897e7e48301966672defb0d1f3138a01c5",
+    "drivers/input/SynapticsTouch/SynapticsTouch.h": "e705d5dd9e23d3e09418dce9536e58e746ac31a7eb345123520af0e2af46adc2",
+    "drivers/input/SynapticsTouch/TouchHID.h": "8bfe594b4605044de19c1236f2d9d39ca06555dd667640fe447124ed0117f32b",
+    "drivers/include/ClockControllerProtocol.h": "af209252ec021f368fdc2c8719d61145b021ce0dc9274613911e7175bb272722",
+    "drivers/include/I2CProtocol.h": "d5ae8a7666abb6994fc1355e21ee775a695b0061adca70509c28f2432fa30c24",
+    "tests/i2c_test.cpp": "bcd32c84459a00d49182d42ce5ff00a16766e98f287961bb14d2d32a0c2fb46b",
+    "tests/test_touch_integration.py": "b93a7f13c341dbaedef5d514c1b0c60add6baceacc4b9db08de5313d38396b73",
+    "tests/touch_test.cpp": "e62875a4452d96e9010d82571704feffcac5175643903586c48a267fa1bc811a"
+  },
+  "remaining_validation": [
+    "Actual retained clocks, pins and shared touch/display supplies",
+    "QUP PIO electrical timing and GPIO125 level behavior",
+    "S3330/S3331/TD4322 firmware query layouts and orientation",
+    "Native HID event consumption in SpringBoard"
+  ],
+  "not_implemented": [
+    "AppleARMIIC private binary client ABI adapter",
+    "Firmware flashing and cold shared-panel power initialization",
+    "Gesture wake/deep system suspend",
+    "F1A capacitive buttons and F51/special force or pen input"
+  ]
+}

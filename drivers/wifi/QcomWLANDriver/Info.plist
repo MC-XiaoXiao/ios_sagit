@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleIdentifier</key>
+	<string>org.darwin.driver.QcomWLANDriver</string>
+	<key>CFBundleExecutable</key>
+	<string>QcomWLANDriver</string>
+	<key>CFBundleName</key>
+	<string>QcomWLANDriver</string>
+	<key>CFBundleVersion</key>
+	<string>1.0.0</string>
+	<key>CFBundlePackageType</key>
+	<string>DEXT</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleSupportedPlatforms</key>
+	<array>
+		<string>DriverKit</string>
+	</array>
+	<key>OSMinimumDriverKitVersion</key>
+	<string>24.6</string>
+	<key>IOKitPersonalities</key>
+	<dict>
+		<key>WLAN</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>org.darwin.driver.QcomWLANDriver</string>
+			<key>CFBundleIdentifierKernel</key>
+			<string>com.apple.kpi.iokit</string>
+			<key>IOClass</key>
+			<string>IOUserService</string>
+			<key>IOProviderClass</key>
+			<string>QcomWLAN</string>
+			<key>IOUserClass</key>
+			<string>QcomWLANDriver</string>
+			<key>IOUserServerName</key>
+			<string>org.darwin.wlan</string>
+			<key>IOUserServerOneProcess</key>
+			<true/>
+			<key>IOPropertyMatch</key>
+			<dict>
+				<key>WLANTransportVersion</key>
+				<integer>1</integer>
+				<key>WLANTransportReady</key>
+				<true/>
+			</dict>
+			<key>WLANInterfaceProperties</key>
+			<dict>
+				<key>CFBundleIdentifierKernel</key>
+				<string>com.apple.iokit.IOSkywalkFamily</string>
+				<key>IOClass</key>
+				<string>IOUserNetworkWLAN</string>
+				<key>IOProviderClass</key>
+				<string>IOUserService</string>
+				<key>IOUserClass</key>
+				<string>IOUserNetworkWLAN</string>
+				<key>IO80211InterfaceRole</key>
+				<string>Infrastructure</string>
+			</dict>
+		</dict>
+	</dict>
+</dict>
+</plist>

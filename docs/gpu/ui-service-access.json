@@ -1,0 +1,21 @@
+{
+  "source_version": "iOS18 /22H374",
+  "entitlement_evidence": {
+    "path": "build/display-runtime/backboardd-entitlements.json",
+    "sha256": "5e1510e383bcd0dd92170c59cce4000ee56ffd0fe3b2d32f09c65b28f3032c0c",
+    "name": "com.apple.backboardd",
+    "value": true
+  },
+  "authorization": "IOUserClient::copyClientEntitlement(task), exact OSBoolean true; never task name, UID or caller dictionary",
+  "administrator": "legacy and native clients; vendor JIT registration/deletion",
+  "nonadministrator_compositor": "native type1/device and33/memory-info plus JIT registration/deletion; exact signed com.apple.backboardd=true role required, original Family task/resource/IOSurface checks and per-task program quotas still apply",
+  "other_nonadministrator": "denied",
+  "jit_gate": "RegisterProgram and DeleteProgram independently recheck current owning task via the same nativeShaderTask administrator-or-backboardd authorization on every external call",
+  "native_selector_abi_changed": false,
+  "runtime_permission_check_verified": false,
+  "hardware_tested": false,
+  "raw_isa_policy": "trusted native clients only; no ordinary application admission or unprivileged ISA validation is claimed",
+  "driver_version": "1.65.0",
+  "administrator_native_access_runtime_verified": true,
+  "administrator_evidence": "build/gpu-runtime/round-41-evidence.json"
+}

@@ -1,0 +1,961 @@
+{
+  "bundle_identifier": "com.apple.iokit.IOGPUFamily",
+  "image_sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+  "architecture": "arm64",
+  "classes": {
+    "IOAcceleratorES": {
+      "super": "IOService",
+      "instance_size": 136,
+      "vtable_slots": 168
+    },
+    "IOGPU": {
+      "super": "IOAcceleratorES",
+      "instance_size": 744,
+      "vtable_slots": 215
+    },
+    "IOGPUObject": {
+      "super": "OSObject",
+      "instance_size": 16,
+      "vtable_slots": 16
+    },
+    "IOGPUEventMachine": {
+      "super": "OSObject",
+      "instance_size": 5200,
+      "vtable_slots": 25
+    },
+    "IOGPUTask": {
+      "super": "IOGPUObject",
+      "instance_size": 464,
+      "vtable_slots": 21
+    },
+    "IOGPUDeviceUserClient": {
+      "super": "IOUserClient",
+      "instance_size": 304,
+      "vtable_slots": 189
+    },
+    "IOGPUDevice": {
+      "super": "IOGPUObject",
+      "instance_size": 256,
+      "vtable_slots": 29
+    },
+    "IOGPUMemory": {
+      "super": "IOGPUObject",
+      "instance_size": 112,
+      "vtable_slots": 29
+    },
+    "IOGPUSysMemory": {
+      "super": "IOGPUMemory",
+      "instance_size": 168,
+      "vtable_slots": 29
+    },
+    "IOGPUMemoryMap": {
+      "super": "IOGPUObject",
+      "instance_size": 72,
+      "vtable_slots": 29
+    },
+    "IOGPUResource": {
+      "super": "IOGPUObject",
+      "instance_size": 160,
+      "vtable_slots": 33
+    },
+    "IOGPUCommandQueue": {
+      "super": "IOGPUObject",
+      "instance_size": 1408,
+      "vtable_slots": 36
+    },
+    "IOGPUDeviceShmem": {
+      "super": "IOGPUKernelMappedMemory",
+      "instance_size": 104,
+      "vtable_slots": 22
+    },
+    "IOGPUEventFence": {
+      "super": "OSObject",
+      "instance_size": 208,
+      "vtable_slots": 18
+    },
+    "IOGPUFenceMachine": {
+      "super": "OSObject",
+      "instance_size": 120,
+      "vtable_slots": 15
+    },
+    "IOGPUWorkQueue": {
+      "super": "IOGPUObject",
+      "instance_size": 256,
+      "vtable_slots": 26
+    },
+    "IOGPUCommandDescriptor": {
+      "super": "IOGPUObject",
+      "instance_size": 296,
+      "vtable_slots": 24
+    },
+    "IOGPUScheduler": {
+      "super": "OSObject",
+      "instance_size": 552,
+      "vtable_slots": 23
+    }
+  },
+  "required_symbols": [
+    "__ZN11IOGPUDevice12copyResourceEj",
+    "__ZN11IOGPUDevice16copyCommandQueueEj",
+    "__ZN11IOGPUDevice9copyShmemEj",
+    "__ZN11IOGPUMemory12nativeSlot15Ev",
+    "__ZN11IOGPUMemory12nativeSlot18Ev",
+    "__ZN11IOGPUMemory12nativeSlot19Ev",
+    "__ZN11IOGPUMemory12nativeSlot20Ev",
+    "__ZN11IOGPUMemory12nativeSlot28Ev",
+    "__ZN11IOGPUObject12nativeSlot15Ev",
+    "__ZN11IOGPUObject16initNativeObjectEv",
+    "__ZN11IOGPUObject4initEv",
+    "__ZN13IOGPUResource10gMetaClassE",
+    "__ZN13IOGPUResource12nativeSlot19Ev",
+    "__ZN13IOGPUResource12nativeSlot20Ev",
+    "__ZN13IOGPUResource12nativeSlot21Ev",
+    "__ZN13IOGPUResource12nativeSlot22Ev",
+    "__ZN13IOGPUResource12nativeSlot23Ev",
+    "__ZN13IOGPUResource12nativeSlot26Ev",
+    "__ZN13IOGPUResource12nativeSlot29Ev",
+    "__ZN13IOGPUResource12nativeSlot30Ev",
+    "__ZN13IOGPUResource12nativeSlot31Ev",
+    "__ZN13IOGPUResource12nativeSlot32Ev",
+    "__ZN13IOGPUResourceC2EPK11OSMetaClass",
+    "__ZN13IOGPUResourceD2Ev",
+    "__ZN14IOGPUMemoryMap10gMetaClassE",
+    "__ZN14IOGPUMemoryMap12nativeSlot16Ev",
+    "__ZN14IOGPUMemoryMap12nativeSlot17Ev",
+    "__ZN14IOGPUMemoryMap12nativeSlot18Ev",
+    "__ZN14IOGPUMemoryMap12nativeSlot22Ev",
+    "__ZN14IOGPUMemoryMap12nativeSlot23Ev",
+    "__ZN14IOGPUMemoryMap12nativeSlot24Ev",
+    "__ZN14IOGPUMemoryMap12nativeSlot28Ev",
+    "__ZN14IOGPUMemoryMapC2EPK11OSMetaClass",
+    "__ZN14IOGPUMemoryMapD2Ev",
+    "__ZN14IOGPUScheduler10gMetaClassE",
+    "__ZN14IOGPUScheduler12nativeSlot15Ev",
+    "__ZN14IOGPUScheduler12nativeSlot16Ev",
+    "__ZN14IOGPUScheduler12nativeSlot17Ev",
+    "__ZN14IOGPUScheduler12nativeSlot18Ev",
+    "__ZN14IOGPUScheduler12nativeSlot19Ev",
+    "__ZN14IOGPUScheduler12nativeSlot20Ev",
+    "__ZN14IOGPUScheduler12nativeSlot21Ev",
+    "__ZN14IOGPUScheduler12nativeSlot22Ev",
+    "__ZN14IOGPUScheduler4freeEv",
+    "__ZN14IOGPUSchedulerC2EPK11OSMetaClass",
+    "__ZN14IOGPUSchedulerD2Ev",
+    "__ZN14IOGPUSysMemory10gMetaClassE",
+    "__ZN14IOGPUSysMemory12nativeSlot16Ev",
+    "__ZN14IOGPUSysMemory12nativeSlot17Ev",
+    "__ZN14IOGPUSysMemory12nativeSlot21Ev",
+    "__ZN14IOGPUSysMemory12nativeSlot22Ev",
+    "__ZN14IOGPUSysMemory12nativeSlot23Ev",
+    "__ZN14IOGPUSysMemory12nativeSlot24Ev",
+    "__ZN14IOGPUSysMemory12nativeSlot25Ev",
+    "__ZN14IOGPUSysMemory12nativeSlot26Ev",
+    "__ZN14IOGPUSysMemory12nativeSlot27Ev",
+    "__ZN14IOGPUSysMemory16memoryDescriptorEv",
+    "__ZN14IOGPUSysMemory4freeEv",
+    "__ZN14IOGPUSysMemory9metaClassE",
+    "__ZN14IOGPUSysMemoryC2EPK11OSMetaClass",
+    "__ZN14IOGPUSysMemoryD2Ev",
+    "__ZN14IOGPUWorkQueue10gMetaClassE",
+    "__ZN14IOGPUWorkQueue11beginSubmitEv",
+    "__ZN14IOGPUWorkQueue11initWithGPUEP5IOGPUP17IOGPUCommandQueuej",
+    "__ZN14IOGPUWorkQueue12nativeAppendEP22IOGPUCommandDescriptor",
+    "__ZN14IOGPUWorkQueue12nativeSlot15Ev",
+    "__ZN14IOGPUWorkQueue12nativeSlot25Ev",
+    "__ZN14IOGPUWorkQueue13logRingBufferEv",
+    "__ZN14IOGPUWorkQueue15restartHardwareEv",
+    "__ZN14IOGPUWorkQueue17copyRestartReasonEPjPy",
+    "__ZN14IOGPUWorkQueue17nativeSetPriorityEj",
+    "__ZN14IOGPUWorkQueue4freeEv",
+    "__ZN14IOGPUWorkQueue6retireEv",
+    "__ZN14IOGPUWorkQueue7restartEv",
+    "__ZN14IOGPUWorkQueue9endSubmitEv",
+    "__ZN14IOGPUWorkQueueC2EPK11OSMetaClass",
+    "__ZN14IOGPUWorkQueueD2Ev",
+    "__ZN15IOGPUEventFence10gMetaClassE",
+    "__ZN15IOGPUEventFence9metaClassE",
+    "__ZN17IOGPUCommandQueue10gMetaClassE",
+    "__ZN17IOGPUCommandQueue12nativeSlot16Ev",
+    "__ZN17IOGPUCommandQueue12nativeSlot17Ev",
+    "__ZN17IOGPUCommandQueue12nativeSlot18Ev",
+    "__ZN17IOGPUCommandQueue12nativeSlot19Ev",
+    "__ZN17IOGPUCommandQueue12nativeSlot20Ev",
+    "__ZN17IOGPUCommandQueue12nativeSlot21Ev",
+    "__ZN17IOGPUCommandQueue12nativeSlot22Ev",
+    "__ZN17IOGPUCommandQueue12nativeSlot23Ev",
+    "__ZN17IOGPUCommandQueue12nativeSlot24Ev",
+    "__ZN17IOGPUCommandQueue12nativeSlot25Ev",
+    "__ZN17IOGPUCommandQueue12nativeSlot26Ev",
+    "__ZN17IOGPUCommandQueue12nativeSlot28Ev",
+    "__ZN17IOGPUCommandQueue12nativeSlot29Ev",
+    "__ZN17IOGPUCommandQueue12nativeSlot30Ev",
+    "__ZN17IOGPUCommandQueue12nativeSlot31Ev",
+    "__ZN17IOGPUCommandQueue12nativeSlot32Ev",
+    "__ZN17IOGPUCommandQueue12nativeSlot33Ev",
+    "__ZN17IOGPUCommandQueue12nativeSlot34Ev",
+    "__ZN17IOGPUCommandQueueC2EPK11OSMetaClass",
+    "__ZN17IOGPUCommandQueueD2Ev",
+    "__ZN17IOGPUEventMachine10gMetaClassE",
+    "__ZN17IOGPUEventMachine11stampOffsetEj",
+    "__ZN17IOGPUEventMachine12nativeSlot22Ev",
+    "__ZN17IOGPUEventMachine12nativeSlot23Ev",
+    "__ZN17IOGPUEventMachine12nativeSlot24Ev",
+    "__ZN17IOGPUEventMachine14nativeAddEventEjP13IOGPUEventSetb",
+    "__ZN17IOGPUEventMachine14setStampMemoryEPv",
+    "__ZN17IOGPUEventMachine17nativeIssuedStampEj",
+    "__ZN17IOGPUEventMachine17nativeSignalStampEjj",
+    "__ZN17IOGPUEventMachine18nativeAdvanceStampEj",
+    "__ZN17IOGPUEventMachine20nativeSubmittedStampEjj",
+    "__ZN17IOGPUEventMachineC2EPK11OSMetaClass",
+    "__ZN17IOGPUEventMachineD2Ev",
+    "__ZN17IOGPUFenceMachine10nativeLockEv",
+    "__ZN17IOGPUFenceMachine12nativeRetireEv",
+    "__ZN17IOGPUFenceMachine12nativeUnlockEv",
+    "__ZN21IOGPUDeviceUserClient10gMetaClassE",
+    "__ZN21IOGPUDeviceUserClient13nativeSlot188Ev",
+    "__ZN21IOGPUDeviceUserClient20deviceUserClientStopEv",
+    "__ZN21IOGPUDeviceUserClient21deviceUserClientStartEv",
+    "__ZN21IOGPUDeviceUserClient24registerNotificationPortEP8ipc_portjy",
+    "__ZN21IOGPUDeviceUserClient4stopEP9IOService",
+    "__ZN21IOGPUDeviceUserClientC2EPK11OSMetaClass",
+    "__ZN21IOGPUDeviceUserClientD2Ev",
+    "__ZN22IOGPUCommandDescriptor10gMetaClassE",
+    "__ZN22IOGPUCommandDescriptor10willSubmitEv",
+    "__ZN22IOGPUCommandDescriptor11initWithGPUEP5IOGPUP17IOGPUCommandQueueP9IOGPUTask",
+    "__ZN22IOGPUCommandDescriptor12nativeSlot22Ev",
+    "__ZN22IOGPUCommandDescriptor4freeEv",
+    "__ZN22IOGPUCommandDescriptor6cancelEv",
+    "__ZN22IOGPUCommandDescriptor6finishEv",
+    "__ZN22IOGPUCommandDescriptor7prepareEj",
+    "__ZN22IOGPUCommandDescriptor8submitToEP14IOGPUWorkQueue",
+    "__ZN22IOGPUCommandDescriptor9didSubmitEv",
+    "__ZN22IOGPUCommandDescriptorC2EPK11OSMetaClass",
+    "__ZN22IOGPUCommandDescriptorD2Ev",
+    "__ZN5IOGPU10gMetaClassE",
+    "__ZN5IOGPU12updateReportEP19IOReportChannelListjPvS2_",
+    "__ZN5IOGPU13nativeSlot168Ev",
+    "__ZN5IOGPU13nativeSlot169Ev",
+    "__ZN5IOGPU13nativeSlot171Ev",
+    "__ZN5IOGPU14allocSchedulerEv",
+    "__ZN5IOGPU13nativeSlot173Ev",
+    "__ZN5IOGPU13nativeSlot175Ev",
+    "__ZN5IOGPU13nativeSlot176Ev",
+    "__ZN5IOGPU13nativeSlot177Ev",
+    "__ZN5IOGPU13nativeSlot178Ev",
+    "__ZN5IOGPU13nativeSlot179Ev",
+    "__ZN5IOGPU13nativeSlot180Ev",
+    "__ZN5IOGPU13nativeSlot181Ev",
+    "__ZN5IOGPU13nativeSlot182Ev",
+    "__ZN5IOGPU13nativeSlot183Ev",
+    "__ZN5IOGPU13nativeSlot184Ev",
+    "__ZN5IOGPU13nativeSlot185Ev",
+    "__ZN5IOGPU13nativeSlot186Ev",
+    "__ZN5IOGPU13nativeSlot188Ev",
+    "__ZN5IOGPU13nativeSlot190Ev",
+    "__ZN5IOGPU13nativeSlot191Ev",
+    "__ZN5IOGPU13nativeSlot193Ev",
+    "__ZN5IOGPU13nativeSlot194Ev",
+    "__ZN5IOGPU13nativeSlot198Ev",
+    "__ZN5IOGPU13nativeSlot201Ev",
+    "__ZN5IOGPU13nativeSlot203Ev",
+    "__ZN5IOGPU13nativeSlot204Ev",
+    "__ZN5IOGPU13nativeSlot206Ev",
+    "__ZN5IOGPU13nativeSlot207Ev",
+    "__ZN5IOGPU13nativeSlot208Ev",
+    "__ZN5IOGPU13nativeSlot209Ev",
+    "__ZN5IOGPU13nativeSlot211Ev",
+    "__ZN5IOGPU13nativeSlot212Ev",
+    "__ZN5IOGPU13nativeSlot213Ev",
+    "__ZN5IOGPU13nativeSlot214Ev",
+    "__ZN5IOGPU13newUserClientEP4taskPvjPP12IOUserClient",
+    "__ZN5IOGPU15configureReportEP19IOReportChannelListjPvS2_",
+    "__ZN5IOGPU22nativeNotifyCompletionEv",
+    "__ZN5IOGPU24nativeCopySurfaceForTaskEjP4task",
+    "__ZN5IOGPUC2EPK11OSMetaClass",
+    "__ZN5IOGPUD2Ev",
+    "__ZN9IOGPUTask10gMetaClassE",
+    "__ZN9IOGPUTask11initWithGPUEP5IOGPUP4taskjPP8OSObject",
+    "__ZN9IOGPUTask12nativeSlot17Ev",
+    "__ZN9IOGPUTask12nativeSlot18Ev",
+    "__ZN9IOGPUTask12nativeSlot19Ev",
+    "__ZN9IOGPUTask12nativeSlot20Ev",
+    "__ZN9IOGPUTask4freeEv",
+    "__ZN9IOGPUTaskC2EPK11OSMetaClass",
+    "__ZN9IOGPUTaskD2Ev",
+    "__ZNK11IOGPUObject12taggedRetainEPKv",
+    "__ZNK11IOGPUObject13taggedReleaseEPKv",
+    "__ZNK11IOGPUObject13taggedReleaseEPKvi",
+    "__ZNK11IOGPUObject14getRetainCountEv",
+    "__ZNK11IOGPUObject6retainEv",
+    "__ZNK11IOGPUObject7releaseEi",
+    "__ZNK11IOGPUObject7releaseEv",
+    "__ZTV13IOGPUResource",
+    "__ZTV14IOGPUMemoryMap",
+    "__ZTV14IOGPUScheduler",
+    "__ZTV14IOGPUWorkQueue",
+    "__ZTV17IOGPUCommandQueue",
+    "__ZTV17IOGPUEventMachine",
+    "__ZTV21IOGPUDeviceUserClient",
+    "__ZTV22IOGPUCommandDescriptor",
+    "__ZTV5IOGPU",
+    "__ZN14IOGPUScheduler24nativeResourcesAvailableEv"
+  ],
+  "virtual_symbols": {
+    "__ZN11IOGPUObject12nativeSlot15Ev": {
+      "class": "IOGPUObject",
+      "slot": 15
+    },
+    "__ZN17IOGPUEventMachine12nativeSlot22Ev": {
+      "class": "IOGPUEventMachine",
+      "slot": 22
+    },
+    "__ZN17IOGPUEventMachine12nativeSlot23Ev": {
+      "class": "IOGPUEventMachine",
+      "slot": 23
+    },
+    "__ZN17IOGPUEventMachine12nativeSlot24Ev": {
+      "class": "IOGPUEventMachine",
+      "slot": 24
+    },
+    "__ZN21IOGPUDeviceUserClient13nativeSlot188Ev": {
+      "class": "IOGPUDeviceUserClient",
+      "slot": 188
+    },
+    "__ZN5IOGPU13nativeSlot168Ev": {
+      "class": "IOGPU",
+      "slot": 168
+    },
+    "__ZN5IOGPU13nativeSlot169Ev": {
+      "class": "IOGPU",
+      "slot": 169
+    },
+    "__ZN5IOGPU13nativeSlot171Ev": {
+      "class": "IOGPU",
+      "slot": 171
+    },
+    "__ZN5IOGPU13nativeSlot173Ev": {
+      "class": "IOGPU",
+      "slot": 173
+    },
+    "__ZN5IOGPU13nativeSlot175Ev": {
+      "class": "IOGPU",
+      "slot": 175
+    },
+    "__ZN5IOGPU13nativeSlot176Ev": {
+      "class": "IOGPU",
+      "slot": 176
+    },
+    "__ZN5IOGPU13nativeSlot177Ev": {
+      "class": "IOGPU",
+      "slot": 177
+    },
+    "__ZN5IOGPU13nativeSlot178Ev": {
+      "class": "IOGPU",
+      "slot": 178
+    },
+    "__ZN5IOGPU13nativeSlot179Ev": {
+      "class": "IOGPU",
+      "slot": 179
+    },
+    "__ZN5IOGPU13nativeSlot180Ev": {
+      "class": "IOGPU",
+      "slot": 180
+    },
+    "__ZN5IOGPU13nativeSlot181Ev": {
+      "class": "IOGPU",
+      "slot": 181
+    },
+    "__ZN5IOGPU13nativeSlot182Ev": {
+      "class": "IOGPU",
+      "slot": 182
+    },
+    "__ZN5IOGPU13nativeSlot183Ev": {
+      "class": "IOGPU",
+      "slot": 183
+    },
+    "__ZN5IOGPU13nativeSlot184Ev": {
+      "class": "IOGPU",
+      "slot": 184
+    },
+    "__ZN5IOGPU13nativeSlot185Ev": {
+      "class": "IOGPU",
+      "slot": 185
+    },
+    "__ZN5IOGPU13nativeSlot186Ev": {
+      "class": "IOGPU",
+      "slot": 186
+    },
+    "__ZN5IOGPU13nativeSlot188Ev": {
+      "class": "IOGPU",
+      "slot": 188
+    },
+    "__ZN5IOGPU13nativeSlot190Ev": {
+      "class": "IOGPU",
+      "slot": 190
+    },
+    "__ZN5IOGPU13nativeSlot191Ev": {
+      "class": "IOGPU",
+      "slot": 191
+    },
+    "__ZN5IOGPU13nativeSlot193Ev": {
+      "class": "IOGPU",
+      "slot": 193
+    },
+    "__ZN5IOGPU13nativeSlot194Ev": {
+      "class": "IOGPU",
+      "slot": 194
+    },
+    "__ZN5IOGPU13nativeSlot198Ev": {
+      "class": "IOGPU",
+      "slot": 198
+    },
+    "__ZN5IOGPU13nativeSlot201Ev": {
+      "class": "IOGPU",
+      "slot": 201
+    },
+    "__ZN5IOGPU13nativeSlot203Ev": {
+      "class": "IOGPU",
+      "slot": 203
+    },
+    "__ZN5IOGPU13nativeSlot204Ev": {
+      "class": "IOGPU",
+      "slot": 204
+    },
+    "__ZN5IOGPU13nativeSlot206Ev": {
+      "class": "IOGPU",
+      "slot": 206
+    },
+    "__ZN5IOGPU13nativeSlot207Ev": {
+      "class": "IOGPU",
+      "slot": 207
+    },
+    "__ZN5IOGPU13nativeSlot208Ev": {
+      "class": "IOGPU",
+      "slot": 208
+    },
+    "__ZN5IOGPU13nativeSlot209Ev": {
+      "class": "IOGPU",
+      "slot": 209
+    },
+    "__ZN5IOGPU13nativeSlot211Ev": {
+      "class": "IOGPU",
+      "slot": 211
+    },
+    "__ZN5IOGPU13nativeSlot212Ev": {
+      "class": "IOGPU",
+      "slot": 212
+    },
+    "__ZN5IOGPU13nativeSlot213Ev": {
+      "class": "IOGPU",
+      "slot": 213
+    },
+    "__ZN5IOGPU13nativeSlot214Ev": {
+      "class": "IOGPU",
+      "slot": 214
+    },
+    "__ZN9IOGPUTask12nativeSlot17Ev": {
+      "class": "IOGPUTask",
+      "slot": 17
+    },
+    "__ZN9IOGPUTask12nativeSlot18Ev": {
+      "class": "IOGPUTask",
+      "slot": 18
+    },
+    "__ZN9IOGPUTask12nativeSlot19Ev": {
+      "class": "IOGPUTask",
+      "slot": 19
+    },
+    "__ZN9IOGPUTask12nativeSlot20Ev": {
+      "class": "IOGPUTask",
+      "slot": 20
+    },
+    "__ZN5IOGPU15configureReportEP19IOReportChannelListjPvS2_": {
+      "class": "IOGPU",
+      "slot": 81
+    },
+    "__ZN5IOGPU12updateReportEP19IOReportChannelListjPvS2_": {
+      "class": "IOGPU",
+      "slot": 82
+    },
+    "__ZN5IOGPU13newUserClientEP4taskPvjPP12IOUserClient": {
+      "class": "IOGPU",
+      "slot": 141
+    },
+    "__ZN9IOGPUTask4freeEv": {
+      "class": "IOGPUTask",
+      "slot": 14
+    },
+    "__ZN9IOGPUTask11initWithGPUEP5IOGPUP4taskjPP8OSObject": {
+      "class": "IOGPUTask",
+      "slot": 16
+    },
+    "__ZN17IOGPUEventMachine14setStampMemoryEPv": {
+      "class": "IOGPUEventMachine",
+      "slot": 16
+    },
+    "__ZN17IOGPUEventMachine11stampOffsetEj": {
+      "class": "IOGPUEventMachine",
+      "slot": 17
+    },
+    "__ZN21IOGPUDeviceUserClient4stopEP9IOService": {
+      "class": "IOGPUDeviceUserClient",
+      "slot": 87
+    },
+    "__ZN21IOGPUDeviceUserClient21deviceUserClientStartEv": {
+      "class": "IOGPUDeviceUserClient",
+      "slot": 186
+    },
+    "__ZN21IOGPUDeviceUserClient20deviceUserClientStopEv": {
+      "class": "IOGPUDeviceUserClient",
+      "slot": 187
+    },
+    "__ZN11IOGPUMemory12nativeSlot15Ev": {
+      "class": "IOGPUMemory",
+      "slot": 15
+    },
+    "__ZN11IOGPUMemory12nativeSlot18Ev": {
+      "class": "IOGPUMemory",
+      "slot": 18
+    },
+    "__ZN11IOGPUMemory12nativeSlot19Ev": {
+      "class": "IOGPUMemory",
+      "slot": 19
+    },
+    "__ZN11IOGPUMemory12nativeSlot20Ev": {
+      "class": "IOGPUMemory",
+      "slot": 20
+    },
+    "__ZN11IOGPUMemory12nativeSlot28Ev": {
+      "class": "IOGPUMemory",
+      "slot": 28
+    },
+    "__ZN11IOGPUObject4initEv": {
+      "class": "IOGPUObject",
+      "slot": 13
+    },
+    "__ZN13IOGPUResource12nativeSlot19Ev": {
+      "class": "IOGPUResource",
+      "slot": 19
+    },
+    "__ZN13IOGPUResource12nativeSlot20Ev": {
+      "class": "IOGPUResource",
+      "slot": 20
+    },
+    "__ZN13IOGPUResource12nativeSlot21Ev": {
+      "class": "IOGPUResource",
+      "slot": 21
+    },
+    "__ZN13IOGPUResource12nativeSlot22Ev": {
+      "class": "IOGPUResource",
+      "slot": 22
+    },
+    "__ZN13IOGPUResource12nativeSlot23Ev": {
+      "class": "IOGPUResource",
+      "slot": 23
+    },
+    "__ZN13IOGPUResource12nativeSlot26Ev": {
+      "class": "IOGPUResource",
+      "slot": 26
+    },
+    "__ZN13IOGPUResource12nativeSlot29Ev": {
+      "class": "IOGPUResource",
+      "slot": 29
+    },
+    "__ZN13IOGPUResource12nativeSlot30Ev": {
+      "class": "IOGPUResource",
+      "slot": 30
+    },
+    "__ZN13IOGPUResource12nativeSlot31Ev": {
+      "class": "IOGPUResource",
+      "slot": 31
+    },
+    "__ZN13IOGPUResource12nativeSlot32Ev": {
+      "class": "IOGPUResource",
+      "slot": 32
+    },
+    "__ZN14IOGPUMemoryMap12nativeSlot16Ev": {
+      "class": "IOGPUMemoryMap",
+      "slot": 16
+    },
+    "__ZN14IOGPUMemoryMap12nativeSlot17Ev": {
+      "class": "IOGPUMemoryMap",
+      "slot": 17
+    },
+    "__ZN14IOGPUMemoryMap12nativeSlot18Ev": {
+      "class": "IOGPUMemoryMap",
+      "slot": 18
+    },
+    "__ZN14IOGPUMemoryMap12nativeSlot22Ev": {
+      "class": "IOGPUMemoryMap",
+      "slot": 22
+    },
+    "__ZN14IOGPUMemoryMap12nativeSlot23Ev": {
+      "class": "IOGPUMemoryMap",
+      "slot": 23
+    },
+    "__ZN14IOGPUMemoryMap12nativeSlot24Ev": {
+      "class": "IOGPUMemoryMap",
+      "slot": 24
+    },
+    "__ZN14IOGPUMemoryMap12nativeSlot28Ev": {
+      "class": "IOGPUMemoryMap",
+      "slot": 28
+    },
+    "__ZN14IOGPUSysMemory12nativeSlot16Ev": {
+      "class": "IOGPUSysMemory",
+      "slot": 16
+    },
+    "__ZN14IOGPUSysMemory12nativeSlot17Ev": {
+      "class": "IOGPUSysMemory",
+      "slot": 17
+    },
+    "__ZN14IOGPUSysMemory12nativeSlot21Ev": {
+      "class": "IOGPUSysMemory",
+      "slot": 21
+    },
+    "__ZN14IOGPUSysMemory12nativeSlot22Ev": {
+      "class": "IOGPUSysMemory",
+      "slot": 22
+    },
+    "__ZN14IOGPUSysMemory12nativeSlot23Ev": {
+      "class": "IOGPUSysMemory",
+      "slot": 23
+    },
+    "__ZN14IOGPUSysMemory12nativeSlot24Ev": {
+      "class": "IOGPUSysMemory",
+      "slot": 24
+    },
+    "__ZN14IOGPUSysMemory12nativeSlot25Ev": {
+      "class": "IOGPUSysMemory",
+      "slot": 25
+    },
+    "__ZN14IOGPUSysMemory12nativeSlot26Ev": {
+      "class": "IOGPUSysMemory",
+      "slot": 26
+    },
+    "__ZN14IOGPUSysMemory12nativeSlot27Ev": {
+      "class": "IOGPUSysMemory",
+      "slot": 27
+    },
+    "__ZN14IOGPUSysMemory4freeEv": {
+      "class": "IOGPUSysMemory",
+      "slot": 14
+    },
+    "__ZN17IOGPUCommandQueue12nativeSlot16Ev": {
+      "class": "IOGPUCommandQueue",
+      "slot": 16
+    },
+    "__ZN17IOGPUCommandQueue12nativeSlot17Ev": {
+      "class": "IOGPUCommandQueue",
+      "slot": 17
+    },
+    "__ZN17IOGPUCommandQueue12nativeSlot18Ev": {
+      "class": "IOGPUCommandQueue",
+      "slot": 18
+    },
+    "__ZN17IOGPUCommandQueue12nativeSlot19Ev": {
+      "class": "IOGPUCommandQueue",
+      "slot": 19
+    },
+    "__ZN17IOGPUCommandQueue12nativeSlot20Ev": {
+      "class": "IOGPUCommandQueue",
+      "slot": 20
+    },
+    "__ZN17IOGPUCommandQueue12nativeSlot21Ev": {
+      "class": "IOGPUCommandQueue",
+      "slot": 21
+    },
+    "__ZN17IOGPUCommandQueue12nativeSlot22Ev": {
+      "class": "IOGPUCommandQueue",
+      "slot": 22
+    },
+    "__ZN17IOGPUCommandQueue12nativeSlot23Ev": {
+      "class": "IOGPUCommandQueue",
+      "slot": 23
+    },
+    "__ZN17IOGPUCommandQueue12nativeSlot24Ev": {
+      "class": "IOGPUCommandQueue",
+      "slot": 24
+    },
+    "__ZN17IOGPUCommandQueue12nativeSlot25Ev": {
+      "class": "IOGPUCommandQueue",
+      "slot": 25
+    },
+    "__ZN17IOGPUCommandQueue12nativeSlot26Ev": {
+      "class": "IOGPUCommandQueue",
+      "slot": 26
+    },
+    "__ZN17IOGPUCommandQueue12nativeSlot28Ev": {
+      "class": "IOGPUCommandQueue",
+      "slot": 28
+    },
+    "__ZN17IOGPUCommandQueue12nativeSlot29Ev": {
+      "class": "IOGPUCommandQueue",
+      "slot": 29
+    },
+    "__ZN17IOGPUCommandQueue12nativeSlot30Ev": {
+      "class": "IOGPUCommandQueue",
+      "slot": 30
+    },
+    "__ZN17IOGPUCommandQueue12nativeSlot31Ev": {
+      "class": "IOGPUCommandQueue",
+      "slot": 31
+    },
+    "__ZN17IOGPUCommandQueue12nativeSlot32Ev": {
+      "class": "IOGPUCommandQueue",
+      "slot": 32
+    },
+    "__ZN17IOGPUCommandQueue12nativeSlot33Ev": {
+      "class": "IOGPUCommandQueue",
+      "slot": 33
+    },
+    "__ZN17IOGPUCommandQueue12nativeSlot34Ev": {
+      "class": "IOGPUCommandQueue",
+      "slot": 34
+    },
+    "__ZNK11IOGPUObject12taggedRetainEPKv": {
+      "class": "IOGPUObject",
+      "slot": 9
+    },
+    "__ZNK11IOGPUObject13taggedReleaseEPKv": {
+      "class": "IOGPUObject",
+      "slot": 10
+    },
+    "__ZNK11IOGPUObject13taggedReleaseEPKvi": {
+      "class": "IOGPUObject",
+      "slot": 11
+    },
+    "__ZNK11IOGPUObject14getRetainCountEv": {
+      "class": "IOGPUObject",
+      "slot": 3
+    },
+    "__ZNK11IOGPUObject6retainEv": {
+      "class": "IOGPUObject",
+      "slot": 4
+    },
+    "__ZNK11IOGPUObject7releaseEi": {
+      "class": "IOGPUObject",
+      "slot": 2
+    },
+    "__ZNK11IOGPUObject7releaseEv": {
+      "class": "IOGPUObject",
+      "slot": 5
+    },
+    "__ZN21IOGPUDeviceUserClient24registerNotificationPortEP8ipc_portjy": {
+      "class": "IOGPUDeviceUserClient",
+      "slot": 169
+    },
+    "__ZN14IOGPUWorkQueue4freeEv": {
+      "class": "IOGPUWorkQueue",
+      "slot": 14
+    },
+    "__ZN22IOGPUCommandDescriptor4freeEv": {
+      "class": "IOGPUCommandDescriptor",
+      "slot": 14
+    },
+    "__ZN14IOGPUScheduler4freeEv": {
+      "class": "IOGPUScheduler",
+      "slot": 14
+    },
+    "__ZN14IOGPUWorkQueue12nativeSlot15Ev": {
+      "class": "IOGPUWorkQueue",
+      "slot": 15
+    },
+    "__ZN14IOGPUWorkQueue11initWithGPUEP5IOGPUP17IOGPUCommandQueuej": {
+      "class": "IOGPUWorkQueue",
+      "slot": 16
+    },
+    "__ZN14IOGPUWorkQueue13logRingBufferEv": {
+      "class": "IOGPUWorkQueue",
+      "slot": 17
+    },
+    "__ZN14IOGPUWorkQueue6retireEv": {
+      "class": "IOGPUWorkQueue",
+      "slot": 18
+    },
+    "__ZN14IOGPUWorkQueue7restartEv": {
+      "class": "IOGPUWorkQueue",
+      "slot": 19
+    },
+    "__ZN14IOGPUWorkQueue11beginSubmitEv": {
+      "class": "IOGPUWorkQueue",
+      "slot": 20
+    },
+    "__ZN14IOGPUWorkQueue9endSubmitEv": {
+      "class": "IOGPUWorkQueue",
+      "slot": 21
+    },
+    "__ZN14IOGPUWorkQueue15restartHardwareEv": {
+      "class": "IOGPUWorkQueue",
+      "slot": 23
+    },
+    "__ZN14IOGPUWorkQueue17copyRestartReasonEPjPy": {
+      "class": "IOGPUWorkQueue",
+      "slot": 24
+    },
+    "__ZN14IOGPUWorkQueue12nativeSlot25Ev": {
+      "class": "IOGPUWorkQueue",
+      "slot": 25
+    },
+    "__ZN22IOGPUCommandDescriptor11initWithGPUEP5IOGPUP17IOGPUCommandQueueP9IOGPUTask": {
+      "class": "IOGPUCommandDescriptor",
+      "slot": 16
+    },
+    "__ZN22IOGPUCommandDescriptor6cancelEv": {
+      "class": "IOGPUCommandDescriptor",
+      "slot": 17
+    },
+    "__ZN22IOGPUCommandDescriptor7prepareEj": {
+      "class": "IOGPUCommandDescriptor",
+      "slot": 18
+    },
+    "__ZN22IOGPUCommandDescriptor6finishEv": {
+      "class": "IOGPUCommandDescriptor",
+      "slot": 19
+    },
+    "__ZN22IOGPUCommandDescriptor10willSubmitEv": {
+      "class": "IOGPUCommandDescriptor",
+      "slot": 20
+    },
+    "__ZN22IOGPUCommandDescriptor9didSubmitEv": {
+      "class": "IOGPUCommandDescriptor",
+      "slot": 21
+    },
+    "__ZN22IOGPUCommandDescriptor12nativeSlot22Ev": {
+      "class": "IOGPUCommandDescriptor",
+      "slot": 22
+    },
+    "__ZN22IOGPUCommandDescriptor8submitToEP14IOGPUWorkQueue": {
+      "class": "IOGPUCommandDescriptor",
+      "slot": 23
+    },
+    "__ZN14IOGPUScheduler12nativeSlot15Ev": {
+      "class": "IOGPUScheduler",
+      "slot": 15
+    },
+    "__ZN14IOGPUScheduler12nativeSlot16Ev": {
+      "class": "IOGPUScheduler",
+      "slot": 16
+    },
+    "__ZN14IOGPUScheduler12nativeSlot17Ev": {
+      "class": "IOGPUScheduler",
+      "slot": 17
+    },
+    "__ZN14IOGPUScheduler12nativeSlot18Ev": {
+      "class": "IOGPUScheduler",
+      "slot": 18
+    },
+    "__ZN14IOGPUScheduler12nativeSlot19Ev": {
+      "class": "IOGPUScheduler",
+      "slot": 19
+    },
+    "__ZN14IOGPUScheduler12nativeSlot20Ev": {
+      "class": "IOGPUScheduler",
+      "slot": 20
+    },
+    "__ZN14IOGPUScheduler12nativeSlot21Ev": {
+      "class": "IOGPUScheduler",
+      "slot": 21
+    },
+    "__ZN14IOGPUScheduler12nativeSlot22Ev": {
+      "class": "IOGPUScheduler",
+      "slot": 22
+    },
+    "__ZN5IOGPU14allocSchedulerEv": {
+      "class": "IOGPU",
+      "slot": 172
+    }
+  },
+  "note": "Pinned iOS 18.7 internal 22H368 arm64. Native object reference counting, resources, sysmem and synchronous command queues. Relocation-only aliases are not callable prototypes. Device-scoped buffer IDs with bounded vendor Fill32/Barrier encoding; no AGX, IOSurface import, raw PM4, fixed GPU addresses or Metal. See docs/gpu/native-iogpu.md.",
+  "function_bindings": {
+    "__ZN11IOGPUObject16initNativeObjectEv": {
+      "address": "0xfffffff005f27778",
+      "bytes": "f44fbea9fd7b01a9fd430091f30300aa",
+      "note": "Native IOGPUObject initializer; initializes separate reference counter at object +12."
+    },
+    "__ZN11IOGPUDevice12copyResourceEj": {
+      "address": "0xfffffff005f39114",
+      "bytes": "000840f994a2ff17",
+      "note": "Retained lookup in device resource namespace."
+    },
+    "__ZN11IOGPUDevice9copyShmemEj": {
+      "address": "0xfffffff005f39518",
+      "bytes": "003c40f993a1ff17",
+      "note": "Retained lookup in device shared-memory namespace."
+    },
+    "__ZN11IOGPUDevice16copyCommandQueueEj": {
+      "address": "0xfffffff005f396dc",
+      "bytes": "004440f922a1ff17",
+      "note": "Retained lookup in device command-queue namespace."
+    },
+    "__ZN14IOGPUSysMemory16memoryDescriptorEv": {
+      "address": "0xfffffff005f4b5c4",
+      "bytes": "004040f9c0035fd6",
+      "note": "Borrowed memory descriptor getter, confirmed in native resource allocation."
+    },
+    "__ZN5IOGPU24nativeCopySurfaceForTaskEjP4task": {
+      "address": "0xfffffff005f43a9c",
+      "bytes": "007840f971250014",
+      "note": "Audited native-prefixed alias, not an Apple exported spelling. Loads IOSurfaceRoot from GPU +240 and tail-calls task-authorized lookup 0xfffffff005aa6a20 through 0xfffffff005f4d064. x1 is ID, x2 is owning task; returns a retained IOSurface."
+    },
+    "__ZN17IOGPUEventMachine18nativeAdvanceStampEj": {
+      "address": "0xfffffff005f254d0",
+      "bytes": "f657bda9f44f01a9fd7b02a9fd830091f30301aaf40300aa0800019108d1218b15210091080940b916010411c802084a087d1e5368000034800a40f95e780094b60200b9e00314aae10313aafd7b42a9f44f41a9f657c3a812000014f44fbea9fd7b01a9fd4300910800019108d1218b13210091080940b9140104118802084a087d1e5368000034000840f94a780094740200b9fd7b41a9f44fc2a8c0035fd6f44fbea9fd7b01a9fd430091f30301aaf40300aa002044f9429e0094884a54b9892221910a0380526a7e2a9b2b010a8b681100b9090500113f050031e807881a884a14b9802244f9fd7b41a9f44fc2a8379e0014",
+      "note": "Audited native-prefixed relocation alias, not claimed Apple export spelling. Advance the native issued stamp before recording the event. Merge accepts event <= issued; native issued must equal completed when idle."
+    },
+    "__ZN17IOGPUEventMachine17nativeIssuedStampEj": {
+      "address": "0xfffffff005f25698",
+      "bytes": "0800019108d1218b000940b9c0035fd6",
+      "note": "Audited native-prefixed relocation alias, not claimed Apple export spelling. Native issued event stamp for a channel."
+    },
+    "__ZN17IOGPUEventMachine20nativeSubmittedStampEjj": {
+      "address": "0xfffffff005f2562c",
+      "bytes": "0800019108d1218b020d00b928e600f008413d91080140b948020034f44fbea9fd7b01a9fd430091337c4093000840f9f403022a999e0094e30300aa0001805200a3b072e10313aae20314aa040080d2050080d2fd7b41a9f44fc2a8a39f0014c0035fd6",
+      "note": "Audited native-prefixed relocation alias, not claimed Apple export spelling. Native submitted stamp tracking."
+    },
+    "__ZN17IOGPUEventMachine14nativeAddEventEjP13IOGPUEventSetb": {
+      "address": "0xfffffff005f265f0",
+      "bytes": "0800019108d1218b08210091291c00122a0080520be0bf524d0040b9ae0111324c100091cf01c05aef11c05aff390071880100545021cf1a0e020e4a90596fb83f80306b01ffff540d0140b9ad5d1812ad01092a8d592fb8e30400372b000014ee032d2ace01c05ace11c05adf3d0071420100544f21ce1aed010d2a4d0000b90d0140b9ad5d1812ad01092a8d592eb8230300371d0000148c0080524d000c8bae0140b9cf1d0853ff010b6ba0010054ef7d1813ce5d1812101040f90fda6ff8ef0140b9ce010f4bdf010071ad0000548c1100919f0101f121feff54090000140c0140b98c5d18128c01092aac0100b9c30000360300805242000191c7ffff17",
+      "note": "Audited native-prefixed relocation alias, not claimed Apple export spelling. Audited alias: append current stamp to a 64-byte event set; optional write-set flag is false. Contract checks the first 256 bytes, within the existing verifier bound; the entire provider image remains SHA256-pinned."
+    },
+    "__ZN17IOGPUEventMachine17nativeSignalStampEjj": {
+      "address": "0xfffffff005f273b8",
+      "bytes": "f44fbea9fd7b01a9fd430091f30300aa081040f908d961f8020100b90ff8ff97600a40f9fd7b41a9f44fc2a8",
+      "note": "Audited native-prefixed relocation alias, not claimed Apple export spelling. Native CPU stamp signal and worker wakeup, also native virtual slot 23."
+    },
+    "__ZN17IOGPUFenceMachine10nativeLockEv": {
+      "address": "0xfffffff005f29b1c",
+      "bytes": "001040f9b28c0014",
+      "note": "Audited native-prefixed relocation alias, not claimed Apple export spelling. Native fence lock wrapper."
+    },
+    "__ZN17IOGPUFenceMachine12nativeUnlockEv": {
+      "address": "0xfffffff005f29b24",
+      "bytes": "001040f9bc8c0014",
+      "note": "Audited native-prefixed relocation alias, not claimed Apple export spelling. Native fence unlock wrapper."
+    },
+    "__ZN17IOGPUFenceMachine12nativeRetireEv": {
+      "address": "0xfffffff005f29f3c",
+      "bytes": "f44fbea9fd7b01a9fd430091f30300aab6feff97e00313aafd7b41a9f44fc2a8a7fdff17",
+      "note": "Audited native-prefixed relocation alias, not claimed Apple export spelling. Native event-fence and callback retirement, preserving the Family notification implementation."
+    },
+    "__ZN14IOGPUWorkQueue12nativeAppendEP22IOGPUCommandDescriptor": {
+      "address": "0xfffffff005f333e0",
+      "bytes": "f657bda9f44f01a9fd7b02a9fd830091",
+      "note": "Original append retains descriptor/work queue and enters IOGPUScheduler submission coordination. Caller must not hold the A540 gate."
+    },
+    "__ZN14IOGPUWorkQueue17nativeSetPriorityEj": {
+      "address": "0xfffffff005f32d10",
+      "bytes": "016800b9c0035fd6",
+      "note": "Original WorkQueue priority-key setter; AGX uses this same field for stable ready-list ordering."
+    },
+    "__ZN5IOGPU22nativeNotifyCompletionEv": {
+      "address": "0xfffffff005f43170",
+      "bytes": "00ac40f969c8ff17",
+      "note": "Original IOGPU completion notification -> Scheduler completion event source. No stamp is advanced by this helper."
+    },
+    "__ZN14IOGPUScheduler24nativeResourcesAvailableEv": {
+      "address": "0xfffffff005f358d0",
+      "bytes": "2800805208400639c0035fd6"
+    }
+  }
+}

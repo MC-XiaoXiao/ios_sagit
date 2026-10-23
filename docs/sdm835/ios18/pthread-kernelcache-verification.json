@@ -1,0 +1,180 @@
+{
+  "status": "passed",
+  "errors": [],
+  "warnings": [],
+  "sha256": "89d36b13451fad883ac97ed434f62e381b4f24ef11bb541e0b3a7205e0a5b106",
+  "bytes": 25395200,
+  "kext_count": 28,
+  "bundle_ids": [
+    "com.apple.driver.AppleARMPlatform",
+    "com.apple.driver.AppleMobileFileIntegrity",
+    "com.apple.driver.ApplePMGR",
+    "com.apple.iokit.CoreAnalyticsFamily",
+    "com.apple.iokit.IOCryptoAcceleratorFamily",
+    "com.apple.iokit.IOReportFamily",
+    "com.apple.iokit.IOSlowAdaptiveClockingFamily",
+    "com.apple.iokit.IOStorageFamily",
+    "com.apple.kec.corecrypto",
+    "com.apple.kec.pthread",
+    "com.apple.kext.AppleMatch",
+    "com.apple.kext.CoreTrust",
+    "com.apple.kpi.bsd",
+    "com.apple.kpi.dsep",
+    "com.apple.kpi.iokit",
+    "com.apple.kpi.libkern",
+    "com.apple.kpi.mach",
+    "com.apple.kpi.private",
+    "com.apple.kpi.unsupported",
+    "com.apple.security.AppleImage4",
+    "com.apple.security.sandbox",
+    "org.darwin.driver.AppleARMGIC",
+    "org.darwin.driver.GenericClockController",
+    "org.darwin.driver.QcomGCC",
+    "org.darwin.driver.QcomPowerController",
+    "org.darwin.driver.QcomSPMI",
+    "org.mi6.driver.GenericARMPlatform",
+    "org.mi6.driver.SDM835"
+  ],
+  "entry": "0xfffffff00748e488",
+  "checks": [
+    "Mach-O commands",
+    "segments and sections",
+    "file/VM mappings and overlap",
+    "symbol/relocation ranges, indices and relocation sites",
+    "Kext metadata, versions and dependency closure",
+    "Kext segment ownership",
+    "structor/GOT pointers and ARM64 import stubs",
+    "kmod records",
+    "kernel entry",
+    "XNU KCGEN Kext header walk and terminal zero padding",
+    "Kext ARMv8-A+CRC+Crypto ISA and regenerated static helpers",
+    "corecrypto final executable-section HMAC",
+    "native kernel segment contents and non-prelink commands preserved",
+    "source SHA256 constant tables preserved: 2"
+  ],
+  "isa": {
+    "profile": "armv8-a+crc+crypto",
+    "patched": 208,
+    "scanned_words": 401034,
+    "helpers_bytes": 38688,
+    "counts": {
+      "sha512h": 40,
+      "sha512su0": 32,
+      "sha512h2": 40,
+      "sha512su1": 32,
+      "eor3": 10,
+      "rax1": 5,
+      "xar": 24,
+      "bcax": 25
+    },
+    "exclusions": [
+      {
+        "bundle": "com.apple.kec.corecrypto",
+        "address": 18446744005105476800,
+        "size": 256,
+        "kind": "SHA256-K",
+        "sha256": "74ef7306e7452d6859b6463ce496b8df30925f69e1b2969e1f3f34bbc9c6af04"
+      },
+      {
+        "bundle": "com.apple.kec.corecrypto",
+        "address": 18446744005105496816,
+        "size": 256,
+        "kind": "SHA256-K",
+        "sha256": "74ef7306e7452d6859b6463ce496b8df30925f69e1b2969e1f3f34bbc9c6af04"
+      },
+      {
+        "bundle": "com.apple.kec.corecrypto",
+        "address": 18446744005105523728,
+        "size": 16,
+        "kind": "byte-reversal-vector",
+        "sha256": "1f919296baf10802bb9783851d948bf3c048cebcf6bec518db898b2938fc2f20"
+      },
+      {
+        "bundle": "com.apple.kec.corecrypto",
+        "address": 18446744005105523744,
+        "size": 16,
+        "kind": "GHASH-polynomial",
+        "sha256": "0e1a40147fc42e77dc4d50f9c41d5a10c9676583be7c2679e8e8c6700cee3570"
+      },
+      {
+        "bundle": "com.apple.kec.corecrypto",
+        "address": 18446744005105550112,
+        "size": 16,
+        "kind": "byte-reversal-vector",
+        "sha256": "1f919296baf10802bb9783851d948bf3c048cebcf6bec518db898b2938fc2f20"
+      },
+      {
+        "bundle": "com.apple.kec.corecrypto",
+        "address": 18446744005105550128,
+        "size": 16,
+        "kind": "GHASH-polynomial",
+        "sha256": "0e1a40147fc42e77dc4d50f9c41d5a10c9676583be7c2679e8e8c6700cee3570"
+      },
+      {
+        "bundle": "com.apple.kec.corecrypto",
+        "address": 18446744005105565264,
+        "size": 16,
+        "kind": "byte-reversal-vector",
+        "sha256": "1f919296baf10802bb9783851d948bf3c048cebcf6bec518db898b2938fc2f20"
+      },
+      {
+        "bundle": "com.apple.kec.corecrypto",
+        "address": 18446744005105565280,
+        "size": 112,
+        "kind": "partial-block-masks",
+        "sha256": "b52237e93fcdfd209c4986766a7e183be3858c00c69e3f6c9362c7f2752dd059"
+      },
+      {
+        "bundle": "com.apple.kec.corecrypto",
+        "address": 18446744005105575328,
+        "size": 48,
+        "kind": "AES-key-schedule-vectors",
+        "sha256": "d027fb0d0eac943fe997104dbea2cc514b929a38a763def9b6b097e9bc571ac9"
+      },
+      {
+        "bundle": "com.apple.kec.corecrypto",
+        "address": 18446744005105599712,
+        "size": 16,
+        "kind": "byte-reversal-vector",
+        "sha256": "1f919296baf10802bb9783851d948bf3c048cebcf6bec518db898b2938fc2f20"
+      },
+      {
+        "bundle": "com.apple.kec.corecrypto",
+        "address": 18446744005105694864,
+        "size": 16,
+        "kind": "byte-reversal-vector",
+        "sha256": "1f919296baf10802bb9783851d948bf3c048cebcf6bec518db898b2938fc2f20"
+      },
+      {
+        "bundle": "com.apple.kec.corecrypto",
+        "address": 18446744005105694880,
+        "size": 112,
+        "kind": "partial-block-masks",
+        "sha256": "b52237e93fcdfd209c4986766a7e183be3858c00c69e3f6c9362c7f2752dd059"
+      },
+      {
+        "bundle": "com.apple.kec.corecrypto",
+        "address": 18446744005105710080,
+        "size": 64,
+        "kind": "SHA1-K-vectors",
+        "sha256": "97386c6d307f6519abd15350924e41a0bdf445f3d077e56889f6dd6078996b4b"
+      }
+    ],
+    "stock_patches_verified": 208,
+    "source_constant_spans_verified": 13
+  },
+  "integrity": {
+    "modules": [
+      {
+        "bundle": "com.apple.kec.corecrypto",
+        "algorithm": "HMAC-SHA256",
+        "hashed_bytes": 335056,
+        "hmac_offset": 20587968,
+        "hmac": "b8f03f8cad3edb531e3faf5908c6384514a19fed6c337343531816ba65dc27b3"
+      }
+    ]
+  },
+  "source_sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+  "local_kernel_sha256": "aebc0007df19f384e2a9ffdc6714c3a9b63cb52d2b4d3fd17c834943b1657a80",
+  "scope": "offline structure and listed invariants; runtime/private ABI/crypto POST are not certified"
+}

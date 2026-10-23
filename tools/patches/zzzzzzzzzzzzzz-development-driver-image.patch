@@ -1,0 +1,121 @@
+--- a/bsd/kern/imageboot.c
++++ b/bsd/kern/imageboot.c
+@@ -60,6 +60,10 @@
+ #include <vm/vm_kern_xnu.h>
+ 
+ #include <pexpert/pexpert.h>
++#include <pexpert/device_tree.h>
++#if defined(__arm64__)
++#include <arm/machine_routines.h>
++#endif
+ #include <kern/chunklist.h>
+ 
+ extern int (*mountroot)(void);
+@@ -82,6 +86,89 @@
+ extern int di_root_ramfile_buf(void *buf, size_t bufsz, char *devname, size_t devsz, dev_t *dev_p);
+ 
+ static boolean_t imageboot_setup_new(imageboot_type_t type);
++const unsigned int imageboot_driver_image_version = 2;
++
++/* A loader-reserved, read-only driver volume uses the same native DiskImages
++ * and VFS stack as supplemental image boot. Its lifetime is the boot lifetime;
++ * it is neither a replacement root nor writable system storage. */
++void
++imageboot_setup_driver_image(void)
++{
++#if (DEVELOPMENT || DEBUG) && defined(__arm64__)
++	DTEntry entry;
++	const void *property;
++	unsigned int size;
++	uint64_t range[2];
++	uuid_string_t volume_uuid;
++	uuid_t volume_id;
++	char fstype[5] = {};
++	char devname[DEVMAXNAMESIZE] = {};
++	char volume_devname[DEVMAXNAMESIZE] = {};
++	char device[DEVMAXNAMESIZE + 5] = {};
++	char *devicep = device;
++	dev_t dev = NODEV;
++	boot_args *args = PE_state.bootArgs;
++	int error;
++
++	if (SecureDTLookupEntry(0, "/chosen/memory-map", &entry) != kSuccess ||
++	    SecureDTGetProperty(entry, "DriverImage", &property, &size) != kSuccess) {
++		return;
++	}
++	if (size != sizeof(range)) {
++		printf("imageboot: invalid driver image range\n");
++		return;
++	}
++	memcpy(range, property, sizeof(range));
++	if (!args || range[1] < 8 * 1024 * 1024 || range[1] > 64 * 1024 * 1024 ||
++	    ((range[0] | range[1]) & 0x3fff) || range[0] < args->physBase ||
++	    range[0] > args->topOfKernelData || range[1] > args->topOfKernelData - range[0] ||
++	    SecureDTLookupEntry(0, "/chosen", &entry) != kSuccess ||
++	    SecureDTGetProperty(entry, "driver-image-fstype", &property, &size) != kSuccess ||
++	    size < 4 || size > sizeof(fstype)) {
++		printf("imageboot: invalid driver image reservation\n");
++		return;
++	}
++	memcpy(fstype, property, size);
++	if (fstype[size - 1] || (strcmp(fstype, "hfs") && strcmp(fstype, "apfs"))) {
++		printf("imageboot: invalid driver filesystem\n");
++		return;
++	}
++	if (!strcmp(fstype, "apfs")) {
++		if (SecureDTGetProperty(entry, "driver-image-volume-uuid", &property, &size) != kSuccess ||
++		    size != sizeof(volume_uuid)) {
++			printf("imageboot: missing driver image UUID\n");
++			return;
++		}
++		memcpy(volume_uuid, property, sizeof(volume_uuid));
++		if (volume_uuid[sizeof(volume_uuid) - 1] || uuid_parse(volume_uuid, volume_id)) {
++			printf("imageboot: invalid driver image UUID\n");
++			return;
++		}
++		uuid_unparse_upper(volume_id, volume_uuid);
++	}
++	error = di_root_ramfile_buf((void *)ml_static_ptovirt(range[0]), range[1],
++	    devname, sizeof(devname), &dev);
++	printf("imageboot: driver image attach %s: %#x\n", devname, error);
++	if (error) {
++		return;
++	}
++	if (!strcmp(fstype, "apfs")) {
++		error = di_volume_name(devname, volume_uuid, volume_devname, sizeof(volume_devname));
++		if (error) {
++			printf("imageboot: driver volume %s not found: %#x\n", volume_uuid, error);
++			return;
++		}
++	} else {
++		strlcpy(volume_devname, devname, sizeof(volume_devname));
++	}
++	strlcpy(device, "/dev/", sizeof(device));
++	strlcat(device, volume_devname, sizeof(device));
++	error = kernel_mount(fstype, NULLVP, NULLVP, "/System/Library/Extensions", &devicep, 0,
++	    MNT_RDONLY | MNT_NOSUID | MNT_NODEV | MNT_DONTBROWSE,
++	    KERNEL_MOUNT_KERNEL_DEVPATH, vfs_context_kernel());
++	printf("imageboot: driver volume %s on /System/Library/Extensions: %d\n", device, error);
++#endif
++}
+ 
+ /*
+  * Development image boot may need a read-only auxiliary filesystem before
+@@ -188,6 +275,7 @@
+ out:
+ 	zfree(ZV_NAMEI, path);
+ 	zfree(ZV_NAMEI, url);
++	imageboot_setup_driver_image();
+ #endif
+ }
+ 
+--- a/bsd/sys/imageboot.h
++++ b/bsd/sys/imageboot.h
+@@ -40,6 +40,7 @@
+ bool    imageboot_desired(void);
+ void    imageboot_setup(imageboot_type_t type);
+ void    imageboot_setup_supplemental(void);
++void    imageboot_setup_driver_image(void);
+ int     imageboot_format_is_valid(const char *root_path);
+ int     imageboot_mount_image(const char *root_path, int height, imageboot_type_t type);
+ int     imageboot_pivot_image(const char *image_path, imageboot_type_t type, const char *mount_path,

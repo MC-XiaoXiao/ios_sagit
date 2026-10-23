@@ -1,0 +1,388 @@
+diff --git a/bsd/kern/kern_exec.c b/bsd/kern/kern_exec.c
+--- a/bsd/kern/kern_exec.c
++++ b/bsd/kern/kern_exec.c
+@@ -1208,6 +1208,22 @@
+  *		activators should not be given the opportunity to attempt
+  *		to activate the image.
+  */
++static void
++exec_image_trace(struct image_params *imgp, const char *stage, int result)
++{
++#if DEVELOPMENT || DEBUG
++	int trace = 0;
++	if (PE_parse_boot_argn("process-exec-trace", &trace, sizeof(trace)) && trace >= 2) {
++		const char *path = imgp->ip_strings ? imgp->ip_strings + strlen(EXECUTABLE_KEY) : "";
++		printf("exec image trace: pid=%d caller=%d path=%.*s stage=%s result=%d\n",
++		    proc_getpid(vfs_context_proc(imgp->ip_vfs_context)), proc_selfpid(),
++		    MAXPATHLEN, path, stage, result);
++	}
++#else
++	(void)imgp; (void)stage; (void)result;
++#endif
++}
++
+ static int
+ exec_mach_imgact(struct image_params *imgp)
+ {
+@@ -1364,7 +1380,9 @@
+ 	/*
+ 	 * Actually load the image file we previously decided to load.
+ 	 */
++	exec_image_trace(imgp, "Mach-O load enter", 0);
+ 	lret = load_machfile(imgp, mach_header, thread, &map, &load_result);
++	exec_image_trace(imgp, "Mach-O load leave", lret);
+ 	if (lret != LOAD_SUCCESS) {
+ 		error = load_return_to_errno(lret);
+ 
+@@ -1679,7 +1697,9 @@
+ 	/*
+ 	 * deal with set[ug]id.
+ 	 */
++	exec_image_trace(imgp, "credentials enter", 0);
+ 	error = exec_handle_sugid(imgp);
++	exec_image_trace(imgp, "credentials leave", error);
+ 	if (error) {
+ 		KERNEL_DEBUG_CONSTANT(BSDDBG_CODE(DBG_BSD_PROC, BSD_PROC_EXITREASON_CREATE) | DBG_FUNC_NONE,
+ 		    proc_getpid(p), OS_REASON_EXEC, EXEC_EXIT_REASON_SUGID_FAILURE, 0, 0);
+@@ -2324,7 +2344,9 @@
+ 	    UIO_SYSSPACE, CAST_USER_ADDR_T(excpath), imgp->ip_vfs_context);
+ 
+ again:
++	exec_image_trace(imgp, "name lookup enter", 0);
+ 	error = namei(ndp);
++	exec_image_trace(imgp, "name lookup leave", error);
+ 	if (error) {
+ 		if (error == ERESTART) {
+ 			error = EINTR;
+@@ -2353,7 +2375,9 @@
+ 		goto bad_notrans;
+ 	}
+ 
++	exec_image_trace(imgp, "permissions enter", 0);
+ 	error = exec_check_permissions(imgp);
++	exec_image_trace(imgp, "permissions leave", error);
+ 	if (error) {
+ 		goto bad;
+ 	}
+@@ -2364,10 +2388,12 @@
+ 		*imgp->ip_origvattr = *imgp->ip_vattr;
+ 	}
+ 
++	exec_image_trace(imgp, "header read enter", 0);
+ 	error = vn_rdwr(UIO_READ, imgp->ip_vp, imgp->ip_vdata, PAGE_SIZE, 0,
+ 	    UIO_SYSSPACE, IO_NODELOCKED,
+ 	    vfs_context_ucred(imgp->ip_vfs_context),
+ 	    &resid, vfs_context_proc(imgp->ip_vfs_context));
++	exec_image_trace(imgp, "header read leave", error);
+ 	if (error) {
+ 		goto bad;
+ 	}
+@@ -2384,7 +2410,9 @@
+ 	}
+ 	error = -1;
+ 	for (i = 0; error == -1 && execsw[i].ex_imgact != NULL; i++) {
++		exec_image_trace(imgp, "image activator enter", 0);
+ 		error = (*execsw[i].ex_imgact)(imgp);
++		exec_image_trace(imgp, "image activator leave", error);
+ 
+ 		switch (error) {
+ 		/* case -1: not claimed: continue */
+@@ -4499,7 +4527,24 @@
+ 
+ bad:
+ 
+-
++#if DEVELOPMENT || DEBUG
++	{
++		int trace = 0;
++		if (PE_parse_boot_argn("process-exec-trace", &trace, sizeof(trace)) && trace) {
++			char path[256] = {0};
++			char label[128] = {0};
++			size_t copied = 0;
++			if (copyinstr(uap->path, path, sizeof(path), &copied) != 0) path[0] = '\0';
++			if (IS_64BIT_PROCESS(ap) && strcmp(path, "/usr/libexec/xpcproxy") == 0) {
++				user_addr_t argument = USER_ADDR_NULL;
++				if (copyin(uap->argv + sizeof(user_addr_t), &argument, sizeof(argument)) == 0 && argument)
++					if (copyinstr(argument, label, sizeof(label), &copied) != 0) label[0] = '\0';
++			}
++			printf("posix_spawn trace: parent=%d child=%d path=%s label=%s errno=%d\n",
++			    proc_selfpid(), proc_getpid(p), path, label, error);
++		}
++	}
++#endif
+ 
+ 	if (error == 0) {
+ 		/* reset delay idle sleep status if set */
+@@ -6737,6 +6782,7 @@
+ 	 *		return 0 for this check, since a non-zero answer will
+ 	 *		slow down the exec fast path for normal binaries.
+ 	 */
++	exec_image_trace(imgp, "MAC transition check enter", 0);
+ 	mac_transition = mac_cred_check_label_update_execve(
+ 		imgp->ip_vfs_context,
+ 		imgp->ip_vp,
+@@ -6746,6 +6792,7 @@
+ 		imgp->ip_execlabelp,
+ 		p,
+ 		&imgp->ip_px_smpx);
++	exec_image_trace(imgp, "MAC transition check leave", mac_transition);
+ #endif
+ 
+ 	OSBitAndAtomic(~((uint32_t)P_SUGID), &p->p_flag);
+@@ -6833,6 +6880,7 @@
+ 			 */
+ 			thread_t thread = current_thread();
+ 			thread_enable_send_importance(thread, TRUE);
++			exec_image_trace(imgp, "MAC label update enter", 0);
+ 			kauth_proc_label_update_execve(p,
+ 			    imgp->ip_vfs_context,
+ 			    imgp->ip_vp,
+@@ -6844,6 +6892,7 @@
+ 			    &imgp->ip_px_smpx,
+ 			    &disjoint_cred,                     /* will be non zero if disjoint */
+ 			    &label_update_return);
++			exec_image_trace(imgp, "MAC label update leave", label_update_return);
+ 			thread_enable_send_importance(thread, FALSE);
+ 
+ 			if (disjoint_cred) {
+@@ -6862,7 +6911,9 @@
+ 			imgp->ip_mac_return = label_update_return;
+ 		}
+ 
++		exec_image_trace(imgp, "MAC IPC inheritance enter", 0);
+ 		mac_reset_ipc = mac_proc_check_inherit_ipc_ports(p, p->p_textvp, p->p_textoff, imgp->ip_vp, imgp->ip_arch_offset, imgp->ip_scriptvp);
++		exec_image_trace(imgp, "MAC IPC inheritance leave", mac_reset_ipc);
+ 
+ #endif  /* CONFIG_MACF */
+ 
+@@ -6994,6 +7045,7 @@
+ 	 * Implement the semantic where the effective user and group become
+ 	 * the saved user and group in exec'ed programs.
+ 	 */
++	exec_image_trace(imgp, "credential token enter", 0);
+ 	kauth_cred_proc_update(p, PROC_SETTOKEN_ALWAYS,
+ 	    ^bool (kauth_cred_t parent __unused, kauth_cred_t model) {
+ 		posix_cred_t pcred = posix_cred_get(model);
+@@ -7008,6 +7060,7 @@
+ 		return true;
+ 	});
+ 
++	exec_image_trace(imgp, "credential token leave", 0);
+ 	return error;
+ }
+ 
+diff --git a/bsd/kern/kern_proc.c b/bsd/kern/kern_proc.c
+--- a/bsd/kern/kern_proc.c
++++ b/bsd/kern/kern_proc.c
+@@ -80,6 +80,7 @@
+ #include <sys/systm.h>
+ #include <sys/kernel.h>
+ #include <sys/proc_internal.h>
++#include <pexpert/pexpert.h>
+ #include <sys/acct.h>
+ #include <sys/wait.h>
+ #include <sys/file_internal.h>
+@@ -4342,6 +4343,13 @@
+ 			}
+ 			return EDEADLK;
+ 		}
++#if DEVELOPMENT || DEBUG
++		int trace = 0;
++		if (PE_parse_boot_argn("process-exec-trace", &trace, sizeof(trace)) && trace >= 2) {
++			printf("proc transition wait: observer=%d target=%d name=%s flags=%x holder=%p\n",
++			    proc_selfpid(), proc_getpid(p), p->p_comm, p->p_lflag, p->p_transholder);
++		}
++#endif
+ 		p->p_lflag |= P_LTRANSWAIT;
+ 		msleep(&p->p_lflag, &p->p_mlock, 0, "proc_signstart", NULL);
+ 	}
+diff --git a/security/mac_vfs.c b/security/mac_vfs.c
+--- a/security/mac_vfs.c
++++ b/security/mac_vfs.c
+@@ -88,6 +88,7 @@
+ #include <miscfs/devfs/fdesc.h>
+ 
+ #include <security/mac_internal.h>
++#include <pexpert/pexpert.h>
+ 
+ /* convert {R,W,X}_OK values to V{READ,WRITE,EXEC} */
+ #define ACCESS_MODE_TO_VNODE_MASK(m)    (m << 6)
+@@ -773,6 +774,56 @@
+ 	return error;
+ }
+ 
++static void
++mac_exec_hook_trace(const char *policy, const char *stage, int result)
++{
++#if DEVELOPMENT || DEBUG
++	int trace = 0;
++	if (PE_parse_boot_argn("process-exec-trace", &trace, sizeof(trace)) && trace >= 3) {
++		printf("MAC exec hook trace: pid=%d policy=%s stage=%s result=%d\n",
++		    proc_selfpid(), policy, stage, result);
++	}
++#else
++	(void)policy; (void)stage; (void)result;
++#endif
++}
++
++#if (DEVELOPMENT || DEBUG) && !SECURE_KERNEL
++/* The inherited label remains owned by the ordinary credential machinery. */
++static boolean_t
++mac_vnode_development_exec_allowed(struct vnode *vp)
++{
++	char allowed[MAXPATHLEN];
++	char path[MAXPATHLEN];
++	int path_size = sizeof(path);
++	int error;
++
++	if (!PE_i_can_has_debugger(NULL) ||
++	    !PE_parse_boot_argn("development-sandbox-exec-path", allowed, sizeof(allowed)) ||
++	    allowed[0] != '/' || !vp || vnode_getwithref(vp) != 0) {
++		return FALSE;
++	}
++	allowed[sizeof(allowed) - 1] = '\0';
++	error = vn_getpath(vp, path, &path_size);
++	vnode_put(vp);
++	if (error) {
++		return FALSE;
++	}
++	/* A colon-separated list still matches each complete absolute vnode path. */
++	for (char *entry = allowed, *next; entry && *entry; entry = next) {
++		next = strchr(entry, ':');
++		if (next) {
++			*next++ = '\0';
++		}
++		if (entry[0] == '/' && strcmp(path, entry) == 0) {
++			printf("exec development allowance: Sandbox label update path=%s\n", path);
++			return TRUE;
++		}
++	}
++	return FALSE;
++}
++#endif
++
+ void
+ mac_cred_label_update_execve(vfs_context_t ctx, kauth_cred_t new, struct vnode *vp, off_t offset,
+     struct vnode *scriptvp, struct label *scriptvnodelabel, struct label *execl, u_int *csflags,
+@@ -782,6 +833,11 @@
+ 	*disjoint = 0;
+ 	int error;
+ 	posix_cred_t pcred = posix_cred_get(new);
++	boolean_t development_allow = FALSE;
++#if (DEVELOPMENT || DEBUG) && !SECURE_KERNEL
++	development_allow = mac_vnode_development_exec_allowed(vp);
++#endif
++
+ 
+ #if SECURITY_MAC_CHECK_ENFORCE
+ 	/* 21167099 - only check if we allow write */
+@@ -813,16 +869,19 @@
+ 			}
+ 
+ 			mpo_cred_label_update_execve_t *hook = mpc->mpc_ops->mpo_cred_label_update_execve;
+-			if (hook == NULL) {
++			if (hook == NULL ||
++			    (development_allow && strcmp(mpc->mpc_name, "Sandbox") == 0)) {
+ 				continue;
+ 			}
+ 
+ 			size_t spawnattrlen = 0;
+ 			void *spawnattr = exec_spawnattr_getmacpolicyinfo(macextensions, mpc->mpc_name, &spawnattrlen);
+ 
++			mac_exec_hook_trace(mpc->mpc_name, "label update enter", 0);
+ 			error = mac_error_select(hook(cred, new, vfs_context_proc(ctx), vp, offset, scriptvp,
+ 			    mac_vnode_label(vp), scriptvnodelabel, execl, csflags, spawnattr, spawnattrlen, disjoint),
+ 			    error);
++			mac_exec_hook_trace(mpc->mpc_name, "label update leave", error);
+ 		}
+ 		if (mac_policy_list_conditional_busy() != 0) {
+ 			for (; i <= mac_policy_list.maxindex; i++) {
+@@ -832,16 +891,19 @@
+ 				}
+ 
+ 				mpo_cred_label_update_execve_t *hook = mpc->mpc_ops->mpo_cred_label_update_execve;
+-				if (hook == NULL) {
++				if (hook == NULL ||
++				    (development_allow && strcmp(mpc->mpc_name, "Sandbox") == 0)) {
+ 					continue;
+ 				}
+ 
+ 				size_t spawnattrlen = 0;
+ 				void *spawnattr = exec_spawnattr_getmacpolicyinfo(macextensions, mpc->mpc_name, &spawnattrlen);
+ 
++				mac_exec_hook_trace(mpc->mpc_name, "label update enter", 0);
+ 				error = mac_error_select(hook(cred, new, vfs_context_proc(ctx), vp, offset, scriptvp,
+ 				    mac_vnode_label(vp), scriptvnodelabel, execl, csflags, spawnattr, spawnattrlen, disjoint),
+ 				    error);
++				mac_exec_hook_trace(mpc->mpc_name, "label update leave", error);
+ 			}
+ 			mac_policy_list_unbusy();
+ 		}
+@@ -891,7 +953,11 @@
+ 			size_t spawnattrlen = 0;
+ 			void *spawnattr = exec_spawnattr_getmacpolicyinfo(macextensions, mpc->mpc_name, &spawnattrlen);
+ 
+-			result = result || hook(cred, vp, offset, scriptvp, mac_vnode_label(vp), scriptvnodelabel, execlabel, p, spawnattr, spawnattrlen);
++			if (!result) {
++				mac_exec_hook_trace(mpc->mpc_name, "transition check enter", 0);
++				result = result || hook(cred, vp, offset, scriptvp, mac_vnode_label(vp), scriptvnodelabel, execlabel, p, spawnattr, spawnattrlen);
++				mac_exec_hook_trace(mpc->mpc_name, "transition check leave", result);
++			}
+ 		}
+ 		if (mac_policy_list_conditional_busy() != 0) {
+ 			for (; i <= mac_policy_list.maxindex; i++) {
+@@ -908,7 +974,11 @@
+ 				size_t spawnattrlen = 0;
+ 				void *spawnattr = exec_spawnattr_getmacpolicyinfo(macextensions, mpc->mpc_name, &spawnattrlen);
+ 
+-				result = result || hook(cred, vp, offset, scriptvp, mac_vnode_label(vp), scriptvnodelabel, execlabel, p, spawnattr, spawnattrlen);
++				if (!result) {
++					mac_exec_hook_trace(mpc->mpc_name, "transition check enter", 0);
++					result = result || hook(cred, vp, offset, scriptvp, mac_vnode_label(vp), scriptvnodelabel, execlabel, p, spawnattr, spawnattrlen);
++					mac_exec_hook_trace(mpc->mpc_name, "transition check leave", result);
++				}
+ 			}
+ 			mac_policy_list_unbusy();
+ 		}
+--- a/osfmk/kern/ipc_mig.c
++++ b/osfmk/kern/ipc_mig.c
+@@ -84,6 +84,11 @@
+ #include <mach/thread_act.h>
+ 
+ #include <libkern/OSAtomic.h>
++
++#if (DEVELOPMENT || DEBUG) && MACH_BSD
++#include <pexpert/pexpert.h>
++extern int proc_selfpid(void);
++#endif
+ 
+ #define KERNEL_DESC_SIZE             sizeof(mach_msg_kdescriptor_t)
+ 
+@@ -580,9 +585,24 @@
+ 	mach_msg_size_t         rcv_size)
+ {
+ 	mach_msg_option64_t options = MACH64_POLICY_KERNEL_EXTENSION;
+-
+-	return kernel_mach_msg_rpc_common(msg, send_size, rcv_size, TRUE,
+-	           options, NULL);
++#if (DEVELOPMENT || DEBUG) && MACH_BSD
++	int exec_trace = 0;
++	boolean_t trace_container = msg->msgh_id == 0x13392fd4 &&
++	    PE_parse_boot_argn("process-exec-trace", &exec_trace, sizeof(exec_trace)) && exec_trace >= 3;
++	int caller_pid = trace_container ? proc_selfpid() : 0;
++	if (trace_container) {
++		printf("Sandbox container RPC: pid=%d stage=enter id=0x%x send=%u receive=%u\n",
++		    caller_pid, msg->msgh_id, send_size, rcv_size);
++	}
++#endif
++	mach_msg_return_t result = kernel_mach_msg_rpc_common(msg, send_size, rcv_size, TRUE,
++	    options, NULL);
++#if (DEVELOPMENT || DEBUG) && MACH_BSD
++	if (trace_container) {
++		printf("Sandbox container RPC: pid=%d stage=leave result=0x%x\n", caller_pid, result);
++	}
++#endif
++	return result;
+ }
+ 
+ /*

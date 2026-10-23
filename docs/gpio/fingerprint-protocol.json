@@ -1,0 +1,145 @@
+{
+  "hardware_tested": false,
+  "hal_sources": {
+    "fingerprint.fpc.msm8998.so": {
+      "url": "https://raw.githubusercontent.com/TheMuppets/proprietary_vendor_xiaomi_sagit/f73f45fdeaf787a17aede8f77f2608c6dacdb786/proprietary/vendor/lib64/hw/fingerprint.fpc.msm8998.so",
+      "sha256": "b583a1555f53365fb99d201e325c5e40652d058b945931e4af411b2e9a61ac8f",
+      "git_blob": "e35619f142f17d3715707a3cffd5c14bf3b4c9d6"
+    },
+    "fingerprint.goodix.msm8998.so": {
+      "url": "https://raw.githubusercontent.com/TheMuppets/proprietary_vendor_xiaomi_sagit/f73f45fdeaf787a17aede8f77f2608c6dacdb786/proprietary/vendor/lib64/hw/fingerprint.goodix.msm8998.so",
+      "sha256": "c6bd603fc4dea04c620e98bc0d42d545977cb37ec54df126805ee58ddc1aba75",
+      "git_blob": "1cb6edb50396bf42ea5e0d56a703f2c8b93c306b"
+    },
+    "libgf_ca.so": {
+      "url": "https://raw.githubusercontent.com/TheMuppets/proprietary_vendor_xiaomi_sagit/f73f45fdeaf787a17aede8f77f2608c6dacdb786/proprietary/vendor/lib64/libgf_ca.so",
+      "sha256": "150ad5b585d6a94ee48e7bfd1d7b5ce53d55d7bda87b82886ecaa856c0e6270b",
+      "git_blob": "0a415a7d7c70883db87dfdb78674c3d995839fe9"
+    },
+    "libgf_hal.so": {
+      "url": "https://raw.githubusercontent.com/TheMuppets/proprietary_vendor_xiaomi_sagit/f73f45fdeaf787a17aede8f77f2608c6dacdb786/proprietary/vendor/lib64/libgf_hal.so",
+      "sha256": "426ae244600fbdb6f1fbba572aa9ee45e9f059378a1c24d4a82abc80d51ddc4e",
+      "git_blob": "7b5c958dcedac8dce4dcdb8b8ea251a73fdc157b"
+    }
+  },
+  "firmware": {
+    "url": "https://github.com/XiaomiFirmwareUpdaterReleases/firmware_xiaomi_sagit/releases/download/stable-23.03.2020/fw_sagit_miui_MI6Global_V11.0.6.0.PCAMIXM_47fd8ee4ef_9.0.zip",
+    "archive_sha256": "2de2cd41548c91f0190b612597181177a8187d2d22d7005ef08770546aab2eb3",
+    "applications": {
+      "fpc-firmware": {
+        "file": "fpcsgt.bin",
+        "sha256": "8a069a1f53d4e8323da69cd42249276e2b86461c63e16a6f299f1e9eac4db42e",
+        "bytes": 679244
+      },
+      "goodix-firmware": {
+        "file": "goodixfp.bin",
+        "sha256": "16a5d18b44551c5c9cd55c10476fcc665bc15b2291416d34d2f6da28d2304749",
+        "bytes": 1740073
+      }
+    }
+  },
+  "fpc": {
+    "app": "fpcsgt",
+    "transport": "QSEE modified-command physical payload pointer at request+4; 4096-byte shared allocation",
+    "envelope_bytes": 64,
+    "sensor_group": 10,
+    "commands": {
+      "0": "finger lost query: status 0 present, 1 absent",
+      "1": "arm finger lost interrupt",
+      "2": "arm finger down interrupt",
+      "4": "deep sleep"
+    },
+    "sensor_info": {
+      "group": 6,
+      "command": 2
+    },
+    "evidence_functions": {
+      "sensor_command": "0x1a768",
+      "fpc_tac_transfer": "0x1db70",
+      "fpc_tac_alloc_shared": "0x1d8bc",
+      "fpc_tee_get_sensor_info": "0x18ad4"
+    },
+    "trusted_app_evidence": {
+      "sensor_command_handler": "0x138c",
+      "finger_present_check_raw": "0x1b290"
+    }
+  },
+  "goodix": {
+    "app": "goodixfp",
+    "supported_profile": "Milan F/A/HV (get-config payload offset100 equals1/2/3); shared 168-byte init, 223776-byte IRQ and common navigation commands",
+    "envelope_bytes": 64,
+    "request_fields": {
+      "0": "sequence",
+      "4": "target=1",
+      "8": "millisecond counter modulo one day; driver supplies advancing platform uptime for navigation intervals",
+      "16": "command",
+      "20": "physical payload address",
+      "24": "payload size"
+    },
+    "commands": {
+      "1000": "read HAL config (352 bytes)",
+      "1001": "sensor init (168 bytes)",
+      "1005": "init finished (100 bytes)",
+      "1016": "IRQ read/process (223776 bytes)",
+      "1017": "screen on (96 bytes)",
+      "1018": "screen off (96 bytes)",
+      "1071": "navigation (100 bytes; offset96: Z=4, none=0)"
+    },
+    "irq_fields": {
+      "96": "cause flags, 2 finger down / 4 finger up",
+      "223248": "SPI transfer size=512",
+      "223768": "stage=1 initially, 4/5 request another transfer"
+    },
+    "evidence_functions": {
+      "gf_ca_invoke_command": "libgf_ca.so:0xe08",
+      "gf_hal_open": "libgf_hal.so:0xbbc0",
+      "hal_milan_f_series_init": "libgf_hal.so:0x20bc4",
+      "hal_milan_f_series_irq": "libgf_hal.so:0x21d64",
+      "gf_hal_common_navigate": "libgf_hal.so:0x10e2c",
+      "hal_milan_a_series_init": "libgf_hal.so:0x1e5f8",
+      "hal_milan_a_series_irq": "libgf_hal.so:0x1f480",
+      "hal_milan_hv_init": "libgf_hal.so:0x232f0",
+      "hal_milan_hv_irq": "libgf_hal.so:0x24450",
+      "hal_milan_a_series_navigate": "libgf_hal.so:0x1ed1c",
+      "hal_milan_hv_navigate": "libgf_hal.so:0x23e28"
+    },
+    "authentication_material": "The original gf_ca_open_session provisions keymaster material through target2/command109. Home-only input omits enrollment/authentication and this provisioning; navigation availability without it must be checked on hardware."
+  },
+  "limits": [
+    "No fingerprint enrollment/authentication",
+    "No QSEE storage/keymaster listener emulation; unavailable listener quarantines the session and its physical buffer",
+    "No deep sleep wake support",
+    "Goodix Oswego M and unrecognized profiles are rejected",
+    "Requires native 64-bit Qualcomm SCM and boot firmware QSEE/cmnlib initialization"
+  ],
+  "transport": {
+    "feature_query": {
+      "SMC": "0x02000603",
+      "feature": 15,
+      "whitelist_minimum": "0x00400000"
+    },
+    "whitelisted_send": {
+      "SMC": "0x30000006",
+      "arguments": 7,
+      "sglist_bytes": 32,
+      "one_contiguous_address_flag": "0x80000000",
+      "FPC_pointer_offset": 4,
+      "Goodix_pointer_offset": 20
+    },
+    "legacy_send": {
+      "SMC": "0x30000001",
+      "arguments": 5
+    },
+    "buffers": "Physically contiguous, uncached, below 4 GiB; extra SMC arguments start at argument3",
+    "offline_transport_tests": [
+      "SCM64 register and extra physical argument layout",
+      "resume x0=1 with original x1..5 and returned x6 token",
+      "bounded busy retry with original arguments",
+      "non-QSEE feature results never quarantine",
+      "listener result quarantines buffers; further calls do not mutate them",
+      "1024 interrupted calls quarantine the outstanding transaction without restarting it"
+    ],
+    "serialization": "QcomSCM SecureMonitorRunAction, same native lock as GPU/PAS; complete QSEE continuation under that lock",
+    "memory_flags": "kIOMemoryHostPhysicallyContiguous | kIOMapInhibitCache, no overlapping kIOMemoryMapperNone allocation flag"
+  }
+}

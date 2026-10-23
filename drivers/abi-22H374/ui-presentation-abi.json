@@ -1,0 +1,337 @@
+{
+  "schema_version": 1,
+  "source_version": "iOS18.7.10 /22H374 arm64",
+  "hardware_tested": false,
+  "images": {
+    "QuartzCore": {
+      "path": "build/display-runtime/QuartzCore.analysis.macho",
+      "sha256": "e3ef2b8bc74a1823d05e675916983f13bed86988d52256c09996299912e4a92d"
+    },
+    "Metal": {
+      "path": "build/drivers/metal-plugin-analysis/native/Metal",
+      "sha256": "ac1943c7df8c41618c07befce2931d4bec8012b16feb5133b5f78759adcf2d67"
+    }
+  },
+  "native_drawable_methods": [
+    {
+      "class": "CAMetalDrawable",
+      "kind": "instance",
+      "selector": "texture",
+      "types": "@16@0:8",
+      "address": "0x18448fe74"
+    },
+    {
+      "class": "CAMetalDrawable",
+      "kind": "instance",
+      "selector": "present",
+      "types": "v16@0:8",
+      "address": "0x184459948"
+    },
+    {
+      "class": "CAMetalDrawable",
+      "kind": "instance",
+      "selector": "presentAtTime:",
+      "types": "v24@0:8d16",
+      "address": "0x184597040"
+    },
+    {
+      "class": "CAMetalDrawable",
+      "kind": "instance",
+      "selector": "presentAfterMinimumDuration:",
+      "types": "v24@0:8d16",
+      "address": "0x184596a48"
+    },
+    {
+      "class": "CAMetalDrawable",
+      "kind": "instance",
+      "selector": "addPresentScheduledHandler:",
+      "types": "v24@0:8@?16",
+      "address": "0x184596e88"
+    },
+    {
+      "class": "CAMetalDrawable",
+      "kind": "instance",
+      "selector": "presentWithOptions:",
+      "types": "v24@0:8@16",
+      "address": "0x1844596dc"
+    },
+    {
+      "class": "CAMetalLayer",
+      "kind": "instance",
+      "selector": "nextDrawable",
+      "types": "@16@0:8",
+      "address": "0x18444f354"
+    }
+  ],
+  "native_metal_present": {
+    "method": "-[_MTLCommandBuffer presentDrawable:]",
+    "address": "0x18246846c",
+    "behavior": "register scheduled handler which calls drawable.present; native addPresentScheduledHandler participates in present acknowledgement",
+    "our_bridge": "defer actual native present until all A540 timestamps/end tokens, IOSurface cache work and encoded event dependencies retire; no fabricated presented callback or time"
+  },
+  "drawable_texture_allocation": {
+    "address": "0x18445361c",
+    "entry": "newTextureWithDescriptor:iosurface:plane:",
+    "descriptor_selectors": [
+      "rotation",
+      "isDrawable",
+      "framebufferOnly"
+    ],
+    "supported": "single2D linear RGBA/BGRA8 UNorm/sRGB IOSurface, identity swizzle, zero rotation; framebuffer-only restrictions preserved"
+  },
+  "shared_events": {
+    "factory": "inherited _MTLDevice.newSharedEventWithOptions:",
+    "factory_address": "0x18252a648",
+    "class": "_MTLSharedEvent : IOSurfaceSharedEvent",
+    "device_is_nil": true,
+    "mach_ports_and_notifications": "actual Metal/IOSurface objects",
+    "queue_bridge": "Bounded wait on a background executor; suspend the same FIFO head without holding the transport lock or submission target; signal only after preceding real A540 completion",
+    "timeout_ms": 5000,
+    "hardware_or_interprocess_execution_verified": false
+  },
+  "composition": {
+    "entry": "QcomMTLEncodeComposition",
+    "max_layers": 8,
+    "renderer": "existing Metal command encoders -> native IOGPU -> A540",
+    "features": [
+      "ordered premultiplied alpha blend",
+      "linear filtering",
+      "opacity",
+      "contents crop",
+      "affine quad geometry",
+      "scissor clip",
+      "single GPU draw for background",
+      "IOSurface output or native CAMetalDrawable.texture"
+    ],
+    "system_carenderserver_selected_adapter": false,
+    "full_coreanimation_effects": false
+  },
+  "analysis_artifacts_sha256": {
+    "build/drivers/gpu-ui/cache-header-reference.json": "25f4c82ef04579f78aea50e07f0ba8e2e85297709b757dd4e40ac5ba6c9b976c",
+    "build/drivers/gpu-ui/descriptor-framebuffer-only.txt": "b73356744c4624fcdc49c561d3af5f69c7565eec339a57075921e7042a776b5b",
+    "build/drivers/gpu-ui/descriptor-rotation.txt": "ad8bfac8aaa6e4989c0d1dbfbeabc45af831068ea2d574419993f55831500046",
+    "build/drivers/gpu-ui/device-capabilities.txt": "b50891317edb9d1a448fe807a7d5a2f12a1a6b4e4720eca7d9398c86004b05d2",
+    "build/drivers/gpu-ui/device-shared-event.txt": "8ffadd1034cf24092be2d9424961aafacc95ec63effff353cd870c5f4ec02287",
+    "build/drivers/gpu-ui/drawable-allocation.txt": "d6d841974db0878f7ea075e01341df0358cc62742f747da0f7112f5d4e41c292",
+    "build/drivers/gpu-ui/drawable-initialization.txt": "713f7c9f7126d74393716cc123cf20d78821b703b8c8e6470964f02226d2ca44",
+    "build/drivers/gpu-ui/layer-device-setup.txt": "f91d39c275768caec8d0f1eff4f5696465f3686ac228b165d59898f87c61239c",
+    "build/drivers/gpu-ui/next-drawable.txt": "ecd52e76dacb16dd588ae6a8cf64b55b9eeb5f4aafa6bea0f671b3ea05524b9f",
+    "build/drivers/gpu-ui/objc-call-selectors.json": "cd2c708faf4b7ef0af181feea7c43a925ace5a9eee248b66d7511d5d1977b877",
+    "build/drivers/gpu-ui/present-queue.txt": "f2bd0b83df8ff2a89f015399c6985107e689110d699bcde991b66393e2d077b9",
+    "build/drivers/gpu-ui/quartzcore-methods.json": "3c16c3a5b6148dac54c0ccf1f3e351edc994f3e6ef111ac7dce8dd48d33a5457",
+    "build/drivers/gpu-ui/quartzcore-methods.log": "d876a55922c6799861cec0464a8a9774a9cbf3567f04cf74ccc79bd6f3bbf569",
+    "build/drivers/gpu-ui/quartzcore-objc.txt": "dc8985bfa1980b8d1beccc55270d5e9b86ce36ca7bc3b2e7a1c5cc33275eafce",
+    "build/drivers/gpu-ui/set-device.txt": "f85ff1b6c920ac85e26372532b0332d10f31d16b215dca1e347de885a9366d3d",
+    "build/drivers/gpu-ui/shared-event-device.txt": "98cca1dabe369f380a099c7c90bba514dd2ed0ec91ff5afa34370115910713c0",
+    "build/drivers/gpu-ui/surface-allocation.txt": "7d10f97452d63812402eda5742574b605fc08364c32a53303b9872f5bf07246e",
+    "build/drivers/gpu-ui/surface-dependencies.txt": "85e0364565e962b3d95035a0c6febda98228c166f9ea97ddc59a244dc83d32d3",
+    "build/drivers/gpu-ui/texture-allocation.txt": "6d903a66775aad1811e90063202d42917827ceb470bf285993752c29d0b4329c"
+  },
+  "remaining": [
+    "actual system Metal plugin loading",
+    "native CoreAnimation shaders/libraries and complete compositor requirements",
+    "shared-fence presentation without CPU wait",
+    "GPU/display shared scanout and native display dependency synchronization",
+    "target GPU/UI verification"
+  ],
+  "native_fences": {
+    "project_version": "Metal0.58.0",
+    "public_api": "MTLDevice.newFence, MTLFence.device/label, blit/compute updateFence/waitForFence, render updateFence:afterStages:/waitForFence:beforeStages:",
+    "render_stages": [
+      "vertex",
+      "fragment"
+    ],
+    "boundaries": "iOS waits before load actions; updates after draws/resolves; same-pass wait after update is invalid",
+    "capture": "Per-update points, snapshot all captured committed producing updates, wait for every pending producer, preserve earlier snapshots across later updates; prune retired producers on a new update",
+    "completion": "individual point succeeds only with actual native queue ID and retired end token; pending/failed producers never synthesize success",
+    "scheduling": "blocked FIFO head yields worker and device lock; callback resumes it; event waits use bounded background wait",
+    "commit_and_wait": "Real resource-free marker allows nonblocking private admission, but returns NO until the full operation list is admitted; original QuartzCore defers cleanup to Scheduled. Every native per-operation admission remains private until that boundary.",
+    "memory_barriers": "Native CP Barrier with resource, buffer/texture scope and vertex/fragment stage validation; no macOS-only RenderTargets scope",
+    "hardware_tested": false,
+    "references": [
+      "https://developer.apple.com/documentation/metal/mtlfence",
+      "https://developer.apple.com/library/archive/documentation/Miscellaneous/Conceptual/MetalProgrammingGuide/ResourceHeaps/ResourceHeaps.html"
+    ]
+  },
+  "native_async_execution": {
+    "project_version": "GPU1.69.0/Metal0.59.0",
+    "hardware_tested": false,
+    "pending_jobs_max": 16,
+    "bound": "shared device admission count and per-queue FIFO end-token windows",
+    "completion": "original40-byte Family IODataQueue records, no admission/start-only success, dedicated bounded polling/retirement callbacks",
+    "submit_target": "yields on capacity/dependencies; fully admitted buffers retained separately until their queue prefix retires",
+    "backpressure": "capability v1, IOKit vendor code0x100 before token reservation or Family fences; handles full FIFO, private index reads and live framebuffer snapshot quota",
+    "parameters": "all4 immutable builtin blit layouts snapshotted in kernel IB; shared CPU parameter page reused after admission only",
+    "partial_blits": "accepted row/byte cursor resumes without replay",
+    "presentation": "original drawable present methods after real retirement, hold following queue pixel submissions until called; no imported display fence claim",
+    "handlers": "all terminal buffers, including already-retired/failed ones, finish in FIFO; public waits include registered handler delivery",
+    "remaining": [
+      "on-device device discovery, async blits/fences and actual rendering/scanout",
+      "native display fence/scanout integration and runtime latency/animation measurements"
+    ],
+    "references": [
+      "https://developer.apple.com/library/archive/documentation/Miscellaneous/Conceptual/MetalProgrammingGuide/Cmd-Submiss/Cmd-Submiss.html"
+    ],
+    "submission_helper": "NO while only marker/partial pixel admission exists; public Scheduled and YES follow full operation-list admission. Original QuartzCore cleanup closures may run at either boundary."
+  },
+  "native_resource_memory": {
+    "project_version": "GPU1.70.0/Metal0.60.0",
+    "hardware_tested": false,
+    "native_wire_sizes_unchanged": true,
+    "namespace_resources": 1024,
+    "job_resources": 64,
+    "surface_write_bits": 64,
+    "global_native_resource_objects": 2048,
+    "effective_bytes": "client=min(256MiB,aperture/2), global=min(384MiB,3*aperture/4), rounded down to16KiB; individual allocations up to16MiB",
+    "current_256mib_aperture": {
+      "client_mib": 128,
+      "global_mib": 192
+    },
+    "mapping_leases": 4096,
+    "retained_table_pages": 512,
+    "allocation": "stable record pointers, ordered address index, guard/quarantined ranges retained",
+    "statistics": "64-byte IOGPUNativeMemoryLimits and136-byte GPUMemoryStatistics, no new selector or addresses",
+    "lifetime": "namespace erase and final native resource free are separate; cached IOSurface roots/private buffers also appear in mapper usage",
+    "scope": "limits are upper bounds, not guaranteed allocation or free RAM; diagnostic quotas and shader/JIT layouts unchanged"
+  },
+  "native_buffer_textures": {
+    "project_version": "GPU1.70.0/Metal0.61.0",
+    "hardware_tested": false,
+    "entry": "MTLBuffer.newTextureWithDescriptor:offset:bytesPerRow:",
+    "alignment_query": "MTLDevice.minimumLinearTextureAlignmentForPixelFormat:",
+    "alignment_bytes": 64,
+    "types": "single2D, one mip/layer/sample, current6 normalized color formats",
+    "storage": "same native buffer resource and allocation; source retained; offset and full pitched span inside logical buffer length",
+    "metadata": "direct buffer/offset/rowBytes, parentTexture for texture-created children, rootResource resolves original buffer",
+    "operations": [
+      "shared CPU access",
+      "blit",
+      "Compute images",
+      "sampling",
+      "render target",
+      "nested views"
+    ],
+    "probe": "existing metalctl blit-test, not executed",
+    "remaining": [
+      "texture-buffer type",
+      "remaining color formats",
+      "target validation and system compositor integration"
+    ],
+    "references": [
+      "https://developer.apple.com/documentation/metal/mtlbuffer/maketexture(descriptor:offset:bytesperrow:)",
+      "tools/sdk/iPhoneOS18.6.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLBuffer.h",
+      "tools/sdk/iPhoneOS18.6.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLTexture.h",
+      "tools/sdk/iPhoneOS18.6.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLDevice.h"
+    ]
+  },
+  "native_heaps": {
+    "project_version": "GPU1.70.0/Metal0.62.0",
+    "hardware_tested": false,
+    "apple_interfaces": [
+      "MTLHeapDescriptor",
+      "MTLHeap",
+      "MTLAllocation",
+      "heapBufferSizeAndAlignWithLength:options:",
+      "heapTextureSizeAndAlignWithDescriptor:",
+      "newHeapWithDescriptor:"
+    ],
+    "types": [
+      "automatic",
+      "placement"
+    ],
+    "storage_modes": [
+      "shared",
+      "private"
+    ],
+    "backing": "one original IOGPU buffer; native page-rounded heap size capped by published maxBufferLength",
+    "alignment_bytes": 64,
+    "resource_layouts": "existing buffer, color/depth/stencil texture, mip/array/cube/MSAA layouts",
+    "offsets": "buffer API offsets remain resource-relative; all submitted blit/compute/index/vertex/fragment/texture offsets resolve once into the original backing; texture children retain absolute backing offset",
+    "aliasing": "automatic allocations are reusable after explicit makeAliasable or resource destruction; monotonic lease tokens prevent stale releases; placement overlaps have independent leases and usedSize counts their union",
+    "lifetime": "resources retain allocation/heap/backing and native jobs retain storage through actual retirement; application fence/event responsibility on alias reuse retained",
+    "metadata": "resource heap, placement heapOffset, allocatedSize, aliasable state and heap allocation/fragmentation queries",
+    "remaining": [
+      "volatile/empty purgeability",
+      "sparse and memoryless heaps",
+      "heaps larger than current per-backing native allocation cap",
+      "target validation of new suballocation and alias paths"
+    ],
+    "probe": "existing metalctl blit-test: repeated buffer texture pipeline on placement heaps, heap texture render target, nonzero vertex offset, full private-backing guard readback, automatic alias reuse and old-object destruction; not executed",
+    "references": [
+      "tools/sdk/iPhoneOS18.6.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLHeap.h",
+      "tools/sdk/iPhoneOS18.6.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLResource.h",
+      "https://developer.apple.com/library/archive/documentation/Miscellaneous/Conceptual/MetalProgrammingGuide/ResourceHeaps/ResourceHeaps.html"
+    ]
+  },
+  "strided_render_clears": {
+    "project_version": "GPU1.71.0/Metal0.63.0",
+    "hardware_tested": false,
+    "builtin": "blit_fill_rows",
+    "registry": "a74b60151e63e259",
+    "native_blit_layout_version": 2,
+    "builtin_immutable_layouts": 5,
+    "parameters": "widthBytes,rows,strideBytes,bias,pattern,reserved0,reserved1,reserved2;32 bytes frozen in job read-only IB",
+    "validation": "shared production planner, exact canonical fields, destination span, grid and binding offset; original4 layouts unchanged",
+    "geometry": "active word per row if starts/strides are word aligned; otherwise one invocation per global destination word merges all its lanes",
+    "writes": "only logical row pixel bytes; original backing offset, mip/slice and samples retained; row padding and word edge bytes preserved",
+    "pattern": "repeats from byte zero of each row",
+    "cpu_pixel_edges": false,
+    "probe": "existing metalctl blit-test adds clear-only passes on buffer/heap texture views and packed R8/RG8 full buffer guard checks; not run"
+  },
+  "command_buffer_resource_lifetime": {
+    "project_version": "GPU1.71.0/Metal0.64.0",
+    "interfaces": [
+      "MTLCommandQueue.commandBufferWithUnretainedReferences",
+      "MTLCommandQueue.commandBufferWithDescriptor:",
+      "MTLCommandBufferDescriptor.retainedReferences",
+      "MTLCommandBuffer.retainedReferences"
+    ],
+    "external_ownership": "ordinary/descriptor-YES retains encoded resources through real native retirement; NO uses zeroing weak references in operations, fence scopes and encoder bindings",
+    "coverage": [
+      "Blit buffer and late texture-view references",
+      "Compute buffers/textures/pipeline/samplers",
+      "Render attachments/resolve/vertex/fragment bindings",
+      "fence/event/resource barrier"
+    ],
+    "admission": "strong CPU snapshots validate weak identities at commit and each operation/retry; missing objects fail InvalidResource before resource submission; never resolve old IDs to replacement objects",
+    "release_order": "temporary strong snapshots, including valid portions of failed checks, outlive condition/order/transport locks; encoder bindings cleared at endEncoding",
+    "internal_ownership": "inline bytes, resolve parameters and helper-owned composition pipeline/geometry/sampler remain strongly owned until real retirement",
+    "presentation": "explicit presentation records keep native drawable and texture alive until the existing retirement-driven native present call",
+    "kernel_changed": false,
+    "aot_entries": 133,
+    "shader_registry": "a74b60151e63e259",
+    "limitations": [
+      "caller must retain external objects until command completion; premature concurrent releases remain invalid",
+      "errorOptions/logState unsupported",
+      "queue quota still returns nil instead of blocking",
+      "volatile/empty purgeability not implemented"
+    ],
+    "target_probe": "existing metalctl blit-test; compiled only, not executed",
+    "hardware_tested": false,
+    "system_ui_gpu_verified": false,
+    "animation_performance_verified": false,
+    "reference": "https://developer.apple.com/documentation/metal/mtlcommandqueue/makecommandbufferwithunretainedreferences()"
+  },
+  "binary_archives": {
+    "project_version": "GPU1.71.0/Metal0.65.0",
+    "native_objects": "MTLBinaryArchiveDescriptor,MTLBinaryArchive and original function/pipeline descriptors/options",
+    "implementation": "bounded compatible A540 AOT references and JIT images, atomic local serialization, exact function/pipeline lookup and lazy native registration",
+    "identity": "library contents, selected entry/effective constants/limit and validated pipeline execution state; compiler source/binary/SDK fingerprint plus native OS version; no process program/resource IDs",
+    "miss": "strict archive-only miss errors; optional miss uses ordinary creation",
+    "scope": "AIR function descriptor cache hits skip lowering/IR3; MSL source library creation remains eager; ordinary pipeline descriptors already hold resolved functions",
+    "probe": "existing pipeline-test/jit-test extended and compiled; target execution pending",
+    "kernel_changed": false,
+    "hardware_tested": false,
+    "system_ui_gpu_verified": false,
+    "animation_performance_verified": false
+  },
+  "scheduled_cleanup_fix": {
+    "version": "Metal0.83.0",
+    "hardware_tested": true,
+    "audit": "build/gpu-runtime/ui-submission-lifetime/apple-submit-audit.json",
+    "original_caller": "QuartzCore0x1843c2bc4 branches: YES invokes pending cleanup closures immediately;NO attaches them via addScheduledHandler: at0x184430554",
+    "bridge": "submitCommands/submitShader only markNativeAdmitted;run marksScheduled after every operation and dependency has been admitted",
+    "regression": "Existing fence-test: actual first GPUfill and ready event, future gate before second fill, verifyCommitted while blocked and exactlyoneScheduled callback after resume",
+    "hardware_evidence": "build/gpu-runtime/round-88/evidence.json"
+  }
+}

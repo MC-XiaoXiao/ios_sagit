@@ -1,0 +1,53 @@
+{
+  "bundle_identifier": "com.apple.driver.AppleARMWatchdogTimer",
+  "image_sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+  "architecture": "arm64",
+  "classes": {
+    "IOWatchdog": {
+      "super": "IOService",
+      "instance_size": 248,
+      "vtable_slots": 172
+    },
+    "IOWatchdogUserClient": {
+      "super": "IOUserClient",
+      "instance_size": 232,
+      "vtable_slots": 186
+    }
+  },
+  "required_symbols": [
+    "__ZN10IOWatchdog10gMetaClassE",
+    "__ZN10IOWatchdogC2EPK11OSMetaClass",
+    "__ZN10IOWatchdogD2Ev",
+    "__ZN10IOWatchdog5startEP9IOServicejj",
+    "__ZN10IOWatchdog15checkForTimeoutEv",
+    "__ZN10IOWatchdog18socWatchdogEnabledEv",
+    "__ZN10IOWatchdog13newUserClientEP4taskPvjP12OSDictionaryPP12IOUserClient",
+    "__ZN10IOWatchdog25publishWatchdogPropertiesEv",
+    "__ZTV10IOWatchdog"
+  ],
+  "virtual_symbols": {
+    "__ZN10IOWatchdog13newUserClientEP4taskPvjP12OSDictionaryPP12IOUserClient": {
+      "class": "IOWatchdog",
+      "slot": 140
+    },
+    "__ZN10IOWatchdog25publishWatchdogPropertiesEv": {
+      "class": "IOWatchdog",
+      "slot": 171
+    }
+  },
+  "function_bindings": {
+    "__ZN10IOWatchdog5startEP9IOServicejj": {
+      "address": "0xfffffff00665cbd0",
+      "bytes": "ff0302d1f85f04a9f65705a9f44f06a9fd7b07a9fdc30191f50303aaf30301aa"
+    },
+    "__ZN10IOWatchdog15checkForTimeoutEv": {
+      "address": "0xfffffff00665d338",
+      "bytes": "ff0301d1f65701a9f44f02a9fd7b03a9fdc30091f30300aa155040f900008052"
+    },
+    "__ZN10IOWatchdog18socWatchdogEnabledEv": {
+      "address": "0xfffffff00665d310",
+      "bytes": "00244239c0035fd6"
+    }
+  },
+  "note": "Native framework retained; only slots168..170 are Qualcomm hardware operations. Native userclient retains root and com.apple.private.iowatchdog.user-access entitlement checks. Poll checkForTimeout before each hardware feed."
+}

@@ -1,0 +1,90 @@
+// SPDX-License-Identifier: BSD-2-Clause
+// SoC facts checked against Linux v6.12; see docs/sm8150/sources.json.
+// This is a source for this project's Apple DT converter, not a Linux DTB.
+/ {
+    #address-cells = <2>;
+    #size-cells = <2>;
+    interrupt-parent = <&gic>;
+    cpus {
+        #address-cells = <1>;
+        #size-cells = <0>;
+        // Aff1 identifies each core; Aff0 is always zero on Kryo 485.
+        // die-cluster-id describes XNU's 4+3+1 scheduling/frequency groups.
+        // The hardware has one shared DSU/L3, and each CPU owns its own L2.
+        cpu@0 { device_type = "cpu"; compatible = "qcom,kryo485"; reg = <0>; enable-method = "psci"; l2-cache-id = <0>; l3-cache-id = <0>; cluster-type = <0x45>; cluster-core-id = <0>; die-cluster-id = <0>; state = "running"; timebase-frequency = <19200000>; };
+        cpu@100 { device_type = "cpu"; compatible = "qcom,kryo485"; reg = <0x100>; enable-method = "psci"; l2-cache-id = <1>; l3-cache-id = <0>; cluster-type = <0x45>; cluster-core-id = <1>; die-cluster-id = <0>; state = "waiting"; timebase-frequency = <19200000>; };
+        cpu@200 { device_type = "cpu"; compatible = "qcom,kryo485"; reg = <0x200>; enable-method = "psci"; l2-cache-id = <2>; l3-cache-id = <0>; cluster-type = <0x45>; cluster-core-id = <2>; die-cluster-id = <0>; state = "waiting"; timebase-frequency = <19200000>; };
+        cpu@300 { device_type = "cpu"; compatible = "qcom,kryo485"; reg = <0x300>; enable-method = "psci"; l2-cache-id = <3>; l3-cache-id = <0>; cluster-type = <0x45>; cluster-core-id = <3>; die-cluster-id = <0>; state = "waiting"; timebase-frequency = <19200000>; };
+        cpu@400 { device_type = "cpu"; compatible = "qcom,kryo485"; reg = <0x400>; enable-method = "psci"; l2-cache-id = <4>; l3-cache-id = <0>; cluster-type = <0x50>; cluster-core-id = <0>; die-cluster-id = <1>; state = "waiting"; timebase-frequency = <19200000>; };
+        cpu@500 { device_type = "cpu"; compatible = "qcom,kryo485"; reg = <0x500>; enable-method = "psci"; l2-cache-id = <5>; l3-cache-id = <0>; cluster-type = <0x50>; cluster-core-id = <1>; die-cluster-id = <1>; state = "waiting"; timebase-frequency = <19200000>; };
+        cpu@600 { device_type = "cpu"; compatible = "qcom,kryo485"; reg = <0x600>; enable-method = "psci"; l2-cache-id = <6>; l3-cache-id = <0>; cluster-type = <0x50>; cluster-core-id = <2>; die-cluster-id = <1>; state = "waiting"; timebase-frequency = <19200000>; };
+        cpu@700 { device_type = "cpu"; compatible = "qcom,kryo485"; reg = <0x700>; enable-method = "psci"; l2-cache-id = <7>; l3-cache-id = <0>; cluster-type = <0x50>; cluster-core-id = <0>; die-cluster-id = <2>; state = "waiting"; timebase-frequency = <19200000>; };
+    };
+    psci { compatible = "arm,psci-1.0", "arm,psci-0.2"; method = "smc"; };
+    timer {
+        compatible = "arm,armv8-timer";
+        interrupt-parent = <&gic>;
+        interrupts = <1 1 8>, <1 2 8>, <1 3 8>, <1 0 8>;
+        clock-frequency = <19200000>;
+    };
+    soc: soc@0 {
+        compatible = "arm-io,sm8150", "simple-bus";
+        #address-cells = <2>;
+        #size-cells = <2>;
+        ranges = <0 0 0 0 1 0>;
+        gic: interrupt-controller@17a00000 {
+            compatible = "arm,gic-v3";
+            reg = <0 0x17a00000 0 0x10000>, <0 0x17a60000 0 0x100000>;
+            interrupt-controller;
+            #interrupt-cells = <3>;
+            #address-cells = <0>;
+            redistributor-stride = /bits/ 64 <0x20000>;
+        };
+        uart2: serial@a90000 {
+            compatible = "qcom,geni-debug-uart";
+            device_type = "serial";
+            reg = <0 0x00a90000 0 0x4000>;
+            interrupt-parent = <&gic>;
+            interrupts = <0 357 4>;
+            current-speed = <115200>;
+            // Enable only for a verified board with retained UART protocol,
+            // clock, baud divisor, FIFO packing and TLMM pin routing.
+            status = "disabled";
+        };
+        usb_1: usb@a6f8800 {
+            compatible = "qcom,sm8150-dwc3", "qcom,dwc3";
+            reg = <0 0x0a6f8800 0 0x400>;
+            #address-cells = <2>;
+            #size-cells = <2>;
+            ranges;
+            // Requires SM8150 glue/PHY/RPMh + SMMU SID 0x140 ownership.
+            // Existing MSM8998 handoff records must not be reused here.
+            status = "disabled";
+            usb_1_dwc3: usb@a600000 {
+                compatible = "snps,dwc3";
+                reg = <0 0x0a600000 0 0xcd00>;
+                interrupt-parent = <&gic>;
+                interrupts = <0 133 4>;
+                dr_mode = "peripheral";
+                status = "disabled";
+            };
+        };
+        usb_2: usb@a8f8800 {
+            compatible = "qcom,sm8150-dwc3", "qcom,dwc3";
+            reg = <0 0x0a8f8800 0 0x400>;
+            #address-cells = <2>;
+            #size-cells = <2>;
+            ranges;
+            // Board may not expose this controller; its SMMU SID is 0x160.
+            status = "disabled";
+            usb_2_dwc3: usb@a800000 {
+                compatible = "snps,dwc3";
+                reg = <0 0x0a800000 0 0xcd00>;
+                interrupt-parent = <&gic>;
+                interrupts = <0 138 4>;
+                dr_mode = "peripheral";
+                status = "disabled";
+            };
+        };
+    };
+};

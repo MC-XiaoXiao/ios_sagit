@@ -1,0 +1,107 @@
+{
+  "repository": "MiCode/Xiaomi_Kernel_OpenSource",
+  "commit": "3fb35ef1f0fe1f714be3df39724cbc8eb217181e",
+  "sources": [
+    {
+      "path": "docs/power/reference/xiaomi-cprh-kbss-regulator.c",
+      "upstream_path": "drivers/regulator/cprh-kbss-regulator.c",
+      "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/drivers/regulator/cprh-kbss-regulator.c",
+      "sha256": "aa61d290ee4663d397e18d173aa0b90b6a14407e739f31e577afd59aa01498be",
+      "bytes": 68517
+    },
+    {
+      "path": "docs/power/reference/xiaomi-cpr3-util.c",
+      "upstream_path": "drivers/regulator/cpr3-util.c",
+      "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/drivers/regulator/cpr3-util.c",
+      "sha256": "8c2be0494cb5e23af8744b9b113d45b6302345f0ebf3973c671e792a95ef5c69",
+      "bytes": 70814
+    },
+    {
+      "path": "docs/power/reference/xiaomi-cpr3-regulator.c",
+      "upstream_path": "drivers/regulator/cpr3-regulator.c",
+      "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/drivers/regulator/cpr3-regulator.c",
+      "sha256": "cdef5b32357a2d66c616c6ee2dd5fe3b832bdfd2dc2eef4323fed6a6f99a8633",
+      "bytes": 196386
+    },
+    {
+      "path": "docs/power/reference/xiaomi-cpr3-regulator.h",
+      "upstream_path": "drivers/regulator/cpr3-regulator.h",
+      "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/drivers/regulator/cpr3-regulator.h",
+      "sha256": "e7b280c2e6f88f7759ea6ba398447f52ad9bef98e606c0205b820d4535dcf222",
+      "bytes": 43226
+    },
+    {
+      "path": "docs/power/reference/xiaomi-msm8998-regulator.dtsi",
+      "upstream_path": "arch/arm/boot/dts/qcom/msm8998-regulator.dtsi",
+      "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/arch/arm/boot/dts/qcom/msm8998-regulator.dtsi",
+      "sha256": "a68d369f48493902c4c3c90567d3c5669c5408a1f16399b7433d3bf6592f26ec",
+      "bytes": 31754
+    },
+    {
+      "path": "docs/power/reference/xiaomi-msm8998-v2.dtsi",
+      "upstream_path": "arch/arm/boot/dts/qcom/msm8998-v2.dtsi",
+      "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/arch/arm/boot/dts/qcom/msm8998-v2.dtsi",
+      "sha256": "755415be5944f6203110eeb54eebf2d77ca6c990ba036d1fb22d6c00d38a4e44",
+      "bytes": 40688
+    },
+    {
+      "upstream_path": "arch/arm/boot/dts/qcom/msm8998-v2-pmi8998.dtsi",
+      "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/arch/arm/boot/dts/qcom/msm8998-v2-pmi8998.dtsi",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "upstream_path": "arch/arm/boot/dts/qcom/msm8998-v2-regulator.dtsi",
+      "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/arch/arm/boot/dts/qcom/msm8998-v2-regulator.dtsi",
+      "error": "HTTP Error 404: Not Found"
+    },
+    {
+      "path": "docs/power/reference/xiaomi-sagit-msm8998-mtp.dts",
+      "upstream_path": "arch/arm/boot/dts/qcom/sagit-msm8998-mtp.dts",
+      "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/arch/arm/boot/dts/qcom/sagit-msm8998-mtp.dts",
+      "sha256": "c7a523a7fc82336915bf825d114a3c2a7100a2f18a578fd30e8619a3087079b2",
+      "bytes": 1012
+    },
+    {
+      "path": "docs/power/reference/xiaomi-clock-osm.c",
+      "upstream_path": "drivers/clk/msm/clock-osm.c",
+      "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/drivers/clk/msm/clock-osm.c",
+      "sha256": "64858eaca0c7f8de3c201a908199cb932e6fb8f0d8b299ad692178047d536ada",
+      "bytes": 97852
+    },
+    {
+      "path": "docs/power/reference/xiaomi-sagit-msm8998-v2-mtp.dts",
+      "upstream_path": "arch/arm/boot/dts/qcom/sagit-msm8998-v2-mtp.dts",
+      "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/arch/arm/boot/dts/qcom/sagit-msm8998-v2-mtp.dts",
+      "sha256": "45d68336796752dd22492ca21f6863fccf9e8e5b4bec93f7ee234ce0a6eb5989",
+      "bytes": 788
+    },
+    {
+      "path": "docs/power/reference/xiaomi-sagit-msm8998-v2.1-mtp.dts",
+      "upstream_path": "arch/arm/boot/dts/qcom/sagit-msm8998-v2.1-mtp.dts",
+      "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/arch/arm/boot/dts/qcom/sagit-msm8998-v2.1-mtp.dts",
+      "sha256": "264828d877b8fc8a4cecb146eb7a09944c4deae7b7a15f4a828f24acecc2c540",
+      "bytes": 792
+    },
+    {
+      "path": "docs/power/reference/xiaomi-msm8998-v2.1.dtsi",
+      "upstream_path": "arch/arm/boot/dts/qcom/msm8998-v2.1.dtsi",
+      "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/arch/arm/boot/dts/qcom/msm8998-v2.1.dtsi",
+      "sha256": "879cb9384da6c3172f8cea2e69f10a8a11ce7ea3ff2ff87204076f5bb983e3c8",
+      "bytes": 646
+    },
+    {
+      "path": "docs/power/reference/xiaomi-sagit-msm8998-mtp.dtsi",
+      "upstream_path": "arch/arm/boot/dts/qcom/sagit-msm8998-mtp.dtsi",
+      "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/arch/arm/boot/dts/qcom/sagit-msm8998-mtp.dtsi",
+      "sha256": "b5ea7890a131e642931a137ea77aee35bc246691b62f290b7745871c96d537f8",
+      "bytes": 26567
+    },
+    {
+      "path": "docs/power/reference/xiaomi-msm8998.dtsi",
+      "upstream_path": "arch/arm/boot/dts/qcom/msm8998.dtsi",
+      "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/arch/arm/boot/dts/qcom/msm8998.dtsi",
+      "sha256": "0fd6fd923349908a5fda2eeb0c2e1a548fde265666c81832cdb6d9ad7d1010ea",
+      "bytes": 87265
+    }
+  ]
+}

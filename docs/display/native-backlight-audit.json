@@ -1,0 +1,531 @@
+{
+  "date": "2026-10-17",
+  "status": "backlight-and-SpringBoard-analysis-complete-frame-rate-unresolved-user-ended-investigation",
+  "regression": {
+    "evidence": "build/input/hardware-home-08/uart.txt:314",
+    "sync_register": "SID 3, 0xd947 = 0x03",
+    "error": "kIOReturnNotReady (0xe00002d8)",
+    "cause": "Hardware::check treated the software SYNC latch as a hardware busy flag.",
+    "chain": [
+      "PMI8998WLED::start rejects the retained backlight and publishes no service",
+      "QcomDisplay::configureBacklight cannot match its required backlight",
+      "QcomDisplay returns before IOMobileFramebufferLegacy::start",
+      "IOMobileFramebuffer count is zero and native CADisplay is nil",
+      "SpringBoard aborts in SBMainDisplayConfigurationTransformer during display initialization"
+    ],
+    "springboard_evidence": "build/input/hardware-home-06/SpringBoard-current.ips",
+    "previous_matching_conflict": "WLED and QcomPMIC originally consumed the same QcomSPMI default match category. The existing DisplayBacklight category correction is retained.",
+    "input_scope": "hardware-home-07 captured FPC Home down/up and original IOHIDEventDriver opening the sensor. No Home sensor failure was established.",
+    "dsi_scope": "The retained-raster bridge enables the DPU node; separate dsi0/dsi1 and panel nodes remain disabled. A zero AppleARMMIPIDSIController count alone is expected for this path."
+  },
+  "hardware_correction": {
+    "adoption": "Read-only adoption permits inherited SYNC levels; PMIC identity, AP ownership, sink mask, resolution, modulation, faults and uniform inherited brightness remain checked.",
+    "update": "Write brightness shadows, clear owned SYNC bits, wait the configured interval, assert owned SYNC bits and verify both the final SYNC value and brightness shadows. Preserve unowned/reserved bits.",
+    "reason_guard_only_is_insufficient": "With inherited SYNC=3 the old update writes 3 then 3, producing no latch edge.",
+    "primary_reference": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/video/backlight/qcom-wled.c",
+    "reference_function": "wled3_sync_toggle, shared by WLED3 and WLED4, clears SYNC then asserts it; asserted SYNC is a valid retained level.",
+    "vendor_reference": "docs/display/reference/pmi8998-wled.c:505",
+    "vendor_difference": "The older vendor driver pulses high then low. That final level is a software convention, not a readiness requirement imposed on firmware."
+  },
+  "native_ios18_reference": {
+    "source": "Original 22H374 Cryptex and kernelcache in this project",
+    "kernelcache_sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+    "framework": "/System/Library/PrivateFrameworks/BrightnessControl.framework/BrightnessControl",
+    "framework_uuid": "A37E00A7-58B6-32CD-854C-B5B1AC1E874D",
+    "controller": "BCAppleBacklightBrtControl",
+    "discovery": {
+      "address": "0x22c145118",
+      "dictionary_address": "0x254465e28",
+      "matching": {
+        "IOPropertyMatch": {
+          "backlight-control": true
+        }
+      },
+      "mechanism": "Original IOServiceFirstMatch notification; hardware class name is not part of this matching dictionary."
+    },
+    "parameters": {
+      "address": "0x22c14555c",
+      "property": "IODisplayParameters",
+      "brightness": [
+        "min",
+        "max",
+        "value"
+      ],
+      "range_reads": "0x22c14568c..0x22c1456dc"
+    },
+    "native_write_reference": {
+      "AppleARMBacklight_setProperties": "0xfffffff00596c12c",
+      "gated_property_handler": "0xfffffff005969a68",
+      "write_entitlement": "com.apple.private.dfr.brightness-access"
+    },
+    "power": {
+      "hardware_callback": "IOMobileFramebufferLegacy::do_power_state_change_gated, vtable slot 306",
+      "original_notification": "0xfffffff005c23dac, original slot 216",
+      "implementation": "Apply and read back WLED power before updating native current states and notifying; retain panel/DPU/DSI rails and clocks."
+    }
+  },
+  "integration": {
+    "service": "PMI8998WLED",
+    "native_discovery_property": "backlight-control=true, published only after successful hardware adoption",
+    "native_parameter_dictionary": {
+      "IODisplayParameters": {
+        "brightness": {
+          "min": 0,
+          "max": 4095,
+          "value": "adopted or last accepted DAC level"
+        }
+      }
+    },
+    "write": "IORegistryEntrySetCFProperties with a single numeric brightness property; administrator or original native brightness entitlement required",
+    "serialization": "Native brightness writes and framebuffer power/diagnostic requests share the SPMI workloop, retained bus lease and one Hardware state machine.",
+    "while_dark": "Update desired brightness without bus writes; native display wake latches the remembered value before enabling WLED.",
+    "telemetry": [
+      "BacklightStateValid",
+      "BacklightPower",
+      "BacklightBrightness",
+      "BacklightAppliedBrightness",
+      "BacklightLastError",
+      "NativeBrightnessRequestCount"
+    ],
+    "units": "Uncalibrated 12-bit hardware DAC; no fabricated luminance or current calibration.",
+    "not_claimed": [
+      "end-to-end Settings slider or automatic brightness validation",
+      "calibrated nits/current, HDR or ambient-light policy",
+      "panel cold power cycle or system suspend"
+    ]
+  },
+  "verification": {
+    "host": "Production Hardware header: inherited SYNC combinations including recorded 0x03; edge-triggered output model, dark brightness deferral, wake, limits, transport failures and sticky faults",
+    "sanitizers": "display, mipi-dsi, pmic-input and buttons: ASan/UBSan passed",
+    "native_abi": "20 arm64 Kext bundles; PMI8998WLED IOService vtable slots 44/86/111/117 checked",
+    "input_integration": "6 tests passed",
+    "display_bridge": "3 tests passed",
+    "toolchain": "15 tests passed",
+    "linker": "5 CTests passed",
+    "runtime": {
+      "evidence": "Selected original UART lines and report fields retained inline in this audit; temporary full capture removed after review.",
+      "capture_seconds": 280,
+      "backlight_adopted": true,
+      "IOMobileFramebuffer_count": 1,
+      "IOSurfaceRoot_count": 1,
+      "SpringBoard": {
+        "pid": 32,
+        "LastExitStatus": 0
+      },
+      "backboardd": {
+        "pid": 65,
+        "LastExitStatus": 0
+      },
+      "native_display_power_on_seen_before_diagnostic_request": true,
+      "hardware_completion": {
+        "completed": 15,
+        "displayed": 12,
+        "pending": 0,
+        "active": 0,
+        "queued": 0
+      },
+      "user_confirmed_visible_interface": true,
+      "panic_detected": false,
+      "multicore_verified": true,
+      "native_slider_writes_observed": false,
+      "original_capture_sha256": "e66bc4e49598d864ab8b0301f72dc9a536727634377f877762ba694158d27559",
+      "original_report_sha256": "710ca50c8005cbe42767d184049f90dce4bb30c9a2d643069d00c419df1bb947",
+      "selected_uart_lines": [
+        {
+          "capture_seconds": 5.466,
+          "byte_offset": 20406,
+          "line": "PMI8998WLED: firmware brightness adopted, strings=3; native brightness properties ready"
+        },
+        {
+          "capture_seconds": 6.854,
+          "byte_offset": 28900,
+          "line": "QcomDisplay: iOS 18 IOMobileFramebufferLegacy, 1080x1920 @ 60 Hz"
+        },
+        {
+          "capture_seconds": 43.786,
+          "byte_offset": 87033,
+          "line": "QcomButtons: HID input 0x0 -> 0x1"
+        },
+        {
+          "capture_seconds": 43.974,
+          "byte_offset": 87068,
+          "line": "QcomButtons: HID input 0x1 -> 0x0"
+        },
+        {
+          "capture_seconds": 54.025,
+          "byte_offset": 93222,
+          "line": "FPCFingerprint: HID Home down"
+        },
+        {
+          "capture_seconds": 54.353,
+          "byte_offset": 93253,
+          "line": "FPCFingerprint: HID Home up"
+        },
+        {
+          "capture_seconds": 56.281,
+          "byte_offset": 94837,
+          "line": "QcomDisplay: retained display controller=1 display=1, backlight=1"
+        },
+        {
+          "byte_offset": 94904,
+          "line": "QcomDisplay: first hardware TE/read-pointer interrupt"
+        },
+        {
+          "byte_offset": 306764,
+          "line": "QcomDisplay: command transfer completed displayed=1 copied=1 address=9d400000 expected=9d400000 flush=60000000"
+        },
+        {
+          "capture_seconds": 125.953,
+          "byte_offset": 646784,
+          "line": "QcomDisplay: retained display controller=1 display=1, backlight=1"
+        },
+        {
+          "capture_seconds": 166.553,
+          "byte_offset": 1025713,
+          "line": "DISPLAY_REGISTRY_COUNT class=IOMobileFramebuffer count=1"
+        },
+        {
+          "capture_seconds": 166.569,
+          "byte_offset": 1025880,
+          "line": "DISPLAY_REGISTRY_COUNT class=IOSurfaceRoot count=1"
+        },
+        {
+          "capture_seconds": 166.774,
+          "byte_offset": 1027923,
+          "line": "DISPLAY_JOB label=com.apple.backboardd type=1 PID=65 LastExitStatus=0"
+        },
+        {
+          "capture_seconds": 166.78,
+          "byte_offset": 1027995,
+          "line": "DISPLAY_JOB label=com.apple.SpringBoard type=1 PID=32 LastExitStatus=0"
+        },
+        {
+          "capture_seconds": 169.378,
+          "byte_offset": 1050479,
+          "line": "SCANOUT_STATE completed=15 displayed=12 pending=0 active=0 queued=0"
+        }
+      ]
+    }
+  },
+  "cleanup": {
+    "one_off_scripts_created": false,
+    "temporary_host_diagnostics_removed": true,
+    "temporary_framework_reconstructions_and_ida_files_removed": true,
+    "existing_regression_sources_retained": true,
+    "removed_outputs_so_far": [
+      "build/test-display",
+      "build/test-display-sanitized",
+      "build/test-mipi-dsi",
+      "build/test-mipi-dsi-sanitized",
+      "build/test-pmic-input",
+      "build/test-pmic-input-sanitized",
+      "build/test-buttons",
+      "build/test-buttons-sanitized",
+      "build/test-fingerprint-home",
+      "build/collections/input-runtime-svid56c4",
+      "build/collections/input-runtime-5wbe3r0i",
+      "build/input/native-backlight-quiet-resume.txt",
+      "build/input/native-backlight-quiet-resume.bin",
+      "build/input/native-backlight-quiet-resume.log",
+      "build/input/native-backlight-uart-sync.txt",
+      "build/input/native-backlight-uart-sync.bin",
+      "build/input/native-backlight-uart-sync.log",
+      "build/input/native-backlight-quiet-live.txt",
+      "build/input/native-backlight-quiet-live.bin",
+      "build/input/native-backlight-quiet-live.log"
+    ],
+    "frame_trace_source_removed": true,
+    "stackshot_helper_interrupted_and_console_returned": true,
+    "terminal_jobs_after_diagnostics": {
+      "SpringBoard_pid": 32,
+      "backboardd_pid": 65,
+      "LastExitStatus": 0
+    },
+    "retained_measurement_source_hashes": {
+      "native-frame-trace-hardware/uart.bin": {
+        "bytes": 64208,
+        "sha256": "c68f956a063e8bb2d18ffe1813c601b24632086d60c1edb74239c6c527588adc"
+      },
+      "native-frame-awake.bin": {
+        "bytes": 2749,
+        "sha256": "ddccb6095aeda507e36dca4052288afccfe19e677e262519bd2c8994bec119f6"
+      },
+      "native-frame-stacks.bin": {
+        "bytes": 883091,
+        "sha256": "6b25139327f524eeace41334b683972569ba0330a43fa576d84ad2a6310fa2ef"
+      },
+      "native-frame-end.bin": {
+        "bytes": 3075,
+        "sha256": "5eb7dc6d84363d18e4fb575903522368f84237af3d0428e9020507c50d999dc2"
+      }
+    },
+    "removed_final_outputs": [
+      "build/input/native-backlight-invocation.json",
+      "build/input/native-backlight-bridge",
+      "build/input/native-backlight-hardware.log",
+      "build/input/native-backlight-hardware",
+      "build/input/native-backlight-quiet-invocation.json",
+      "build/input/native-backlight-quiet-build.log",
+      "build/input/native-backlight-quiet-bridge",
+      "build/input/native-backlight-prequiet.log",
+      "build/input/native-backlight-prequiet.bin",
+      "build/input/native-backlight-prequiet.txt",
+      "build/input/native-backlight-quiet-hardware.log",
+      "build/input/native-backlight-quiet-hardware",
+      "build/input/native-frame-trace-pack.log",
+      "build/input/native-frame-trace-verify.log",
+      "build/input/native-frame-trace-invocation.json",
+      "build/input/native-frame-trace-build.log",
+      "build/input/native-frame-trace-bridge",
+      "build/input/native-frame-trace-reboot.log",
+      "build/input/native-frame-trace-reboot.bin",
+      "build/input/native-frame-trace-reboot.txt",
+      "build/input/native-frame-trace-hardware.log",
+      "build/input/native-frame-trace-hardware",
+      "build/input/native-frame-awake.log",
+      "build/input/native-frame-awake.bin",
+      "build/input/native-frame-awake.txt",
+      "build/input/native-frame-stacks.log",
+      "build/input/native-frame-stacks.bin",
+      "build/input/native-frame-stacks.txt",
+      "build/input/native-frame-end.log",
+      "build/input/native-frame-end.bin",
+      "build/input/native-frame-end.txt",
+      "build/input/native-backlight-final-build.log",
+      "build/input/native-backlight-final-pack.log",
+      "build/input/native-backlight-final-verify.log",
+      "build/input/native-backlight-final-bridge/development.kernelcache",
+      "build/input/native-backlight-final-bridge/watchdog-policy.kernelcache",
+      "build/input/native-backlight-final-bridge/io-policy.kernelcache",
+      "build/input/native-backlight-final-bridge/xiaomi-sagit.dtb",
+      "build/input/native-backlight-final-bridge/firmware-devicetree.im4p",
+      "build/input/native-backlight-final-bridge/firmware-devicetree.apple-dt",
+      "build/input/native-backlight-final-bridge/trust-cache.bin",
+      "build/input/native-backlight-final-bridge/xiaomi-sagit.apple-dt",
+      "build/input/native-backlight-final-bridge/payload.S",
+      "build/input/native-backlight-final-bridge/enter.obj",
+      "build/input/native-backlight-final-bridge/payload.obj",
+      "build/input/native-backlight-final-bridge/raw-payload.S",
+      "build/input/native-backlight-final-bridge/raw-enter.o",
+      "build/input/native-backlight-final-bridge/raw-raw-entry.o",
+      "build/input/native-backlight-final-bridge/raw-raw-payload.o",
+      "build/input/native-backlight-final-bridge/nvram-proxy.bin",
+      "build/input/native-backlight-final-bridge/Image.gz-dtb",
+      "build/input/native-backlight-final-bridge/boot-bridge.img",
+      "build/input/native-backlight-final-bridge/core.obj",
+      "build/input/native-backlight-final-bridge/platform.obj",
+      "build/input/native-backlight-final-bridge/uefi.obj",
+      "build/input/native-backlight-final-bridge/ufs_handoff.obj",
+      "build/input/native-backlight-final-bridge/display_handoff.obj",
+      "build/input/native-backlight-final-bridge/raw-core.o",
+      "build/input/native-backlight-final-bridge/raw-platform.o",
+      "build/input/native-backlight-final-bridge/raw-fdt.o",
+      "build/input/native-backlight-final-bridge/raw-raw.o",
+      "build/input/native-backlight-final-bridge/bridge.elf",
+      "build/input/native-backlight-final-bridge/Image",
+      "build/collections/input-runtime-wmx9h855",
+      "build/collections/input-runtime-9f7pomgw",
+      "build/test-gpio",
+      "build/test-gpio-sanitized",
+      "build/test-pmic-input",
+      "build/test-buttons",
+      "build/test-fingerprint-home",
+      "build/test-display",
+      "build/test-mipi-dsi"
+    ],
+    "removed_final_bytes": 648846881,
+    "final_retained_artifacts": [
+      "build/input/native-backlight-final-bridge/XnuBridge.efi",
+      "build/input/native-backlight-final-bridge/build.json",
+      "build/input/native-backlight-final-bridge/keystore-policy.kernelcache",
+      "build/input/native-backlight-final-invocation.json",
+      "docs/display/native-backlight-audit.json",
+      "build/input/HANDOFF.md"
+    ],
+    "original_complete_and_partial_test_captures_removed": true,
+    "superseded_owned_collection_snapshots_removed": true,
+    "host_collectors_stopped": true
+  },
+  "performance": {
+    "user_observation": "Welcome bottom text changes but animation and operation response are very slow; quiet boot subjectively no better, possibly worse.",
+    "full_IOLog": {
+      "uart_bytes": 2127429,
+      "SEP_log_lines": 20493,
+      "uart_bytes_per_second_160_to_280": 9482.4,
+      "EFI_to_verified_Bash_seconds": 153.618
+    },
+    "quiet_boot": {
+      "EFI_sha256": "ee65fb5ed34faaa45b0bd7d6ff97a6b2ef19ac98daf55399f8a57fcf89d5aa5d",
+      "serial_mode": 19,
+      "captured_bytes": 57579,
+      "SEP_UART_log_lines": 0,
+      "complete_report_available": false,
+      "temporary_EFI_and_capture_removed": true
+    },
+    "conclusion": "Real hardware TE continues at about 60 Hz. A measured CPU copy took 80.600 ms and subsequent hardware completion 23.065 ms; this identifies copy overhead but does not explain every long gap. Backlight is not accessed per display swap. User ended this investigation to continue GPU work; latency is not fixed.",
+    "driver_review": "WLED hardware is touched by brightness and power operations, not by each display swap. Existing CPU scanout copy makes one readBytes call per output row.",
+    "next_measurement": "User ended this investigation to continue GPU work. Temporary frame tracing has been removed from production source.",
+    "measurements": {
+      "kind": "single captured application-frame timing plus cumulative native driver counters",
+      "records": [
+        {
+          "source": "native-frame-trace-hardware/uart.bin",
+          "byte_offset": 56005,
+          "line": "QcomDisplay PERF t_ms=77511 vbl=301 begin=0 done=0 shown=0 timeout=0 checks_ok=0 checks_bad=0 copy_us=0 copy_max_us=0 copy_total_us=0 hw_us=0 hw_max_us=0 pending=0 active=0 queued=0 power=1/1 fault=0",
+          "fields": {
+            "t_ms": 77511,
+            "vbl": 301,
+            "begin": 0,
+            "done": 0,
+            "shown": 0,
+            "timeout": 0,
+            "checks_ok": 0,
+            "checks_bad": 0,
+            "copy_us": 0,
+            "copy_max_us": 0,
+            "copy_total_us": 0,
+            "hw_us": 0,
+            "hw_max_us": 0,
+            "pending": 0,
+            "active": 0,
+            "queued": 0,
+            "power": 1,
+            "fault": 0
+          },
+          "original_temporary_source_removed": true
+        },
+        {
+          "source": "native-frame-trace-hardware/uart.bin",
+          "byte_offset": 60224,
+          "line": "QcomDisplay PERF t_ms=142521 vbl=4201 begin=0 done=0 shown=0 timeout=0 checks_ok=0 checks_bad=0 copy_us=0 copy_max_us=0 copy_total_us=0 hw_us=0 hw_max_us=0 pending=0 active=0 queued=0 power=1/1 fault=0",
+          "fields": {
+            "t_ms": 142521,
+            "vbl": 4201,
+            "begin": 0,
+            "done": 0,
+            "shown": 0,
+            "timeout": 0,
+            "checks_ok": 0,
+            "checks_bad": 0,
+            "copy_us": 0,
+            "copy_max_us": 0,
+            "copy_total_us": 0,
+            "hw_us": 0,
+            "hw_max_us": 0,
+            "pending": 0,
+            "active": 0,
+            "queued": 0,
+            "power": 1,
+            "fault": 0
+          },
+          "original_temporary_source_removed": true
+        },
+        {
+          "source": "native-frame-stacks.bin",
+          "byte_offset": 0,
+          "line": "QcomDisplay PERF t_ms=261372 vbl=4573 begin=1 done=1 shown=1 tim/prQcomDisplay PERF t_ms=296377 vbl=6673 begin=1 done=1 shown=1 timeout=0 checks_ok=4 checks_bad=1 copy_us=80600 copy_max_us=80600 copy_total_us=80600 hw_us=23065 hw_max_us=23065 pending=0 active=0 queued=0 power=1/1 fault=0",
+          "fields": {
+            "t_ms": 296377,
+            "vbl": 6673,
+            "begin": 1,
+            "done": 1,
+            "shown": 1,
+            "timeout": 0,
+            "checks_ok": 4,
+            "checks_bad": 1,
+            "copy_us": 80600,
+            "copy_max_us": 80600,
+            "copy_total_us": 80600,
+            "hw_us": 23065,
+            "hw_max_us": 23065,
+            "pending": 0,
+            "active": 0,
+            "queued": 0,
+            "power": 1,
+            "fault": 0
+          },
+          "original_temporary_source_removed": true
+        },
+        {
+          "source": "native-frame-end.bin",
+          "byte_offset": 2851,
+          "line": "QcomDisplay PERF t_ms=406444 vbl=13276 begin=1 done=1 shown=1 timeout=0 checks_ok=4 checks_bad=1 copy_us=80600 copy_max_us=80600 copy_total_us=80600 hw_us=23065 hw_max_us=23065 pending=0 active=0 queued=0 power=1/1 fault=0",
+          "fields": {
+            "t_ms": 406444,
+            "vbl": 13276,
+            "begin": 1,
+            "done": 1,
+            "shown": 1,
+            "timeout": 0,
+            "checks_ok": 4,
+            "checks_bad": 1,
+            "copy_us": 80600,
+            "copy_max_us": 80600,
+            "copy_total_us": 80600,
+            "hw_us": 23065,
+            "hw_max_us": 23065,
+            "pending": 0,
+            "active": 0,
+            "queued": 0,
+            "power": 1,
+            "fault": 0
+          },
+          "original_temporary_source_removed": true
+        }
+      ],
+      "TE_Hz_from_initial_contiguous_samples": 59.99077065066913,
+      "CPU_copy_us": 80600,
+      "hardware_wait_us": 23065,
+      "timeouts_seen": 0,
+      "pipeline_fault_seen": false,
+      "scope": "Temporary tracing did not change copy/queue/completion policy. Later samples overlap a large console stackshot export, so they are not a normal-use FPS benchmark."
+    },
+    "stackshot": {
+      "declared_bytes": 657392,
+      "strict_contiguous_prefix_bytes": 312960,
+      "whole_system_export_complete": false,
+      "native_incomplete_decoder_used": true,
+      "partial_task_count": 105,
+      "selected_tasks_present": {
+        "SpringBoard": {
+          "pid": 32,
+          "threads": 10
+        },
+        "backboardd": {
+          "pid": 65,
+          "threads": 17
+        }
+      },
+      "scope": "Partial export is not retained or presented as a complete full-system report. No full latency root cause is claimed from it."
+    }
+  },
+  "artifacts": {
+    "runtime_collection_sha256": "a6ddce7a0d4919039087e18793d85cb92a1715c168c689a52f95f3b76500351e",
+    "original_runtime_EFI_sha256": "46df6a5afc7e50ec50483b0b645540ab9b502735e855b02fcfa5adfd6e375738",
+    "full_memory_local_kernel_sha256": "883c16e3d304ea6ed4d36a888491e875e1065968926a4208a90d7af4068d6e44",
+    "final": {
+      "EFI": "build/input/native-backlight-final-bridge/XnuBridge.efi",
+      "EFI_sha256": "a38d2f23f1242035f7ca55007c895a7386bec4a47437c187907dc0f7907076f5",
+      "bridge_metadata": "build/input/native-backlight-final-bridge/build.json",
+      "final_kernel": "build/input/native-backlight-final-bridge/keystore-policy.kernelcache",
+      "final_kernel_sha256": "1ddab4a8d0a692e2444e655a938662d22cda709061ac7677c7e30ffe020b1a99",
+      "collection": "build/output/kernelcache.input-runtime",
+      "collection_sha256": "a6ddce7a0d4919039087e18793d85cb92a1715c168c689a52f95f3b76500351e",
+      "manifest": "build/output/kernelcache.input-runtime.manifest.json",
+      "invocation": "build/input/native-backlight-final-invocation.json",
+      "serial_mode": 19,
+      "local_bundle_section_contents_identical_to_confirmed_UI_boot": 20,
+      "this_final_rebuild_booted": false,
+      "scope": "Final rebuild uses the restored, already hardware-exercised code; its exact new EFI bytes have not been booted."
+    }
+  },
+  "sources_sha256": {
+    "drivers/display/PMI8998WLED/PMI8998WLED.cpp": "46f4136cdd2a1626cd5de222c33fb449724bceee6513d74afa81482a50fb687e",
+    "drivers/display/PMI8998WLED/PMI8998WLED.h": "eaefb8ecae5775e9cc4d5cac50d43e0ce8468f10279b82e3487c14b5dbc70514",
+    "drivers/display/PMI8998WLED/PMI8998WLEDHardware.h": "8d2636aca14ebcbde8235c3cb162cc043257b495ad6638eae2e91947accc1b37",
+    "drivers/display/QcomDisplay/QcomDisplay.cpp": "1ff7582ae97041681259a7b4c756b4b0a8ddb936d2725ee438b3d0038185f878",
+    "drivers/display/QcomDisplay/QcomDisplay.h": "f0b3936e0f2222c805a7530b55ad7f537e37cb9a234958f4c530e5ce02c140a8",
+    "drivers/Build.json": "29c6033129e825a3319e7e9cf6f90f4fadec82993b9c0f4c41b13831387d96a6",
+    "tests/display_test.cpp": "3703db963b8650c7300050aa5cccd6e51148344d35db40131e78876d73feccf3"
+  }
+}

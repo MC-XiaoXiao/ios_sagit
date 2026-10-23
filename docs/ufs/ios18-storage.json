@@ -1,0 +1,544 @@
+{
+  "kernel": {
+    "file": "kernelcache.release.ipad7c.macho",
+    "sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+    "size": 48562176,
+    "cputype": "0x100000c",
+    "cpusubtype": "0x0",
+    "filetype": 2,
+    "segments": [
+      {
+        "name": "__TEXT",
+        "vmaddr": "0xfffffff007004000",
+        "vmsize": 835584,
+        "fileoff": 0,
+        "filesize": 835584
+      },
+      {
+        "name": "__DATA_CONST",
+        "vmaddr": "0xfffffff0070d0000",
+        "vmsize": 1048576,
+        "fileoff": 835584,
+        "filesize": 1048576
+      },
+      {
+        "name": "__TEXT_EXEC",
+        "vmaddr": "0xfffffff0071d0000",
+        "vmsize": 7897088,
+        "fileoff": 1884160,
+        "filesize": 7897088
+      },
+      {
+        "name": "__KLD",
+        "vmaddr": "0xfffffff007958000",
+        "vmsize": 16384,
+        "fileoff": 9781248,
+        "filesize": 16384
+      },
+      {
+        "name": "__LASTDATA_CONST",
+        "vmaddr": "0xfffffff00795c000",
+        "vmsize": 16384,
+        "fileoff": 9797632,
+        "filesize": 16384
+      },
+      {
+        "name": "__LAST",
+        "vmaddr": "0xfffffff007960000",
+        "vmsize": 16384,
+        "fileoff": 9814016,
+        "filesize": 16384
+      },
+      {
+        "name": "__KLDDATA",
+        "vmaddr": "0xfffffff007964000",
+        "vmsize": 16384,
+        "fileoff": 9830400,
+        "filesize": 16384
+      },
+      {
+        "name": "__DATA",
+        "vmaddr": "0xfffffff007968000",
+        "vmsize": 737280,
+        "fileoff": 9846784,
+        "filesize": 147456
+      },
+      {
+        "name": "__BOOTDATA",
+        "vmaddr": "0xfffffff007a1c000",
+        "vmsize": 540672,
+        "fileoff": 10010624,
+        "filesize": 540672
+      },
+      {
+        "name": "__PRELINK_TEXT",
+        "vmaddr": "0xfffffff005130000",
+        "vmsize": 8028160,
+        "fileoff": 11501568,
+        "filesize": 8028160
+      },
+      {
+        "name": "__PRELINK_INFO",
+        "vmaddr": "0xfffffff007ce0000",
+        "vmsize": 3325952,
+        "fileoff": 45236224,
+        "filesize": 3325952
+      },
+      {
+        "name": "__PLK_TEXT_EXEC",
+        "vmaddr": "0xfffffff0058d8000",
+        "vmsize": 20709376,
+        "fileoff": 19529728,
+        "filesize": 20709376
+      },
+      {
+        "name": "__PRELINK_DATA",
+        "vmaddr": "0xfffffff007b88000",
+        "vmsize": 1409024,
+        "fileoff": 43827200,
+        "filesize": 1409024
+      },
+      {
+        "name": "__PLK_DATA_CONST",
+        "vmaddr": "0xfffffff006c98000",
+        "vmsize": 3588096,
+        "fileoff": 40239104,
+        "filesize": 3588096
+      },
+      {
+        "name": "__PLK_LLVM_COV",
+        "vmaddr": "0xfffffff007ce0000",
+        "vmsize": 0,
+        "fileoff": 45236224,
+        "filesize": 0
+      },
+      {
+        "name": "__PLK_LINKEDIT",
+        "vmaddr": "0xfffffff007ce0000",
+        "vmsize": 0,
+        "fileoff": 45236224,
+        "filesize": 0
+      },
+      {
+        "name": "__LINKINFO",
+        "vmaddr": "0xfffffff007aa0000",
+        "vmsize": 294912,
+        "fileoff": 10551296,
+        "filesize": 294912
+      },
+      {
+        "name": "__LINKEDIT",
+        "vmaddr": "0xfffffff007ae8000",
+        "vmsize": 655360,
+        "fileoff": 10846208,
+        "filesize": 641616
+      }
+    ],
+    "darwin_version": "Darwin Kernel Version 24.6.0: Tue Jul 21 20:48:55 PDT 2026; root:xnu-11417.140.69.706.66~1/RELEASE_ARM64_T8010"
+  },
+  "kexts": [
+    {
+      "DTCompiler": "com.apple.compilers.llvm.clang.1_0",
+      "UIRequiredDeviceCapabilities": [
+        "arm64"
+      ],
+      "CFBundleInfoDictionaryVersion": "6.0",
+      "DTPlatformVersion": "18.7",
+      "OSBundleCompatibleVersion": "1.0",
+      "CFBundleName": "I/O Kit Storage Family",
+      "DTSDKName": "iphoneos18.7.internal",
+      "_PrelinkExecutableRelativePath": "IOStorageFamily",
+      "IOKitPersonalities": {
+        "IOApplePartitionScheme": {
+          "IOClass": "IOApplePartitionScheme",
+          "IOMatchCategory": "IOStorage",
+          "IOProbeScore": 2000,
+          "IOPropertyMatch": [
+            {
+              "Whole": true
+            },
+            {
+              "Content Hint": "CD_ROM_Mode_1",
+              "Writable": false
+            },
+            {
+              "Content Hint": "CD_ROM_Mode_2_Form_1",
+              "Writable": false
+            }
+          ],
+          "IOProviderClass": "IOMedia",
+          "Content Mask": "Apple_partition_scheme"
+        },
+        "IOBlockStorageDriver": {
+          "IOClass": "IOBlockStorageDriver",
+          "IOPropertyMatch": {
+            "device-type": "Generic"
+          },
+          "IOProviderClass": "IOBlockStorageDevice"
+        },
+        "IOGUIDPartitionScheme": {
+          "IOClass": "IOGUIDPartitionScheme",
+          "IOMatchCategory": "IOStorage",
+          "IOProbeScore": 4000,
+          "IOPropertyMatch": {
+            "Whole": true
+          },
+          "IOProviderClass": "IOMedia",
+          "Content Mask": "GUID_partition_scheme"
+        },
+        "IOMediaBSDClient": {
+          "IOClass": "IOMediaBSDClient",
+          "IOMatchCategory": "IOMediaBSDClient",
+          "IOProbeScore": 30000,
+          "IOProviderClass": "IOMedia",
+          "IOResourceMatch": "IOBSD"
+        },
+        "IOFDiskPartitionScheme": {
+          "IOProbeScore": 3000,
+          "IOPropertyMatch": {
+            "Whole": true
+          },
+          "IOMatchCategory": "IOStorage",
+          "IOClass": "IOFDiskPartitionScheme",
+          "IOProviderClass": "IOMedia",
+          "Content Mask": "FDisk_partition_scheme",
+          "Content Table": {
+            "0xA9": "NetBSD",
+            "0x82": "Linux_Swap",
+            "0x01": "DOS_FAT_12",
+            "0xA7": "Apple_Rhapsody_UFS",
+            "0x0B": "DOS_FAT_32",
+            "0x06": "DOS_FAT_16",
+            "0xA5": "FreeBSD",
+            "0xFD": "Linux_RAID",
+            "0x04": "DOS_FAT_16_S",
+            "0xAF": "Apple_HFS",
+            "0x0E": "Windows_FAT_16",
+            "0x83": "Linux",
+            "0xA8": "Apple_UFS",
+            "0x0C": "Windows_FAT_32",
+            "0x07": "Windows_NTFS",
+            "0xAB": "Apple_Boot",
+            "0xA6": "OpenBSD",
+            "0x16": "DOS_FAT_16_Hidden",
+            "0x42": "Windows_LDM",
+            "0x8E": "Linux_LVM",
+            "0x14": "DOS_FAT_16_S_Hidden",
+            "0xAE": "Apple_Encrypted"
+          }
+        }
+      },
+      "OSBundleAllowUserLoad": true,
+      "DTSDKBuild": "22H368",
+      "CFBundleShortVersionString": "2.1",
+      "CFBundleSupportedPlatforms": [
+        "iPhoneOS"
+      ],
+      "OSBundleLibraries": {
+        "com.apple.kpi.mach": "8.0",
+        "com.apple.kpi.private": "8.0",
+        "com.apple.kpi.unsupported": "8.0",
+        "com.apple.kpi.iokit": "8.0",
+        "com.apple.kpi.libkern": "8.0",
+        "com.apple.kpi.bsd": "8.0"
+      },
+      "BuildMachineOSBuild": "23A344014",
+      "_PrelinkExecutableLoadAddr": 18446744005075234944,
+      "CFBundlePackageType": "KEXT",
+      "_PrelinkExecutableSourceAddr": 18446744005075234944,
+      "CFBundleDevelopmentRegion": "English",
+      "MinimumOSVersion": "18.7",
+      "CFBundleVersion": "2.1",
+      "DTXcodeBuild": "16E6052g",
+      "DTPlatformBuild": "22H368",
+      "_PrelinkBundlePath": "/System/Library/Extensions/IOStorageFamily.kext",
+      "_PrelinkExecutableSize": 8096,
+      "_PrelinkKmodInfo": 18446744005119610880,
+      "UIDeviceFamily": [
+        1
+      ],
+      "OSBundleRequired": "Local-Root",
+      "CFBundleIdentifier": "com.apple.iokit.IOStorageFamily",
+      "DTXcode": "1630",
+      "CFBundleExecutable": "IOStorageFamily",
+      "CFBundleSignature": "????",
+      "DTPlatformName": "iphoneos",
+      "NSHumanReadableCopyright": "Copyright \u00a9 1998-2014 Apple Inc. All rights reserved."
+    },
+    {
+      "CFBundleName": "AppleNANDConfigAccess",
+      "DTSDKName": "iphoneos18.7.internal",
+      "DTXcode": "1630",
+      "_PrelinkExecutableLoadAddr": 18446744005082760064,
+      "_PrelinkKmodInfo": 18446744005120835840,
+      "DTSDKBuild": "22H368",
+      "_PrelinkExecutableSize": 1451,
+      "CFBundleDevelopmentRegion": "English",
+      "CFBundleVersion": "1.0.0",
+      "BuildMachineOSBuild": "23A344014",
+      "DTPlatformName": "iphoneos",
+      "CFBundlePackageType": "KEXT",
+      "_PrelinkExecutableSourceAddr": 18446744005082760064,
+      "CFBundleSupportedPlatforms": [
+        "iPhoneOS"
+      ],
+      "OSBundleCompatibleVersion": "1.0.0",
+      "_PrelinkExecutableRelativePath": "AppleNANDConfigAccess",
+      "CFBundleInfoDictionaryVersion": "6.0",
+      "CFBundleExecutable": "AppleNANDConfigAccess",
+      "DTCompiler": "com.apple.compilers.llvm.clang.1_0",
+      "UIRequiredDeviceCapabilities": [
+        "arm64"
+      ],
+      "MinimumOSVersion": "18.7",
+      "CFBundleIdentifier": "com.apple.driver.AppleNANDConfigAccess",
+      "UIDeviceFamily": [
+        1
+      ],
+      "CFBundleSignature": "????",
+      "DTPlatformVersion": "18.7",
+      "DTXcodeBuild": "16E6052g",
+      "OSBundleLibraries": {
+        "com.apple.kpi.libkern": "8.0",
+        "com.apple.kpi.mach": "8.0",
+        "com.apple.kpi.unsupported": "8.0",
+        "com.apple.kpi.iokit": "8.0",
+        "com.apple.driver.AppleARMPlatform": "1.0.0",
+        "com.apple.kpi.bsd": "8.0"
+      },
+      "_PrelinkBundlePath": "/System/Library/Extensions/AppleNANDConfigAccess.kext",
+      "DTPlatformBuild": "22H368"
+    },
+    {
+      "UIRequiredDeviceCapabilities": [
+        "arm64"
+      ],
+      "CFBundleInfoDictionaryVersion": "6.0",
+      "DTPlatformVersion": "18.7",
+      "OSBundleCompatibleVersion": "1.2.0",
+      "CFBundleName": "IONVMeFamily",
+      "DTSDKName": "iphoneos18.7.internal",
+      "_PrelinkExecutableRelativePath": "IONVMeFamily",
+      "IOKitPersonalities": {
+        "AppleANS3CGv2Controller": {
+          "IOPropertyMatch": {
+            "role": "ANS2"
+          },
+          "CFBundleIdentifier": "com.apple.iokit.IONVMeFamily",
+          "IOProviderClass": "RTBuddyService",
+          "IOClass": "AppleANS3CGv2Controller",
+          "Chipset Name": "SSD Controller",
+          "Physical Interconnect": "Apple Fabric",
+          "Physical Interconnect Location": "Internal",
+          "Vendor Name": "Apple"
+        },
+        "AppleANS2CGv2Controller": {
+          "IOPropertyMatch": {
+            "role": "ANS2"
+          },
+          "CFBundleIdentifier": "com.apple.iokit.IONVMeFamily",
+          "IOProviderClass": "RTBuddyService",
+          "IOClass": "AppleANS2CGv2Controller",
+          "Chipset Name": "SSD Controller",
+          "Physical Interconnect": "Apple Fabric",
+          "Physical Interconnect Location": "Internal",
+          "Vendor Name": "Apple"
+        },
+        "AppleANS2CGNVMeController": {
+          "IOPropertyMatch": {
+            "role": "ANS2"
+          },
+          "CFBundleIdentifier": "com.apple.iokit.IONVMeFamily",
+          "IOProviderClass": "RTBuddyService",
+          "IOClass": "AppleANS2CGNVMeController",
+          "Chipset Name": "SSD Controller",
+          "Physical Interconnect": "Apple Fabric",
+          "Physical Interconnect Location": "Internal",
+          "Vendor Name": "Apple"
+        },
+        "NVMeSEPNotifier": {
+          "IOClass": "NVMeSEPNotifier",
+          "IOProviderClass": "AppleSEPManager",
+          "IOMatchCategory": "NVMeSEPNotifier"
+        },
+        "AppleANS3NVMeController": {
+          "IOPropertyMatch": {
+            "role": "ANS2"
+          },
+          "CFBundleIdentifier": "com.apple.iokit.IONVMeFamily",
+          "IOProviderClass": "RTBuddyService",
+          "IOClass": "AppleANS3NVMeController",
+          "Chipset Name": "SSD Controller",
+          "Physical Interconnect": "Apple Fabric",
+          "Physical Interconnect Location": "Internal",
+          "Vendor Name": "Apple"
+        },
+        "AppleANS2NVMeController": {
+          "IOPropertyMatch": {
+            "role": "ANS2"
+          },
+          "CFBundleIdentifier": "com.apple.iokit.IONVMeFamily",
+          "IOProviderClass": "RTBuddyService",
+          "IOClass": "AppleANS2NVMeController",
+          "Chipset Name": "SSD Controller",
+          "Physical Interconnect": "Apple Fabric",
+          "Physical Interconnect Location": "Internal",
+          "Vendor Name": "Apple"
+        },
+        "GenericNVMeSSD": {
+          "IOClass": "IONVMeController",
+          "CFBundleIdentifier": "com.apple.iokit.IONVMeFamily",
+          "IOProviderClass": "IOPCIDevice",
+          "IOPCIClassMatch": "0x01080200&0xffffff00",
+          "IOPCITunnelCompatible": true,
+          "IOProbeScore": 100,
+          "IOPCIPauseCompatible": true,
+          "Physical Interconnect": "PCI-Express",
+          "Vendor Name": "Generic",
+          "IOUnitName": "disk",
+          "Chipset Name": "SSD Controller",
+          "IOPCIUseDeviceMapper": true,
+          "IOPrimaryDriverTerminateOptions": true
+        },
+        "AppleEmbeddedNVMeController": {
+          "IOClass": "AppleEmbeddedNVMeController",
+          "CFBundleIdentifier": "com.apple.iokit.IONVMeFamily",
+          "IOProviderClass": "IOPCIDevice",
+          "IOPCIClassMatch": "0x01800200&0xffffff00",
+          "IOUserClientClass": "AppleNVMeUpdateUC",
+          "IOPCIMatch": "0x2002106b",
+          "Physical Interconnect": "PCI-Express",
+          "Vendor Name": "Apple",
+          "IOUnitName": "disk",
+          "Chipset Name": "SSD Controller",
+          "Physical Interconnect Location": "Internal",
+          "IOPCIUseDeviceMapper": true
+        }
+      },
+      "DTSDKBuild": "22H368",
+      "CFBundleShortVersionString": "2.1.0",
+      "CFBundleSupportedPlatforms": [
+        "iPhoneOS"
+      ],
+      "OSBundleLibraries": {
+        "com.apple.kpi.bsd": "9.0.0",
+        "com.apple.driver.AppleARMPlatform": "1.0.0",
+        "com.apple.driver.IOSlaveProcessor": "1.0",
+        "com.apple.driver.AppleNANDConfigAccess": "1.0.0",
+        "com.apple.driver.AppleSMC": "1.0.0",
+        "com.apple.driver.RTBuddy": "1.0.0",
+        "com.apple.iokit.IOPCIFamily": "1.0.0",
+        "com.apple.kpi.unsupported": "9.0.0",
+        "com.apple.driver.AppleMobileFileIntegrity": "1.0.1",
+        "com.apple.kpi.iokit": "9.0.0",
+        "com.apple.kpi.mach": "9.0.0",
+        "com.apple.driver.AppleA7IOP": "1.0.0",
+        "com.apple.driver.AppleEmbeddedPCIE": "1.0.0",
+        "com.apple.iokit.IOHIDFamily": "1.0",
+        "com.apple.iokit.IOStorageFamily": "1.7.0",
+        "com.apple.kpi.private": "9.0.0",
+        "com.apple.kpi.libkern": "9.0.0"
+      },
+      "BuildMachineOSBuild": "23A344014",
+      "_PrelinkExecutableLoadAddr": 18446744005082761536,
+      "CFBundlePackageType": "KEXT",
+      "_PrelinkExecutableSourceAddr": 18446744005082761536,
+      "CFBundleDevelopmentRegion": "English",
+      "MinimumOSVersion": "18.7",
+      "CFBundleVersion": "2.1.0",
+      "DTXcodeBuild": "16E6052g",
+      "DTPlatformBuild": "22H368",
+      "_PrelinkBundlePath": "/System/Library/Extensions/IONVMeFamily.kext",
+      "CFBundleGetInfoString": "2.1.0, Copyright \u00a9 2020 Apple Inc. All rights reserved.",
+      "_PrelinkExecutableSize": 67743,
+      "_PrelinkKmodInfo": 18446744005120836096,
+      "IOKitPersonalities_x86_64": {
+        "GenericInternalNVMeSSD": {
+          "IOClass": "IONVMeController",
+          "CFBundleIdentifier": "com.apple.iokit.IONVMeFamily",
+          "IOProviderClass": "IOPCIDevice",
+          "IOProbeScore": 200,
+          "IOPCIMatch": "0xa804144d 0xa806144d",
+          "IOPCIPauseCompatible": true,
+          "Physical Interconnect": "PCI-Express",
+          "Vendor Name": "Apple",
+          "IOUnitName": "disk",
+          "Chipset Name": "SSD Controller",
+          "Physical Interconnect Location": "Internal",
+          "IOPCIUseDeviceMapper": true,
+          "IOPrimaryDriverTerminateOptions": true
+        },
+        "GenericNVMeSSD": {
+          "IOClass": "IONVMeController",
+          "CFBundleIdentifier": "com.apple.iokit.IONVMeFamily",
+          "IOProviderClass": "IOPCIDevice",
+          "IOPCIClassMatch": "0x01080200&0xffffff00",
+          "IOPCITunnelCompatible": true,
+          "IOProbeScore": 100,
+          "IOPCIPauseCompatible": true,
+          "Physical Interconnect": "PCI-Express",
+          "Vendor Name": "Generic",
+          "IOUnitName": "disk",
+          "Chipset Name": "SSD Controller",
+          "Physical Interconnect Location": "Internal",
+          "IOPCIUseDeviceMapper": true,
+          "IOPrimaryDriverTerminateOptions": true
+        },
+        "AppleANS2Controller": {
+          "IOClass": "AppleANS2Controller",
+          "CFBundleIdentifier": "com.apple.iokit.IONVMeFamily",
+          "IOProviderClass": "IOPCIDevice",
+          "IOPCITunnelCompatible": true,
+          "IONameMatch": [
+            "ANS2"
+          ],
+          "IOPCIPauseCompatible": true,
+          "Physical Interconnect": "PCI-Express",
+          "Vendor Name": "Apple",
+          "IOUnitName": "disk",
+          "Chipset Name": "SSD Controller",
+          "Physical Interconnect Location": "Internal",
+          "IOPCIUseDeviceMapper": true
+        },
+        "AppleS3ELabController": {
+          "IOClass": "AppleS3ELabController",
+          "CFBundleIdentifier": "com.apple.iokit.IONVMeFamily",
+          "IOProviderClass": "IOPCIDevice",
+          "IOPCIClassMatch": "0x01800200&0xffffff00",
+          "IOPCITunnelCompatible": true,
+          "IOPCIMatch": "0x2002106b",
+          "IOPCIPauseCompatible": true,
+          "Physical Interconnect": "PCI-Express",
+          "Vendor Name": "Apple",
+          "IOUnitName": "disk",
+          "Chipset Name": "SSD Controller",
+          "Physical Interconnect Location": "Internal",
+          "IOPCIUseDeviceMapper": true
+        }
+      },
+      "OSBundleRequired": "Local-Root",
+      "UIDeviceFamily": [
+        1
+      ],
+      "OSBundleLibraries_x86_64": {
+        "com.apple.kpi.bsd": "9.0.0",
+        "com.apple.driver.AppleMobileFileIntegrity": "1.0.1",
+        "com.apple.kpi.libkern": "9.0.0",
+        "com.apple.iokit.IOPCIFamily": "1.0.0",
+        "com.apple.kpi.iokit": "9.0.0",
+        "com.apple.kpi.mach": "9.0.0",
+        "com.apple.kpi.unsupported": "9.0.0",
+        "com.apple.iokit.IOStorageFamily": "1.7.0",
+        "com.apple.kpi.private": "9.0.0",
+        "com.apple.iokit.IOReportFamily": "1.0"
+      },
+      "CFBundleIdentifier": "com.apple.iokit.IONVMeFamily",
+      "DTXcode": "1630",
+      "CFBundleExecutable": "IONVMeFamily",
+      "CFBundleSignature": "????",
+      "DTPlatformName": "iphoneos",
+      "DTCompiler": "com.apple.compilers.llvm.clang.1_0"
+    }
+  ],
+  "purpose": "Reference for Apple service layering, dependencies and matching only; no Apple NAND/NVMe hardware code reused."
+}

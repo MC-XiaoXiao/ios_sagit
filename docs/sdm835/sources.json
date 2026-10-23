@@ -1,0 +1,48 @@
+{
+  "linux_tag": "v6.12",
+  "xiaomi_commit": "3fb35ef1f0fe1f714be3df39724cbc8eb217181e",
+  "sources": [
+    {
+      "file": "xiaomi-msm8998.dtsi",
+      "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/arch/arm/boot/dts/qcom/msm8998.dtsi",
+      "sha256": "0fd6fd923349908a5fda2eeb0c2e1a548fde265666c81832cdb6d9ad7d1010ea",
+      "bytes": 87265
+    },
+    {
+      "file": "linux-msm8998.dtsi",
+      "url": "https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux/+/refs/tags/v6.12/arch/arm64/boot/dts/qcom/msm8998.dtsi?format=TEXT",
+      "sha256": "a939e05d08e3f239877d300801fbc7afce6617fc24347f94683238fe65793392",
+      "bytes": 74648
+    },
+    {
+      "file": "linux-msm_serial.c",
+      "url": "https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux/+/refs/tags/v6.12/drivers/tty/serial/msm_serial.c?format=TEXT",
+      "sha256": "6c1f10150427e93de533b217ddc58d7b4facba53e8b1be8df8b581e27241db16",
+      "bytes": 47747
+    },
+    {
+      "file": "xiaomi-sagit-msm8998-mtp.dts",
+      "url": "https://api.github.com/repos/MiCode/Xiaomi_Kernel_OpenSource/contents/arch/arm/boot/dts/qcom/sagit-msm8998-mtp.dts?ref=3fb35ef1f0fe1f714be3df39724cbc8eb217181e",
+      "sha256": "c7a523a7fc82336915bf825d114a3c2a7100a2f18a578fd30e8619a3087079b2",
+      "bytes": 1012
+    },
+    {
+      "file": "xiaomi-sagit-msm8998-mtp.dtsi",
+      "url": "https://api.github.com/repos/MiCode/Xiaomi_Kernel_OpenSource/contents/arch/arm/boot/dts/qcom/sagit-msm8998-mtp.dtsi?ref=3fb35ef1f0fe1f714be3df39724cbc8eb217181e",
+      "sha256": "b5ea7890a131e642931a137ea77aee35bc246691b62f290b7745871c96d537f8",
+      "bytes": 26567
+    },
+    {
+      "file": "xiaomi-msm8998-pinctrl.dtsi",
+      "url": "https://api.github.com/repos/MiCode/Xiaomi_Kernel_OpenSource/contents/arch/arm/boot/dts/qcom/msm8998-pinctrl.dtsi?ref=3fb35ef1f0fe1f714be3df39724cbc8eb217181e",
+      "sha256": "4ec03f880d7abcf002700731ab67fe33cec76044a80b7f89a92b72255046d9c6",
+      "bytes": 63305
+    },
+    {
+      "file": "xiaomi-msm8998-mtp.dtsi",
+      "url": "https://api.github.com/repos/MiCode/Xiaomi_Kernel_OpenSource/contents/arch/arm/boot/dts/qcom/msm8998-mtp.dtsi?ref=3fb35ef1f0fe1f714be3df39724cbc8eb217181e",
+      "sha256": "6d5e7a7cf3961c9e1dd2a8752a1873c41b90d8bae46d65c77e4ac8fff1fa90cc",
+      "bytes": 15255
+    }
+  ]
+}

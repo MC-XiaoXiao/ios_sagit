@@ -1,0 +1,23 @@
+diff --git a/Config/sagit.conf b/Config/sagit.conf
+index 69e5d98..cc8c691 100644
+--- a/Config/sagit.conf
++++ b/Config/sagit.conf
+@@ -7,4 +7,5 @@ DSDT_FILE="Platforms/Msm8998ACPI/xiaomi/sagit/dsdt.asl"
+ # Generate Boot Configuration
+ BOOTIMG_OS_PATCH_LEVEL="2022-08"
+ BOOTIMG_OS_VERSION=12.0.0
++BOOTIMG_HEADER_VERSION=0
+ 
+diff --git a/build.sh b/build.sh
+index f2236a0..0b7eb1d 100755
+--- a/build.sh
++++ b/build.sh
+@@ -81,7 +81,7 @@ function _build(){
+ 		--tags_offset 0x00000000 \
+ 		--os_version "${BOOTIMG_OS_VERSION}" \
+ 		--os_patch_level "${BOOTIMG_OS_PATCH_LEVEL}" \
+-		--header_version 1 \
++		--header_version "${BOOTIMG_HEADER_VERSION:-1}" \
+ 		-o "${OUTDIR}/boot-${DEVICE}.img" \
+ 		||return "$?"
+ 	echo "Build done: ${OUTDIR}/boot-${DEVICE}.img"

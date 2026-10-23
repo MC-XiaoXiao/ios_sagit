@@ -1,0 +1,21 @@
+--- a/bsd/kern/bsd_init.c
++++ b/bsd/kern/bsd_init.c
+@@ -939,6 +939,18 @@
+ 		require_rootauth = TRUE;
+ #endif // XNU_TARGET_OS_OSX && defined(__arm64__)
+ 
++#if (DEVELOPMENT || DEBUG) && defined(ARM64_BOARD_CONFIG_SDM835)
++		/* An explicit local bring-up mode for an offline rebuilt filesystem.
++		 * Do not pretend it has an Apple seal or change the rootauth ioctl.
++		 * Release kernels retain the original authentication requirement. */
++		int development_unsealed_root = 0;
++		if (PE_parse_boot_argn("development-unsealed-root", &development_unsealed_root,
++		    sizeof(development_unsealed_root)) && development_unsealed_root == 1) {
++			printf("[XNU development] explicitly allowing an unsealed APFS root\n");
++			require_rootauth = FALSE;
++		}
++#endif
++
+ 		if (require_rootauth) {
+ 			/* enforce sealedness */
+ 			int autherr = VNOP_IOCTL(rootvnode, FSIOC_KERNEL_ROOTAUTH, NULL, 0, vfs_context_kernel());

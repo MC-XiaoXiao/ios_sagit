@@ -1,0 +1,36 @@
+{
+  "synaptics_dsx_core.c": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/sagit-n-oss/drivers/input/touchscreen/synaptics_dsx_force/synaptics_dsx_core.c",
+    "sha256": "de0a223ea53845b0a02f19b0cb8dd8c2dfd56877905ec4398e04f7bdc75dec4b"
+  },
+  "synaptics_dsx_i2c.c": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/sagit-n-oss/drivers/input/touchscreen/synaptics_dsx_force/synaptics_dsx_i2c.c",
+    "sha256": "3c0e98a136c03e8d53eb4d793c1d95bc3611664a2ceac935ece463768f8684b7"
+  },
+  "synaptics_dsx_core.h": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/sagit-n-oss/drivers/input/touchscreen/synaptics_dsx_force/synaptics_dsx_core.h",
+    "sha256": "6c8c2ca947a9920009fffef978dc2f72245a72d4bebfef2331ec6b2cc908daa5"
+  },
+  "i2c-qup.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/i2c/busses/i2c-qup.c",
+    "sha256": "cb273214ed20a28e423c1d55299b0481ee30458296b43607985e1a5280c03769"
+  },
+  "sagit-touch-routing.dtsi": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/sagit-n-oss/arch/arm/boot/dts/qcom/sagit-msm8998-mtp.dtsi",
+    "sha256": "b5ea7890a131e642931a137ea77aee35bc246691b62f290b7745871c96d537f8",
+    "copied_from": "docs/gpio/reference/fingerprint-routing.dtsi"
+  },
+  "msm8998-i2c.dtsi": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/arch/arm64/boot/dts/qcom/msm8998.dtsi",
+    "sha256": "a939e05d08e3f239877d300801fbc7afce6617fc24347f94683238fe65793392",
+    "copied_from": "docs/sdm835/reference/linux-msm8998.dtsi"
+  },
+  "IOHIDDeviceKeys.h": {
+    "url": "https://raw.githubusercontent.com/apple-oss-distributions/IOHIDFamily/main/IOHIDFamily/IOHIDDeviceKeys.h",
+    "sha256": "fe4e8297a7efc34c505f0321404a6cee2e74e2c455449189fc57c7453e092319"
+  },
+  "APPLE_LICENSE": {
+    "url": "https://raw.githubusercontent.com/apple-oss-distributions/IOSerialFamily/main/APPLE_LICENSE",
+    "sha256": "359a21ed59e82096455398ea10c5bc8c3ff28e7acf7935b77751d70e3630fc95"
+  }
+}

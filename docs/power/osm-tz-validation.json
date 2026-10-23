@@ -1,0 +1,241 @@
+{
+  "date": "2026-10-20",
+  "scope": "Offline stock TZ/XBL analysis, OSM v2 corrections and host/build validation. No device access, flashing or hardware tests.",
+  "hardware_tested": false,
+  "firmware": {
+    "path": "build/usb/firmware/stock/tz.mbn",
+    "bytes": 1912832,
+    "sha256": "d2c417987bb4210eb774b11c3cd61aa5cd4b1260d1dd3313506490ee9026d911"
+  },
+  "findings": [
+    "All eleven old fixed-register admission reads are denied by stock SCM and silently return success/value zero. They did not establish missing TZ initialization.",
+    "The v2 table differs from the common/no-TZ v1 layout. SEQ55/56 contain protected fixed values 0x2c5ffd/0x2f5ffd; SCM silently drops writes to them.",
+    "The TZ caller discards the initializer return value. Eight compatible boot values cannot prove later protected initialization completed.",
+    "XBL ClockDxe configures CPU PLL/mux state; CPU Agera lock status differs from GCC Fabia. No unproven CPU PLL direct access was added."
+  ],
+  "implemented": [
+    "Exact unconditional SCM OSM subset enforced by engine and transport: SEQ15/31/32/57/58/72/76/88 in both clusters.",
+    "Read-only admission checks the eight verified v2 boot values per cluster; old unreadable markers are removed.",
+    "SEQ55/56 remain unchanged. Only the upper MEM-ACC threshold pair is written, including zero threshold predecessor0xff and corners1/2.",
+    "Version2 80-byte handoff records profile1 and both0xff check masks; commit-last publication and rejection of old/incomplete contracts.",
+    "Diagnostic names and build metadata distinguish table compatibility from protected post-init completion.",
+    "Reproducible ELF audit verifies handlers, version-selected descriptors, source hashes, constants and production header drift."
+  ],
+  "validation": {
+    "full_osm_suite": "passed: generator check, six driver test targets, 3072 vendor differential cases and64 integrated synthetic bin/revision/silicon combinations",
+    "asan_ubsan": "passed: complete OSM suite and final changed CPRh/OSM/handoff contracts",
+    "tz_audit_tests": 16,
+    "handoff_python_tests": 4,
+    "boot_bridge_python_tests": 49,
+    "perfcontrol_integration_tests": 4,
+    "QcomOSM_version": "1.4.0",
+    "arm64_drivers": "GenericClockController, QcomPowerController and QcomOSM verification passed",
+    "collection": {
+      "status": "passed",
+      "kext_count": 23,
+      "sha256": "a1ec9649020f6ada8c1380ba5712faf37db4e642077e2b9d79e9b4e16fce2cff"
+    },
+    "efi_bridge": "build passed; contract2, initial DT version0, CPU count8",
+    "warnings": "Existing DTS simple_bus_reg/unique_unit_address warnings; collection verifier has no errors or warnings."
+  },
+  "remaining_limit": {
+    "protected_post_init_completion": "Unobserved: TZ post-table clock/fuse setup can fail after the eight parameters are written, and its caller ignores failure.",
+    "candidate_marker": "Both OSM banks +0x1050 receive0x179d4020 late in post-init. They are outside SCM permissions; nonsecure direct-read permission is unproven. No bypass read was added.",
+    "retained_prerequisite": "Successful original TZ protected post-init and XBL CPU PLL/mux setup. Table compatibility is not full firmware attestation or proof of this prerequisite.",
+    "runtime": "Actual frequency/voltage transitions, stability and thermal behavior remain untested."
+  },
+  "source_files": [
+    {
+      "path": "drivers/clock/QcomOSM/OSMTZContract.h",
+      "bytes": 1789,
+      "sha256": "1dbe36fce4cddefa3ac66f06530dc447b92f197d8e17fc233a171c5ce1deb249"
+    },
+    {
+      "path": "drivers/clock/QcomOSM/OSMInitialization.h",
+      "bytes": 16623,
+      "sha256": "a3d3a3e50703137cdae07e8575a9bf7dbd0c0c8c1ddd4d3e4d8dda2ea64e223b"
+    },
+    {
+      "path": "drivers/clock/QcomOSM/OSMSecureIO.h",
+      "bytes": 2306,
+      "sha256": "6fa7255f9fdec9b640d4f65b3bb8857859e38a6c107900c1d2c7d46027e74b31"
+    },
+    {
+      "path": "drivers/clock/QcomOSM/OSMHandoff.h",
+      "bytes": 3858,
+      "sha256": "07c4006aa80c483f2a41399031371c4b611858ec70135ab96fb65c05ca9b2245"
+    },
+    {
+      "path": "drivers/clock/QcomOSM/CPRhInitialization.h",
+      "bytes": 8885,
+      "sha256": "6c29ba31fd9ecdb0307c1da610c13d6c1609b556afdf020b9fd3bbb3b9dfe3df"
+    },
+    {
+      "path": "drivers/clock/QcomOSM/QcomOSM.cpp",
+      "bytes": 11564,
+      "sha256": "1999d24d7297d27ed9eaef00a3be40906766f3c4448e226592ebd8cc5d067df8"
+    },
+    {
+      "path": "drivers/clock/QcomOSM/Info.plist",
+      "bytes": 1794,
+      "sha256": "6ff7be513da2d61468e42a0c4dcb62edb9d34cdb129db29a9607cf0a64240533"
+    },
+    {
+      "path": "boot/bridge/osm_handoff.cpp",
+      "bytes": 12369,
+      "sha256": "89cb84e418622ac637b9bc9c3c3eb8d61b020ac322174606b4c4ca93648a8b9f"
+    },
+    {
+      "path": "scripts/osm_handoff.py",
+      "bytes": 1951,
+      "sha256": "15d1ceed1203917a0962397a1b5dd4a70821695a6bf45f5cf392e75fe7572f7a"
+    },
+    {
+      "path": "scripts/build-bridge.py",
+      "bytes": 123286,
+      "sha256": "f943a802604fb7e73a06478527fa9219cfd8faeb1ad1db95a63ee1f6025192df"
+    },
+    {
+      "path": "scripts/audit-osm-tz.py",
+      "bytes": 24261,
+      "sha256": "08977fe9848194c4c11e24840a040c4b91ba7a8f65582ef7b078f49e4295b82e"
+    },
+    {
+      "path": "tests/osm_initialization_test.cpp",
+      "bytes": 18613,
+      "sha256": "0f3b80d6541f28e0349d3c3e5145f82665302adfa0abe4dde6cbfabda4246835"
+    },
+    {
+      "path": "tests/osm_handoff_test.cpp",
+      "bytes": 4126,
+      "sha256": "575710a3f86c99244d5c395157b1c7fd5e4d42b54fa28b49b120a4eef1565e7b"
+    },
+    {
+      "path": "tests/cprh_initialization_test.cpp",
+      "bytes": 7001,
+      "sha256": "ff3696ad36b63e434ed78933949d9bcc6885930cfcdf7a1e2893b7022db8eece"
+    },
+    {
+      "path": "tests/test_osm_handoff.py",
+      "bytes": 4485,
+      "sha256": "b3c966e075d016b758d52066b189ef70c006dc137bc7e71212784cd07ea5d41d"
+    },
+    {
+      "path": "tests/test_osm_tz_audit.py",
+      "bytes": 10223,
+      "sha256": "0ecfb61ac86cc327ebabde325c83ff9f4c13c07b9ca9b3485fec73aafb0b94b5"
+    },
+    {
+      "path": "Makefile",
+      "bytes": 22831,
+      "sha256": "6d1abca51bd1eea34afae078c22d1f72d3cd43847428a8538b041fcd50e53c28"
+    },
+    {
+      "path": "README.md",
+      "bytes": 28505,
+      "sha256": "4d11727c1896e6d64ccb4d51adfe1341057df082cbfa7acbaf82f227dea07b7d"
+    },
+    {
+      "path": "docs/power/osm-clock-firmware-audit.json",
+      "bytes": 5957,
+      "sha256": "351783d051489af672b994fc47219b2d9d99ad77bb086e4ab5fa1024d7e18850"
+    },
+    {
+      "path": "docs/power/osm-tz-initialization-audit.json",
+      "bytes": 21545,
+      "sha256": "c5c6371629dbcad8f0999ddca41ac7753ebe96c27e1d49547756811a8b8d7bfd"
+    },
+    {
+      "path": "docs/power/osm-tz-scm-audit.json",
+      "bytes": 7131,
+      "sha256": "e81d4d1fc9c13d84d4d0d0158459b525719f61e66967021e3e82ffadf203115a"
+    },
+    {
+      "path": "docs/power/osm-tz-boot-chain-audit.json",
+      "bytes": 9104,
+      "sha256": "8729581cc603adbacef7988bef79ec8f246c14b2f47559e0262f915ca9a63285"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "build/osm-tz-audit/kernelcache",
+      "bytes": 22953984,
+      "sha256": "a1ec9649020f6ada8c1380ba5712faf37db4e642077e2b9d79e9b4e16fce2cff"
+    },
+    {
+      "path": "build/osm-tz-audit/bridge/XnuBridge.efi",
+      "bytes": 23052800,
+      "sha256": "47e319ad7d311d87c1f709d2568c1359b1f0348d582c5b411e137cf31a6eb2c0"
+    },
+    {
+      "path": "build/osm-tz-audit/bridge/build.json",
+      "bytes": 4179,
+      "sha256": "9b0d491e44c566864cecf2606efd22cb623bdfdb1755f6ab0ee26db9b320338e"
+    }
+  ],
+  "logs": [
+    {
+      "path": "build/osm-tz-audit/test-osm.log",
+      "bytes": 3396,
+      "sha256": "98e53d38cc28730dff5c8c97eaaf9284a63c30991da2556339ae589189d6383a"
+    },
+    {
+      "path": "build/osm-tz-audit/test-osm-sanitized.log",
+      "bytes": 1253,
+      "sha256": "4abb30c48760f558881df51f0e0b86a21113736c8fcbf90ffedca7eaa2d06d5b"
+    },
+    {
+      "path": "build/osm-tz-audit/test-final-contract.log",
+      "bytes": 242,
+      "sha256": "6ce6776862215868f7cea9aa7f674bda3040526a7861aad32d82ead0bc5ab753"
+    },
+    {
+      "path": "build/osm-tz-audit/test-handoff-final.log",
+      "bytes": 596,
+      "sha256": "26ab8114efd524554413bc02ef31ad6a4adec532039e2f6635563c5c27ca10a2"
+    },
+    {
+      "path": "build/osm-tz-audit/test-tz-audit.log",
+      "bytes": 2083,
+      "sha256": "852c587644de379ed33470c149c8f89e97f6299a2c7f108cf43f5f656763609e"
+    },
+    {
+      "path": "build/osm-tz-audit/test-boot-bridge.log",
+      "bytes": 855,
+      "sha256": "1f0a1eeb5bed314075033d2d1e61624f3314a06876ac242fe0e8864df62cb697"
+    },
+    {
+      "path": "build/osm-tz-audit/test-perfcontrol.log",
+      "bytes": 244,
+      "sha256": "8fc16cdbba1355bd3e071ef2150bb9af3dc5be05688b90bd36b4c49a33de29ad"
+    },
+    {
+      "path": "build/osm-tz-audit/build-power.log",
+      "bytes": 2254,
+      "sha256": "f15d6523cad27ba52b7c5abea8c836a0729b1f99ebb597d37eb9356cc1910c8a"
+    },
+    {
+      "path": "build/osm-tz-audit/build-bridge.log",
+      "bytes": 625,
+      "sha256": "a66bdebba2188a236a9a5e5cf9a2c507c8bb976ae2871047890bf1ad9c331c8e"
+    },
+    {
+      "path": "build/osm-tz-audit/verify-drivers.log",
+      "bytes": 114,
+      "sha256": "edac8d5c519ea2a5538c0689678dafaed9c008cee0bd525f30f5bd5b4a2621fb"
+    },
+    {
+      "path": "build/osm-tz-audit/verify-collection.log",
+      "bytes": 4876,
+      "sha256": "d8a8226a343e4c5f45d72836ca02dfddb8f45f4ef4c9deb1fede0a3a03728db3"
+    }
+  ],
+  "commands": [
+    "python3 scripts/audit-osm-tz.py",
+    "make test-osm",
+    "make test-osm-sanitized",
+    "python3 -m unittest discover -s tests -p test_osm_tz_audit.py -v",
+    "python3 scripts/toolchain.py pack-drivers --target SDM835 --collection power --driver-output build/osm-tz-audit/Extensions --output build/osm-tz-audit/kernelcache --kernelcache build/ios18-kext-analysis/kernelcache.release.ipad7c.macho -j 3",
+    "python3 scripts/build-bridge.py --kernel build/osm-tz-audit/kernelcache --cpu-osm-handoff --cpus 8 --output build/osm-tz-audit/bridge"
+  ]
+}

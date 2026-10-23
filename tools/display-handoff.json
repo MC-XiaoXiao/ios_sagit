@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "compatible": "qcom,msm8998",
+  "physical_width_mm": 64,
+  "physical_height_mm": 114,
+  "refresh_hz": 60,
+  "display_scale": 3,
+  "display_rotation": 0,
+  "display_uuid": "D60C6B4E-4EDA-4456-9C57-960E7509100D",
+  "backlight": {
+    "compatible": "qcom,pmi8998-wled",
+    "spmi_sid": 3,
+    "control_base": 55296,
+    "sink_base": 55552,
+    "strings_mask": 3,
+    "sync_delay_us": 1000
+  },
+  "source": "Vendor panel DT: qcom,mdss_dsi_jdi_fhd_r63452_cmd; firmware topology is checked at EFI runtime."
+}

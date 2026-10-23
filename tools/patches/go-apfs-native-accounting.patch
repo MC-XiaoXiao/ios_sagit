@@ -1,0 +1,16 @@
+--- a/pkg/apfswrite/super.go
++++ b/pkg/apfswrite/super.go
+@@ -260,7 +260,12 @@
+ 	vsb.NumFiles = b.numFiles
+ 	vsb.NumDirectories = b.numDirs
+ 	vsb.NumSymlinks = b.numSymlinks
+-	vsb.TotalBlocksAlloced = b.postIPBlocks
++	// Native APFS adds current tree blocks to (total allocated - freed) to
++	// check FsAllocCount. This counter describes stream data, not the
++	// contiguous output span: that span includes metadata and, for COW,
++	// excludes retained extents. fileDataBlocks includes retained file and
++	// xattr streams once per physical owner, including hardlink groups.
++	vsb.TotalBlocksAlloced = b.fileDataBlocks
+ 	vsb.VolUUID = b.volUUID
+ 	vsb.FsFlags = apfsFSUnencrypted
+ 	copy(vsb.FormattedBy.ID[:], formatterID)

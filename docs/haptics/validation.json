@@ -1,0 +1,122 @@
+{
+  "schema": 1,
+  "date": "2026-10-22",
+  "status": "offline-passed",
+  "hardware_tested": false,
+  "device_connected": false,
+  "installed": false,
+  "default_hardware_write_ownership": false,
+  "native_uikit_core_haptics_bridge": false,
+  "checks": [
+    {
+      "command": "make haptics",
+      "status": "passed",
+      "log": "build/haptics/package.log",
+      "scope": "arm64 Kext/client cross-link, actual SDK compile, vtables/imports, model + adapter host tests, 4 integration tests, RTC/power tests, 5 patcher tests, collection link and independent structural gate"
+    },
+    {
+      "command": "make test-haptics-sanitized",
+      "status": "passed",
+      "log": "build/haptics/sanitized.log",
+      "scope": "ASan/UBSan hardware model and actual service/user-client host execution"
+    },
+    {
+      "command": "make verify-haptics",
+      "status": "passed",
+      "log": "build/haptics/verify.log",
+      "scope": "29-Kext dependency closure, Mach-O, structors/imports, ARMv8-A instruction profile and retained kernel contents"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p 'test_boot_bridge.py'",
+      "status": "passed",
+      "tests": 49,
+      "log": "build/haptics/bridge-regression.log"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p 'test_driver_toolchain.py'",
+      "status": "passed",
+      "tests": 19,
+      "log": "build/haptics/toolchain-regression.log"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p 'test_haptics_integration.py'",
+      "status": "passed",
+      "tests": 4,
+      "log": "build/haptics/integration.log"
+    }
+  ],
+  "kernelcache": {
+    "status": "passed",
+    "sha256": "e12d636f4c6858620f71cee6ae90fe0a7c13cfc1c2d1f6a3a673a807872fe24b",
+    "bytes": 25690112,
+    "kext_count": 29,
+    "errors": [],
+    "warnings": [],
+    "scope": "offline structure and listed invariants; runtime/private ABI/crypto POST are not certified"
+  },
+  "products": {
+    "build/output/Extensions/PMI8998Haptics.kext/Contents/MacOS/PMI8998Haptics": {
+      "sha256": "9233ce2b3f34cb222193b9aab9e9aff02d925c11c710d068945bde81d854e5ea",
+      "bytes": 97856
+    },
+    "build/output/hapticsctl": {
+      "sha256": "91ca7e778e6f0228e2522b692c8d9172152de2438c64a8be510e465e3a717fb2",
+      "bytes": 50896
+    },
+    "build/output/kernelcache.haptics": {
+      "sha256": "e12d636f4c6858620f71cee6ae90fe0a7c13cfc1c2d1f6a3a673a807872fe24b",
+      "bytes": 25690112
+    },
+    "build/output/kernelcache.haptics.manifest.json": {
+      "sha256": "d7e3051666e852d1f70ecbfa77d97b8c8c873525286a1b6cf76580d6534be93d",
+      "bytes": 2470
+    },
+    "build/output/kernelcache.haptics.verification.json": {
+      "sha256": "9a579553582a225ca689aaa18b85ad02f3661180df823661fc5000c27ed81597",
+      "bytes": 6172
+    }
+  },
+  "source_sha256": {
+    "Makefile": "809a4e708a9975773ae033854f783310d6901e0d69f210a3045ee409855d767b",
+    "device_trees/xiaomi-sagit.dts": "e5234aba65d6f97ff06b6ab3e955eb067fa2e08e46628134d21489b4417c72e2",
+    "docs/haptics/ios18-model.json": "2890ad51f3f0b693abcd582521bb3d2312ea4876b86652d65afe88e088a8c49e",
+    "docs/haptics/native-decompile.txt": "6d17aae6f8a75fa9e290a4c87e0fa49bbe29f1f6241dbf2b5d7c26cca28371dd",
+    "docs/haptics/native-interface.json": "1c81a2e8ea3c11d4e3c5ad13d45ee5198aa6b20b83e37d3670e1f58875affc3a",
+    "docs/haptics/reference/msm-pmi8998.dtsi": "b785eeb7df5a6a22eecdd7068d6fb594f4f6ad34492626bfd68287233be91984",
+    "docs/haptics/reference/qpnp-haptic.c": "30e25629b8790ac2c729f1b2dcc9a3ed9f631da91d5b0fbc6b9684b08a40f013",
+    "docs/haptics/reference/qpnp-haptic.txt": "c4ccd9408d0bca538390746201e110325ad09e51a552c0578895a323b1201847",
+    "docs/haptics/reference/sagit-msm8998-mtp.dtsi": "b5ea7890a131e642931a137ea77aee35bc246691b62f290b7745871c96d537f8",
+    "docs/haptics/reference/sources.json": "c654ffcdbef15580fea4e05be643928e298ccf3bd84c94ad834dbd665cec4a1d",
+    "scripts/analyze-haptics.py": "f5495a6efcba14cc724cdea5ff991a194894e9d8722087190983011b175c9a04",
+    "scripts/build-bridge.py": "75537c9055204ebdb368be72246f407fb2fbae8ba3f88b5ccaead145aed27e1b",
+    "scripts/toolchain.py": "dae2b092c957e4ddbafaa6b5e1f2452210d4d8f8a17d57038f945e496d66c604",
+    "drivers/Build.json": "de39ce9bfa3861b8a49eabfc73881ef3b02888d795229f96a9c8ec8522a86afa",
+    "drivers/input/PMI8998Haptics/Info.plist": "5d955e0ba5a6bc4aa3b8c2dac9c3614a4a340c46ebfe9be61d9b17e7430c89e9",
+    "drivers/input/PMI8998Haptics/LICENSE": "aaf135472f81c5b4a0dca9367e5bb5e9750032b5bebe5442b36e4c0a47430df3",
+    "drivers/input/PMI8998Haptics/PMI8998Haptics.cpp": "7e7fd8c69bb02d7c9b14e52ca121afde66cbe3af6adbc655ae03b97737777370",
+    "drivers/input/PMI8998Haptics/PMI8998Haptics.h": "b0eec8913c8247a77f8431dad74e4c23d37d08d03da926f0ec2c25b043b18abe",
+    "drivers/input/PMI8998Haptics/PMI8998HapticsHardware.h": "d7255376acbab2ac8373895334e31cc59710954c66ea0249e1139216124a699f",
+    "drivers/input/PMI8998Haptics/PMI8998HapticsUserClient.cpp": "3e4bc9956231c68e16b9e69001e0efb0b0928032f18cdec518708ec16b46217f",
+    "drivers/input/PMI8998Haptics/PMI8998HapticsUserClient.h": "8228cb4a0f64e27c4aa67689e669795240be1ee1ca1aec81d9b6b60e38292c60",
+    "drivers/include/HapticsProtocol.h": "206cf72db1ebe3ce2301d11a285d43fa287f52864d3fd984f8b1e989e15c93b6",
+    "tests/haptics_runtime_test.cpp": "a5d0e086b1c71e2089f813d4ba9b2bb3eaa6bfff9e9bc1b0f3708fa71313b628",
+    "tests/haptics_shim/IOKit/IOLib.h": "91f7f839d719b71391952548150f7794d9ed0c6bd5b241bc96c77ba1b50db107",
+    "tests/haptics_shim/IOKit/IOTimerEventSource.h": "91f7f839d719b71391952548150f7794d9ed0c6bd5b241bc96c77ba1b50db107",
+    "tests/haptics_shim/IOKit/IOUserClient.h": "91f7f839d719b71391952548150f7794d9ed0c6bd5b241bc96c77ba1b50db107",
+    "tests/haptics_shim/IOKit/pwr_mgt/IOPM.h": "91f7f839d719b71391952548150f7794d9ed0c6bd5b241bc96c77ba1b50db107",
+    "tests/haptics_shim/KernelShim.h": "80cfca3d18a6696f039bcdaab1fb4528559f34bf62cd079fd17a4689d9e26891",
+    "tests/haptics_shim/QcomSPMI.h": "91f7f839d719b71391952548150f7794d9ed0c6bd5b241bc96c77ba1b50db107",
+    "tests/haptics_shim/kern/clock.h": "91f7f839d719b71391952548150f7794d9ed0c6bd5b241bc96c77ba1b50db107",
+    "tests/haptics_shim/machine/machine_routines.h": "91f7f839d719b71391952548150f7794d9ed0c6bd5b241bc96c77ba1b50db107",
+    "tests/haptics_test.cpp": "1099926e0f011ba03b2da30578ed4f8a9ec38f0c52ec15fd85bba0a73d5104ef",
+    "tests/test_haptics_integration.py": "e20bca5350f08c028a74b50be5e1928f17d8f1aa22ee207cf6b1980da11e865c",
+    "tools/hapticsctl/hapticsctl.cpp": "178cb605897a4d6d76a14983fc346cee9e763e7296fbf6fd2dc958b3e2c2884e"
+  },
+  "limitations": [
+    "No hardware, runtime matching, SPMI permission, motor response or sleep validation.",
+    "Default ownership flag is zero; a real AP-exclusive hardware handoff has not been implemented or validated.",
+    "Software deadlines and 5 ms polling depend on a functioning kernel/SPMI; total bus failure can leave physical output uncertain.",
+    "Core Haptics/UIKit/AOP audio playback bridge and native user-space consumers remain unimplemented.",
+    "The haptics-runtime graphics collection was not built or deployed."
+  ]
+}

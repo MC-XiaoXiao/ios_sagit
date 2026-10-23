@@ -1,0 +1,120 @@
+{
+  "schema": 1,
+  "sources": {
+    "BlueTool": {
+      "sha256": "d18fbb358dad114019ff7fee24d68e949c5f32c8b6261d895ae4239c3c548baa"
+    },
+    "bluetoothd": {
+      "sha256": "86104e5cd2892b55a03024bcea8b6eb851a9ca451a9bbdb2b8de9e92fa50c634"
+    }
+  },
+  "functions": [
+    {
+      "image": "BlueTool",
+      "address": "0x10003fcb0",
+      "entry_bytes": "ffc303d1fc6f09a9fa670aa9f85f0ba9f6570ca9f44f0da9fd7b0ea9fd830391",
+      "observation": "Dispatches kMsgId=RunBuiltinScript and kMsgArgs={script,btaddress}; replies with result/manufacturer/firmware; boot/init have 30 s timers and deepsleep 4 s."
+    },
+    {
+      "image": "BlueTool",
+      "address": "0x10003e1e0",
+      "entry_bytes": "ff0305d1fa670fa9f85f10a9f65711a9f44f12a9fd7b13a9fdc30491e82400d0",
+      "observation": "Native manufacturer selection uses Apple hardware/MobileGestalt vendor tags, not the HCI Company Identifier."
+    },
+    {
+      "image": "BlueTool",
+      "address": "0x1000131e0",
+      "entry_bytes": "fc6fbaa9fa6701a9f85f02a9f65703a9f44f04a9fd7b05a9fd430191ff4308d1",
+      "observation": "Native built-in firmware/script selection requires a platform/chip/vendor match."
+    },
+    {
+      "image": "bluetoothd",
+      "address": "0x1003498b0",
+      "entry_bytes": "ff8303d1f85f0aa9f6570ba9f44f0ca9fd7b0da9fd430391f50301aaf30300aa",
+      "observation": "Result zero advances boot; 10/13 indicate unsupported hardware; reads firmware and manufacturer into state/metrics."
+    },
+    {
+      "image": "bluetoothd",
+      "address": "0x1001a071c",
+      "entry_bytes": "ff0301d1f65701a9f44f02a9fd7b03a9fdc300915fb71694c00400b4e10300aa",
+      "observation": "Reads four bytes of transport-encoding from the bluetooth or marconi-bt DeviceTree node independently of BT_HCI_TRANSPORT."
+    },
+    {
+      "image": "bluetoothd",
+      "address": "0x100379ac4",
+      "entry_bytes": "fc6fbca9f65701a9f44f02a9fd7b03a9fdc30091ffc317d1082f0090080546f9",
+      "observation": "Chip model factory selects Apple-supported device profiles through MobileGestalt, plus ACI/VM overrides; no WCN3990 profile was found."
+    },
+    {
+      "image": "bluetoothd",
+      "address": "0x1002229b0",
+      "entry_bytes": "09040051297d04533fd9057108010054e80300aa00008052e93c00f028dd0fb9",
+      "observation": "Vendor configuration rejects IDs beyond the native 1..6000 range."
+    },
+    {
+      "image": "bluetoothd",
+      "address": "0x10022288c",
+      "entry_bytes": "ffc300d1f44f01a9fd7b02a9fd830091f30301aa483d00f000610db908040051",
+      "observation": "Vendor dispatch initializes BCM, ACI or SRS function tables by internal chipset-ID ranges; no QCA table."
+    },
+    {
+      "image": "bluetoothd",
+      "address": "0x100223034",
+      "entry_bytes": "ff0301d1f65701a9f44f02a9fd7b03a9fdc30091f30302aaf40301aaf50300aa",
+      "observation": "An absent vendor hook returns native unsupported status 3601; this is separate from HCI completion and cannot be replaced by a fake controller response."
+    },
+    {
+      "image": "bluetoothd",
+      "address": "0x100499718",
+      "entry_bytes": "ffc301d1f44f05a9fd7b06a9fd830191f30308aa08260090080546f9080140f9",
+      "observation": "Formats the RunBuiltinScript btaddress as six canonical-order uppercase hexadecimal octets separated by colons."
+    }
+  ],
+  "xpc": {
+    "service": "com.apple.BlueTool",
+    "request": {
+      "kMsgId": "RunBuiltinScript",
+      "kMsgArgs": {
+        "script": "boot | init | deepsleep",
+        "btaddress": "optional canonical MAC string"
+      }
+    },
+    "reply": {
+      "result": "int64; zero only after completion",
+      "manufacturer": "int64 native vendor tag; adapter adds qcom",
+      "firmware": "non-null string"
+    }
+  },
+  "adapter": {
+    "binary": "/usr/libexec/bluetoothbootstrap",
+    "peer_identity": {
+      "application-identifier": "com.apple.bluetoothd",
+      "com.apple.bluetooth.internal": true
+    },
+    "entitlement": {
+      "org.darwin.bluetooth.bootstrap": true
+    },
+    "hci_queries": [
+      "0x1001 Read Local Version",
+      "0xfc00/0x19 QCA version",
+      "0x1009 Read BD_ADDR",
+      "0x1002 Read Supported Commands",
+      "0x1003 Read Supported Features",
+      "0x1005 Read Buffer Size",
+      "0x2002 LE Read Buffer Size"
+    ],
+    "completion": "real replies; exact product/SoC/ROM/loaded Patch, company 29, MAC, BR/EDR+LE and buffer bounds; final epoch/port/drain checks",
+    "power": "atomic expected-generation compare; joins asynchronous startup; cancellation cannot stop a later generation",
+    "budgets_ms": {
+      "startup": 20000,
+      "total_on": 25000,
+      "command": 2000,
+      "shutdown": 3000
+    },
+    "handoff": "Private endpoint option 0x42540001 seals an entitled bootstrap session after the final physical drain. Further writes are rejected. Unsealed close/crash triggers kernel-owned shutdown before another host can connect."
+  },
+  "native_chipset_policy_ported": false,
+  "native_stack_runtime_verified": false,
+  "hardware_tested": false,
+  "remaining_work": "Port a distinct WCN3990 controller capability model and vendor dispatch in bluetoothd. The new BlueTool backend removes its platform-specific firmware lookup but does not alter that independent factory."
+}

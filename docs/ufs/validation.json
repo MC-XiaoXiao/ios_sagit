@@ -1,0 +1,190 @@
+{
+  "date": "2026-10-15",
+  "status": "native-system-data-published-root-mount-entered-panic-under-investigation",
+  "historical_offline_validation": {
+    "date": "2026-10-15",
+    "status": "software-implemented-and-offline-verified",
+    "kext": {
+      "file": "build/output/Extensions/QcomUFS.kext/Contents/MacOS/QcomUFS",
+      "sha256": "0df1deca714c838f932e0868cd9b8425c03150bc15c05ec9759035b73bf900b4",
+      "architecture": "arm64/ALL",
+      "format": "MH_KEXT_BUNDLE"
+    },
+    "collection": {
+      "file": "build/output/kernelcache.sdm835.storage",
+      "sha256": "fc2fb014c74c9c9346ef16ff4549e28f9a3709bdbf1205be810f32d0a70bcc9e",
+      "kext_count": 15,
+      "validation_status": "passed",
+      "errors": [],
+      "warnings": [],
+      "linked_ufs_sha256_matches_bundle": true
+    },
+    "tests": {
+      "production_core_model": "passed",
+      "scatter_gather_random_cases": 10000,
+      "max_slots_exercised": 32,
+      "asan_ubsan": "passed",
+      "patcher_ctest": {
+        "passed": 5,
+        "failed": 0
+      },
+      "kernelcache_python_regression": {
+        "passed": 6,
+        "failed": 0
+      },
+      "device_exception_and_background_query": "passed"
+    },
+    "logs": [
+      "build/ufs-collection-final.log",
+      "build/ufs-sanitized.log",
+      "build/ufs-regression.log",
+      "build/ufs-vtable-layout.log",
+      "build/ufs-native-storage-disassembly.txt",
+      "build/ufs-verify-final.log"
+    ],
+    "source_sha256": {
+      "drivers/storage/QcomUFS/QcomUFS.cpp": "9bef091bcfe6d2d2e5d8e4ab96987902c10df0016b055c5a4625489e2d00e7d9",
+      "drivers/storage/QcomUFS/QcomUFS.h": "e43e283e953cda604925d4cf73d2f047cb1f8f34691c4691bcc975a244555221",
+      "drivers/storage/QcomUFS/QcomUFSBlockDevice.cpp": "e7b829a72094fb74aaafec5efb49db96ef01f5b3b6c472ca89ac4b0ef7a110c3",
+      "drivers/storage/QcomUFS/QcomUFSBlockDevice.h": "3689dbd8a151bd8dd7677ac526d577bf400d653de17cde775e7ec725679a8365",
+      "drivers/storage/QcomUFS/QcomUFSPhy.h": "80cbf80922d49f087c9af5be32e424109dca31677e5bf3d561838ffb8a666b40",
+      "drivers/storage/QcomUFS/UFSProtocol.h": "35480b397d478af8e25c3396e33cf2c90f663cedbbf0e300e392061ceab08560",
+      "drivers/abi-22H374/apple-storage-abi.json": "82c04a6f413e2b341853a5fb4945d81de8ffa131af2e5eb7be501af3a19841df",
+      "tests/ufs_test.cpp": "9aab861813a2ac84c6c4e10bc14cf19ddb498048b025c8e93f9ee2f95afcb35e"
+    },
+    "hardware_test_performed": false,
+    "throughput_verified": false,
+    "boot_verified": false,
+    "platform_handoff_in_bridge_implemented": false,
+    "prerequisites": [
+      "platform pins GCC clocks, regulators, device RESET_N and sufficient NoC votes",
+      "device IOMapper or verified physical DMA bypass handoff",
+      "Apple DT provider with HCI/PHY MMIO and mapped GIC interrupt"
+    ],
+    "limits": [
+      "no hardware validation of DMA/cache correctness or power transitions",
+      "no platform power-collapse recovery",
+      "no automatic controller recovery after fatal errors",
+      "no RPMB/ICE/HPB/MCQ/TRIM/UNMAP"
+    ],
+    "verification_checks": [
+      "Mach-O commands",
+      "segments and sections",
+      "file/VM mappings and overlap",
+      "symbol/relocation ranges, indices and relocation sites",
+      "Kext metadata, versions and dependency closure",
+      "Kext segment ownership",
+      "structor/GOT pointers and ARM64 import stubs",
+      "kmod records",
+      "kernel entry",
+      "native kernel segment contents and non-prelink commands preserved",
+      "source SHA256 constant tables preserved: 2"
+    ]
+  },
+  "kext": {
+    "file": "build/output/Extensions/QcomUFS.kext/Contents/MacOS/QcomUFS",
+    "sha256": "441298c8c68759cd53b82f30f7c5559d53584ca271fa5f54ce29042c9793b310"
+  },
+  "collection": {
+    "file": "build/output/kernelcache.sdm835.apfs",
+    "sha256": "278b3444762a89a06bfaf0db344250b0596ee6b40072b7b2b3f04e635a77f6b8",
+    "kext_count": 33
+  },
+  "hardware_test_performed": true,
+  "platform_handoff_in_bridge_implemented": true,
+  "boot_partition_flashed": false,
+  "boot_verified": false,
+  "throughput_verified": false,
+  "platform": {
+    "controller_version": "0x30010000",
+    "contract_version": 2,
+    "handoff_flags": 31,
+    "core_hz": 200000000,
+    "unipro_hz": 150000000,
+    "lanes": 1,
+    "hs_gear": 2,
+    "hs_series": "B",
+    "physical_dma_bits": 40,
+    "gicd_ctlr": "0x12"
+  },
+  "verified_stages": [
+    "EFIClock resource retention and platform register checks",
+    "post-ExitBootServices private physical DMA GPT comparison",
+    "post-ExitBootServices APFS NXSB read",
+    "XNU-owned DMA descriptor lists",
+    "XNU NOP and fDeviceInit",
+    "Samsung 0x01ce UFS2.1 device descriptor",
+    "HS-G2 Rate-B renegotiation",
+    "LUN0 TEST UNIT READY after reset unit attention",
+    "all six XNU UFS capacities match unit descriptors after real DMA cache synchronization",
+    "native GPT ios-apfs partition publication",
+    "native APFS checkpoint XID 2 selected",
+    "native AppleAPFSVolume System and Data BSD clients published",
+    "virtual timer PPI 3 / INTID 19 interrupts observed",
+    "System selected by volume UUID through /chosen/root-matching",
+    "native apfs_vfsop_mountroot entered on System"
+  ],
+  "latest_hardware_log": "build/ufs-mount/handoff-26/uart.txt",
+  "latest_tested_bridge_sha256": "61e391b06d5aeb582b29a1d9316d92b3b8dd77fb2eaf197c6cb794e97a93ecaf",
+  "pending": [
+    "APFS_INODES zone allocation panic investigation",
+    "native volume allocation counter mismatch investigation",
+    "APFS System root and Data mount completion",
+    "Bash service execution",
+    "sustained data DMA/cache/IRQ/throughput validation"
+  ],
+  "limits": [
+    "warm retained firmware resources; no cold PMIC/NoC setup",
+    "no platform power-collapse recovery",
+    "EFI entry required; RawImage explicitly rejects UFS handoff",
+    "no automatic fatal-controller recovery",
+    "no RPMB/ICE/HPB/MCQ/TRIM/UNMAP"
+  ],
+  "cache_configuration": {
+    "ARM_COHERENT_IO": "undefined",
+    "board_config_test": "passed",
+    "generated_instructions_verified": [
+      "dc civac"
+    ],
+    "evidence": "build/ufs-mount/cache-maintenance-disassembly.txt"
+  },
+  "native_mount": {
+    "system_selected": true,
+    "system_mounted": false,
+    "data_published": true,
+    "data_mounted": false,
+    "bash_running": false,
+    "system_uuid": "C1FFCBC9-9565-4E1F-8686-2000A9397B25",
+    "system_bsd_name_in_test": "disk6s1",
+    "checkpoint_xid": 2,
+    "last_error": "APFS_INODES zone was valid at creation; later cache=0xa000 and copied name pointer changed, with no zone_enable_caching call",
+    "evidence": "build/ufs-mount/handoff-26/uart.txt"
+  },
+  "timer": {
+    "virtual_timer_intid": 19,
+    "observed_irqs": 3,
+    "evidence": "build/ufs-mount/handoff-24/uart.txt",
+    "reference": [
+      "docs/sdm835/reference/linux-msm8998.dtsi",
+      "docs/sdm835/reference/xiaomi-msm8998.dtsi"
+    ]
+  },
+  "zone_investigation": {
+    "valid_at_creation": true,
+    "bad_cache_pointer": "0xa000",
+    "name_pointer_change": "0x18000",
+    "normal_cache_enable_called": false,
+    "normal_boot_evidence": "build/ufs-mount/handoff-29/uart.txt",
+    "hardware_watch_configuration_stall_evidence": "build/ufs-mount/handoff-32/uart.txt",
+    "hardware_watch_cause_identified": false
+  },
+  "native_allocation_accounting": {
+    "warning_on_installed_xid": 2,
+    "fs_alloc_count": 2469503,
+    "native_count": 83396,
+    "old_data_counter": 42778,
+    "tool_patch": "tools/patches/go-apfs-native-accounting.patch",
+    "fixture_and_cow_tests": "passed",
+    "installed_on_device": false
+  }
+}

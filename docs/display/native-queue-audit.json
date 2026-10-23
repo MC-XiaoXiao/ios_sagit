@@ -1,0 +1,214 @@
+{
+  "reference_sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+  "native_parent_hook": "0xfffffff005c22860: RET; calling the parent does not dequeue",
+  "native_child_hook": "0xfffffff005c39468",
+  "pending_head": "0x1670",
+  "pending_tail": "0x1678",
+  "active_request": "0x1668",
+  "request_links": [
+    "0xc00 next",
+    "0xc08 previous-pointer"
+  ],
+  "ready_masks": [
+    "0x318 changed/update mask, including clear operations and background bit31",
+    "0x31c ready mask"
+  ],
+  "native_begin_sequence": [
+    "native prune at 0xfffffff005c25f40; abort on error",
+    "native redundant-request handling at 0xfffffff005c26410",
+    "native cancelled-request cleanup at 0xfffffff005c25ea8",
+    "native superseded-request cleanup at 0xfffffff005c26500 (request deadlines; not a replacement IOSurface fence policy)",
+    "reload head and require changed == ready",
+    "detach TAILQ reference after integrity checks; transfer to active, record native state 2 through 0xfffffff005c1db18",
+    "only actual hardware completion calls original 0xfffffff005c1dfc0(bool)"
+  ],
+  "submission_gate": "0xfffffff005c20cb8 tests requested controller power+0x17e4; if zero, native0x5c2139c unlinks/releases and may return success without hardware presentation. PM registration and native hardware-power callback now deliver requested/current states; runtime46 confirms both on.",
+  "implemented_correction": "Before on-state testing, detach pending request exactly once rather than leaving a dangling pointer after native completion; retain original native helpers and IOSurface readiness. Unsupported request kinds still reject.",
+  "validation": "Host tests cover two-node and singleton ownership transfer, repeat removal, bad back link, null head; cross build verifies original function bytes and generated vtable.",
+  "reference_apple_child_sequence": "Native AppleDisplayPipe uses helpers at 0x5c25f40, 0x5c26410, 0x5c25ea8, 0x5c26500, requires masks +0x318/+0x31c equal, then records state 2 and removes TAILQ links. The Qcom path validates/removes links before setting active and recording state 2; native completion owns the transferred reference.",
+  "optical_validation": "Scanout readback checks current source address, mapping and pixel bytes; it is not an optical sensor.",
+  "native_pm_initialization": {
+    "reference_final_subclass": "0xfffffff005c4d148, PM block at 0xfffffff005c4d228; other native final display subclasses use the same sequence",
+    "sequence": "Set native interface +0x8c to initialized; PMinit; provider->joinPMtree(this); registerPowerDriver(this, native states, 2). Qcom uses an owned two-state retained-platform policy and clears the native flag before its paired PMstop.",
+    "native_consumers": [
+      "user-client path loads +0x8c at 0xfffffff005c160f8",
+      "native swap wait loads +0x8c at 0xfffffff005c1ea84",
+      "native power-interest callback loads +0x8c at 0xfffffff005c21970"
+    ],
+    "runtime_run43": "Before/on/after snapshots: native +0x17e4/+0x17e8/+0x17ec all zero. Original CADisplay state on accepted, current power 0 versus target 1."
+  },
+  "slot355_correction": {
+    "previous_local_name": "isReplaying (incorrect inference)",
+    "audited_local_name": "timing_enabled() const",
+    "original_H7": "0xfffffff005c4a6a4 reads native Apple timing flag at +0x1df9",
+    "native_diagnostic": "0xfffffff005c1ece8 loads vtable +0xb18 (slot355), result stored as the TimingEnable argument of native power/wait diagnostic at 0xfffffff005c1ed14",
+    "implementation": "Return verified retained raster readiness and IRQ enable state; no simulated clock or VBL."
+  },
+  "request_admission_correction": {
+    "native_caller": "0xfffffff005c21584..0xfffffff005c21598",
+    "native_vtable_offset": "0xb00",
+    "slot": 352,
+    "prototype": "bool verify_swap_gated(void *request), audited local name for second stage",
+    "original_H7": "0xfffffff005c4a69c returns true",
+    "original_Legacy_default": "0xfffffff005c27720 returns false",
+    "previous_incorrect_inference": "The locally named IOReturn hooks at300/301 were not called by actual gated-submit admission. They now revert to uncalled unknown aliases, and the existing detailed validator is used by the actual Boolean hook.",
+    "runtime_evidence": "Run44 PM initialization enables real native validation, which rejected every submit before reaching the old local functions; original native C API SwapEnd returned e00002c2.",
+    "policy": "Do not replace the native verifier or return true unconditionally. Preserve full-canvas/linear BGRA/surface bounds and native queue ownership.",
+    "first_stage": {
+      "slot": 304,
+      "native_caller": "0xfffffff005c21184..0xfffffff005c2119c",
+      "vtable_byte_offset": "0x980",
+      "original_parent": "0xfffffff005c23604 returns false",
+      "original_H7": "0xfffffff005c47ae4 calls native AppleDisplayPipe::verify_swap and hardware checks",
+      "native_name_evidence": "String at0xfffffff005269c67: virtual bool AppleDisplayPipe::verify_swap(IOMFBSwapIORequest *)",
+      "failure_log": "0xfffffff005c212d8..0xfffffff005c212f8 occurs on false from304, before command-gate callback214d0"
+    },
+    "runtime_run48": "Both304 and352 accept the exact1080x1920 source; prepare329 and native pending queue observed. Hardware transfer completed but first completion displayed0. Actual scanout BGRA later matches every source pixel."
+  },
+  "current_power_delivery": {
+    "native_hardware_hook_slot": 306,
+    "native_name": "do_power_state_change_gated()",
+    "native_final_reference": "0xfffffff005c4eae4 (AppleMobileADBE0), current controller/display writes at 0xfffffff005c4ec80/0xfffffff005c4ecb8, original notification via slot216 at 0xfffffff005c4efc0",
+    "native_state_fields": {
+      "requested_controller": "0x17e4",
+      "requested_display": "0x17e8",
+      "current_controller": "0x17ec",
+      "current_display": "0x17f0"
+    },
+    "original_notification": "0xfffffff005c23dac(controller_on, display_on): sends native timestamp and encoded controller/display bits through registered original user-client notification lists",
+    "Qcom_scope": "Retained LCD/DPU/DSI resources. With an admitted PMI8998WLED service, apply/read back real WLED blanking or brightness restoration before native current state/notification changes; stop local presentation/IRQs while off, abort an in-flight swap through the original completion helper, and resume only with fresh hardware status. Without a backlight handoff, retain the legacy on-only path. Preserve native ignore-power policy at0x18a9.",
+    "runtime_run46": "Verified in all three snapshots: current controller/display=1; native CADisplayStateControl actual/target getters=1 after original on request. DPU pixels unchanged; native verifier still rejects prior to local352."
+  },
+  "prepared_request_diagnostic": {
+    "slot": 329,
+    "native_caller": "0xfffffff005c21544..0xfffffff005c21554 passes(this,request)",
+    "original_default": "0xfffffff005c276b0 RET",
+    "purpose": "Default-off read-only bounded logs before original generic layer and KeepOnScreen checks; preserve original parent call and every verifier."
+  },
+  "command_completion_race": {
+    "run": 48,
+    "readback": "build/display-runtime/displayctl-48-readback.json",
+    "observed": "NativeEnd0; first hardware transfer completion displayed0; Wait e00002eb; later source-address stable, own flush clear, all2073600 BGRA pixels match source.",
+    "correction": "For retained command auto-refresh, leave in-flight request pending when transfer-done arrives before source flush latch; await a later real transfer completion within existing100ms hardware timeout. Never manufacture completion or clear pending source flush in software.",
+    "runtime_run49_uart": "Real source copy and real latched transfer completion displayed1; exported scanout all2073600 BGRA pixels match, native Wait still e00002eb. Hardware timing correction does not resolve original CommandWake.",
+    "runtime_run50_native_wait": "Hardware displayed1 precedes original five-second CommandWake timeout; native current/target state getters remain1 at validation end. A display-off hypothesis alone does not explain this run."
+  },
+  "native_changed_mask": {
+    "request_field": "0x318",
+    "native_assignment": "0xfffffff005c20520..0xfffffff005c20528 copies user submit+0x14c",
+    "ready_field": "0x31c",
+    "native_ready_assignment": "0xfffffff005c20f14..0xfffffff005c20f24 ORs user submit+0x150 into ready",
+    "raw_update_surfaces": "0xa48",
+    "effective_surfaces": "0xa68, native merge at0xfffffff005c25614 after preparation329",
+    "correction": "Changed bits indicate updates including null layer clears. Run50 confirms only rawlayer0 exists in80000007;1/2 are null, zero geometry. Bit31 packs a background color update in the original framework.",
+    "next_fixture": "Run51/52 implemented and tested: accept only actual full physical primary surface with audited null auxiliary clears and optional bit31 background metadata. Separate primary-clear/background-only updates remain unsupported.",
+    "runtime_run50": "build/display-runtime/handoff-50/native-layer-observations.json",
+    "bit31_original_instructions": {
+      "user_native_function": "0x1b6fe5b9c..0x1b6fe5c18",
+      "packed_color_store": "0x1b6fe5c04: opaque RGB value todisplay+0x16c",
+      "changed_ready_update": "0x1b6fe5c10: orr.2s v0,#0x80,lsl#24 setsbit31 ofboth32bit changed/ready masks atdisplay+0x164",
+      "kernel_request_color": "request+0x320; native completion copies todisplay+0x17dc when changedbit31",
+      "function_public_name": "Not asserted; semantics derive from original instructions"
+    },
+    "runtime_admission_verified_runs": [
+      51,
+      52
+    ]
+  },
+  "native_commandwake": {
+    "observed_runs": [
+      49,
+      50,
+      51
+    ],
+    "native_function": "0xfffffff005c1e980 swap_wait_gated",
+    "diagnostic_run50": [
+      {
+        "line": 7416,
+        "text": "IOMFB: swap_wait_gated:  CommandWake didn't happen even after 5 seconds.                       Seems system in bad state, cancelling swaps"
+      },
+      {
+        "line": 7417,
+        "text": "IOMFB swap_wait_gated: swapId = 1479, options = 0x0, noBlock = 0x0, HPD = 0, DPLink = 0,                    TimingEnable = 1, PowerStates-Cntr = 1, Display =1"
+      },
+      {
+        "line": 7443,
+        "text": "IOMFB: swap_wait_gated blocked so cleared up swaps"
+      }
+    ],
+    "real_completion": "0xfffffff005c1dfc0(bool); true selects state5, false selects state8",
+    "original_wake": "0xfffffff005c1e334..0xfffffff005c1e34c calls native gate commandWakeup with display+0x1670 event",
+    "next_audit": "Native UI content and actual first-boot keybag provisioning before Setup.app; no kernel wait/wake patch warranted by historical one-frame timeouts.",
+    "runtime_run51": "build/display-runtime/handoff-51/native-completion-observations.json",
+    "runtime_completed_ids": "Run51 after readback native LastCompletedSwap=7 and LastDisplayedSwap=7 for original standalone token7; native Wait still aborts. Run52 native completed/displayed6, no active/queued request, original-only content white.",
+    "status": "verified-run53-test-wait-semantics-corrected",
+    "verified_run53": "build/display-runtime/displayctl-53-readback.json",
+    "fault_inference_retracted": true,
+    "native_option0_semantics": "Original gate looks in active/pending requests and compares token to most recent completed sequence; if it is still current, it continues sleeping. A newer hardware-completed request retires the prior token.",
+    "native_option1_semantics": "Original gate returns when that token is no longer queued/active; it can remain the current display frame.",
+    "verified_completion": {
+      "flags": 1,
+      "token": 7,
+      "result": "0x0"
+    },
+    "verified_retirement": {
+      "result": "0x0",
+      "flags": 0,
+      "first_token": 7,
+      "replacement_token": 8,
+      "elapsed_ms": 151.51
+    },
+    "native_wait_wake_implementation_modified": false
+  },
+  "offline_backlight_link": {
+    "date": "2026-10-17",
+    "driver": "org.darwin.driver.PMI8998WLED",
+    "source": "drivers/display/PMI8998WLED",
+    "protocol": "drivers/include/DisplayBacklight.h",
+    "hardware_tested": false,
+    "deep_system_sleep_supported": false,
+    "native_brightness_curve_implemented": false,
+    "native_wake_path": "QcomButtons -> original IOHID event driver -> system display policy -> original IOMFB power callback",
+    "off": "WLED disabled/read back, owned IRQs masked, native in-flight swap completed as not displayed; raster/rails/clocks retained",
+    "wake": "validate retained raster and double-buffer address, restore remembered WLED brightness, clear stale IRQs and restart presentation; native current fields/notification follow successful hardware operations",
+    "failures": "transport/write/readback errors do not commit native current state; ambiguous hardware state invalidates further WLED mutation until reboot",
+    "validation": "extended existing display host model and bridge tests; cross-compiled native Kexts and dependency collection; no device commands"
+  },
+  "default_transaction_initialization": {
+    "native_function": "0xfffffff005c22304",
+    "native_slot": 307,
+    "native_initializer_bytes": "ff4303d1f85f09a9f6570aa9f44f0ba9fd7b0ca9fd030391f30300aa14c857b915cc57b916c00491e00316aa81a28052981b009408008012687e02b9688202b960121991e10316aa82a28052ac1b009408138352686a68381f050071a40a407a841a407a200c0054",
+    "template_offsets": [
+      "0x130",
+      "0x644"
+    ],
+    "template_bytes": 1300,
+    "submit_changed_offset": "0x14c",
+    "submit_ready_offset": "0x150",
+    "initial_masks": "0xffffffff in each template, copied by original native code",
+    "native_allocation_guard": "Native framebuffer flag+0x1898==1 and nonzero dimensions enter the Apple PurpleGfxMem allocation branch; disassembly at0xfffffff005c22354..0xfffffff005c22368",
+    "Qcom_correction": "Initialize original transaction templates with original parent method while framebuffer setup is incomplete; create the managed IOSurface, register sources/IRQ/PM, then enable the native framebuffer flag. Verify both templates contain expected masks before continuing. No local replacement transaction struct or private writes to cached payloads.",
+    "native_intent_field": "The formerly named kind at request+0x32c is the original Swap Intent, copied from submit+0x17c at0xfffffff005c20560. Native internal helper0xfffffff005c268f4 uses templates for intent6/7 when no explicit transaction is supplied.",
+    "observed_hardware": "round59..61 kind6/7 changed0 and zero geometry rejected; the missing initializer can explain those uninitialized defaults but attribution is not verified on hardware",
+    "nonzero_intents_admitted": "Display1.0.4 admits only audited intent6 default-surface/full-canvas and intent7 all-plane-clear/zero-background requests; hardware verification pending",
+    "nonzero_intent_backend_semantics_verified": false,
+    "hardware_verified": false,
+    "evidence": "build/gpu-runtime/ui-display-default-audit/native-functions.json"
+  },
+  "native_control_swap_bridge": {
+    "driver_version": "1.0.4",
+    "hardware_verified": false,
+    "native_transaction_builder": "0xfffffff005c268f4: intent6 requires a mapped default surface and chooses cached template+0x130; intent7 chooses template+0x644",
+    "native_submit_layout": "0xfffffff005c20408: submit+0x9c surface IDs -> request+0xa48; submit+0xac source rects -> request+0x11; submit+0x10c destination rects -> request+0x51; intent -> request+0x32c",
+    "fixed_default_template": "Original initializer owns zeroing and changed/ready=-1. Qcom fills only primary default IOSurface ID and full physical source/destination rectangles after its fixed-canvas allocation.",
+    "intent6": "Require exact defaultSurface identity at both native admission stages, one full-canvas linear BGRA surface and no extra effective planes. Copy to staged DPU backing using the existing presentation path.",
+    "intent7": "Require no raw/effective surfaces, all four clear bits, background-update bit and zero background. Write actual opaque black pixels into staged DPU backing and issue the existing real flush/transfer.",
+    "all_fields_sentinel": "0xffffffff accepted only for intents6/7; normal intent0 still rejects unknown changed bits",
+    "completion": "Hardware TE/transfer-done plus latched source or real video VBL only. Original swap_complete_gated retains/releases native surfaces, updates native state and wakes waiters. Timeout reports false.",
+    "native_control_sequence_ids": "Original 0xfffffff005c1e270..0xfffffff005c1e294 updates LastCompleted/LastDisplayed only for intent0/15. Intents6/7 deliberately retain this original behavior.",
+    "unsupported": "Other nonzero intents, nonzero background on empty intent7, partial clears, additional planes, protected/compressed/tiled surfaces and unsupported geometry remain rejected.",
+    "pending": "Native default-surface mapping/precondition, internal control generation, actual on/off/transition behavior and system UI still require target evidence.",
+    "evidence": "build/gpu-runtime/ui-control-swaps-audit/native-functions.json",
+    "validation": "Existing display host suite and isolated arm64 Kext build passed; no new test files or device operations."
+  }
+}

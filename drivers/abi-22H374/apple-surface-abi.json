@@ -1,0 +1,153 @@
+{
+  "bundle_identifier": "com.apple.iokit.IOSurface",
+  "image_sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+  "classes": {
+    "IOSurface": {
+      "super": "OSObject",
+      "instance_size": 960,
+      "vtable_slots": 16
+    },
+    "IOSurfaceRoot": {
+      "super": "IOService",
+      "instance_size": 1184,
+      "vtable_slots": 168
+    }
+  },
+  "required_symbols": [
+    "__ZN13IOSurfaceRoot13createSurfaceEP4taskP12OSDictionary",
+    "__ZN9IOSurface8nativeIDEv",
+    "__ZN9IOSurface11nativeWidthEv",
+    "__ZN9IOSurface12nativeHeightEv",
+    "__ZN9IOSurface14nativeRowBytesEv",
+    "__ZN9IOSurface17nativePixelFormatEv",
+    "__ZN9IOSurface22nativeMemoryDescriptorEv",
+    "__ZN9IOSurface20nativeAllocationSizeEv",
+    "__ZN9IOSurface11nativeTiledEv",
+    "__ZN9IOSurface16nativeTileFormatEv",
+    "__ZN9IOSurface16nativePlaneCountEv",
+    "__ZN9IOSurface21nativeBytesPerElementEv",
+    "__ZN9IOSurface18nativeElementWidthEv",
+    "__ZN9IOSurface19nativeElementHeightEv",
+    "__ZN9IOSurface16nativeBaseOffsetEv",
+    "__ZN9IOSurface16nativeProtectionEv",
+    "__ZN9IOSurface17nativePlaneOffsetEj",
+    "__ZN9IOSurface23nativeIncrementUseCountEv",
+    "__ZN9IOSurface23nativeDecrementUseCountEv",
+    "__ZN9IOSurface18nativeMarkGPUWriteEjj",
+    "_QcomIOSurfaceCreateAccessFence",
+    "_QcomIOFenceSignal"
+  ],
+  "function_bindings": {
+    "__ZN13IOSurfaceRoot13createSurfaceEP4taskP12OSDictionary": {
+      "address": "0xfffffff005aa6d14",
+      "bytes": "030080d2eaffff17",
+      "note": "Native family stub 0xfffffff005c28be8."
+    },
+    "__ZN9IOSurface8nativeIDEv": {
+      "address": "0xfffffff005a9ad2c",
+      "bytes": "001040b9c0035fd6",
+      "note": "Native getID: default-surface result at 0xfffffff005c1f564."
+    },
+    "__ZN9IOSurface11nativeWidthEv": {
+      "address": "0xfffffff005a9ad34",
+      "bytes": "002c40f9c0035fd6",
+      "note": "Native swap validation uses this as width at 0xfffffff005c20b0c."
+    },
+    "__ZN9IOSurface12nativeHeightEv": {
+      "address": "0xfffffff005a9ad3c",
+      "bytes": "003040f9c0035fd6",
+      "note": "Native swap validation uses this as height at 0xfffffff005c20bc0."
+    },
+    "__ZN9IOSurface14nativeRowBytesEv": {
+      "address": "0xfffffff005a9ad4c",
+      "bytes": "003440f9c0035fd6",
+      "note": "Corrected by hardware default-surface evidence. Native property parser at 0xfffffff005a972d8 reads IOSurfaceBytesPerRow and stores it at +0x68 (0xfffffff005a972f4); +0x78 is not row bytes."
+    },
+    "__ZN9IOSurface17nativePixelFormatEv": {
+      "address": "0xfffffff005a9ad24",
+      "bytes": "008040b9c0035fd6",
+      "note": "Native caller compares result against BGRA at 0xfffffff005c1f140."
+    },
+    "__ZN9IOSurface22nativeMemoryDescriptorEv": {
+      "address": "0xfffffff005a9ac60",
+      "bytes": "001840f9c0035fd6",
+      "note": "Native default-surface checks descriptor with stub 0xfffffff005c290d4."
+    },
+    "__ZN9IOSurface20nativeAllocationSizeEv": {
+      "address": "0xfffffff005a9ad74",
+      "bytes": "004840f9c0035fd6",
+      "note": "Native default-surface mapping length from stub 0xfffffff005c28ff0."
+    },
+    "__ZN9IOSurface11nativeTiledEv": {
+      "address": "0xfffffff005aa11d8",
+      "bytes": "08e00e910805403900050153c0035fd6",
+      "note": "Audited bit 9 of native flags, paired with setter 0xfffffff005a9c8f0; reject non-linear CPU copies."
+    },
+    "__ZN9IOSurface16nativeTileFormatEv": {
+      "address": "0xfffffff005a9c8e4",
+      "bytes": "08bc40f900a94139c0035fd6",
+      "note": "Audited native configuration byte 0x6a, paired with setter 0xfffffff005a9c8d4; only zero admitted."
+    },
+    "__ZN9IOSurface16nativePlaneCountEv": {
+      "address": "0xfffffff005a9ad6c",
+      "bytes": "009840b9c0035fd6",
+      "note": "UInt32 at +152; non-planar surfaces report zero."
+    },
+    "__ZN9IOSurface21nativeBytesPerElementEv": {
+      "address": "0xfffffff005a9ad54",
+      "bytes": "00e04079c0035fd6",
+      "note": "UInt16 at +112, native packed pixel size."
+    },
+    "__ZN9IOSurface18nativeElementWidthEv": {
+      "address": "0xfffffff005a9ad5c",
+      "bytes": "00c84139c0035fd6",
+      "note": "UInt8 at +114, must be one for interleaved RGBA/BGRA."
+    },
+    "__ZN9IOSurface19nativeElementHeightEv": {
+      "address": "0xfffffff005a9ad64",
+      "bytes": "00cc4139c0035fd6",
+      "note": "UInt8 at +115, must be one for interleaved RGBA/BGRA."
+    },
+    "__ZN9IOSurface16nativeBaseOffsetEv": {
+      "address": "0xfffffff005a9adac",
+      "bytes": "00b440f9c0035fd6",
+      "note": "UInt64 at +360, added by native IOGPUResource surface factory."
+    },
+    "__ZN9IOSurface16nativeProtectionEv": {
+      "address": "0xfffffff005a99528",
+      "bytes": "00c841f9c0035fd6",
+      "note": "UInt64 at +912, also checked by native IOGPUResource surface factory."
+    },
+    "__ZN9IOSurface17nativePlaneOffsetEj": {
+      "address": "0xfffffff005a9ae6c",
+      "bytes": "fd7bbfa9fd03009108c040f9080400b4099840b93f01016ba9030054098841b92ae57ad3490d09cb0a01098b490108ebc30300542afd60d38a0300b52a7c7ad34a4d21cb5fc12aeb21030054ea03012a4b655ad36a8d0aebc40200544afd60d34be100117f01096b4802005408010aabea379f1a490140932a010acaca0100b5a901f8b7086100910500001461000034000080d20300001408e00191000140f9fd7bc1a8c0035fd6266a0094206a0094156a0094196a0094",
+      "note": "Native plane element offset, added by IOGPUResource factory at 0xfffffff005f2c470."
+    },
+    "__ZN9IOSurface23nativeIncrementUseCountEv": {
+      "address": "0xfffffff005a9b730",
+      "bytes": "0100805201000014",
+      "note": "Category-zero native wrapper; shared/parent use count increment."
+    },
+    "__ZN9IOSurface23nativeDecrementUseCountEv": {
+      "address": "0xfffffff005a9b850",
+      "bytes": "0100805201000014",
+      "note": "Category-zero native wrapper; use count decrement and native cleanup notification."
+    },
+    "__ZN9IOSurface18nativeMarkGPUWriteEjj": {
+      "address": "0xfffffff005a99804",
+      "bytes": "f657bda9f44f01a9fd7b02a9fd830091f50302aaf40301aaf30300aa002840f9f476009468be40f995000034090d40b929050011090d00b969ba43b99f0200718a0180528b0380526a118a1a29010a2a69ba03b9140d40b9602a40f9eb760094e00314aafd7b42a9f44f41a9f657c3a8c0035fd6",
+      "note": "Audited native-prefixed alias: mutex-protected surface modification marker, called by IOSurfaceDeviceCache at 0xfffffff005aa3290. x1 nonzero requests CPU invalidation, x2 nonzero advances shared modification seed. Also audited native lock/unlock at 0xfffffff005a998c0/0xfffffff005a99db4."
+    },
+    "_QcomIOSurfaceCreateAccessFence": {
+      "address": "0xfffffff005a9e5b0",
+      "bytes": "ffc300d1f44f01a9fd7b02a9fd830091e80306aae60305aae50304aae40303aa",
+      "note": "Audited native alias: asynchronous IOSurface access fence, direction1 read/2 write; nonnull callback avoids synchronous wait. Output owns one IOFence reference. No same-accelerator bypass flags."
+    },
+    "_QcomIOFenceSignal": {
+      "address": "0xfffffff005ab0060",
+      "bytes": "e80300aa000840f9200100b4fd7bbfa9fd030091014900b9e10308aa91b7ff97",
+      "note": "Audited native alias: IOFence::signal(IOReturn), sets status then completes through owning IOSurface. Signal only after real hardware retirement/coherence, or with failure after safe cancellation/drain."
+    }
+  },
+  "note": "native-prefixed methods are explicitly audited relocation aliases, not claimed Apple exported spellings. No old IOSurface offsets are used."
+}

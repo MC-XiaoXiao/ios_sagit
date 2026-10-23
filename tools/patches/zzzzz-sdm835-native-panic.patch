@@ -1,0 +1,36 @@
+--- a/pexpert/arm/hwtrace/hwtrace.c
++++ b/pexpert/arm/hwtrace/hwtrace.c
+@@ -503,11 +503,14 @@
+ 	uintptr_t const *reg_prop;
+ 	uint32_t        prop_size;
+ 
+-	/* Require gSocPhys to be initialized. */
++#if !defined(ARM64_BOARD_CONFIG_SDM835)
++	/* Require gSocPhys to be initialized. SDM835 uses absolute MMIO
++	 * addresses and has no Apple cpu-debug-interface to map. */
+ 	if (gSocPhys == 0) {
+ 		kprintf("pe_arm_init_debug: failed to initialize : gSocPhys == 0\n");
+ 		return;
+ 	}
++#endif
+ 
+ 	/* Update the panic_trace start policy depending on the execution environment. */
+ #if DEVELOPMENT || DEBUG
+--- a/osfmk/kern/startup.c
++++ b/osfmk/kern/startup.c
+@@ -761,6 +761,15 @@
+ 	vm_kernel_addrhash_salt = early_random();
+ 	vm_kernel_addrhash_salt_ext = early_random();
+ 
++#if __arm64__ && (DEVELOPMENT || DEBUG)
++	/* Exercise the native panic report only after VM, threads, clocks,
++	 * stackshot and KDP are initialized. No alternate panic formatter. */
++	unsigned int software_panic_test = 0;
++	if (PE_parse_boot_argn("software-panic-test", &software_panic_test, sizeof(software_panic_test)) && software_panic_test) {
++		panic("software panic output self-test: value=%u hex=%#x", 42U, 0x835U);
++	}
++#endif
++
+ #ifdef  IOKIT
+ 	kernel_bootstrap_log("PE_init_iokit");
+ 	PE_init_iokit();

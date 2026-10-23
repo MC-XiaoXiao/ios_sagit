@@ -1,0 +1,77 @@
+{
+  "dsi_host.c": {
+    "url": "https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux/+/refs/tags/v6.12/drivers/gpu/drm/msm/dsi/dsi_host.c?format=TEXT",
+    "sha256": "3c8f14d0f1010cfd69b3f7e8a7b9171a8e487936a2a7329b4cec96731787a0ad",
+    "bytes": 68647
+  },
+  "dsi_cfg.h": {
+    "url": "https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux/+/refs/tags/v6.12/drivers/gpu/drm/msm/dsi/dsi_cfg.h?format=TEXT",
+    "sha256": "090842b8f9cbc56c03714398e7641e89053da53f4949c4bc870dcc1cf496fe2a",
+    "bytes": 2354
+  },
+  "dsi_cfg.c": {
+    "url": "https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux/+/refs/tags/v6.12/drivers/gpu/drm/msm/dsi/dsi_cfg.c?format=TEXT",
+    "sha256": "ed0708ff575d05367e705d01c0300d6e0660ee89d9b6a11b417f2caabb3275ff",
+    "bytes": 10525
+  },
+  "dsi.xml": {
+    "url": "https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux/+/refs/tags/v6.12/drivers/gpu/drm/msm/registers/display/dsi.xml?format=TEXT",
+    "sha256": "dab07874ebdbf0c6b82a1384256c592d27875fde83e66869f9da7e7c6c764cba",
+    "bytes": 18874
+  },
+  "mdp5.xml": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/gpu/drm/msm/registers/display/mdp5.xml",
+    "sha256": "df78ab5c2a16f9551dc652d04dc8c7b5255598afacbfd6a769b74bbbb78c2b55",
+    "bytes": 37474
+  },
+  "dpu_3_0_msm8998.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_3_0_msm8998.h",
+    "sha256": "83508cc88398916858780518ac72ac1f2de7bf5176c10b722930a2d47feae931",
+    "bytes": 9509
+  },
+  "dpu_hwio.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/gpu/drm/msm/disp/dpu1/dpu_hwio.h",
+    "sha256": "89ca70aafd0558e2a1cd17bc8b090664d361671f8e73b166e4b588713b8dbc08",
+    "bytes": 2904
+  },
+  "dsi_phy_10nm.c": {
+    "url": "https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux/+/refs/tags/v6.12/drivers/gpu/drm/msm/dsi/phy/dsi_phy_10nm.c?format=TEXT",
+    "sha256": "06ddc2631a76441abd62f3f005ebc270655ac94609376661b57a534688667905",
+    "bytes": 30163
+  },
+  "dpu_hw_sspp.c": {
+    "url": "https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux/+/refs/tags/v6.12/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_sspp.c?format=TEXT",
+    "sha256": "9660d844c505c618b878940639b823ce25f99de2add5fed77680f77d12cbe667",
+    "bytes": 20869
+  },
+  "dpu_hw_ctl.c": {
+    "url": "https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux/+/refs/tags/v6.12/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_ctl.c?format=TEXT",
+    "sha256": "27dee2ada0fcee541243a263dbbfe99cf47fd3bc32ba85dea19f3dc1a1716a75",
+    "bytes": 20612
+  },
+  "dpu_encoder_phys_cmd.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_cmd.c",
+    "sha256": "7a6c374884f4991b83c90e1010fe20d22c0b0da98bb4126e7ed2c8a1d6a77c42",
+    "bytes": 22571
+  },
+  "dpu_hw_pingpong.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_pingpong.c",
+    "sha256": "9751c46b7191264b9c58d80ac2499308af0ca9ea357c3f4f3fbfaa427076cd48",
+    "bytes": 8362
+  },
+  "dpu_hw_interrupts.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_interrupts.c",
+    "sha256": "55417ab55964ec8c19b1b4bb9a60ada9078e753e54a6ee3ab81fed19cb276c5d",
+    "bytes": 17236
+  },
+  "pmi8998-wled.c": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/drivers/leds/leds-qpnp-wled.c",
+    "sha256": "e7b83d84e735295c0439ef56781f16eb037b9f0baac2da8cd453f4fa46ec5fa3",
+    "bytes": 63280
+  },
+  "pmi8998.dtsi": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/arch/arm/boot/dts/qcom/msm-pmi8998.dtsi",
+    "sha256": "b785eeb7df5a6a22eecdd7068d6fb594f4f6ad34492626bfd68287233be91984",
+    "bytes": 19653
+  }
+}

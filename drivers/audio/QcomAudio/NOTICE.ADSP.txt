@@ -1,0 +1,21 @@
+QcomAudio Apple frontend: BSD-2-Clause (file-level notices retained).
+
+The QcomADSP adapter and ADSP protocol/state components are GPL-2.0-only.
+Their wire layouts and protocol behavior derive from Linux Qualcomm drivers:
+  Copyright (c) 2011-2017, The Linux Foundation. All rights reserved.
+  Copyright (c) 2016, Linaro Ltd.
+  Copyright (c) 2018, Linaro Limited.
+  Copyright (c) 2015, Sony Mobile Communications AB.
+Additional attributions are retained in the reference sources themselves.
+The SMEM/FIFO/intent components are shared with this project's QcomBaseband
+GPL-2.0-only components. No baseband firmware or modem endpoint is reused.
+
+The additional downstream ASM timing and completion definitions are from
+MiCode/Xiaomi_Kernel_OpenSource, sagit-o-oss commit
+8da5dc504f4f4cdc929dad60b5e6d3f37e7f5f52:
+  Copyright (c) 2012-2017, The Linux Foundation. All rights reserved.
+
+Pinned source URLs and SHA-256 hashes: docs/audio/reference/sources.json.
+GPL version 2 license text: LICENSE.ADSP.
+No Qualcomm/NXP DSP firmware, speaker tuning, calibration, or Apple provider
+binary is redistributed in this source directory.

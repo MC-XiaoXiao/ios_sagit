@@ -1,0 +1,62 @@
+{
+  "qcom_glink_native.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/820b689b4a7a6ca1b4fdabf26a17196a2e379a97/drivers/rpmsg/qcom_glink_native.c",
+    "sha256": "b198bd6af479fdd3d058a2e018f65ffc3deb24179d8785d715f7e1faeaf51edd",
+    "license": "GPL-2.0-only"
+  },
+  "qcom_glink_smem.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/820b689b4a7a6ca1b4fdabf26a17196a2e379a97/drivers/rpmsg/qcom_glink_smem.c",
+    "sha256": "7d6d427dbbce85958b4e45ff1955e08052fdf078c98d1a48518444d9e9d36434",
+    "license": "GPL-2.0-only"
+  },
+  "smem.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/820b689b4a7a6ca1b4fdabf26a17196a2e379a97/drivers/soc/qcom/smem.c",
+    "sha256": "3f849de46f055c2b4eb9bb7413c29c7951d2bb6cccc9b73b069595807027e02e",
+    "license": "GPL-2.0-only"
+  },
+  "smp2p.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/820b689b4a7a6ca1b4fdabf26a17196a2e379a97/drivers/soc/qcom/smp2p.c",
+    "sha256": "49a94100b02382a36c8d9963785e2ecd8c8d6f080e59980dc7e426c2ec60ec3d",
+    "license": "GPL-2.0-only"
+  },
+  "qcom_hwspinlock.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/820b689b4a7a6ca1b4fdabf26a17196a2e379a97/drivers/hwspinlock/qcom_hwspinlock.c",
+    "sha256": "8bfa51657cd0ca7c92e138e819887bf2c27d83e0b7f3b701d262c54cb36713a0",
+    "license": "GPL-2.0-only"
+  },
+  "linux-apr.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/820b689b4a7a6ca1b4fdabf26a17196a2e379a97/include/linux/soc/qcom/apr.h",
+    "sha256": "5cbb8942ddf75a4e7eeb69a3093136e4c5877f98a73760c06276b2be4c123efc",
+    "license": "GPL-2.0-only"
+  },
+  "qcom,apr.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/820b689b4a7a6ca1b4fdabf26a17196a2e379a97/include/dt-bindings/soc/qcom,apr.h",
+    "sha256": "4dc994d399a17fb2f52067f7487d9d857c83880d67486da4dd8abd01a59c0c1a",
+    "license": "GPL-2.0-only"
+  },
+  "q6asm.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/820b689b4a7a6ca1b4fdabf26a17196a2e379a97/sound/soc/qcom/qdsp6/q6asm.c",
+    "sha256": "e7140c6cb1c26f355655879d3def6e2bfaa2149af86366b2cfaafefdeac68dd7",
+    "license": "GPL-2.0-only"
+  },
+  "q6adm.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/820b689b4a7a6ca1b4fdabf26a17196a2e379a97/sound/soc/qcom/qdsp6/q6adm.c",
+    "sha256": "1ed9f6bbe2204b8495afdd8dd9b9d6465384f87622ebf7329c1e2ea6814ed13c",
+    "license": "GPL-2.0-only"
+  },
+  "q6core.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/820b689b4a7a6ca1b4fdabf26a17196a2e379a97/sound/soc/qcom/qdsp6/q6core.c",
+    "sha256": "0e91d863d2a815764d2b512b23ea223138f0e75198311be78e746491a00bf9f6",
+    "license": "GPL-2.0-only"
+  },
+  "q6asm-v2.h": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/8da5dc504f4f4cdc929dad60b5e6d3f37e7f5f52/include/sound/q6asm-v2.h",
+    "sha256": "c058e0a2c81471156a7b22eef9e4c003e2da647fa1f766b54d7f0ad5da139420",
+    "license": "GPL-2.0-only"
+  },
+  "apr_audio-v2.h": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/8da5dc504f4f4cdc929dad60b5e6d3f37e7f5f52/include/sound/apr_audio-v2.h",
+    "sha256": "be98924d2c66f781395790d70f1aa41efb7dfd44386b12f934a2d016d2f8ed86",
+    "license": "GPL-2.0-only"
+  }
+}

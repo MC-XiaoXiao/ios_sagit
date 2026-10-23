@@ -1,0 +1,18 @@
+{
+  "qpnp-haptic.c": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/drivers/soc/qcom/qpnp-haptic.c",
+    "sha256": "30e25629b8790ac2c729f1b2dcc9a3ed9f631da91d5b0fbc6b9684b08a40f013"
+  },
+  "msm-pmi8998.dtsi": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/arch/arm/boot/dts/qcom/msm-pmi8998.dtsi",
+    "sha256": "b785eeb7df5a6a22eecdd7068d6fb594f4f6ad34492626bfd68287233be91984"
+  },
+  "qpnp-haptic.txt": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/Documentation/devicetree/bindings/soc/qcom/qpnp-haptic.txt",
+    "sha256": "c4ccd9408d0bca538390746201e110325ad09e51a552c0578895a323b1201847"
+  },
+  "sagit-msm8998-mtp.dtsi": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/arch/arm/boot/dts/qcom/sagit-msm8998-mtp.dtsi",
+    "sha256": "b5ea7890a131e642931a137ea77aee35bc246691b62f290b7745871c96d537f8"
+  }
+}

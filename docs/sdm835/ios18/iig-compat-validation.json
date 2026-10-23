@@ -1,0 +1,261 @@
+{
+  "date": "2026-10-15T03:20:11.013419-07:00",
+  "status": "iig-panic-fixed-hardware-validated",
+  "root_cause": "Cached DriverKit 286 IIG callers omit IORPC.kernelContent; current XNU OSMetaClassBase::Invoke rejects NULL with kIOReturnIPCError, triggering IOSystemStateNotification::initialize assertion.",
+  "fix": "Initialize kernelContent to the generated local message content header in the IIG compatibility conversion, guarded by KERNEL; handle synchronous and one-way callers. Preserve pinned cache hashes, native Invoke validation and StateNotification assertions.",
+  "source_files": [
+    "scripts/toolchain.py",
+    "tests/test_iig_compat.py",
+    "Makefile",
+    "README.md"
+  ],
+  "baseline": {
+    "report": "docs/sdm835/ios18/amfi-startup-validation.json",
+    "kernel_snapshot": "build/iig-diagnosis/inputs/kernel.before.macho",
+    "kernelcache_snapshot": "build/iig-diagnosis/inputs/kernelcache.platform.before",
+    "kernelcache_sha256": "caebc0b9c8376a74436dfe9263f6cea887a3354b09887af7ed4fc483620b9370",
+    "panic": "IOUserServer.cpp:7048 / kIOReturnIPCError 0xe00002bf"
+  },
+  "kernelcache": {
+    "path": "build/output/kernelcache.sdm835.platform",
+    "sha256": "ca208a0aa487829e6cefa136137cb57f458505a0bafa673b5b76d17454624521",
+    "bytes": 25227264,
+    "kext_count": 25,
+    "local_kernel_sha256": "fdbf1ee19c8dc5597abcd2a61262732db6e52699295d901cebbe1fec9686573c",
+    "verification": "docs/sdm835/ios18/iig-compat-kernelcache-verification.json",
+    "integrity": {
+      "modules": [
+        {
+          "bundle": "com.apple.kec.corecrypto",
+          "algorithm": "HMAC-SHA256",
+          "hashed_bytes": 335056,
+          "hmac_offset": 20587968,
+          "hmac": "c1eda400f8cd49534131802eafa1ea994d094e06628df61baaebbecc21de710a"
+        }
+      ]
+    }
+  },
+  "bridge": {
+    "path": "build/iig-diagnosis/bridge/XnuBridge.efi",
+    "sha256": "c0a39d9dcf1eef13d19b5d24ee1df4caef8466e79593b74769ca8da340d6b806",
+    "watchdog_seconds": 30,
+    "strict_alignment": {
+      "efi": true,
+      "raw": true
+    }
+  },
+  "checks": {
+    "iig_host_tests": 3,
+    "executed_modes": [
+      "old-kernel-caller: expected IPCError",
+      "fixed-kernel-caller: successful actual generated request/reply",
+      "fixed-userspace-caller: successful actual generated request/reply"
+    ],
+    "generated_callers": 100,
+    "generated_audit": "build/iig-diagnosis/generated-callers.json",
+    "patcher_ctest": 5,
+    "kernelcache_python_tests": 23,
+    "collection_verifier": "passed",
+    "native_kernel_build": "passed",
+    "binary_disassembly": "build/iig-diagnosis/state-notification-disassembly.txt"
+  },
+  "device_tests": [
+    {
+      "name": "hardware-1",
+      "report": "build/iig-diagnosis/hardware-1/report.json",
+      "log": "build/iig-diagnosis/hardware-1/uart.txt",
+      "payload_sha256": "c0a39d9dcf1eef13d19b5d24ee1df4caef8466e79593b74769ca8da340d6b806",
+      "watchdog_seconds": 30,
+      "checks": {
+        "kernel_entry": true,
+        "amfi_policy_loaded": true,
+        "sandbox_policy_loaded": true,
+        "bsd_mac_initialized": true,
+        "bsd_buffers_initialized": true,
+        "coreanalytics_started": true,
+        "state_notification_panic_absent": true,
+        "all_panic_strings_absent": true,
+        "watchdog_recovered": true
+      },
+      "evidence": [
+        {
+          "line": 122,
+          "text": "Security policy loaded: AppleImage4 hooks (AppleImage4)"
+        },
+        {
+          "line": 136,
+          "text": "Security policy loaded: Apple Mobile File Integrity (AMFI)"
+        },
+        {
+          "line": 138,
+          "text": "Security policy loaded: Seatbelt sandbox policy (Sandbox)"
+        },
+        {
+          "line": 140,
+          "text": "Security policy loaded: Guarded vnode policy (vnguard)"
+        },
+        {
+          "line": 147,
+          "text": "MAC Framework successfully initialized"
+        },
+        {
+          "line": 148,
+          "text": "using 1167 buffer headers and 1167 cluster IO buffer headers"
+        },
+        {
+          "line": 157,
+          "text": "AppleARMSFRManifest: Error: Failed to publish sfr manifest"
+        },
+        {
+          "line": 159,
+          "text": "Registered CoreAnalyticsHub functions with xnu.virtual bool CoreAnalyticsHub::start(IOService *)::229:CoreAnalyticsHub start completed"
+        },
+        {
+          "line": 168,
+          "text": "AppleARMSFRManifest: Error: Failed to publish sfr manifest"
+        }
+      ]
+    },
+    {
+      "name": "hardware-2",
+      "report": "build/iig-diagnosis/hardware-2/report.json",
+      "log": "build/iig-diagnosis/hardware-2/uart.txt",
+      "payload_sha256": "c0a39d9dcf1eef13d19b5d24ee1df4caef8466e79593b74769ca8da340d6b806",
+      "watchdog_seconds": 30,
+      "checks": {
+        "kernel_entry": true,
+        "amfi_policy_loaded": true,
+        "sandbox_policy_loaded": true,
+        "bsd_mac_initialized": true,
+        "bsd_buffers_initialized": true,
+        "coreanalytics_started": true,
+        "state_notification_panic_absent": true,
+        "all_panic_strings_absent": true,
+        "watchdog_recovered": true
+      },
+      "evidence": [
+        {
+          "line": 122,
+          "text": "Security policy loaded: AppleImage4 hooks (AppleImage4)"
+        },
+        {
+          "line": 136,
+          "text": "Security policy loaded: Apple Mobile File Integrity (AMFI)"
+        },
+        {
+          "line": 138,
+          "text": "Security policy loaded: Seatbelt sandbox policy (Sandbox)"
+        },
+        {
+          "line": 140,
+          "text": "Security policy loaded: Guarded vnode policy (vnguard)"
+        },
+        {
+          "line": 147,
+          "text": "MAC Framework successfully initialized"
+        },
+        {
+          "line": 148,
+          "text": "using 1167 buffer headers and 1167 cluster IO buffer headers"
+        },
+        {
+          "line": 157,
+          "text": "AppleARMSFRManifest: Error: Failed to publish sfr manifest"
+        },
+        {
+          "line": 159,
+          "text": "Registered CoreAnalyticsHub functions with xnu.virtual bool CoreAnalyticsHub::start(IOService *)::229:CoreAnalyticsHub start completed"
+        },
+        {
+          "line": 168,
+          "text": "AppleARMSFRManifest: Error: Failed to publish sfr manifest"
+        }
+      ]
+    },
+    {
+      "name": "hardware-long",
+      "report": "build/iig-diagnosis/hardware-long/report.json",
+      "log": "build/iig-diagnosis/hardware-long/uart.txt",
+      "archived_log": "docs/sdm835/ios18/iig-compat-hardware-long-uart.txt",
+      "payload_sha256": "41c878cf803d00e572fa19f4cf0f1eb2396557fc065c004e26437eff0d0a7596",
+      "watchdog_seconds": 90,
+      "checks": {
+        "kernel_entry": true,
+        "amfi_policy_loaded": true,
+        "sandbox_policy_loaded": true,
+        "bsd_mac_initialized": true,
+        "bsd_buffers_initialized": true,
+        "coreanalytics_started": true,
+        "state_notification_panic_absent": true,
+        "all_panic_strings_absent": true,
+        "watchdog_recovered": true
+      },
+      "evidence": [
+        {
+          "line": 122,
+          "text": "Security policy loaded: AppleImage4 hooks (AppleImage4)"
+        },
+        {
+          "line": 136,
+          "text": "Security policy loaded: Apple Mobile File Integrity (AMFI)"
+        },
+        {
+          "line": 138,
+          "text": "Security policy loaded: Seatbelt sandbox policy (Sandbox)"
+        },
+        {
+          "line": 140,
+          "text": "Security policy loaded: Guarded vnode policy (vnguard)"
+        },
+        {
+          "line": 147,
+          "text": "MAC Framework successfully initialized"
+        },
+        {
+          "line": 148,
+          "text": "using 1167 buffer headers and 1167 cluster IO buffer headers"
+        },
+        {
+          "line": 157,
+          "text": "AppleARMSFRManifest: Error: Failed to publish sfr manifest"
+        },
+        {
+          "line": 159,
+          "text": "Registered CoreAnalyticsHub functions with xnu.virtual bool CoreAnalyticsHub::start(IOService *)::229:CoreAnalyticsHub start completed"
+        },
+        {
+          "line": 168,
+          "text": "AppleARMSFRManifest: Error: Failed to publish sfr manifest"
+        }
+      ]
+    }
+  ],
+  "iig_panic_resolved_on_device": true,
+  "amfi_panic_resolved_on_device": true,
+  "full_boot_completed": false,
+  "security_checks_bypassed": false,
+  "kernel_bootstrap_reordered": false,
+  "partitions_written": false,
+  "current_observation": "IIG StateNotification initialization panic is fixed and absent in three hardware runs (two identical EFI runs with a 30-second watchdog, one with 90 seconds). BSD MAC and buffer initialization and CoreAnalyticsHub start complete. No further XNU output or panic is observed before watchdog reset, including the longer run; the exact subsequent wait is not yet localized. Missing IORTC is a source-based candidate (IOKitInitializeTime waits up to 30 seconds), not a confirmed runtime stop. Manifest/profile handoff errors are visible but have not been established as the stop cause. Full system boot is not complete.",
+  "long_bridge": {
+    "path": "build/iig-diagnosis/bridge-long/XnuBridge.efi",
+    "sha256": "41c878cf803d00e572fa19f4cf0f1eb2396557fc065c004e26437eff0d0a7596",
+    "watchdog_seconds": 90,
+    "strict_alignment": {
+      "efi": true,
+      "raw": true
+    },
+    "kernelcache_sha256": "ca208a0aa487829e6cefa136137cb57f458505a0bafa673b5b76d17454624521"
+  },
+  "current_blocker": "Waiting for an IOMedia root device with Content=Apple_HFS. RTC/calendar, pthread and network/lo0 initialization passed. No panic observed in the final test. No mountable root filesystem has been handed off; full userspace boot is not complete.",
+  "device_reset_required": true,
+  "device_recovery": "Firmware reboot captured; USB transport not responding after cleanup.",
+  "latest_log": "docs/sdm835/ios18/iig-compat-hardware-long-uart.txt",
+  "rtc_followup": "docs/sdm835/ios18/rtc-validation.json",
+  "rtc_wait_resolved": true,
+  "watchdog_observation_note": "Older 90-second values describe the requested bridge setting; effective hardware duration was not calibrated. RTC tracing later confirmed and fixed the IORTC wait.",
+  "pthread_followup": "docs/sdm835/ios18/pthread-validation.json",
+  "latest_bridge": "build/pthread-diagnosis/bridge/XnuBridge.efi",
+  "latest_device_log": "docs/sdm835/ios18/pthread-hardware-uart.txt",
+  "pthread_panic_resolved": true
+}

@@ -1,0 +1,2613 @@
+{
+  "include_dirs": [
+    "include",
+    "platform/GenericARMPlatform",
+    "clock/GenericClockController",
+    "power/QcomPowerController",
+    "bus/QcomSPMI",
+    "power/QcomPMIC",
+    "input/FingerprintHID",
+    "security/QcomSCM",
+    "bus/GenericI2C",
+    "bus/GenericSPI"
+  ],
+  "abi_contracts": [
+    "abi-22H374/apple-arm-platform-abi.json",
+    "abi-22H374/apple-storage-abi.json",
+    "abi-22H374/apple-mobile-graphics-abi.json",
+    "abi-22H374/apple-surface-abi.json",
+    "abi-22H374/apple-gpu-abi.json",
+    "abi-22H374/apple-crypto-abi.json",
+    "abi-22H374/apple-hid-abi.json",
+    "abi-22H374/apple-usb-device-abi.json",
+    "abi-22H374/apple-usb-host-abi.json",
+    "abi-22H374/apple-usb-common-abi.json",
+    "abi-22H374/apple-watchdog-abi.json",
+    "abi-22H374/apple-serial-abi.json",
+    "abi-22H374/apple-audio2-abi.json"
+  ],
+  "provider_image": "../build/ios18-kext-analysis/kernelcache.release.ipad7c.macho",
+  "resident": true,
+  "tests": [
+    {
+      "name": "arm-smp",
+      "sources": [
+        "../tests/arm_smp_test.cpp"
+      ],
+      "include_dirs": [
+        "../kernel/pexpert"
+      ]
+    },
+    {
+      "name": "rtc",
+      "sources": [
+        "../tests/rtc_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "bus/QcomSPMI"
+      ]
+    },
+    {
+      "name": "arm-platform-config",
+      "sources": [
+        "../tests/arm_platform_config_test.cpp"
+      ],
+      "include_dirs": [
+        "platform/GenericARMPlatform"
+      ]
+    },
+    {
+      "name": "gicv3",
+      "sources": [
+        "../tests/gicv3_test.cpp"
+      ],
+      "include_dirs": [
+        "platform/AppleARMGIC"
+      ]
+    },
+    {
+      "name": "ufs",
+      "sources": [
+        "../tests/ufs_test.cpp"
+      ],
+      "include_dirs": [
+        "storage/QcomUFS"
+      ]
+    },
+    {
+      "name": "mipi-dsi",
+      "sources": [
+        "../tests/mipi_dsi_test.cpp"
+      ],
+      "include_dirs": [
+        "display/QcomMIPIDSI"
+      ]
+    },
+    {
+      "name": "display",
+      "sources": [
+        "../tests/display_test.cpp"
+      ],
+      "include_dirs": [
+        "display/QcomDisplay",
+        "include",
+        "display/PMI8998WLED"
+      ]
+    },
+    {
+      "name": "gcc",
+      "sources": [
+        "../tests/gcc_test.cpp"
+      ],
+      "include_dirs": [
+        "clock/QcomGCC",
+        "include"
+      ]
+    },
+    {
+      "name": "power",
+      "sources": [
+        "../tests/power_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "power/QcomRPM",
+        "bus/QcomSPMI",
+        "clock/QcomOSM"
+      ]
+    },
+    {
+      "name": "power-clock",
+      "sources": [
+        "../tests/power_clock_test.cpp"
+      ],
+      "include_dirs": [
+        "include"
+      ]
+    },
+    {
+      "name": "gpu",
+      "sources": [
+        "../tests/gpu_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "gpu/QcomGPU"
+      ]
+    },
+    {
+      "name": "gpu-texture-layout",
+      "sources": [
+        "../tests/metal_texture_layout_test.cpp"
+      ],
+      "include_dirs": [
+        "include"
+      ]
+    },
+    {
+      "name": "gpu-submit",
+      "sources": [
+        "../tests/gpu_submit_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "gpu/QcomGPU",
+        "../build/drivers/generated/GPU"
+      ]
+    },
+    {
+      "name": "usb",
+      "sources": [
+        "../tests/usb_test.cpp"
+      ],
+      "include_dirs": [
+        "usb/QcomUSB"
+      ],
+      "kernel_compile": [
+        "../tests/usb_kernel_compile.cpp",
+        "../tests/usb_device_abi_compile.cpp",
+        "../tests/usb_host_abi_compile.cpp"
+      ],
+      "kernel_vtables": {
+        "../tests/usb_device_abi_compile.cpp": {
+          "USBDeviceABIProbe": {
+            "slots": 235,
+            "bindings": {
+              "14": "IOUSBDeviceController::free",
+              "44": "IOUSBDeviceController::setProperties",
+              "86": "IOUSBDeviceController::start",
+              "87": "IOUSBDeviceController::stop",
+              "117": "IOUSBDeviceController::callPlatformFunction",
+              "168": "IOUSBDeviceController::createPipe",
+              "172": "IOUSBDeviceController::createPipeGated",
+              "175": "USBDeviceABIProbe::nativeSlot175",
+              "177": "USBDeviceABIProbe::goOnBus",
+              "187": "USBDeviceABIProbe::activateEndpoint",
+              "228": "USBDeviceABIProbe::ioGated",
+              "229": "IOUSBDeviceController::allocateRequest",
+              "234": "IOUSBDeviceController::nativeSlot234",
+              "224": "IOUSBDeviceController::createControlRequestTracker",
+              "186": "USBDeviceABIProbe::prepareConfiguration",
+              "199": "USBDeviceABIProbe::nativeSlot199",
+              "202": "USBDeviceABIProbe::doRemoteWakeGated",
+              "203": "USBDeviceABIProbe::nativeSlot203",
+              "216": "IOUSBDeviceController::handleControlRequestStateChange",
+              "233": "USBDeviceABIProbe::nativeSlot233"
+            }
+          },
+          "USBControlRequestABIProbe": {
+            "slots": 19,
+            "bindings": {
+              "14": "IOUSBDeviceControlRequest::free",
+              "15": "IOUSBDeviceControlRequest::initWithControllerOptions",
+              "16": "IOUSBDeviceControlRequest::nativeSlot16",
+              "17": "IOUSBDeviceControlRequest::nativeSlot17",
+              "18": "IOUSBDeviceControlRequest::stop"
+            }
+          },
+          "USBDeviceTransportABIProbe": {
+            "slots": 235,
+            "bindings": {
+              "14": "QcomUSBDevice::free",
+              "86": "QcomUSBDevice::start",
+              "87": "QcomUSBDevice::stop",
+              "111": "QcomUSBDevice::getWorkLoop",
+              "175": "QcomUSBDevice::nativeSlot175",
+              "177": "QcomUSBDevice::goOnBus",
+              "185": "QcomUSBDevice::provideEndpointIDsForConfiguration",
+              "186": "QcomUSBDevice::prepareConfiguration",
+              "187": "QcomUSBDevice::activateEndpoint",
+              "189": "QcomUSBDevice::createIOBuffer",
+              "195": "IOUSBDeviceController::handleUSBSuspend",
+              "197": "IOUSBDeviceController::handleUSBConnectionDone",
+              "202": "QcomUSBDevice::doRemoteWakeGated",
+              "203": "QcomUSBDevice::nativeSlot203",
+              "207": "QcomUSBDevice::getMaxSpeedCapability",
+              "208": "QcomUSBDevice::nativeSlot208",
+              "216": "QcomUSBDevice::handleControlRequestStateChange",
+              "224": "QcomUSBDevice::createControlRequestTracker",
+              "228": "QcomUSBDevice::ioGated",
+              "172": "QcomUSBDevice::createPipeGated",
+              "233": "QcomUSBDevice::nativeSlot233"
+            }
+          }
+        },
+        "../tests/usb_host_abi_compile.cpp": {
+          "USBHostPortABIProbe": {
+            "slots": 235,
+            "bindings": {
+              "14": "AppleUSBHostPort::free",
+              "21": "AppleUSBHostPort::init",
+              "74": "AppleUSBHostPort::init",
+              "84": "AppleUSBHostPort::registerService",
+              "168": "AppleUSBHostPort::reset",
+              "169": "AppleUSBHostPort::reset",
+              "172": "AppleUSBHostPort::signalInterrupt",
+              "174": "USBHostPortABIProbe::getPortType",
+              "200": "USBHostPortABIProbe::powerOff",
+              "204": "USBHostPortABIProbe::resetAndCreateDevice",
+              "208": "AppleUSBHostPort::acquireAddressLock",
+              "210": "AppleUSBHostPort::createDevice",
+              "234": "USBHostPortABIProbe::getPortStatusGated",
+              "170": "AppleUSBHostPort::clearPipeStall",
+              "214": "AppleUSBHostPort::initBusCurrent",
+              "219": "AppleUSBHostPort::getCompanionPortGated"
+            }
+          },
+          "USBHostControllerABIProbe": {
+            "slots": 269,
+            "bindings": {
+              "14": "AppleUSBHostController::free",
+              "21": "AppleUSBHostController::init",
+              "86": "AppleUSBHostController::start",
+              "94": "AppleUSBHostController::terminate",
+              "111": "AppleUSBHostController::getWorkLoop",
+              "156": "AppleUSBHostController::maxCapabilityForDomainState",
+              "190": "AppleUSBHostController::acquireAddressLock",
+              "192": "USBHostControllerABIProbe::createDevice",
+              "193": "USBHostControllerABIProbe::nativeSlot193",
+              "194": "AppleUSBHostController::nativeSlot194",
+              "217": "USBHostControllerABIProbe::createPipeGated",
+              "247": "AppleUSBHostController::createPorts",
+              "266": "USBHostControllerABIProbe::getRawMicroFrameCount",
+              "267": "USBHostControllerABIProbe::makeFrameNumber",
+              "201": "AppleUSBHostController::createPipe",
+              "202": "AppleUSBHostController::io",
+              "203": "AppleUSBHostController::abortPipe",
+              "204": "AppleUSBHostController::clearPipeStall",
+              "205": "AppleUSBHostController::suspendPipes",
+              "206": "AppleUSBHostController::resumePipes",
+              "207": "AppleUSBHostController::adjustPipe",
+              "208": "AppleUSBHostController::closePipe",
+              "209": "AppleUSBHostController::enableStreams",
+              "210": "AppleUSBHostController::disableStreams",
+              "211": "AppleUSBHostController::createStream",
+              "212": "AppleUSBHostController::abortStream",
+              "213": "AppleUSBHostController::closeStream",
+              "230": "AppleUSBHostController::createIOBuffer",
+              "232": "AppleUSBHostController::returnDMACommand",
+              "218": "USBHostControllerABIProbe::ioGated",
+              "219": "USBHostControllerABIProbe::abortPipeGated",
+              "220": "USBHostControllerABIProbe::clearPipeStallGated",
+              "221": "USBHostControllerABIProbe::suspendPipesGated",
+              "222": "USBHostControllerABIProbe::resumePipesGated",
+              "223": "USBHostControllerABIProbe::adjustPipeGated",
+              "224": "USBHostControllerABIProbe::closePipeGated",
+              "225": "USBHostControllerABIProbe::enableStreamsGated",
+              "226": "USBHostControllerABIProbe::disableStreamsGated",
+              "227": "USBHostControllerABIProbe::createStreamGated",
+              "228": "USBHostControllerABIProbe::abortStreamGated",
+              "229": "USBHostControllerABIProbe::closeStreamGated",
+              "231": "USBHostControllerABIProbe::getDMACommand",
+              "248": "USBHostControllerABIProbe::filterOccurred",
+              "249": "USBHostControllerABIProbe::interruptOccurred",
+              "233": "AppleUSBHostController::getFrameNumber",
+              "234": "AppleUSBHostController::getFrameRollover",
+              "195": "AppleUSBHostController::registerHub",
+              "196": "AppleUSBHostController::registerHub",
+              "197": "AppleUSBHostController::unregisterHub",
+              "198": "AppleUSBHostController::registerHubGated",
+              "199": "AppleUSBHostController::registerSuperSpeedHubGated",
+              "200": "AppleUSBHostController::unregisterHubGated",
+              "182": "AppleUSBHostController::powerDown",
+              "183": "AppleUSBHostController::powerUp",
+              "235": "AppleUSBHostController::getCompanionPort"
+            }
+          },
+          "USBHostDMAABIProbe": {
+            "slots": 33,
+            "bindings": {
+              "14": "AppleUSBHostDMACommand::free",
+              "16": "AppleUSBHostDMACommand::initWithSpecification",
+              "17": "AppleUSBHostDMACommand::setMemoryDescriptor",
+              "19": "AppleUSBHostDMACommand::getMemoryDescriptor",
+              "31": "AppleUSBHostDMACommand::nativeSlot31",
+              "32": "AppleUSBHostDMACommand::nativeSlot32"
+            }
+          },
+          "USBRequestABIProbe": {
+            "slots": 50,
+            "bindings": {
+              "14": "AppleUSBRequest::free",
+              "19": "AppleUSBRequest::update",
+              "20": "AppleUSBRequest::finish",
+              "21": "AppleUSBRequest::complete",
+              "22": "AppleUSBRequest::cancel",
+              "23": "AppleUSBRequest::getRequestCompleter",
+              "24": "AppleUSBRequest::getPreparedBuffer",
+              "27": "AppleUSBRequest::getClient",
+              "28": "AppleUSBRequest::getRequest",
+              "32": "AppleUSBRequest::setStatus",
+              "33": "AppleUSBRequest::setBytesTransferred",
+              "34": "AppleUSBRequest::setTimeStamp",
+              "39": "AppleUSBRequest::setRequestID",
+              "49": "AppleUSBRequest::nativeSlot49",
+              "25": "AppleUSBRequest::getCompletionTimeout",
+              "26": "AppleUSBRequest::getIOLength",
+              "40": "AppleUSBRequest::isBundled"
+            }
+          },
+          "USBHostRequestABIProbe": {
+            "slots": 53,
+            "bindings": {
+              "14": "AppleUSBHostRequest::free",
+              "16": "AppleUSBHostRequest::setNextRequest",
+              "21": "AppleUSBHostRequest::complete",
+              "22": "AppleUSBHostRequest::cancel",
+              "23": "AppleUSBRequest::getRequestCompleter",
+              "24": "AppleUSBRequest::getPreparedBuffer",
+              "27": "AppleUSBRequest::getClient",
+              "50": "AppleUSBHostRequest::getDevice",
+              "51": "AppleUSBHostRequest::getPipe",
+              "52": "AppleUSBHostRequest::getIOSource",
+              "25": "AppleUSBRequest::getCompletionTimeout",
+              "26": "AppleUSBRequest::getIOLength",
+              "40": "AppleUSBRequest::isBundled"
+            }
+          },
+          "USBRequestCompleterABIProbe": {
+            "slots": 39,
+            "bindings": {
+              "14": "AppleUSBRequestCompleter::free",
+              "16": "AppleUSBRequestCompleter::checkForWork",
+              "29": "AppleUSBRequestCompleter::enqueueRequest",
+              "38": "AppleUSBRequestCompleter::nativeSlot38"
+            }
+          },
+          "USBHostIOSourceABIProbe": {
+            "slots": 37,
+            "bindings": {
+              "14": "IOUSBHostIOSource::free",
+              "15": "IOUSBHostIOSource::initWithOwners",
+              "22": "IOUSBHostIOSource::getDevice",
+              "27": "IOUSBHostIOSource::getState",
+              "36": "IOUSBHostIOSource::nativeSlot36"
+            }
+          },
+          "USBHostPipeABIProbe": {
+            "slots": 67,
+            "bindings": {
+              "14": "IOUSBHostPipe::free",
+              "37": "IOUSBHostPipe::initWithDescriptorsAndOwners",
+              "38": "IOUSBHostPipe::getEndpointDescriptor",
+              "39": "IOUSBHostPipe::getSuperSpeedEndpointCompanionDescriptor",
+              "40": "IOUSBHostPipe::adjustPipe",
+              "45": "IOUSBHostPipe::getDescriptors",
+              "46": "IOUSBHostPipe::adjustPipeGated",
+              "50": "IOUSBHostPipe::adjustPipeGatedV2",
+              "65": "IOUSBHostPipe::getSpeed",
+              "66": "IOUSBHostPipe::getDeviceAddress",
+              "22": "IOUSBHostIOSource::getDevice",
+              "43": "IOUSBHostPipe::clearStall",
+              "49": "IOUSBHostPipe::clearStallGated"
+            }
+          },
+          "USBHostStartABIProbe": {
+            "slots": 269,
+            "bindings": {
+              "14": "QcomUSBHost::free",
+              "86": "QcomUSBHost::start",
+              "87": "QcomUSBHost::stop",
+              "111": "AppleUSBHostController::getWorkLoop",
+              "217": "QcomUSBHost::createPipeGated",
+              "224": "QcomUSBHost::closePipeGated",
+              "231": "QcomUSBHost::getDMACommand",
+              "249": "QcomUSBHost::interruptOccurred",
+              "248": "QcomUSBHost::filterOccurred",
+              "247": "QcomUSBHost::createPorts",
+              "192": "QcomUSBHost::createDevice",
+              "193": "QcomUSBHost::nativeSlot193",
+              "223": "QcomUSBHost::adjustPipeGated",
+              "218": "QcomUSBHost::ioGated",
+              "219": "QcomUSBHost::abortPipeGated",
+              "220": "QcomUSBHost::clearPipeStallGated",
+              "266": "QcomUSBHost::getRawMicroFrameCount",
+              "267": "QcomUSBHost::makeFrameNumber",
+              "233": "QcomUSBHost::getFrameNumber",
+              "234": "QcomUSBHost::getFrameRollover",
+              "195": "AppleUSBHostController::registerHub",
+              "196": "AppleUSBHostController::registerHub",
+              "197": "AppleUSBHostController::unregisterHub",
+              "198": "QcomUSBHost::registerHubGated",
+              "199": "QcomUSBHost::registerSuperSpeedHubGated",
+              "200": "QcomUSBHost::unregisterHubGated",
+              "182": "QcomUSBHost::powerDown",
+              "183": "QcomUSBHost::powerUp",
+              "225": "QcomUSBHost::enableStreamsGated",
+              "226": "QcomUSBHost::disableStreamsGated",
+              "227": "QcomUSBHost::createStreamGated",
+              "228": "QcomUSBHost::abortStreamGated",
+              "229": "QcomUSBHost::closeStreamGated"
+            }
+          },
+          "USBHostPortRuntimeABIProbe": {
+            "slots": 235,
+            "bindings": {
+              "14": "QcomUSBHostPort::free",
+              "86": "QcomUSBHostPort::start",
+              "87": "QcomUSBHostPort::stop",
+              "174": "QcomUSBHostPort::getPortType",
+              "200": "QcomUSBHostPort::powerOff",
+              "201": "QcomUSBHostPort::powerOn",
+              "202": "QcomUSBHostPort::suspend",
+              "203": "QcomUSBHostPort::resume",
+              "204": "QcomUSBHostPort::resetAndCreateDevice",
+              "234": "QcomUSBHostPort::getPortStatusGated",
+              "132": "QcomUSBHostPort::message"
+            }
+          }
+        }
+      },
+      "abi_contracts": [
+        "abi-22H374/apple-usb-device-abi.json",
+        "abi-22H374/apple-usb-host-abi.json",
+        "abi-22H374/apple-usb-common-abi.json"
+      ],
+      "kernel_provider_imports": {
+        "../tests/usb_device_abi_compile.cpp": [
+          "abi-22H374/apple-usb-device-abi.json"
+        ],
+        "../tests/usb_host_abi_compile.cpp": [
+          "abi-22H374/apple-usb-host-abi.json",
+          "abi-22H374/apple-usb-common-abi.json"
+        ]
+      }
+    },
+    {
+      "name": "xhci",
+      "sources": [
+        "../tests/xhci_test.cpp",
+        "../tests/xhci_host_test.cpp",
+        "../tests/xhci_transfer_test.cpp",
+        "../tests/xhci_event_test.cpp",
+        "../tests/xhci_slot_test.cpp",
+        "../tests/xhci_pipe_test.cpp",
+        "../tests/xhci_request_test.cpp",
+        "../tests/xhci_isochronous_test.cpp",
+        "../tests/xhci_power_test.cpp",
+        "../tests/xhci_hub_test.cpp"
+      ],
+      "include_dirs": [
+        "usb/QcomUSB",
+        "include"
+      ]
+    },
+    {
+      "name": "gpio",
+      "sources": [
+        "../tests/gpio_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "bus/QcomGPIO"
+      ]
+    },
+    {
+      "name": "pmic-input",
+      "sources": [
+        "../tests/pmic_input_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "bus/QcomSPMI",
+        "power/QcomPMIC"
+      ]
+    },
+    {
+      "name": "buttons",
+      "sources": [
+        "../tests/buttons_test.cpp"
+      ],
+      "include_dirs": [
+        "input/QcomButtons"
+      ]
+    },
+    {
+      "name": "dwc3-transfer",
+      "sources": [
+        "../tests/dwc3_transfer_test.cpp"
+      ],
+      "include_dirs": [
+        "usb/QcomUSB"
+      ]
+    },
+    {
+      "name": "dwc3-control",
+      "sources": [
+        "../tests/dwc3_control_test.cpp"
+      ],
+      "include_dirs": [
+        "usb/QcomUSB"
+      ]
+    },
+    {
+      "name": "dwc3-iso",
+      "sources": [
+        "../tests/dwc3_isochronous_test.cpp"
+      ],
+      "include_dirs": [
+        "usb/QcomUSB"
+      ]
+    },
+    {
+      "name": "usb-dma",
+      "sources": [
+        "../tests/usb_dma_test.cpp"
+      ],
+      "include_dirs": [
+        "usb/QcomUSB"
+      ]
+    },
+    {
+      "name": "usb-requests",
+      "sources": [
+        "../tests/usb_request_test.cpp"
+      ],
+      "include_dirs": [
+        "usb/QcomUSB"
+      ]
+    },
+    {
+      "name": "usb-phy",
+      "sources": [
+        "../tests/usb_phy_test.cpp"
+      ],
+      "include_dirs": [
+        "usb/QcomUSB",
+        "include"
+      ]
+    },
+    {
+      "name": "usb-role",
+      "sources": [
+        "../tests/usb_role_test.cpp"
+      ],
+      "include_dirs": [
+        "usb/QcomUSB"
+      ]
+    },
+    {
+      "name": "usb-connector",
+      "sources": [
+        "../tests/usb_connector_test.cpp"
+      ],
+      "include_dirs": [
+        "usb/QcomUSB",
+        "power/QcomPMIC"
+      ]
+    },
+    {
+      "name": "usb-resources",
+      "sources": [
+        "../tests/usb_resources_test.cpp"
+      ],
+      "include_dirs": [
+        "usb/QcomUSB",
+        "include"
+      ]
+    },
+    {
+      "name": "gpu-job-activity",
+      "sources": [
+        "../tests/gpu_job_activity_test.cpp"
+      ],
+      "include_dirs": [
+        "include"
+      ]
+    },
+    {
+      "name": "usb-interconnect",
+      "sources": [
+        "../tests/usb_interconnect_test.cpp"
+      ],
+      "include_dirs": [
+        "bus/QcomInterconnect",
+        "power/QcomRPM",
+        "include"
+      ]
+    },
+    {
+      "name": "usb-smmu",
+      "sources": [
+        "../tests/smmu_test.cpp"
+      ],
+      "include_dirs": [
+        "bus/QcomSMMU",
+        "usb/QcomUSB",
+        "include"
+      ],
+      "kernel_compile": [
+        "../tests/smmu_kernel_compile.cpp"
+      ],
+      "abi_contracts": [
+        "abi-22H374/apple-iomapper-abi.json"
+      ],
+      "kernel_provider_imports": {
+        "../tests/smmu_kernel_compile.cpp": [
+          "abi-22H374/apple-iomapper-abi.json"
+        ]
+      },
+      "kernel_vtables": {
+        "../tests/smmu_kernel_compile.cpp": {
+          "IOMapperABIProbe": {
+            "slots": 174,
+            "bindings": {
+              "14": "IOMapperABIProbe::free",
+              "86": "IOMapperABIProbe::start",
+              "168": "IOMapperABIProbe::initHardware",
+              "169": "IOMapperABIProbe::getPageSize",
+              "170": "IOMapperABIProbe::iovmMapMemory",
+              "171": "IOMapperABIProbe::iovmUnmapMemory",
+              "172": "IOMapperABIProbe::iovmInsert",
+              "173": "IOMapperABIProbe::mapToPhysicalAddress"
+            }
+          },
+          "IODMACommandABIProbe": {
+            "slots": 31,
+            "bindings": {
+              "14": "IODMACommandABIProbe::free",
+              "17": "IODMACommandABIProbe::setMemoryDescriptor",
+              "18": "IODMACommandABIProbe::clearMemoryDescriptor",
+              "20": "IODMACommandABIProbe::prepare",
+              "21": "IODMACommandABIProbe::complete"
+            }
+          },
+          "IOBufferABIProbe": {
+            "slots": 44,
+            "bindings": {
+              "28": "IOBufferABIProbe::complete",
+              "33": "IOMemoryDescriptor::addMapping",
+              "30": "IOMemoryDescriptor::setMapping",
+              "26": "IOMemoryDescriptor::writeBytes",
+              "34": "IOMemoryDescriptor::removeMapping",
+              "17": "IOMemoryDescriptor::performOperation",
+              "29": "IOMemoryDescriptor::map",
+              "24": "IOMemoryDescriptor::getTag",
+              "23": "IOMemoryDescriptor::setTag",
+              "31": "IOMemoryDescriptor::redirect",
+              "25": "IOMemoryDescriptor::readBytes",
+              "43": "IOBufferMemoryDescriptor::appendBytes",
+              "39": "IOBufferMemoryDescriptor::setDirection",
+              "42": "IOBufferMemoryDescriptor::getBytesNoCopy",
+              "41": "IOBufferMemoryDescriptor::getBytesNoCopy",
+              "37": "IOBufferMemoryDescriptor::initWithPhysicalMask",
+              "14": "IOBufferMemoryDescriptor::free",
+              "12": "IOBufferMemoryDescriptor::Dispatch",
+              "38": "IOBufferMemoryDescriptor::setLength",
+              "32": "IOGeneralMemoryDescriptor::makeMapping",
+              "16": "IOGeneralMemoryDescriptor::setPurgeable",
+              "15": "IOGeneralMemoryDescriptor::initWithOptions",
+              "20": "IOGeneralMemoryDescriptor::getPreparationID",
+              "19": "IOGeneralMemoryDescriptor::getPhysicalSegment",
+              "35": "IOGeneralMemoryDescriptor::doMap",
+              "36": "IOGeneralMemoryDescriptor::doUnmap",
+              "27": "IOGeneralMemoryDescriptor::prepare",
+              "21": "IOMemoryDescriptor::getDirection",
+              "22": "IOMemoryDescriptor::getLength",
+              "40": "IOBufferMemoryDescriptor::getCapacity",
+              "18": "IOGeneralMemoryDescriptor::dmaCommandOperation",
+              "6": "IOGeneralMemoryDescriptor::serialize"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "usb-iort",
+      "host_flags": [
+        "-fshort-wchar",
+        "-include",
+        "cstring"
+      ],
+      "sources": [
+        "../tests/usb_iort_test.cpp",
+        "../tests/usb_topology_test.cpp",
+        "../tests/usb_firmware_rpm_test.cpp",
+        "../tests/usb_firmware_stop_test.cpp",
+        "../tests/usb_rpm_cold_test.cpp",
+        "../boot/bridge/usb_topology.cpp"
+      ],
+      "include_dirs": [
+        "bus/QcomSMMU",
+        "include",
+        "../boot/edk2-msm8998/Common/edk2/MdePkg/Include",
+        "../boot/edk2-msm8998/Common/edk2/MdePkg/Include/X64"
+      ]
+    },
+    {
+      "name": "usb-smmu-context",
+      "sources": [
+        "../tests/smmu_context_test.cpp"
+      ],
+      "include_dirs": [
+        "bus/QcomSMMU",
+        "include"
+      ]
+    },
+    {
+      "name": "fingerprint-home",
+      "sources": [
+        "../tests/fingerprint_home_test.cpp"
+      ],
+      "include_dirs": [
+        "input/FingerprintHID",
+        "include"
+      ]
+    },
+    {
+      "name": "watchdog",
+      "sources": [
+        "../tests/watchdog_test.cpp"
+      ],
+      "include_dirs": [
+        "platform/QcomWatchdog"
+      ]
+    },
+    {
+      "name": "cpu-performance",
+      "sources": [
+        "../tests/cpu_performance_test.cpp"
+      ],
+      "include_dirs": [
+        "include"
+      ],
+      "kernel_compile": [
+        "../tests/cpu_performance_kernel_compile.cpp"
+      ]
+    },
+    {
+      "name": "wlan",
+      "sources": [
+        "../tests/wlan_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "wifi/QcomWLAN"
+      ],
+      "kernel_compile": [
+        "../tests/wlan_kernel_compile.cpp"
+      ]
+    },
+    {
+      "name": "wlan-firmware",
+      "sources": [
+        "../tests/wlan_firmware_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "wifi/QcomWLAN"
+      ]
+    },
+    {
+      "name": "bluetooth",
+      "sources": [
+        "../tests/bluetooth_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "bluetooth/QcomBluetooth"
+      ],
+      "kernel_compile": [
+        "../tests/bluetooth_kernel_compile.cpp"
+      ]
+    },
+    {
+      "name": "bluetooth-firmware",
+      "sources": [
+        "../tests/bluetooth_firmware_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "bluetooth/QcomBluetooth"
+      ]
+    },
+    {
+      "name": "bluetooth-runtime",
+      "sources": [
+        "../tests/bluetooth_runtime_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "bluetooth/QcomBluetooth"
+      ]
+    },
+    {
+      "name": "bluetooth-bootstrap",
+      "sources": [
+        "../tests/bluetooth_bootstrap_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "bluetooth/QcomBluetooth",
+        "bluetooth/userspace"
+      ]
+    },
+    {
+      "name": "wlan-runtime",
+      "sources": [
+        "../tests/wlan_runtime_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "wifi/QcomWLAN"
+      ]
+    },
+    {
+      "name": "gpu-constant-window",
+      "sources": [
+        "../tests/gpu_constant_window_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "gpu/QcomGPU",
+        "../build/drivers/generated/GPU"
+      ]
+    },
+    {
+      "name": "i2c",
+      "sources": [
+        "../tests/i2c_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "bus/QcomI2C"
+      ]
+    },
+    {
+      "name": "touch",
+      "sources": [
+        "../tests/touch_test.cpp"
+      ],
+      "include_dirs": [
+        "input/SynapticsTouch"
+      ]
+    },
+    {
+      "name": "battery",
+      "sources": [
+        "../tests/battery_test.cpp"
+      ],
+      "include_dirs": [
+        "power/QcomBattery"
+      ],
+      "kernel_compile": [
+        "power/QcomBattery/QcomBattery.cpp"
+      ]
+    },
+    {
+      "name": "battery-runtime",
+      "sources": [
+        "../tests/battery_runtime_test.cpp"
+      ],
+      "include_dirs": [
+        "../tests/battery_shim",
+        "power/QcomBattery"
+      ]
+    },
+    {
+      "name": "spi",
+      "sources": [
+        "../tests/spi_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "bus/QcomSPI"
+      ]
+    },
+    {
+      "name": "gyro",
+      "sources": [
+        "../tests/gyro_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "input/SPIGyro",
+        "bus/QcomSPI"
+      ]
+    },
+    {
+      "name": "baseband-firmware",
+      "sources": [
+        "../tests/baseband_firmware_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "baseband/QcomBaseband"
+      ],
+      "kernel_compile": [
+        "../tests/baseband_kernel_compile.cpp"
+      ]
+    },
+    {
+      "name": "baseband-transport",
+      "sources": [
+        "../tests/baseband_transport_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "baseband/QcomBaseband"
+      ]
+    },
+    {
+      "name": "baseband-signals",
+      "sources": [
+        "../tests/baseband_signals_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "baseband/QcomBaseband"
+      ]
+    },
+    {
+      "name": "baseband-memory",
+      "sources": [
+        "../tests/baseband_memory_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "baseband/QcomBaseband"
+      ]
+    },
+    {
+      "name": "baseband-admission",
+      "sources": [
+        "../tests/baseband_admission_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "baseband/QcomBaseband"
+      ]
+    },
+    {
+      "name": "baseband-axi",
+      "sources": [
+        "../tests/baseband_axi_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "baseband/QcomBaseband"
+      ]
+    },
+    {
+      "name": "baseband-rpm",
+      "sources": [
+        "../tests/baseband_rpm_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "power/QcomRPM"
+      ]
+    },
+    {
+      "name": "baseband-resources",
+      "sources": [
+        "../tests/baseband_resources_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "baseband/QcomBaseband"
+      ]
+    },
+    {
+      "name": "baseband-smem-pool",
+      "sources": [
+        "../tests/baseband_smem_pool_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "baseband/QcomBaseband"
+      ]
+    },
+    {
+      "name": "baseband-qmi",
+      "sources": [
+        "../tests/baseband_qmi_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "baseband/QcomBaseband"
+      ]
+    },
+    {
+      "name": "baseband-boot",
+      "sources": [
+        "../tests/baseband_boot_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "baseband/QcomBaseband"
+      ]
+    },
+    {
+      "name": "baseband-q6",
+      "sources": [
+        "../tests/baseband_q6_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "baseband/QcomBaseband"
+      ]
+    },
+    {
+      "name": "baseband-glink",
+      "sources": [
+        "../tests/baseband_glink_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "baseband/QcomBaseband"
+      ]
+    },
+    {
+      "name": "audio-output",
+      "sources": [
+        "../tests/audio_output_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "audio/QcomAudio"
+      ],
+      "kernel_compile": [
+        "../tests/audio_abi_compile.cpp"
+      ],
+      "kernel_vtables": {
+        "../tests/audio_abi_compile.cpp": {
+          "AudioABIProbe": {
+            "slots": 197,
+            "bindings": {
+              "14": "IOAudio2Device::free",
+              "21": "IOAudio2Device::init",
+              "44": "IOAudio2Device::setProperties",
+              "81": "IOAudio2Device::configureReport",
+              "82": "IOAudio2Device::updateReport",
+              "86": "IOAudio2Device::start",
+              "87": "IOAudio2Device::stop",
+              "140": "IOAudio2Device::newUserClient",
+              "168": "IOAudio2Device::isRunning",
+              "169": "IOAudio2Device::startIO",
+              "170": "IOAudio2Device::stopIO",
+              "171": "IOAudio2Device::startIOWithFlags",
+              "172": "IOAudio2Device::stopIOWithFlags",
+              "173": "IOAudio2Device::nativeSlot173",
+              "174": "IOAudio2Device::getStatusBuffer",
+              "175": "IOAudio2Device::nativeSlot175",
+              "176": "IOAudio2Device::nativeSlot176",
+              "177": "IOAudio2Device::nativeSlot177",
+              "178": "IOAudio2Device::clientClosed",
+              "179": "IOAudio2Device::registerNotificationPort",
+              "180": "IOAudio2Device::notify",
+              "181": "IOAudio2Device::nativeSlot181",
+              "182": "IOAudio2Device::clientMemoryForType",
+              "183": "IOAudio2Device::nativeSlot183",
+              "184": "IOAudio2Device::nativeSlot184",
+              "185": "IOAudio2Device::nativeSlot185",
+              "186": "IOAudio2Device::requestConfigChange",
+              "187": "IOAudio2Device::handleConfigChange",
+              "188": "IOAudio2Device::handleChangeSampleRate",
+              "189": "IOAudio2Device::handleChangeStreamFormat",
+              "190": "IOAudio2Device::setStreamActive",
+              "191": "IOAudio2Device::nativeSlot191",
+              "192": "IOAudio2Device::nativeSlot192",
+              "193": "IOAudio2Device::getStreamBuffer",
+              "194": "IOAudio2Device::nativeSlot194",
+              "195": "IOAudio2Device::nativeSlot195",
+              "196": "IOAudio2Device::performConfigChange"
+            }
+          }
+        }
+      },
+      "kernel_provider_imports": {
+        "../tests/audio_abi_compile.cpp": [
+          "abi-22H374/apple-audio2-abi.json"
+        ]
+      },
+      "abi_contracts": [
+        "abi-22H374/apple-audio2-abi.json"
+      ]
+    },
+    {
+      "name": "audio-adsp",
+      "sources": [
+        "../tests/adsp_transport_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "audio/QcomAudio"
+      ]
+    },
+    {
+      "name": "baseband-rmtfs",
+      "sources": [
+        "../tests/baseband_rmtfs_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "baseband/QcomBaseband"
+      ]
+    },
+    {
+      "name": "baseband-rmtfs-storage",
+      "sources": [
+        "../tests/baseband_rmtfs_storage_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "baseband/QcomBaseband"
+      ],
+      "kernel_compile": [
+        "../tests/baseband_storage_kernel_compile.cpp"
+      ],
+      "abi_contracts": [
+        "abi-22H374/apple-storage-abi.json"
+      ],
+      "kernel_vtables": {
+        "../tests/baseband_storage_kernel_compile.cpp": {
+          "BasebandMediaABI": {
+            "slots": 191,
+            "bindings": {
+              "168": "IOStorage::open",
+              "169": "IOStorage::read",
+              "170": "IOStorage::write",
+              "178": "IOMedia::synchronize",
+              "180": "IOMedia::getPreferredBlockSize",
+              "181": "IOMedia::getSize",
+              "182": "IOMedia::getBase",
+              "184": "IOMedia::isFormatted",
+              "185": "IOMedia::isWhole",
+              "186": "IOMedia::isWritable"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "baseband-mux",
+      "sources": [
+        "../tests/baseband_mux_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "baseband/QcomBaseband"
+      ]
+    },
+    {
+      "name": "baseband-sysmon",
+      "sources": [
+        "../tests/baseband_sysmon_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "baseband/QcomBaseband"
+      ]
+    },
+    {
+      "name": "baseband-shutdown",
+      "sources": [
+        "../tests/baseband_shutdown_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "baseband/QcomBaseband"
+      ]
+    },
+    {
+      "name": "baseband-ssr",
+      "sources": [
+        "../tests/baseband_ssr_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "baseband/QcomBaseband"
+      ]
+    },
+    {
+      "name": "baseband-services",
+      "sources": [
+        "../tests/baseband_services_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "baseband/QcomBaseband"
+      ]
+    },
+    {
+      "name": "baseband-tftp",
+      "sources": [
+        "../tests/baseband_tftp_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "baseband/QcomBaseband"
+      ]
+    },
+    {
+      "name": "osm-handoff",
+      "sources": [
+        "../tests/osm_handoff_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "clock/QcomOSM",
+        "../boot/bridge"
+      ]
+    },
+    {
+      "name": "osm-initialization",
+      "sources": [
+        "../tests/osm_initialization_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "clock/QcomOSM",
+        "../boot/bridge"
+      ]
+    },
+    {
+      "name": "osm-firmware",
+      "sources": [
+        "../tests/osm_firmware_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "clock/QcomOSM",
+        "../boot/bridge",
+        "../boot/edk2-msm8998/Common/edk2/MdePkg/Include",
+        "../boot/edk2-msm8998/Common/edk2/MdePkg/Include/X64"
+      ],
+      "host_flags": [
+        "-fshort-wchar"
+      ]
+    },
+    {
+      "name": "cprh-initialization",
+      "sources": [
+        "../tests/cprh_initialization_test.cpp"
+      ],
+      "include_dirs": [
+        "clock/QcomOSM",
+        "include"
+      ]
+    },
+    {
+      "name": "usb-console",
+      "sources": [
+        "../tests/usb_console_test.cpp"
+      ],
+      "include_dirs": [
+        "../kernel/pexpert"
+      ],
+      "host_flags": [
+        "-pthread"
+      ]
+    },
+    {
+      "name": "usb-cdc",
+      "sources": [
+        "../tests/usb_cdc_test.cpp"
+      ],
+      "include_dirs": [
+        "usb/QcomUSB"
+      ],
+      "kernel_compile": [
+        "usb/QcomUSB/QcomUSBCDC.cpp"
+      ]
+    },
+    {
+      "name": "arm-smp-sm8150",
+      "sources": [
+        "../tests/arm_smp_test.cpp"
+      ],
+      "include_dirs": [
+        "../kernel/pexpert"
+      ],
+      "host_flags": [
+        "-DARM64_BOARD_CONFIG_SM8150"
+      ]
+    },
+    {
+      "name": "haptics",
+      "sources": [
+        "../tests/haptics_test.cpp"
+      ],
+      "include_dirs": [
+        "include",
+        "input/PMI8998Haptics"
+      ],
+      "kernel_compile": [
+        "input/PMI8998Haptics/PMI8998Haptics.cpp",
+        "input/PMI8998Haptics/PMI8998HapticsUserClient.cpp"
+      ]
+    },
+    {
+      "name": "haptics-runtime",
+      "sources": [
+        "../tests/haptics_runtime_test.cpp"
+      ],
+      "include_dirs": [
+        "../tests/haptics_shim",
+        "include",
+        "input/PMI8998Haptics"
+      ]
+    }
+  ],
+  "collections": {
+    "platform": {
+      "roots": [
+        "com.apple.kec.corecrypto",
+        "com.apple.kec.pthread",
+        "com.apple.security.AppleImage4",
+        "com.apple.driver.AppleMobileFileIntegrity",
+        "com.apple.security.sandbox",
+        "org.mi6.driver.GenericARMPlatform",
+        "org.mi6.driver.SDM835",
+        "org.darwin.driver.AppleARMGIC",
+        "org.darwin.driver.QcomGCC",
+        "org.darwin.driver.QcomSPMI"
+      ],
+      "output": "../build/output/kernelcache.sdm835.platform",
+      "tests": [
+        "arm-smp",
+        "arm-platform-config",
+        "gicv3",
+        "gcc",
+        "rtc"
+      ]
+    },
+    "storage": {
+      "roots": [
+        "com.apple.kec.corecrypto",
+        "org.mi6.driver.GenericARMPlatform",
+        "org.mi6.driver.SDM835",
+        "org.darwin.driver.AppleARMGIC",
+        "org.darwin.driver.QcomUFS",
+        "org.darwin.driver.QcomGCC"
+      ],
+      "output": "../build/output/kernelcache.sdm835.storage"
+    },
+    "display": {
+      "roots": [
+        "com.apple.kec.corecrypto",
+        "org.mi6.driver.GenericARMPlatform",
+        "org.mi6.driver.SDM835",
+        "org.darwin.driver.AppleARMGIC",
+        "org.darwin.driver.QcomMIPIDSI",
+        "org.darwin.driver.QcomDisplay",
+        "org.darwin.driver.QcomGCC"
+      ],
+      "output": "../build/output/kernelcache.sdm835.display",
+      "tests": [
+        "display",
+        "mipi-dsi",
+        "rtc",
+        "power"
+      ]
+    },
+    "power": {
+      "roots": [
+        "com.apple.kec.corecrypto",
+        "org.mi6.driver.GenericARMPlatform",
+        "org.mi6.driver.SDM835",
+        "org.darwin.driver.AppleARMGIC",
+        "org.darwin.driver.QcomGCC",
+        "com.apple.driver.ApplePMGR",
+        "org.darwin.driver.QcomRPM",
+        "org.darwin.driver.QcomSPMI",
+        "org.darwin.driver.QcomMMCC",
+        "org.darwin.driver.QcomGPUCC",
+        "org.darwin.driver.QcomOSM"
+      ],
+      "output": "../build/output/kernelcache.sdm835.power",
+      "tests": [
+        "arm-platform-config",
+        "gicv3",
+        "ufs",
+        "gcc",
+        "power",
+        "power-clock",
+        "cpu-performance"
+      ]
+    },
+    "power-security": {
+      "roots": [
+        "com.apple.kec.corecrypto",
+        "org.mi6.driver.GenericARMPlatform",
+        "org.mi6.driver.SDM835",
+        "org.darwin.driver.AppleARMGIC",
+        "org.darwin.driver.QcomGCC",
+        "com.apple.driver.AppleMobileFileIntegrity",
+        "org.darwin.driver.QcomRPM",
+        "org.darwin.driver.QcomSPMI",
+        "org.darwin.driver.QcomMMCC",
+        "org.darwin.driver.QcomGPUCC",
+        "org.darwin.driver.QcomOSM"
+      ],
+      "output": "../build/output/kernelcache.sdm835.power-security",
+      "tests": [
+        "arm-platform-config",
+        "gicv3",
+        "ufs",
+        "gcc",
+        "power",
+        "power-clock",
+        "cpu-performance"
+      ]
+    },
+    "gpu": {
+      "roots": [
+        "com.apple.kec.corecrypto",
+        "org.mi6.driver.GenericARMPlatform",
+        "org.mi6.driver.SDM835",
+        "org.darwin.driver.AppleARMGIC",
+        "org.darwin.driver.QcomGCC",
+        "org.darwin.driver.QcomRPM",
+        "org.darwin.driver.QcomGPUCC",
+        "org.darwin.driver.QcomGPU"
+      ],
+      "output": "../build/output/kernelcache.gpu",
+      "tests": [
+        "gpu",
+        "gpu-submit",
+        "gcc",
+        "power",
+        "power-clock",
+        "usb-interconnect"
+      ]
+    },
+    "graphics": {
+      "inherits": [
+        "display-runtime",
+        "gpu"
+      ],
+      "output": "../build/output/kernelcache.graphics",
+      "tests": [
+        "gpu-submit",
+        "display",
+        "mipi-dsi"
+      ]
+    },
+    "apfs": {
+      "roots": [
+        "com.apple.kec.corecrypto",
+        "com.apple.kec.pthread",
+        "com.apple.security.AppleImage4",
+        "com.apple.driver.AppleMobileFileIntegrity",
+        "com.apple.security.sandbox",
+        "org.mi6.driver.GenericARMPlatform",
+        "org.mi6.driver.SDM835",
+        "org.darwin.driver.AppleARMGIC",
+        "org.darwin.driver.QcomGCC",
+        "org.darwin.driver.QcomSPMI",
+        "org.darwin.driver.QcomUFS",
+        "com.apple.filesystems.apfs",
+        "com.apple.AppleFSCompression.AppleFSCompressionTypeZlib",
+        "com.apple.driver.DiskImages.FileBackingStore",
+        "com.apple.driver.DiskImages.ReadWriteDiskImage",
+        "com.apple.driver.DiskImages.UDIFDiskImage",
+        "com.apple.driver.AppleBSDKextStarter",
+        "org.darwin.driver.GenericAES",
+        "org.darwin.driver.QcomWatchdog"
+      ],
+      "output": "../build/output/kernelcache.sdm835.apfs",
+      "tests": [
+        "arm-smp",
+        "arm-platform-config",
+        "gicv3",
+        "ufs",
+        "gcc",
+        "rtc",
+        "watchdog"
+      ]
+    },
+    "input": {
+      "roots": [
+        "com.apple.kec.corecrypto",
+        "org.mi6.driver.GenericARMPlatform",
+        "org.mi6.driver.SDM835",
+        "org.darwin.driver.AppleARMGIC",
+        "org.darwin.driver.QcomGPIO",
+        "org.darwin.driver.QcomSPMI",
+        "org.darwin.driver.QcomPMIC",
+        "org.darwin.driver.QcomButtons",
+        "com.apple.iokit.IOHIDEventDriver",
+        "org.darwin.driver.GoodixFingerprint",
+        "org.darwin.driver.FPCFingerprint",
+        "org.darwin.driver.QcomI2C",
+        "org.darwin.driver.SynapticsTouch"
+      ],
+      "tests": [
+        "gpio",
+        "pmic-input",
+        "buttons",
+        "fingerprint-home",
+        "i2c",
+        "touch"
+      ],
+      "output": "../build/output/kernelcache.input"
+    },
+    "graphics-runtime": {
+      "inherits": [
+        "graphics",
+        "input"
+      ],
+      "roots": [
+        "com.apple.driver.DiskImages.RAMBackingStore",
+        "com.apple.filesystems.hfs.kext"
+      ],
+      "output": "../build/output/kernelcache.graphics-runtime",
+      "tests": [
+        "gpu-submit",
+        "display",
+        "mipi-dsi"
+      ]
+    },
+    "input-runtime": {
+      "inherits": [
+        "display-runtime",
+        "input"
+      ],
+      "output": "../build/output/kernelcache.input-runtime",
+      "tests": [
+        "gpio",
+        "pmic-input",
+        "buttons",
+        "fingerprint-home",
+        "display",
+        "mipi-dsi"
+      ]
+    },
+    "display-runtime": {
+      "roots": [
+        "com.apple.kec.corecrypto",
+        "com.apple.kec.pthread",
+        "com.apple.security.AppleImage4",
+        "com.apple.driver.AppleMobileFileIntegrity",
+        "com.apple.security.sandbox",
+        "com.apple.driver.AppleSEPKeyStore",
+        "org.mi6.driver.GenericARMPlatform",
+        "org.mi6.driver.SDM835",
+        "org.darwin.driver.AppleARMGIC",
+        "org.darwin.driver.QcomGCC",
+        "org.darwin.driver.QcomSPMI",
+        "org.darwin.driver.QcomUFS",
+        "com.apple.filesystems.apfs",
+        "com.apple.AppleFSCompression.AppleFSCompressionTypeZlib",
+        "com.apple.driver.DiskImages.FileBackingStore",
+        "com.apple.driver.DiskImages.ReadWriteDiskImage",
+        "com.apple.driver.DiskImages.UDIFDiskImage",
+        "com.apple.driver.AppleBSDKextStarter",
+        "org.darwin.driver.GenericAES",
+        "org.darwin.driver.QcomWatchdog",
+        "org.darwin.driver.QcomMIPIDSI",
+        "org.darwin.driver.QcomDisplay"
+      ],
+      "output": "../build/output/kernelcache.sdm835.display-runtime",
+      "tests": [
+        "arm-smp",
+        "arm-platform-config",
+        "gicv3",
+        "ufs",
+        "gcc",
+        "rtc",
+        "watchdog",
+        "mipi-dsi",
+        "display"
+      ]
+    },
+    "usb": {
+      "roots": [
+        "com.apple.kec.corecrypto",
+        "com.apple.kec.pthread",
+        "com.apple.security.AppleImage4",
+        "com.apple.driver.AppleMobileFileIntegrity",
+        "com.apple.security.sandbox",
+        "org.mi6.driver.GenericARMPlatform",
+        "org.mi6.driver.SDM835",
+        "org.darwin.driver.AppleARMGIC",
+        "org.darwin.driver.QcomUSB",
+        "com.apple.driver.usb.AppleUSBHub",
+        "com.apple.driver.usb.AppleUSBHostCompositeDevice",
+        "com.apple.driver.AppleUSBDeviceMux",
+        "org.darwin.driver.GenericClockController",
+        "org.darwin.driver.QcomPowerController"
+      ],
+      "output": "../build/output/kernelcache.usb",
+      "tests": [
+        "gcc",
+        "power",
+        "usb",
+        "xhci",
+        "dwc3-transfer",
+        "dwc3-control",
+        "dwc3-iso",
+        "usb-dma",
+        "usb-requests",
+        "usb-phy",
+        "usb-role",
+        "usb-connector",
+        "usb-resources",
+        "usb-interconnect",
+        "usb-smmu",
+        "usb-smmu-context",
+        "usb-iort",
+        "usb-cdc",
+        "usb-console"
+      ]
+    },
+    "wifi": {
+      "roots": [
+        "com.apple.kec.corecrypto",
+        "com.apple.kec.pthread",
+        "com.apple.security.AppleImage4",
+        "com.apple.driver.AppleMobileFileIntegrity",
+        "com.apple.security.sandbox",
+        "org.mi6.driver.GenericARMPlatform",
+        "org.mi6.driver.SDM835",
+        "org.darwin.driver.AppleARMGIC",
+        "org.darwin.driver.QcomGCC",
+        "org.darwin.driver.QcomSPMI",
+        "org.darwin.driver.QcomWLAN",
+        "com.apple.iokit.IONetworkingFamily",
+        "com.apple.iokit.IOSkywalkFamily",
+        "com.apple.iokit.IONetworkFamily"
+      ],
+      "output": "../build/output/kernelcache.wifi",
+      "tests": [
+        "wlan",
+        "wlan-firmware",
+        "wlan-runtime"
+      ]
+    },
+    "bluetooth": {
+      "roots": [
+        "com.apple.kec.corecrypto",
+        "com.apple.kec.pthread",
+        "com.apple.security.AppleImage4",
+        "com.apple.driver.AppleMobileFileIntegrity",
+        "com.apple.security.sandbox",
+        "org.mi6.driver.GenericARMPlatform",
+        "org.mi6.driver.SDM835",
+        "org.darwin.driver.AppleARMGIC",
+        "org.darwin.driver.QcomGCC",
+        "org.darwin.driver.QcomSPMI",
+        "org.darwin.driver.QcomBluetooth",
+        "org.darwin.driver.QcomRPM",
+        "org.darwin.driver.QcomGPIO"
+      ],
+      "output": "../build/output/kernelcache.bluetooth",
+      "tests": [
+        "gcc",
+        "gpio",
+        "bluetooth",
+        "bluetooth-firmware",
+        "bluetooth-runtime",
+        "bluetooth-bootstrap"
+      ]
+    },
+    "touch": {
+      "inherits": [
+        "input"
+      ],
+      "roots": [
+        "org.darwin.driver.QcomI2C",
+        "org.darwin.driver.SynapticsTouch"
+      ],
+      "tests": [
+        "i2c",
+        "touch"
+      ],
+      "output": "../build/output/kernelcache.touch"
+    },
+    "battery": {
+      "inherits": [
+        "platform"
+      ],
+      "roots": [
+        "org.darwin.driver.QcomBattery"
+      ],
+      "output": "../build/output/kernelcache.battery",
+      "tests": [
+        "battery",
+        "rtc",
+        "power",
+        "battery-runtime"
+      ]
+    },
+    "battery-runtime": {
+      "inherits": [
+        "graphics-runtime",
+        "battery"
+      ],
+      "output": "../build/output/kernelcache.battery-runtime",
+      "tests": [
+        "battery",
+        "rtc",
+        "power",
+        "display",
+        "mipi-dsi",
+        "battery-runtime"
+      ]
+    },
+    "gyro": {
+      "roots": [
+        "com.apple.kec.corecrypto",
+        "org.mi6.driver.GenericARMPlatform",
+        "org.mi6.driver.SDM835",
+        "org.darwin.driver.AppleARMGIC",
+        "org.darwin.driver.QcomSPI",
+        "org.darwin.driver.SPIGyro",
+        "com.apple.iokit.IOHIDEventDriver"
+      ],
+      "tests": [
+        "spi",
+        "gyro"
+      ],
+      "output": "../build/output/kernelcache.gyro"
+    },
+    "baseband": {
+      "inherits": [
+        "platform"
+      ],
+      "roots": [
+        "org.darwin.driver.QcomBaseband",
+        "org.darwin.driver.QcomSMEM",
+        "org.darwin.driver.QcomSCM",
+        "org.darwin.driver.QcomRPM",
+        "org.darwin.driver.QcomUFS"
+      ],
+      "output": "../build/output/kernelcache.baseband",
+      "tests": [
+        "baseband-firmware",
+        "baseband-transport",
+        "baseband-boot",
+        "baseband-qmi",
+        "baseband-smem-pool",
+        "baseband-signals",
+        "baseband-memory",
+        "baseband-admission",
+        "baseband-axi",
+        "baseband-rpm",
+        "baseband-resources",
+        "baseband-q6",
+        "baseband-glink",
+        "baseband-rmtfs",
+        "baseband-rmtfs-storage",
+        "ufs",
+        "baseband-mux",
+        "baseband-sysmon",
+        "baseband-shutdown",
+        "baseband-ssr",
+        "baseband-services",
+        "baseband-tftp"
+      ]
+    },
+    "audio": {
+      "inherits": [
+        "platform"
+      ],
+      "roots": [
+        "org.darwin.driver.QcomAudio",
+        "org.darwin.driver.QcomSMEM"
+      ],
+      "output": "../build/output/kernelcache.sdm835.audio",
+      "tests": [
+        "audio-output",
+        "audio-adsp",
+        "baseband-smem-pool"
+      ]
+    },
+    "haptics": {
+      "inherits": [
+        "platform"
+      ],
+      "roots": [
+        "org.darwin.driver.PMI8998Haptics"
+      ],
+      "output": "../build/output/kernelcache.haptics",
+      "tests": [
+        "haptics",
+        "rtc",
+        "power",
+        "haptics-runtime"
+      ]
+    },
+    "haptics-runtime": {
+      "inherits": [
+        "graphics-runtime",
+        "haptics"
+      ],
+      "roots": [],
+      "output": "../build/output/kernelcache.haptics-runtime"
+    }
+  },
+  "source_manifests": [
+    "include/IOKit/storage/sources.json",
+    "../docs/ufs/reference/sources.json",
+    "../docs/power/reference/sources.json",
+    "../docs/display/reference/sources.json",
+    "../docs/gpu/reference/sources.json",
+    "../docs/usb/reference/sources.json",
+    "../docs/gpio/reference/sources.json",
+    "../docs/wifi/reference/sources.json",
+    "../docs/bluetooth/reference/sources.json",
+    "../tools/driverkit/include/sources.json",
+    "../docs/touch/reference/sources.json",
+    "../docs/battery/reference/sources.json",
+    "../docs/baseband/reference/sources.json",
+    "../docs/audio/reference/sources.json",
+    "../docs/power/reference/cpu-osm-sources.json",
+    "../docs/haptics/reference/sources.json"
+  ],
+  "vtable_contracts": {
+    "PMI8998WLED": {
+      "unit": "PMI8998WLED.cpp",
+      "slots": 168,
+      "bindings": {
+        "44": "PMI8998WLED::setProperties",
+        "86": "PMI8998WLED::start",
+        "111": "PMI8998WLED::getWorkLoop",
+        "117": "PMI8998WLED::callPlatformFunction"
+      }
+    },
+    "QcomWatchdog": {
+      "class": "QualcommWatchdogTimer",
+      "unit": "QualcommWatchdogTimer.cpp",
+      "slots": 172,
+      "bindings": {
+        "86": "QualcommWatchdogTimer::start",
+        "111": "QualcommWatchdogTimer::getWorkLoop",
+        "140": "QualcommWatchdogTimer::newUserClient",
+        "168": "QualcommWatchdogTimer::enableWatchdog",
+        "169": "QualcommWatchdogTimer::disableWatchdog",
+        "170": "QualcommWatchdogTimer::resetWatchdog",
+        "171": "IOWatchdog::publishWatchdogProperties"
+      }
+    },
+    "QcomMIPIDSI": {
+      "unit": "QcomMIPIDSI.cpp",
+      "slots": 181,
+      "bindings": {
+        "44": "AppleARMMIPIDSIController::setProperties",
+        "168": "QcomMIPIDSI::enableInterface",
+        "169": "QcomMIPIDSI::enableHighSpeedMode",
+        "170": "QcomMIPIDSI::enableVideo",
+        "171": "QcomMIPIDSI::sendShortCommand",
+        "172": "QcomMIPIDSI::sendLongCommand",
+        "178": "AppleARMMIPIDSIController::newDeviceWithRegistryEntry",
+        "179": "AppleARMMIPIDSIController::publishBelow",
+        "173": "QcomMIPIDSI::receiveShortCommand",
+        "174": "QcomMIPIDSI::receiveLongCommand"
+      }
+    },
+    "QcomDisplay": {
+      "unit": "QcomDisplay.cpp",
+      "slots": 368,
+      "bindings": {
+        "44": "QcomDisplay::setProperties",
+        "21": "IOMobileFramebufferLegacy::init",
+        "86": "QcomDisplay::start",
+        "111": "IOMobileFramebufferLegacy::getWorkLoop",
+        "141": "IOMobileFramebufferLegacy::newUserClient",
+        "155": "QcomDisplay::setPowerState",
+        "174": "IOMobileFramebufferLegacy::default_fb_surface",
+        "184": "QcomDisplay::is_main_display",
+        "212": "QcomDisplay::set_notify_tag_mask_gated",
+        "214": "QcomDisplay::supported_frame_info",
+        "247": "QcomDisplay::factory_portal",
+        "248": "QcomDisplay::executeFactoryConfigurations_gated",
+        "296": "QcomDisplay::start_hardware",
+        "297": "QcomDisplay::stop_hardware_gated",
+        "298": "QcomDisplay::swap_begin_gated",
+        "300": "IOMobileFramebufferLegacy::nativeSlot300",
+        "301": "IOMobileFramebufferLegacy::nativeSlot301",
+        "306": "QcomDisplay::do_power_state_change_gated",
+        "329": "QcomDisplay::prepare_swap",
+        "304": "QcomDisplay::verify_swap",
+        "352": "QcomDisplay::verify_swap_gated",
+        "307": "QcomDisplay::create_default_fb_surface",
+        "309": "QcomDisplay::get_timing_attributes_gated",
+        "343": "QcomDisplay::default_fb_surface_gated",
+        "345": "QcomDisplay::deallocate_default_fb_surface_gated",
+        "347": "QcomDisplay::notify_swap_done_gated",
+        "348": "QcomDisplay::notify_crc_ready_gated",
+        "355": "QcomDisplay::timing_enabled"
+      }
+    },
+    "QcomGPU": {
+      "unit": "QcomGPU.cpp",
+      "slots": 215,
+      "bindings": {
+        "86": "QcomGPU::start",
+        "87": "QcomGPU::stop",
+        "111": "QcomGPU::getWorkLoop",
+        "141": "IOGPU::newUserClient",
+        "168": "IOGPU::nativeSlot168",
+        "170": "QcomGPU::getStampMemory",
+        "174": "QcomGPU::allocEventMachine",
+        "189": "QcomGPU::createGPUTask",
+        "192": "QcomGPU::getGPUConfiguration",
+        "195": "QcomGPU::configureDevice",
+        "197": "QcomGPU::createKernelGPUTask",
+        "199": "QcomGPU::allocDeviceUserClient",
+        "200": "QcomGPU::allocSystemMemory",
+        "202": "QcomGPU::allocResource",
+        "205": "QcomGPU::allocWorkQueue",
+        "187": "QcomGPU::createBufferMemoryDescriptor",
+        "210": "QcomGPU::allocCommandQueue"
+      },
+      "additional_classes": {
+        "QcomGPUResource": {
+          "unit": "QcomGPUNative.cpp",
+          "slots": 33,
+          "bindings": {
+            "2": "IOGPUObject::release",
+            "3": "IOGPUObject::getRetainCount",
+            "4": "IOGPUObject::retain",
+            "5": "IOGPUObject::release",
+            "13": "IOGPUObject::init",
+            "14": "QcomGPUResource::free",
+            "15": "IOGPUObject::nativeSlot15",
+            "16": "QcomGPUResource::initWithGPU",
+            "17": "QcomGPUResource::initialize",
+            "18": "QcomGPUResource::mappingOptions",
+            "24": "QcomGPUResource::map",
+            "25": "QcomGPUResource::mapAtAddressLength",
+            "27": "QcomGPUResource::nativeSlot27",
+            "28": "QcomGPUResource::nativeSlot28"
+          }
+        },
+        "QcomGPUCommandQueue": {
+          "unit": "QcomGPUNative.cpp",
+          "slots": 36,
+          "bindings": {
+            "2": "IOGPUObject::release",
+            "4": "IOGPUObject::retain",
+            "13": "IOGPUObject::init",
+            "14": "QcomGPUCommandQueue::free",
+            "27": "QcomGPUCommandQueue::initWithGPU",
+            "35": "QcomGPUCommandQueue::submitCommandBuffer"
+          }
+        },
+        "QcomGPUMemoryMap": {
+          "unit": "QcomGPUNative.cpp",
+          "slots": 29,
+          "bindings": {
+            "13": "IOGPUObject::init",
+            "14": "QcomGPUMemoryMap::free",
+            "15": "QcomGPUMemoryMap::nativeSlot15",
+            "19": "QcomGPUMemoryMap::address",
+            "20": "QcomGPUMemoryMap::gpuAddress",
+            "21": "QcomGPUMemoryMap::length",
+            "25": "QcomGPUMemoryMap::mappedLength",
+            "26": "QcomGPUMemoryMap::updateGPUPageTable",
+            "27": "QcomGPUMemoryMap::nativeSlot27"
+          }
+        },
+        "QcomGPUSysMemory": {
+          "unit": "QcomGPUNative.cpp",
+          "slots": 29,
+          "bindings": {
+            "13": "IOGPUObject::init",
+            "14": "IOGPUSysMemory::free",
+            "16": "IOGPUSysMemory::nativeSlot16"
+          }
+        },
+        "QcomGPUTask": {
+          "unit": "QcomGPUNative.cpp",
+          "slots": 21,
+          "bindings": {
+            "13": "IOGPUObject::init",
+            "14": "IOGPUTask::free",
+            "16": "IOGPUTask::initWithGPU"
+          }
+        },
+        "QcomGPUDeviceUserClient": {
+          "unit": "QcomGPUNative.cpp",
+          "slots": 189,
+          "bindings": {
+            "14": "QcomGPUDeviceUserClient::free",
+            "86": "QcomGPUDeviceUserClient::start",
+            "168": "QcomGPUDeviceUserClient::externalMethod",
+            "172": "QcomGPUDeviceUserClient::clientClose",
+            "185": "QcomGPUDeviceUserClient::getTargetAndTrapForIndex"
+          }
+        },
+        "QcomGPUMapper": {
+          "unit": "QcomGPUMapper.cpp",
+          "slots": 174,
+          "bindings": {
+            "14": "QcomGPUMapper::free",
+            "86": "QcomGPUMapper::start",
+            "168": "QcomGPUMapper::initHardware",
+            "169": "QcomGPUMapper::getPageSize",
+            "170": "QcomGPUMapper::iovmMapMemory",
+            "171": "QcomGPUMapper::iovmUnmapMemory",
+            "172": "QcomGPUMapper::iovmInsert",
+            "173": "QcomGPUMapper::mapToPhysicalAddress"
+          }
+        }
+      },
+      "native_abi_contracts": [
+        "abi-22H374/apple-iomapper-abi.json"
+      ]
+    },
+    "GenericAES": {
+      "unit": "GenericAES.cpp",
+      "slots": 181,
+      "bindings": {
+        "86": "GenericAES::start",
+        "170": "GenericAES::performAES"
+      }
+    },
+    "QcomButtons": {
+      "unit": "QcomButtons.cpp",
+      "slots": 207,
+      "bindings": {
+        "86": "QcomButtons::start",
+        "87": "QcomButtons::stop",
+        "168": "QcomButtons::handleStart",
+        "169": "QcomButtons::handleStop",
+        "171": "QcomButtons::newTransportString",
+        "173": "QcomButtons::newProductString",
+        "178": "QcomButtons::newPrimaryUsageNumber",
+        "179": "QcomButtons::newPrimaryUsagePageNumber",
+        "180": "QcomButtons::newReportDescriptor",
+        "181": "IOHIDDevice::handleReport",
+        "182": "QcomButtons::getReport",
+        "206": "IOHIDDevice::nativeSlot206"
+      }
+    },
+    "QcomUSB": {
+      "unit": "QcomUSB.cpp",
+      "slots": 168,
+      "bindings": {
+        "14": "QcomUSB::free",
+        "86": "QcomUSB::start",
+        "87": "QcomUSB::stop",
+        "111": "QcomUSB::getWorkLoop",
+        "75": "QcomUSB::requestTerminate",
+        "132": "QcomUSB::message"
+      },
+      "additional_classes": {
+        "QcomUSBController": {
+          "unit": "QcomUSB.cpp",
+          "slots": 168,
+          "bindings": {
+            "14": "QcomUSBController::free",
+            "91": "QcomUSBController::handleOpen",
+            "92": "QcomUSBController::handleClose",
+            "93": "QcomUSBController::handleIsOpen",
+            "111": "QcomUSBController::getWorkLoop"
+          }
+        },
+        "QcomUSBDevice": {
+          "slots": 235,
+          "bindings": {
+            "14": "QcomUSBDevice::free",
+            "86": "QcomUSBDevice::start",
+            "87": "QcomUSBDevice::stop",
+            "111": "QcomUSBDevice::getWorkLoop",
+            "175": "QcomUSBDevice::nativeSlot175",
+            "177": "QcomUSBDevice::goOnBus",
+            "185": "QcomUSBDevice::provideEndpointIDsForConfiguration",
+            "186": "QcomUSBDevice::prepareConfiguration",
+            "187": "QcomUSBDevice::activateEndpoint",
+            "189": "QcomUSBDevice::createIOBuffer",
+            "195": "IOUSBDeviceController::handleUSBSuspend",
+            "197": "IOUSBDeviceController::handleUSBConnectionDone",
+            "202": "QcomUSBDevice::doRemoteWakeGated",
+            "203": "QcomUSBDevice::nativeSlot203",
+            "207": "QcomUSBDevice::getMaxSpeedCapability",
+            "208": "QcomUSBDevice::nativeSlot208",
+            "216": "QcomUSBDevice::handleControlRequestStateChange",
+            "224": "QcomUSBDevice::createControlRequestTracker",
+            "228": "QcomUSBDevice::ioGated",
+            "75": "QcomUSBDevice::requestTerminate",
+            "180": "QcomUSBDevice::handleStallEndpoint",
+            "181": "QcomUSBDevice::handleAbortEndpoint",
+            "182": "QcomUSBDevice::handleSetAddressPreStatusPhase",
+            "183": "QcomUSBDevice::handleSetAddressPostStatusPhase",
+            "184": "QcomUSBDevice::getConnectionSpeed",
+            "188": "QcomUSBDevice::deactivateEndpoint",
+            "192": "QcomUSBDevice::isEndpointStalled",
+            "193": "QcomUSBDevice::resetEndpointDataToggle",
+            "199": "QcomUSBDevice::nativeSlot199",
+            "179": "QcomUSBDevice::connectedWithAccessoryCable",
+            "172": "QcomUSBDevice::createPipeGated",
+            "233": "QcomUSBDevice::nativeSlot233"
+          },
+          "unit": "QcomUSBDevice.cpp"
+        },
+        "QcomUSBPHY": {
+          "unit": "QcomUSBPHY.cpp",
+          "slots": 168,
+          "bindings": {
+            "14": "QcomUSBPHY::free",
+            "75": "QcomUSBPHY::requestTerminate",
+            "86": "QcomUSBPHY::start",
+            "87": "QcomUSBPHY::stop",
+            "91": "QcomUSBPHY::handleOpen",
+            "92": "QcomUSBPHY::handleClose",
+            "93": "QcomUSBPHY::handleIsOpen",
+            "117": "QcomUSBPHY::callPlatformFunction"
+          }
+        },
+        "QcomUSBResources": {
+          "unit": "QcomUSBResources.cpp",
+          "slots": 168,
+          "bindings": {
+            "14": "QcomUSBResources::free",
+            "75": "QcomUSBResources::requestTerminate",
+            "86": "QcomUSBResources::start",
+            "87": "QcomUSBResources::stop",
+            "111": "QcomUSBResources::getWorkLoop",
+            "117": "QcomUSBResources::callPlatformFunction",
+            "132": "QcomUSBResources::message"
+          }
+        },
+        "QcomUSBHostDMACommand": {
+          "unit": "QcomUSBHostDMACommand.cpp",
+          "slots": 33,
+          "bindings": {
+            "15": "QcomUSBHostDMACommand::cloneCommand",
+            "16": "QcomUSBHostDMACommand::initWithSpecification",
+            "17": "QcomUSBHostDMACommand::setMemoryDescriptor",
+            "18": "QcomUSBHostDMACommand::clearMemoryDescriptor",
+            "19": "QcomUSBHostDMACommand::getMemoryDescriptor",
+            "20": "QcomUSBHostDMACommand::prepare",
+            "21": "QcomUSBHostDMACommand::complete",
+            "22": "QcomUSBHostDMACommand::synchronize",
+            "25": "QcomUSBHostDMACommand::prepareWithSpecification",
+            "28": "QcomUSBHostDMACommand::initWithSpecification",
+            "29": "QcomUSBHostDMACommand::prepareWithSpecification",
+            "31": "QcomUSBHostDMACommand::nativeSlot31"
+          }
+        },
+        "QcomUSBHostPort": {
+          "slots": 235,
+          "bindings": {
+            "14": "QcomUSBHostPort::free",
+            "86": "QcomUSBHostPort::start",
+            "87": "QcomUSBHostPort::stop",
+            "174": "QcomUSBHostPort::getPortType",
+            "200": "QcomUSBHostPort::powerOff",
+            "201": "QcomUSBHostPort::powerOn",
+            "202": "QcomUSBHostPort::suspend",
+            "203": "QcomUSBHostPort::resume",
+            "204": "QcomUSBHostPort::resetAndCreateDevice",
+            "234": "QcomUSBHostPort::getPortStatusGated",
+            "132": "QcomUSBHostPort::message",
+            "219": "QcomUSBHostPort::getCompanionPortGated",
+            "214": "QcomUSBHostPort::initBusCurrent"
+          },
+          "unit": "QcomUSBHostPort.cpp"
+        },
+        "QcomUSBHost": {
+          "slots": 269,
+          "bindings": {
+            "14": "QcomUSBHost::free",
+            "86": "QcomUSBHost::start",
+            "87": "QcomUSBHost::stop",
+            "111": "AppleUSBHostController::getWorkLoop",
+            "217": "QcomUSBHost::createPipeGated",
+            "224": "QcomUSBHost::closePipeGated",
+            "231": "QcomUSBHost::getDMACommand",
+            "249": "QcomUSBHost::interruptOccurred",
+            "248": "QcomUSBHost::filterOccurred",
+            "247": "QcomUSBHost::createPorts",
+            "192": "QcomUSBHost::createDevice",
+            "193": "QcomUSBHost::nativeSlot193",
+            "223": "QcomUSBHost::adjustPipeGated",
+            "218": "QcomUSBHost::ioGated",
+            "219": "QcomUSBHost::abortPipeGated",
+            "220": "QcomUSBHost::clearPipeStallGated",
+            "266": "QcomUSBHost::getRawMicroFrameCount",
+            "267": "QcomUSBHost::makeFrameNumber",
+            "233": "QcomUSBHost::getFrameNumber",
+            "234": "QcomUSBHost::getFrameRollover",
+            "195": "AppleUSBHostController::registerHub",
+            "196": "AppleUSBHostController::registerHub",
+            "197": "AppleUSBHostController::unregisterHub",
+            "198": "QcomUSBHost::registerHubGated",
+            "199": "QcomUSBHost::registerSuperSpeedHubGated",
+            "200": "QcomUSBHost::unregisterHubGated",
+            "182": "QcomUSBHost::powerDown",
+            "183": "QcomUSBHost::powerUp",
+            "225": "QcomUSBHost::enableStreamsGated",
+            "226": "QcomUSBHost::disableStreamsGated",
+            "227": "QcomUSBHost::createStreamGated",
+            "228": "QcomUSBHost::abortStreamGated",
+            "229": "QcomUSBHost::closeStreamGated",
+            "235": "QcomUSBHost::getCompanionPort"
+          },
+          "unit": "QcomUSBHost.cpp"
+        },
+        "QcomUSBMapper": {
+          "unit": "QcomUSBMapper.cpp",
+          "slots": 174,
+          "bindings": {
+            "14": "QcomUSBMapper::free",
+            "86": "QcomUSBMapper::start",
+            "117": "QcomUSBMapper::callPlatformFunction",
+            "168": "QcomUSBMapper::initHardware",
+            "169": "QcomUSBMapper::getPageSize",
+            "170": "QcomUSBMapper::iovmMapMemory",
+            "171": "QcomUSBMapper::iovmUnmapMemory",
+            "172": "QcomUSBMapper::iovmInsert",
+            "173": "QcomUSBMapper::mapToPhysicalAddress"
+          }
+        }
+      },
+      "native_abi_contracts": [
+        "abi-22H374/apple-iomapper-abi.json"
+      ]
+    },
+    "QcomPMIC": {
+      "unit": "QcomPMIC.cpp",
+      "slots": 185,
+      "bindings": {
+        "14": "QcomPMIC::free",
+        "75": "QcomPMIC::requestTerminate",
+        "86": "QcomPMIC::start",
+        "111": "QcomPMIC::getWorkLoop",
+        "117": "QcomPMIC::callPlatformFunction",
+        "155": "QcomPMIC::setPowerState",
+        "168": "QcomPMIC::registerInterrupt",
+        "169": "QcomPMIC::unregisterInterrupt",
+        "170": "QcomPMIC::getInterruptType",
+        "171": "QcomPMIC::enableInterrupt",
+        "172": "QcomPMIC::disableInterrupt",
+        "173": "QcomPMIC::causeInterrupt"
+      },
+      "additional_classes": {
+        "QcomUSBConnector": {
+          "unit": "QcomUSBConnector.cpp",
+          "slots": 168,
+          "bindings": {
+            "14": "QcomUSBConnector::free",
+            "75": "QcomUSBConnector::requestTerminate",
+            "86": "QcomUSBConnector::start",
+            "87": "QcomUSBConnector::stop",
+            "91": "QcomUSBConnector::handleOpen",
+            "92": "QcomUSBConnector::handleClose",
+            "93": "QcomUSBConnector::handleIsOpen",
+            "111": "QcomUSBConnector::getWorkLoop",
+            "117": "QcomUSBConnector::callPlatformFunction",
+            "155": "QcomUSBConnector::setPowerState"
+          }
+        }
+      }
+    },
+    "QcomGCC": {
+      "unit": "QcomGCC.cpp",
+      "slots": 169,
+      "bindings": {
+        "14": "QcomGCC::free",
+        "86": "QcomGCC::start",
+        "168": "QcomGCC::execute"
+      }
+    },
+    "QcomInterconnect": {
+      "unit": "QcomInterconnect.cpp",
+      "slots": 168,
+      "bindings": {
+        "14": "QcomInterconnect::free",
+        "75": "QcomInterconnect::requestTerminate",
+        "86": "QcomInterconnect::start",
+        "87": "QcomInterconnect::stop",
+        "91": "QcomInterconnect::handleOpen",
+        "92": "QcomInterconnect::handleClose",
+        "93": "QcomInterconnect::handleIsOpen",
+        "111": "QcomInterconnect::getWorkLoop",
+        "117": "QcomInterconnect::callPlatformFunction"
+      }
+    },
+    "QcomRPM": {
+      "unit": "QcomRPM.cpp",
+      "slots": 170,
+      "bindings": {
+        "14": "QcomPowerService::free",
+        "86": "QcomRPM::start",
+        "168": "QcomRPM::execute",
+        "169": "QcomRPM::signal"
+      }
+    },
+    "FingerprintHID": {
+      "unit": "FingerprintHID.cpp",
+      "slots": 207,
+      "bindings": {
+        "86": "FingerprintHID::start",
+        "87": "FingerprintHID::stop",
+        "168": "FingerprintHID::handleStart",
+        "169": "FingerprintHID::handleStop",
+        "171": "FingerprintHID::newTransportString",
+        "173": "FingerprintHID::newProductString",
+        "178": "FingerprintHID::newPrimaryUsageNumber",
+        "179": "FingerprintHID::newPrimaryUsagePageNumber",
+        "180": "FingerprintHID::newReportDescriptor",
+        "181": "IOHIDDevice::handleReport",
+        "182": "FingerprintHID::getReport",
+        "206": "IOHIDDevice::nativeSlot206",
+        "111": "FingerprintHID::getWorkLoop"
+      }
+    },
+    "GoodixFingerprint": {
+      "unit": "GoodixFingerprint.cpp",
+      "slots": 207,
+      "bindings": {
+        "86": "FingerprintHID::start",
+        "87": "FingerprintHID::stop",
+        "168": "GoodixFingerprint::handleStart",
+        "169": "FingerprintHID::handleStop",
+        "171": "FingerprintHID::newTransportString",
+        "173": "FingerprintHID::newProductString",
+        "178": "FingerprintHID::newPrimaryUsageNumber",
+        "179": "FingerprintHID::newPrimaryUsagePageNumber",
+        "180": "FingerprintHID::newReportDescriptor",
+        "181": "IOHIDDevice::handleReport",
+        "182": "FingerprintHID::getReport",
+        "206": "IOHIDDevice::nativeSlot206",
+        "111": "FingerprintHID::getWorkLoop"
+      }
+    },
+    "FPCFingerprint": {
+      "unit": "FPCFingerprint.cpp",
+      "slots": 207,
+      "bindings": {
+        "86": "FingerprintHID::start",
+        "87": "FingerprintHID::stop",
+        "168": "FPCFingerprint::handleStart",
+        "169": "FingerprintHID::handleStop",
+        "171": "FingerprintHID::newTransportString",
+        "173": "FingerprintHID::newProductString",
+        "178": "FingerprintHID::newPrimaryUsageNumber",
+        "179": "FingerprintHID::newPrimaryUsagePageNumber",
+        "180": "FingerprintHID::newReportDescriptor",
+        "181": "IOHIDDevice::handleReport",
+        "182": "FingerprintHID::getReport",
+        "206": "IOHIDDevice::nativeSlot206",
+        "111": "FingerprintHID::getWorkLoop"
+      }
+    },
+    "GenericARMPlatform": {
+      "class": "GenericARMCPU",
+      "unit": "GenericARMCPU.cpp",
+      "slots": 184,
+      "bindings": {
+        "14": "GenericARMCPU::free",
+        "75": "GenericARMCPU::requestTerminate",
+        "86": "GenericARMCPU::start",
+        "170": "GenericARMCPU::initCPU",
+        "171": "GenericARMCPU::quiesceCPU",
+        "172": "GenericARMCPU::startCPU",
+        "173": "GenericARMCPU::haltCPU",
+        "174": "GenericARMCPU::signalCPU",
+        "183": "GenericARMCPU::getCPUName"
+      }
+    },
+    "QcomSCM": {
+      "unit": "QcomSCM.cpp",
+      "slots": 168,
+      "bindings": {
+        "14": "QcomSCM::free",
+        "75": "QcomSCM::requestTerminate",
+        "86": "QcomSCM::start",
+        "87": "QcomSCM::stop",
+        "91": "QcomSCM::handleOpen",
+        "92": "QcomSCM::handleClose",
+        "93": "QcomSCM::handleIsOpen",
+        "117": "QcomSCM::callPlatformFunction"
+      }
+    },
+    "QcomBluetooth": {
+      "unit": "QcomBluetooth.cpp",
+      "slots": 168,
+      "bindings": {
+        "86": "QcomBluetooth::start",
+        "87": "QcomBluetooth::stop"
+      },
+      "native_abi_contracts": [
+        "abi-22H374/apple-serial-abi.json"
+      ],
+      "additional_classes": {
+        "QcomBluetoothSerial": {
+          "unit": "QcomBluetoothSerial.cpp",
+          "slots": 180,
+          "bindings": {
+            "168": "QcomBluetoothSerial::acquirePort",
+            "179": "QcomBluetoothSerial::dequeueData"
+          }
+        }
+      }
+    },
+    "QcomWLAN": {
+      "unit": "QcomWLAN.cpp",
+      "slots": 168,
+      "bindings": {
+        "14": "QcomWLAN::free",
+        "86": "QcomWLAN::start",
+        "87": "QcomWLAN::stop"
+      },
+      "native_abi_contracts": [
+        "abi-22H374/apple-iomapper-abi.json"
+      ]
+    },
+    "SynapticsTouch": {
+      "unit": "SynapticsTouch.cpp",
+      "slots": 207,
+      "bindings": {
+        "86": "SynapticsTouch::start",
+        "87": "SynapticsTouch::stop",
+        "168": "SynapticsTouch::handleStart",
+        "169": "SynapticsTouch::handleStop",
+        "171": "SynapticsTouch::newTransportString",
+        "173": "SynapticsTouch::newProductString",
+        "178": "SynapticsTouch::newPrimaryUsageNumber",
+        "179": "SynapticsTouch::newPrimaryUsagePageNumber",
+        "180": "SynapticsTouch::newReportDescriptor",
+        "181": "IOHIDDevice::handleReport",
+        "182": "SynapticsTouch::getReport",
+        "206": "IOHIDDevice::nativeSlot206",
+        "111": "SynapticsTouch::getWorkLoop"
+      }
+    },
+    "SPIGyro": {
+      "unit": "SPIGyro.cpp",
+      "slots": 207,
+      "bindings": {
+        "86": "SPIGyro::start",
+        "87": "SPIGyro::stop",
+        "168": "SPIGyro::handleStart",
+        "169": "SPIGyro::handleStop",
+        "171": "SPIGyro::newTransportString",
+        "173": "SPIGyro::newProductString",
+        "178": "SPIGyro::newPrimaryUsageNumber",
+        "179": "SPIGyro::newPrimaryUsagePageNumber",
+        "180": "SPIGyro::newReportDescriptor",
+        "181": "IOHIDDevice::handleReport",
+        "182": "SPIGyro::getReport",
+        "206": "IOHIDDevice::nativeSlot206",
+        "111": "SPIGyro::getWorkLoop",
+        "183": "SPIGyro::setReport"
+      }
+    },
+    "QcomAudio": {
+      "unit": "QcomAudio.cpp",
+      "slots": 197,
+      "bindings": {
+        "14": "QcomAudio::free",
+        "21": "IOAudio2Device::init",
+        "44": "IOAudio2Device::setProperties",
+        "81": "IOAudio2Device::configureReport",
+        "82": "IOAudio2Device::updateReport",
+        "86": "QcomAudio::start",
+        "87": "QcomAudio::stop",
+        "140": "IOAudio2Device::newUserClient",
+        "168": "IOAudio2Device::isRunning",
+        "169": "QcomAudio::startIO",
+        "170": "QcomAudio::stopIO",
+        "171": "IOAudio2Device::startIOWithFlags",
+        "172": "IOAudio2Device::stopIOWithFlags",
+        "173": "IOAudio2Device::nativeSlot173",
+        "174": "IOAudio2Device::getStatusBuffer",
+        "175": "IOAudio2Device::nativeSlot175",
+        "176": "IOAudio2Device::nativeSlot176",
+        "177": "IOAudio2Device::nativeSlot177",
+        "178": "IOAudio2Device::clientClosed",
+        "179": "IOAudio2Device::registerNotificationPort",
+        "180": "IOAudio2Device::notify",
+        "181": "IOAudio2Device::nativeSlot181",
+        "182": "IOAudio2Device::clientMemoryForType",
+        "183": "IOAudio2Device::nativeSlot183",
+        "184": "IOAudio2Device::nativeSlot184",
+        "185": "IOAudio2Device::nativeSlot185",
+        "186": "IOAudio2Device::requestConfigChange",
+        "187": "IOAudio2Device::handleConfigChange",
+        "188": "QcomAudio::handleChangeSampleRate",
+        "189": "QcomAudio::handleChangeStreamFormat",
+        "190": "QcomAudio::setStreamActive",
+        "191": "IOAudio2Device::nativeSlot191",
+        "192": "IOAudio2Device::nativeSlot192",
+        "193": "QcomAudio::getStreamBuffer",
+        "194": "IOAudio2Device::nativeSlot194",
+        "195": "IOAudio2Device::nativeSlot195",
+        "196": "QcomAudio::performConfigChange",
+        "84": "QcomAudio::registerService",
+        "111": "QcomAudio::getWorkLoop",
+        "155": "QcomAudio::setPowerState"
+      },
+      "native_abi_contracts": [
+        "abi-22H374/apple-audio2-abi.json"
+      ],
+      "additional_classes": {
+        "QcomADSP": {
+          "unit": "QcomADSP.cpp",
+          "slots": 174,
+          "bindings": {
+            "14": "QcomADSP::free",
+            "86": "QcomADSP::start",
+            "87": "QcomADSP::stop",
+            "111": "QcomADSP::getWorkLoop",
+            "155": "QcomADSP::setPowerState",
+            "168": "QcomADSP::outputConfiguration",
+            "169": "QcomADSP::prepareOutput",
+            "170": "QcomADSP::startOutput",
+            "171": "QcomADSP::stopOutput",
+            "172": "QcomADSP::readPosition",
+            "173": "QcomADSP::releaseOutput"
+          }
+        }
+      }
+    },
+    "PMI8998Haptics": {
+      "unit": "PMI8998Haptics.cpp",
+      "slots": 168,
+      "bindings": {
+        "14": "PMI8998Haptics::free",
+        "75": "PMI8998Haptics::requestTerminate",
+        "86": "PMI8998Haptics::start",
+        "87": "PMI8998Haptics::stop",
+        "111": "PMI8998Haptics::getWorkLoop",
+        "140": "PMI8998Haptics::newUserClient",
+        "155": "PMI8998Haptics::setPowerState"
+      },
+      "additional_classes": {
+        "PMI8998HapticsUserClient": {
+          "unit": "PMI8998HapticsUserClient.cpp",
+          "slots": 186,
+          "bindings": {
+            "14": "PMI8998HapticsUserClient::free",
+            "86": "PMI8998HapticsUserClient::start",
+            "87": "PMI8998HapticsUserClient::stop",
+            "168": "PMI8998HapticsUserClient::externalMethod",
+            "170": "PMI8998HapticsUserClient::initWithTask",
+            "172": "PMI8998HapticsUserClient::clientClose"
+          }
+        }
+      }
+    }
+  },
+  "target_collections": {
+    "SM8150": {
+      "platform": {
+        "roots": [
+          "com.apple.kec.corecrypto",
+          "com.apple.kec.pthread",
+          "com.apple.security.AppleImage4",
+          "com.apple.driver.AppleMobileFileIntegrity",
+          "com.apple.security.sandbox",
+          "org.mi6.driver.GenericARMPlatform",
+          "org.mi6.driver.SM8150",
+          "org.darwin.driver.AppleARMGIC"
+        ],
+        "output": "../build/output/kernelcache.sm8150.platform",
+        "tests": [
+          "arm-smp-sm8150",
+          "arm-platform-config",
+          "gicv3",
+          "usb-console"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,31 @@
+--- a/osfmk/arm64/sleh.c
++++ b/osfmk/arm64/sleh.c
+@@ -70,6 +70,7 @@
+ #include <sys/kdebug.h>
+ #include <sys/code_signing.h>
+ #include <sys/reason.h>
++#include <pexpert/pexpert.h>
+ #include <kperf/kperf.h>
+ 
+ #include <kern/policy_internal.h>
+@@ -1421,6 +1422,20 @@
+ 	exception_type_t           exception = EXC_BREAKPOINT;
+ 	mach_exception_data_type_t codes[2]  = {EXC_ARM_BREAKPOINT};
+ 	mach_msg_type_number_t     numcodes  = 2;
++
++#if DEVELOPMENT || DEBUG
++	extern int proc_selfpid(void);
++	extern void proc_selfname(char *, int);
++	int trace_breakpoint = 0;
++	PE_parse_boot_argn("user-breakpoint-trace", &trace_breakpoint, sizeof(trace_breakpoint));
++	if (trace_breakpoint) {
++		char name[32] = {0};
++		proc_selfname(name, sizeof(name));
++		printf("[user breakpoint] pid=%d name=%s pc=0x%llx lr=0x%llx esr=0x%llx\n",
++		    proc_selfpid(), name, (unsigned long long)get_saved_state_pc(state),
++		    (unsigned long long)get_saved_state_lr(state), (unsigned long long)esr);
++	}
++#endif
+ 
+ 	if (ESR_EC(esr) == ESR_EC_BRK_AARCH64) {
+ 		/*

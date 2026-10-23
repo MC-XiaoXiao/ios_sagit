@@ -1,0 +1,94 @@
+{
+  "schema": 1,
+  "versions": {
+    "gpu": "1.60.0",
+    "metal": "0.52.0",
+    "shader": 36,
+    "jit": 33,
+    "surface_metadata": 2
+  },
+  "native_interfaces": [
+    "Metal [[color(n)]] fragment inputs",
+    "AIR air.render_target metadata",
+    "native MTLRenderPipelineDescriptor and render encoder",
+    "IOSurface and IOGPUFamily resource/queue/fence lifecycle"
+  ],
+  "profile": {
+    "air_types": "float/half scalar and vectors1..4",
+    "msl_types": "float scalar and vectors2..4; direct and stage_in struct color attributes",
+    "color_targets": 8,
+    "formats": [
+      "RGBA8Unorm",
+      "BGRA8Unorm",
+      "RGBA8Unorm_sRGB",
+      "BGRA8Unorm_sRGB",
+      "R8Unorm",
+      "RG8Unorm"
+    ],
+    "raster_samples": [
+      1,
+      2,
+      4
+    ],
+    "attachment_layout": "selected single mip/slice linear color plane; no swizzle",
+    "framebuffer_read": "current pixel and sample via per-primitive GPU snapshot; scalar/vector input selects r/rg/rgb/rgba"
+  },
+  "implementation": {
+    "renderer": "A540 sysmem BYPASS; no assumed A6xx coherent GMEM framebuffer-fetch instruction",
+    "copy_shader": "trusted embedded framebuffer_snapshot Compute program; bounded raw uint buffer loads/stores, no CPU pixel copying",
+    "ordering": "flush color/depth/UCHE and poll a monotonically incremented timestamp; snapshot each live color target before each input triangle and instance; flush copy writes before fragment read and draw writes before the next snapshot",
+    "primitive_topology": [
+      "Triangle",
+      "TriangleStrip with UInt16/UInt32 primitive restart; odd strip winding preserved"
+    ],
+    "input_varyings": "gl_SampleID used for per-sample attachment values; existing ordinary varying center interpolation retained",
+    "snapshot_scope": "raw attachment bytes including row/sample layout; native texture descriptors perform format/BGRA/sRGB conversion",
+    "binding_allocator": "one physical texture descriptor per live framebuffer target, shared by the ordinary and multisample texel-read operations; lowest free slot after live public sample and read aliases; reject when no slot is free",
+    "hardware_texture_descriptors": 16,
+    "application_bindings": "Metal texture/sampler slot namespaces unchanged; snapshots have no application-visible resource or address"
+  },
+  "wire": {
+    "field": "framebufferMask replaces the former reserved uint32_t in Program/QGPUProgramDescription; old protocol versions rejected",
+    "description_bytes": 2424,
+    "jit_image_bytes": 41832,
+    "draw_bytes": 2816,
+    "dispatch_bytes": 824,
+    "constant_words": "existing texture/query constants0..47 unchanged; framebuffer width/height/samples/format at48+4*target;80 words reserved only when framebufferMask is nonzero",
+    "main_msaa_mask": "must agree; fragment sample execution and sample ID flags required"
+  },
+  "resources": {
+    "allocation": "job-owned IOBufferMemoryDescriptor via QcomGPUBuffer, mapped only in the isolated job address space",
+    "timestamp_page_bytes": 4096,
+    "snapshots": "page-aligned planes after timestamp page",
+    "maximum_allocation_bytes": 16777216,
+    "global_live_snapshot_quota_bytes": 67108864,
+    "completion": "private address-space retirement, snapshot quota release, scratch release through normal job completion/failure path",
+    "command_buffer_limit": "Up to256 read-only64 KiB IBs in one native job,16 MiB per draw and64 MiB live framebuffer IB budget; all prepared before one ordered engine submission/fence. A single primitive must fit one IB."
+  },
+  "native_evidence": {
+    "runtime": "build/drivers/gpu-draw-batches/native-runtime.json",
+    "independent_compiler": "build/drivers/gpu-draw-batches/native-code-comparison.json",
+    "programs": [
+      "fixed_frag_lph_cph with native framebuffer source-over constants; color and texture-color configurations",
+      "path_blit_frag_lph with scalar float color2 input and half color varying"
+    ],
+    "pipeline_cases": "27 ordinary matrices plus3 large native draws,256 primitive draws each across multiple IBs",
+    "path_mask_scope": "original scalar color2 path_blit input/output encoded with actual R8 and RG8 descriptors; no target pixels executed"
+  },
+  "limits": [
+    "general raster-order groups for buffers/textures, imageblocks and tile shaders remain unsupported",
+    "system Metal objects, native IOGPU execution, display shared fences/scanout and system UI selection have not been executed",
+    "wider/float native color formats remain",
+    "per-primitive full-plane copies and complete state/code emission remain expensive; native tile fetch not established"
+  ],
+  "hardware_executed": false,
+  "ios_metal_executed": false,
+  "system_ui_gpu_acceleration_verified": false,
+  "references": [
+    "https://developer.apple.com/metal/Metal-Shading-Language-Specification.pdf",
+    "https://gitlab.freedesktop.org/mesa/mesa/-/blob/mesa-24.3.4/src/gallium/drivers/freedreno/freedreno_screen.c",
+    "https://gitlab.freedesktop.org/mesa/mesa/-/blob/mesa-24.3.4/src/gallium/drivers/freedreno/a5xx/fd5_emit.c"
+  ],
+  "mask_formats_abi": "drivers/abi-22H374/mask-formats-abi.json",
+  "draw_batches_abi": "drivers/abi-22H374/draw-batches-abi.json"
+}

@@ -1,0 +1,34 @@
+--- a/bsd/kern/kern_newsysctl.c
++++ b/bsd/kern/kern_newsysctl.c
+@@ -2151,6 +2151,18 @@
+ {
+ 	int error = 0;
+ 	struct sysctl_req req2;
++#if DEVELOPMENT || DEBUG
++	int trace = 0;
++	PE_parse_boot_argn("sysctl-trace", &trace, sizeof(trace));
++	if (trace) {
++		if (!string_is_canonical) {
++			namestring[0] = '\0';
++		}
++		printf("[sysctl trace] begin pid=%d name=%.*s oid=%d/%d len=%u\n",
++		    proc_selfpid(), (int)namestringlen, namestring,
++		    namelen ? name[0] : -1, namelen > 1 ? name[1] : -1, namelen);
++	}
++#endif
+ 
+ 	do {
+ 		/* if EAGAIN, reset output cursor */
+@@ -2161,6 +2173,12 @@
+ 
+ 		error = sysctl_root(FALSE, string_is_canonical, namestring, namestringlen, name, namelen, &req2);
+ 	} while (error == EAGAIN);
++#if DEVELOPMENT || DEBUG
++	if (trace) {
++		printf("[sysctl trace] end pid=%d name=%.*s error=%d bytes=%lu\n",
++		    proc_selfpid(), (int)namestringlen, namestring, error, (unsigned long)req2.oldidx);
++	}
++#endif
+ 
+ 	if (error && error != ENOMEM) {
+ 		return error;

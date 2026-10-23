@@ -1,0 +1,421 @@
+--- a/osfmk/arm64/start.s
++++ b/osfmk/arm64/start.s
+@@ -467,6 +467,29 @@
+ 	.globl EXT(start_first_cpu)
+ LEXT(start_first_cpu)
+ 
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++    // No stack or C runtime is available yet; preserve x0 (boot_args).
++    adr x9, Lsdm835_entry_message
++    mov x10, #0x0000
++    movk x10, #0x0c1b, lsl #16
++Lsdm835_entry_next:
++    ldrb w11, [x9], #1
++    cbz w11, Lsdm835_entry_done
++Lsdm835_entry_wait:
++    ldr w12, [x10, #8]
++    tbz w12, #3, Lsdm835_entry_wait
++    mov w12, #1
++    str w12, [x10, #0x40]
++    dsb sy
++    str w11, [x10, #0x70]
++    dsb sy
++    b Lsdm835_entry_next
++Lsdm835_entry_message:
++    .asciz "[XNU] start_first_cpu\r\n"
++    .p2align 2
++Lsdm835_entry_done:
++#endif
++
+ 	// Unlock the core for debugging
+ 	msr		OSLAR_EL1, xzr
+ 	msr		DAIFSet, #(DAIFSC_ALL)				// Disable all interrupts
+@@ -619,6 +642,22 @@
+ 	/* Setup the KVA bootstrap mapping */
+ 	lsr		x5,  x24, #(ARM_TT_L2_SHIFT)
+ 	create_bootstrap_mapping x14, x15, x5, x3, x2, x9, x10, x11, x12, x13
++
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++    // Temporary device mapping for diagnostics before arm_vm_init replaces TTBR0.
++    adrp x9, EXT(sdm835_boot_uart_table)@page
++    add x9, x9, EXT(sdm835_boot_uart_table)@pageoff
++    mov x10, #512
++    mov x11, x9
++Lsdm835_clear_uart_table:
++    str xzr, [x11], #8
++    subs x10, x10, #1
++    b.ne Lsdm835_clear_uart_table
++    orr x10, x9, #3
++    str x10, [x1] // L1[0], physical addresses below 1 GiB
++    MOV64 x10, (0x0c000000 | ARM_TTE_TYPE_BLOCK | ARM_TTE_VALID | ARM_TTE_BLOCK_AF | ARM_TTE_BLOCK_ATTRINDX(CACHE_ATTRINDX_DISABLE) | ARM_TTE_BLOCK_NX)
++    str x10, [x9, #(0x60 * 8)]
++#endif
+ 
+ 	/* Ensure TTEs are visible */
+ 	dsb		ish
+--- a/osfmk/arm/arm_init.c
++++ b/osfmk/arm/arm_init.c
+@@ -331,6 +331,13 @@
+  *	Function:	Perform HW initialization that must happen ahead of the first PAC sign
+  *			operation.
+  */
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++extern void sdm835_early_puts(const char *);
++#define SDM835_EARLY(s) sdm835_early_puts("[XNU] " s "\r\n")
++#else
++#define SDM835_EARLY(s) do {} while (0)
++#endif
++
+ static void
+ arm_setup_pre_sign(void)
+ {
+@@ -360,6 +367,7 @@
+ 	arm_setup_pre_sign();
+ 
+ 	arm_slide_rebase_and_sign_image();
++	SDM835_EARLY("arm_init rebased");
+ 
+ 	/* If kernel integrity is supported, use a constant copy of the boot args. */
+ 	const_boot_args = *args;
+@@ -377,6 +385,7 @@
+ #endif /* defined(HAS_APPLE_PAC) */
+ 
+ 	PE_init_platform(FALSE, args); /* Get platform expert set up */
++	SDM835_EARLY("platform DT ready");
+ 
+ #if __arm64__
+ 	configure_timer_apple_regs();
+@@ -450,6 +459,7 @@
+ #endif
+ 
+ 	ml_parse_cpu_topology();
++	SDM835_EARLY("CPU topology ready");
+ 
+ 
+ 	master_cpu = ml_get_boot_cpu_number();
+@@ -557,6 +567,7 @@
+ 	gDramSize = *dram_size;
+ 	pmap_first_pnum = (ppnum_t)atop(gDramBase);
+ 
++	SDM835_EARLY("arm_vm_init begin");
+ 	arm_vm_init(xmaxmem, args);
+ 
+ 	if (debug_boot_arg) {
+@@ -570,7 +581,12 @@
+ 	PE_consistent_debug_inherit();
+ 
+ 	/* Setup debugging output. */
++	SDM835_EARLY("serial_init begin");
+ 	const unsigned int serial_exists = serial_init();
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++	extern void sdm835_early_uart_finish(void);
++	sdm835_early_uart_finish();
++#endif
+ 	kernel_startup_initialize_upto(STARTUP_SUB_KPRINTF);
+ 	kprintf("kprintf initialized\n");
+ 
+@@ -613,9 +629,25 @@
+ 		disableConsoleOutput = FALSE;     /* Allow printfs to happen */
+ 	}
+ 	PE_create_console();
++#if __arm64__
++    unsigned int mirror_console = 0;
++    extern bool console_mirror_to_video;
++    extern boolean_t vc_boot_text_console_ready(void);
++    if (serial_exists && args->Video.v_baseAddr &&
++        PE_parse_boot_argn("mirror-console", &mirror_console, sizeof(mirror_console)) && mirror_console) {
++        PE_initialize_console(NULL, kPEAcquireScreen);
++        console_mirror_to_video = vc_boot_text_console_ready();
++    }
++#endif
+ 
+ 	/* setup console output */
+ 	PE_init_printf(FALSE);
++#if __arm64__
++    if (console_mirror_to_video) {
++        printf("[XNU console] UART + framebuffer text output enabled (%lux%lu, stride %lu)\n",
++            args->Video.v_width, args->Video.v_height, args->Video.v_rowBytes);
++    }
++#endif
+ 
+ #if __arm64__
+ #if DEBUG
+--- a/osfmk/arm64/arm_vm_init.c
++++ b/osfmk/arm64/arm_vm_init.c
+@@ -1842,6 +1842,15 @@
+ #define ARM64_PHYSMAP_SLIDE_RANGE (1ULL << 30) // 1 GB
+ #define ARM64_PHYSMAP_SLIDE_MASK  (ARM64_PHYSMAP_SLIDE_RANGE - 1)
+ 
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++extern void sdm835_early_puts(const char *);
++extern int sdm835_early_uart_active;
++extern uint64_t sdm835_boot_uart_table[512];
++#define SDM835_VM_TRACE(s) sdm835_early_puts("[XNU VM] " s "\r\n")
++#else
++#define SDM835_VM_TRACE(s) do {} while (0)
++#endif
++
+ void
+ arm_vm_init(uint64_t memory_size, boot_args * args)
+ {
+@@ -1898,10 +1907,12 @@
+ #endif
+ 
+ 	// Slide the physical aperture to a random page-aligned location within the slide range
++	SDM835_VM_TRACE("early_random begin");
+ 	uint64_t physmap_slide = early_random() & ARM64_PHYSMAP_SLIDE_MASK & ~((uint64_t)PAGE_MASK);
+ 	assert(physmap_slide < ARM64_PHYSMAP_SLIDE_RANGE);
+ 
+ 	physmap_base += physmap_slide;
++	SDM835_VM_TRACE("early_random done");
+ 
+ #if XNU_MONITOR
+ 	physmap_base = ROUND_TWIG(physmap_base);
+@@ -1978,9 +1989,14 @@
+ #endif
+ 
+ 	/* Initialize invalid tte page */
++	SDM835_VM_TRACE("alloc tables");
+ 	invalid_tte = (tt_entry_t *)alloc_ptpage(TRUE);
+ 	invalid_ttep = kvtophys((vm_offset_t)invalid_tte);
+ 	bzero(invalid_tte, ARM_PGBYTES);
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++    // Keep only the debug UART device block reachable through TTBR0 until serial_init.
++    invalid_tte[0] = kvtophys((vm_offset_t)sdm835_boot_uart_table) | ARM_TTE_TYPE_TABLE | ARM_TTE_VALID;
++#endif
+ 
+ 	/*
+ 	 * Initialize l1 page table page
+@@ -2024,6 +2040,7 @@
+ 	/*
+ 	 * Now retrieve addresses for various segments from kernel mach-o header
+ 	 */
++	SDM835_VM_TRACE("read Mach-O segments");
+ 	segPRELINKTEXTB  = (vm_offset_t) getsegdatafromheader(&_mh_execute_header, "__PRELINK_TEXT", &segSizePRELINKTEXT);
+ 	segPLKDATACONSTB = (vm_offset_t) getsegdatafromheader(&_mh_execute_header, "__PLK_DATA_CONST", &segSizePLKDATACONST);
+ 	segPLKTEXTEXECB  = (vm_offset_t) getsegdatafromheader(&_mh_execute_header, "__PLK_TEXT_EXEC", &segSizePLKTEXTEXEC);
+@@ -2128,7 +2145,9 @@
+ 	vm_prelink_sdata = segPRELINKDATAB;
+ 	vm_prelink_edata = segPRELINKDATAB + segSizePRELINKDATA;
+ 
++	SDM835_VM_TRACE("prot init begin");
+ 	arm_vm_prot_init(args);
++	SDM835_VM_TRACE("prot init done");
+ 
+ 	/*
+ 	 * Initialize the page tables for the low globals:
+@@ -2174,8 +2193,11 @@
+ 
+ 	arm_set_user_tbi();
+ 
++	SDM835_VM_TRACE("physmap init begin");
+ 	arm_vm_physmap_init(args);
++	SDM835_VM_TRACE("physmap init done; switching tables");
+ 	set_mmu_ttb_alternate(cpu_ttep & TTBR_BADDR_MASK);
++	SDM835_VM_TRACE("TTBR1 switched");
+ 
+ 	ml_enable_monitor();
+ 
+@@ -2187,6 +2209,7 @@
+ 	cpu_tte = (tt_entry_t*)(phystokv(cpu_ttep));
+ 	invalid_tte = (tt_entry_t*)(phystokv(invalid_ttep));
+ 
++	SDM835_VM_TRACE("TTBR0 switched");
+ 	// From here on out, we're off the bootstrap translation tables.
+ 
+ 
+@@ -2278,7 +2301,9 @@
+     }
+ #endif
+ #endif
++	SDM835_VM_TRACE("pmap bootstrap begin");
+ 	pmap_bootstrap(dynamic_memory_begin);
++	SDM835_VM_TRACE("pmap bootstrap done");
+ 
+ 	disable_preemption();
+ 
+@@ -2404,6 +2429,7 @@
+ #endif
+ 	first_avail = avail_start;
+ 	patch_low_glo_static_region(args->topOfKernelData, avail_start - args->topOfKernelData);
++	SDM835_VM_TRACE("VM ready");
+ 	enable_preemption();
+ }
+ 
+@@ -2424,3 +2450,14 @@
+ 	}
+ 	return segDATACONSTB <= addr && addr < (segDATACONSTB + segSizeDATACONST);
+ }
++
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++void
++sdm835_early_uart_finish(void)
++{
++    sdm835_early_uart_active = 0;
++    invalid_tte[0] = ARM_TTE_EMPTY;
++    __builtin_arm_dsb(DSB_ISH);
++    flush_mmu_tlb();
++}
++#endif
+--- a/osfmk/console/serial_console.c
++++ b/osfmk/console/serial_console.c
+@@ -128,6 +128,10 @@
+ 	},
+ };
+ 
++#if __arm64__
++SECURITY_READ_ONLY_LATE(bool) console_mirror_to_video;
++#endif
++
+ SECURITY_READ_ONLY_EARLY(uint32_t) nconsops = (sizeof cons_ops / sizeof cons_ops[0]);
+ 
+ #if __x86_64__
+@@ -261,6 +265,12 @@
+ 	}
+ 
+ 	cons_ops[idx].putc(c, poll);
++#if __arm64__
++    // Mirror only after the text framebuffer is acquired; avoid video locks in panic/NMI.
++    if (console_mirror_to_video && idx == SERIAL_CONS_OPS && !in_debugger) {
++        cons_ops[VC_CONS_OPS].putc(c, true);
++    }
++#endif
+ }
+ 
+ /**
+@@ -284,10 +294,25 @@
+ 
+ 	assert(c != NULL);
+ 
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++	extern boolean_t pe_serial_output_lock(void);
++	extern void pe_serial_output_unlock(boolean_t);
++	bool serialize = kernel_debugger_entry_count == 0 && get_cons_ops_index() == SERIAL_CONS_OPS;
++	boolean_t interrupt_state = FALSE;
++	if (serialize) {
++		interrupt_state = pe_serial_output_lock();
++	}
++#endif
++
+ 	while (size-- > 0) {
+ 		_cnputc(*c, poll);
+ 		c++;
+ 	}
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++	if (serialize) {
++		pe_serial_output_unlock(interrupt_state);
++	}
++#endif
+ }
+ 
+ /**
+--- a/osfmk/console/video_console.c
++++ b/osfmk/console/video_console.c
+@@ -2860,7 +2860,7 @@
+ 			gc_acquired = TRUE;
+ 		} else {
+ 			if (makeMapping) {
+-#if HAS_UCNORMAL_MEM || APPLEVIRTUALPLATFORM
++#if HAS_UCNORMAL_MEM || APPLEVIRTUALPLATFORM || defined(ARM64_BOARD_CONFIG_SDM835)
+ 				/*
+ 				 * Framebuffers would normally use VM_WIMG_RT, which
+ 				 * io_map doesn't support.  However this buffer is set up
+@@ -2868,6 +2868,9 @@
+ 				 * VM_WIMG_RT and VM_WIMG_WCOMB are functionally
+ 				 * equivalent.
+ 				 */
++				/* SDM835's loader framebuffer is reserved DRAM. Its ARMv8
++				 * Normal-NC MAIR encoding is 0x44; Device mappings serialize
++				 * each pixel store and stall the mirrored boot console. */
+ 				unsigned int flags = VM_WIMG_WCOMB;
+ #else
+ 				unsigned int flags = VM_WIMG_IO;
+@@ -3301,3 +3304,24 @@
+ }
+ 
+ #endif /* defined(XNU_TARGET_OS_OSX) */
++
++#if __arm64__
++boolean_t
++vc_boot_text_console_ready(void)
++{
++    return gc_initialized && gc_enabled && vinfo.v_baseaddr && vinfo.v_depth == 32;
++}
++#endif
++
++#if __arm64__
++/* Panic output bypasses the video ticket lock: the failing CPU may own it. */
++void
++vc_software_panic_putc(char c)
++{
++    if (gc_initialized && gc_enabled && vinfo.v_baseaddr && vinfo.v_depth == 32) {
++        gc_hide_cursor(gc_x, gc_y);
++        gc_putchar(c);
++        gc_show_cursor(gc_x, gc_y);
++    }
++}
++#endif
+--- a/osfmk/kern/printf.c
++++ b/osfmk/kern/printf.c
+@@ -913,9 +913,36 @@
+ 	return vprintf_internal(fmt, ap, __builtin_return_address(0));
+ }
+ 
++#if defined(XNU_SOFTWARE_PANIC) && XNU_SOFTWARE_PANIC && __arm64__
++/* Character sink only. XNU's paniclog_append/_doprnt retain all formatting. */
++static void
++panic_serial_putc(char c)
++{
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++    extern int sdm835_early_uart_active;
++    extern void sdm835_early_puts(const char *);
++    if (sdm835_early_uart_active) {
++        char text[2] = { c, 0 };
++        if (c == '\n') sdm835_early_puts("\r");
++        sdm835_early_puts(text);
++        return;
++    }
++#endif
++    extern void uart_putc(char);
++    extern void vc_software_panic_putc(char);
++    if (c == '\n') panic_serial_putc('\r');
++    uart_putc(c);
++    vc_software_panic_putc(c);
++}
++#endif
++
+ void
+ consdebug_putc(char c)
+ {
++#if defined(XNU_SOFTWARE_PANIC) && XNU_SOFTWARE_PANIC && __arm64__
++    debug_putc(c);
++    panic_serial_putc(c);
++#else
+ 	console_write_char(c);
+ 
+ 	debug_putc(c);
+@@ -923,11 +950,16 @@
+ 	if (!console_is_serial() && !disable_serial_output && (PE_kputc != NULL)) {
+ 		PE_kputc(c);
+ 	}
++#endif
+ }
+ 
+ void
+ consdebug_putc_unbuffered(char c)
+ {
++#if defined(XNU_SOFTWARE_PANIC) && XNU_SOFTWARE_PANIC && __arm64__
++    debug_putc(c);
++    panic_serial_putc(c);
++#else
+ 	console_write_unbuffered(c);
+ 
+ 	debug_putc(c);
+@@ -935,6 +967,7 @@
+ 	if (!console_is_serial() && !disable_serial_output && (PE_kputc != NULL)) {
+ 		PE_kputc(c);
+ 	}
++#endif
+ }
+ 
+ void

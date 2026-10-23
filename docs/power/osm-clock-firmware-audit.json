@@ -1,0 +1,106 @@
+{
+  "date": "2026-10-20",
+  "method": "Offline IDA headless analysis of existing local databases and source comparison; no device access.",
+  "clock_dxe": {
+    "path": "boot/edk2-msm8998/Platforms/Msm8998Binaries/common/Binaries/ClockDxe/ClockDxe.efi",
+    "sha256": "b4020fc78a80d9335bfaf74ad7831a096c4e2a2a978a0f2b2178e132f73a0ac6",
+    "database": "boot/edk2-msm8998/Platforms/Msm8998Binaries/common/Binaries/ClockDxe/ClockDxe.efi.i64",
+    "protocol_table_address": "0x16110",
+    "protocol_version": "0x10005",
+    "protocol_callback_addresses_decimal": [
+      5212,
+      5356,
+      5408,
+      5460,
+      5552,
+      5644,
+      5716,
+      5788,
+      5860,
+      5912,
+      5984,
+      6036,
+      6088,
+      6140,
+      6192,
+      6244,
+      6296,
+      5284
+    ],
+    "table_end": "0x161a8",
+    "next_object_value": "0x02000145",
+    "next_object_interpretation": "DAL device identifier, not another EFI callback.",
+    "installation_function": "0x18e0",
+    "installation_evidence": "Installs the GUID at 0x16060 with the protocol pointer 0x16110.",
+    "cluster_clock_initialization_function": "0x7ac8",
+    "cluster_clock_initialization_evidence": "Resolves apcs_cluster0_clk/apcs_cluster1_clk, selects chip revision-dependent clock data, and initializes NPA/AVS. This does not establish OSM or CPRh initialization.",
+    "clock_mux_function": "0x9038",
+    "clock_mux_evidence": "Updates clock mux source fields and update handshake. It is not an OSM initializer.",
+    "header_path": "build/usb/firmware/EFIClock.h",
+    "header_version": "0x10009",
+    "conclusion": "The newer header's CPU performance/frequency plan and PostInit slots must not be called through this binary's shorter 0x10005 protocol. Frequency query APIs cannot substitute for fuse calibration or OSM/CPRh hardware initialization.",
+    "post_init_header_evidence": "Header documentation describes flushing zero-bandwidth ICB nodes after UEFI bandwidth votes, not initializing OSM."
+  },
+  "stock_firmware": {
+    "clock_dxe_path": "build/usb/firmware/stock/modules/ClockDxe.efi",
+    "clock_dxe_sha256": "bbad29bc0a6fb9154eade6d871de2619d2f88286807facbf122fe9397d660926",
+    "tz_path": "build/usb/firmware/stock/tz.mbn",
+    "tz_sha256": "d2c417987bb4210eb774b11c3cd61aa5cd4b1260d1dd3313506490ee9026d911",
+    "limitation": "These are hashes of local build inputs. They do not attest the firmware currently running on a device."
+  },
+  "osm_v2_scope": {
+    "source_manifest": "docs/power/osm-reference-sources.json",
+    "implementation": "drivers/clock/QcomOSM/OSMInitialization.h",
+    "register_map": {
+      "osm": "0x179c0000",
+      "cluster_stride": "0x2000",
+      "enable": "0x1004",
+      "lut_index": "0x1150",
+      "lut_stride": "0x20",
+      "lut_rows": 40,
+      "desired": "0x1f10",
+      "apm_threshold_hlos_v2": "0x1048",
+      "power_acd": "0x17914800",
+      "performance_acd": "0x17814800"
+    },
+    "tz_runtime_predicate": "Before CPRh/OSM writes, both OSM banks must be disabled and the eight SCM-accessible v2 boot parameters (SEQ15/31/32/57/58/72/76/88) must match the selected stock TZ tables in both clusters. This is a compatible-state check, not a measurement of the running firmware.",
+    "tz_predicate_provenance": "Supersedes the earlier common/no-TZ v1 inference. Offline analysis of stock TZ.BF.4.0.6-00178 confirms v2 descriptor selection, raw parameter writes, and the SCM monitor allowlist; see osm-tz-initialization-audit.json and osm-tz-scm-audit.json.",
+    "diagnostics": "Failure records identify cluster, sequence register, expected and observed values. Stock TZ silently returns zero/discards writes outside its allowlist with success status, so transport and engine enforce the exact unconditional OSM subset. Protected microcode/PLL/PMIC registers are not probed.",
+    "secure_write_sequence_registers": [
+      88,
+      57,
+      58,
+      32,
+      72,
+      15,
+      31,
+      76
+    ],
+    "initialization_order": [
+      "Validate identity, retained clock configurations, both calibrated plans and the accessible v2 TZ boot parameters before CPRh/OSM writes.",
+      "Initialize and read back CPRh for both clusters.",
+      "Repeat OSM preflight, then program and read back both LUTs.",
+      "Apply core count and LLM policy, timers and FSM fields.",
+      "Apply the allowlisted MEM-ACC and APM SCM parameters with readback.",
+      "Initialize both ACD controllers with bounded transfer polling.",
+      "Select desired index zero for both clusters and enable OSM last."
+    ],
+    "remaining_firmware_responsibility": "Protected sequencer, CPU PLL/mux setup, PMIC transactions and TZ post-table initialization remain boot-chain prerequisites. The direct TZ caller discards initialization failure; matching the eight readable parameters proves only the table stage. A later marker at each bank +0x1050 is not read because HLOS access permission is unproven. See osm-tz-boot-chain-audit.json. No claim of complete TZ initialization or firmware attestation is made.",
+    "validation": "Host register-model test with compiler warnings treated as errors and address/undefined-behavior sanitizers. Covers the complete production calibration/CPRh/OSM/handoff/runtime path across 64 synthetic bin/revision/silicon combinations, including ownership transfer from a running unmatched CPR loop, bounded polling and injected failures. No claim of real-device validation.",
+    "handoff": {
+      "version": 2,
+      "bytes": 80,
+      "firmware_profile": 1,
+      "firmware_check_masks": [
+        "0xff",
+        "0xff"
+      ],
+      "publication": "Version written last after all initialization/readback; kernel rejects v1 or incomplete checks.",
+      "flag_meaning": "TZBootParameters and HLOSOwner; does not assert protected post-init completion or ownership of secure firmware resources."
+    },
+    "tz_owned_sequence_registers": {
+      "55": "0x2c5ffd",
+      "56": "0x2f5ffd"
+    }
+  }
+}

@@ -1,0 +1,105 @@
+{
+  "schema": 1,
+  "source_version": "iOS18.7.10 /22H374 arm64",
+  "framework_sha256": {
+    "QuartzCore": "e3ef2b8bc74a1823d05e675916983f13bed86988d52256c09996299912e4a92d",
+    "Metal": "ac1943c7df8c41618c07befce2931d4bec8012b16feb5133b5f78759adcf2d67"
+  },
+  "context_initialization": {
+    "address": "0x1844ac088",
+    "library_entry": "newLibraryWithURL:error:",
+    "resource": "QuartzCore.framework/default.metallib",
+    "queue_creation": "newCommandQueue",
+    "dispatch_targets": [
+      "setSubmissionQueue:",
+      "setCompletionQueue:"
+    ]
+  },
+  "library_extraction": {
+    "image": "build/apfs/firmware/094-33089-038.dmg",
+    "path": "/System/Library/Frameworks/QuartzCore.framework/default.metallib",
+    "reader_sha256": "328ed98eabfa82f1fd5b08024639c32c5ee000d4aceba59b0a2c4c1de373cd18",
+    "patch_sha256": "a324c8392b122811fb26df67a460dd98344880168ae60a4dd83bcb50a00cca2e",
+    "sha256": "8ca2bef447981ae26acbe3c5023043ad9dcc312e893f44781d7373b1e27adfa7",
+    "bytes": 7360688,
+    "scope": "Read-only extraction with sealed extent reader. Does not authenticate the APFS seal.",
+    "temporary_reader_deleted": true
+  },
+  "universal_slices": [
+    {
+      "cpu_type": "0x01000017",
+      "cpu_subtype": 11,
+      "format": "MTLB AIR64",
+      "bytes": 1294016,
+      "portable": true,
+      "offset": 48,
+      "alignment_exponent": 3,
+      "sha256": "b377087b982dcf9d58d763460c0ce423374ce86694ee76316ab91bbee150366c"
+    },
+    {
+      "cpu_type": "0x01000013",
+      "cpu_subtype": 81,
+      "format": "Apple GPU MH_EXECUTE",
+      "bytes": 6066624,
+      "portable": false,
+      "offset": 1294064,
+      "alignment_exponent": 4,
+      "sha256": "81ea4d391127ed0cac4e3c212affb4157aecc6a75994fa356b5c9aab8da7ec34"
+    }
+  ],
+  "index": {
+    "function_count": 178,
+    "all_air_hashes_verified": true,
+    "shared_parser": "tools/gpu-compiler/LibraryArchive.h",
+    "function_compilation": "lazy, exact AIR entry selection; hardware program registration still checks administrator privilege"
+  },
+  "native_methods": [
+    {
+      "class": "_MTLCommandQueue",
+      "selector": "setSubmissionQueue:",
+      "address": "0x182473354",
+      "types": "v24@0:8@16"
+    },
+    {
+      "class": "MTLIOAccelCommandQueue",
+      "selector": "setCompletionQueue:",
+      "address": "0x1825443b8",
+      "types": "v24@0:8@16"
+    },
+    {
+      "class": "_MTLCommandBuffer",
+      "selector": "commitAndWaitUntilSubmitted",
+      "address": "0x182420d30",
+      "types": "B16@0:8",
+      "caller": "0x1843c2bc4; QuartzCore tests the returned byte before retiring its deferred resources"
+    }
+  ],
+  "queue_bridge": {
+    "dispatch_target_configuration": "before first submission, independent serial wrappers",
+    "synchronous_submission": "Private marker may be admitted from caller submission target; return NO while pixel operations/dependencies remain pending, selecting original Scheduled cleanup path",
+    "completion": "Native CPU/GPU completion and callback boundaries retained; per-operation native admission does not publish public Scheduled",
+    "limitation": "No imported display fence; drawable present still follows real retirement. Full GPU animation result pending Metal0.83 hardware test."
+  },
+  "remaining": [
+    "AIR function constant specialization/static initializers",
+    "native half types and remaining CoreAnimation shader requirements",
+    "pipeline SPI and priority variants",
+    "nonadministrator admission for translated system shaders",
+    "native shared display fence/scanout",
+    "system plugin loading and UI runtime verification"
+  ],
+  "runtime_verified": false,
+  "hardware_tested": false,
+  "primary_format_reference": "https://github.com/apple-oss-distributions/cctools/blob/main/include/mach-o/fat.h",
+  "first_native_shader_diagnostic": {
+    "path": "build/drivers/gpu-coreanimation/fixed-vertex-lowering.json",
+    "result": "unsupported graphics output semantic",
+    "interpretation": "Unresolved function-constant controlled point-size/varying outputs, half interfaces and shader code are still unsupported. Indexing a library does not prove its shaders compile."
+  },
+  "native_scheduled_cleanup": {
+    "audit": "build/gpu-runtime/ui-submission-lifetime/apple-submit-audit.json",
+    "yes": "OriginalQuartzCore0x1843c2c24..0x1843c2c60 invokes pending cleanup closures immediately",
+    "no": "OriginalQuartzCore0x1844304d0 attaches same closure via0x1846b8ea0;low36bits ofpackedselrefmatchMetaladdScheduledHandler: exactly",
+    "fixed_boundary": "Metal0.83 requires complete operation-list native admission before YES/Scheduled"
+  }
+}

@@ -1,0 +1,547 @@
+{
+  "date": "2026-10-18 America/Los_Angeles",
+  "scope": "Static prioritization and repair proposals only. No driver edits, new builds, or new host/device tests in this follow-up.",
+  "source_versions": {
+    "GPU": "1.115.0",
+    "Metal": "0.87.0",
+    "Display": "1.0.13"
+  },
+  "local_source_snapshot": "/tmp/mi6-hello-priority-_zc9b3ny",
+  "files": {
+    "drivers/gpu/QcomGPU/Info.plist": {
+      "sha256": "f382192b57759578c28476c7b70496b8e8f9e4f1e882557ee04a81c33ecd3550",
+      "bytes": 2696
+    },
+    "drivers/gpu/QcomMTL/Info.plist": {
+      "sha256": "fb66526e36320331a31364e4b85b211f8709a4a2eb4b1740a62e2d98404f5815",
+      "bytes": 2511
+    },
+    "drivers/display/QcomDisplay/Info.plist": {
+      "sha256": "849a6eb819370386f4c4a2d10936a487329adf3d72cdebc236ef3c6d3404be49",
+      "bytes": 1982
+    },
+    "drivers/gpu/QcomGPU/AdrenoPipeline.h": {
+      "sha256": "58845484eac9e2940f87e5ac13a2099a742c9fc7834bc9567efded708e6ed2cd",
+      "bytes": 66510
+    },
+    "drivers/gpu/QcomGPU/AdrenoSubmit.h": {
+      "sha256": "5d95c888e1f6fbeb9bd724d722ce84e1d81a0b70021ba4b8e1646a5c1a6c25be",
+      "bytes": 24182
+    },
+    "drivers/gpu/QcomGPU/AdrenoAddressSpace.h": {
+      "sha256": "77e1f0f80de57ba63c4a7c16d629bf5f81d8095381263724822f51a5fdbde048",
+      "bytes": 6047
+    },
+    "drivers/gpu/QcomGPU/QcomGPUNative.cpp": {
+      "sha256": "9083c05200a7d0b37f37c7cb7cb64fe57b78d11d798c5d6725b4df82ff9ab8a3",
+      "bytes": 102729
+    },
+    "drivers/gpu/QcomGPU/QcomGPUHardware.cpp": {
+      "sha256": "c39f22fa861e64a2d9df0bd31a670a14610078d0bd8ddab2d0af54698674ebe1",
+      "bytes": 70160
+    },
+    "drivers/gpu/QcomGPU/QcomGPUMapper.cpp": {
+      "sha256": "932cc2d0bb026139b9f6c6b8d3e4816a26190e0a7f9401ae2b51bfcdd009541f",
+      "bytes": 33232
+    },
+    "drivers/gpu/QcomGPU/QcomGPUBuffer.cpp": {
+      "sha256": "bb6adeb999fb1c046b9aa294864c7a23a13709b394fc65265cc524715c92a6d2",
+      "bytes": 8923
+    },
+    "drivers/include/GPUShaderProtocol.h": {
+      "sha256": "dc4815117931ce753b0bdf95f971b6fe332bdf0ddaa3e2d54be0a6719cf07b81",
+      "bytes": 53754
+    },
+    "drivers/include/GPUNativeCompletion.h": {
+      "sha256": "fd6e7404e81b4b4df7e28e9ae4bbd9f1c483b1bfda0786f4e5bb02174b1b1096",
+      "bytes": 3928
+    },
+    "drivers/gpu/QcomMTL/QcomMTL.mm": {
+      "sha256": "ea01f8958e3130a3f880395676c307aecc1b05abeb3abfe313a7c12d24cd1557",
+      "bytes": 320044
+    },
+    "drivers/display/QcomDisplay/QcomDisplay.cpp": {
+      "sha256": "88ef51e87501b72522d3e3e9c7a764f37ca7fd2b317f093265707c3c23200373",
+      "bytes": 67529
+    },
+    "tools/gpuctl/GPUConnection.cpp": {
+      "sha256": "e72c604d22f56a10ce3e84e9099e067a1fbf65c8d133765162b92fc6974a29fc",
+      "bytes": 19466
+    },
+    "tests/gpu_submit_test.cpp": {
+      "sha256": "eff9cb2f6d060492658a206a282c43e8539de0b8302ede82495f68e37e2a6f2c",
+      "bytes": 219933
+    },
+    "build/gpu-runtime/round-119-metrics/performance.json": {
+      "sha256": "9245cc6af0aeb10ea19f67bce475063f3d70165d9e495d3a72dc438b7b286e50",
+      "bytes": 9067
+    },
+    "build/gpu-runtime/ui-mixed-shader-batch/hardware-evidence.json": {
+      "sha256": "b8cf887f01a2c8b2871089ddcf9e41c8d3c0ef5722f12b142449398ce3f441d9",
+      "bytes": 1061
+    },
+    "build/gpu-runtime/ui-admission-pipeline/ordered-work-audit.json": {
+      "sha256": "c53f570ccb415540ca53928cc3e75925bbf93576bfc391eed4fe8ca4e75f946a",
+      "bytes": 4710
+    },
+    "docs/gpu/welcome-static-animation-evidence.json": {
+      "sha256": "eede89b4ee5979c2ed7dec7d407266e2e9bd3e1e21bca338905374bb91f479a7",
+      "bytes": 122435
+    }
+  },
+  "source_excerpts": {
+    "inplace_eligibility": {
+      "file": "drivers/gpu/QcomGPU/AdrenoPipeline.h",
+      "line": 18,
+      "text": "inline bool framebufferInplaceEligible(const GPU::Shader::Draw &d,const GPU::Shader::Program &fs) {\n    using namespace GPU::Shader;\n    return fs.framebufferMask==1 && fs.colorMask==1 && colorTargetMask(d)==1 &&\n        (d.primitive==3 || d.primitive==4) && d.rasterSamples<=1 && d.target.samples<=1 &&\n        !(fs.sampleFlags&QGPU_SAMPLE_MSAA) &&\n        (d.target.format==RGBA8 || d.target.format==BGRA8 || d.target.format==RGBA8SRGB || d.target.format==BGRA8SRGB);\n}\nenum : unsigned {Framebuffer2DRegionCount=5};\ninline bool framebuffer2DRegions(uint64_t source,uint64_t destination,uint32_t bytes,Framebuffer2DRegion (&out)[Framebuffer2DRegionCount]) {\n    for(auto &region:out)region={};"
+    },
+    "scratch_size_before_eligibility": {
+      "file": "drivers/gpu/QcomGPU/AdrenoPipeline.h",
+      "line": 605,
+      "text": "        auto &snapshots=context.snapshots;\n        if(!GPU::Shader::framebufferLayout(d,fs,snapshots) || snapshots.bytes>scratchBytes ||\n            !deviceRange(completionScratch,snapshots.bytes))return GPU::Result::Invalid;\n        context.inplace=framebufferInplace && !primitiveSnapshot && framebufferInplaceEligible(d,fs);\n        if(fs.framebufferMask && !primitiveSnapshot) {\n            if(!snapshotProgram || snapshotProgram->stage!=GPU::Shader::Compute || snapshotProgram->bufferMask!=3 ||\n                snapshotProgram->writeMask!=2 || snapshotProgram->strides[0]!=4 || snapshotProgram->strides[1]!=4 ||\n                (d.indexSize && !indexSnapshot))return GPU::Result::Invalid;\n            // Snapshot fallback copies before each primitive. The opt-in\n            // in-place path still splits EVERY primitive and instance, and\n            // retains the color/UCHE flush timestamps plus matching waits.\n            // raster() invalidates UCHE before binding the same-pixel view.\n            // It is not permission to issue overlapping primitives together.\n            flush(29,0);if(depth || stencil)flush(28,1);flush(4,2);\n            for(uint32_t instance=0;instance<d.instances && status==GPU::Result::Success;++instance) {\n                GPU::Shader::PrimitiveIterator iterator(d,indexSnapshot);GPU::Shader::Primitive primitive;\n                while(iterator.next(primitive) && status==GPU::Result::Success) {\n                  bool retried=false;\n                  for(;;) {"
+    },
+    "primitive_barrier_copy": {
+      "file": "drivers/gpu/QcomGPU/AdrenoPipeline.h",
+      "line": 619,
+      "text": "            for(uint32_t instance=0;instance<d.instances && status==GPU::Result::Success;++instance) {\n                GPU::Shader::PrimitiveIterator iterator(d,indexSnapshot);GPU::Shader::Primitive primitive;\n                while(iterator.next(primitive) && status==GPU::Result::Success) {\n                  bool retried=false;\n                  for(;;) {\n                    const auto checkpoint=e.checkpoint();const auto previousBorder=borderAddress;\n                    const auto previousBytes=snapshotBytes,previousPrimitives=snapshotPrimitives,previous2DBytes=snapshot2DBytes,previousUncropped=snapshotUncroppedBytes,previousInplace=inplacePrimitives;\n                    for(unsigned slot=0;slot<QGPU_COLOR_TARGET_COUNT && status==GPU::Result::Success;++slot)if(!context.inplace && (fs.framebufferMask&(1u<<slot))) {\n                        const auto &texture=GPU::Shader::colorTarget(d,slot);FramebufferCopyRegion region;\n                        if(!framebufferCopyRegion(d,texture,region)){status=GPU::Result::Invalid;break;}\n                        const uint32_t bytes=region.bytes;uint32_t covered=0,copied2D=0;\n                        Framebuffer2DRegion rectangles[Framebuffer2DRegionCount];\n                        const uint64_t src=targets[slot]+region.offset,dst=completionScratch+snapshots.offsets[slot]+region.offset;\n                        bool use2D=framebuffer2D && framebufferXCrop &&\n                            framebufferScissor2DRegions(src,dst,d,texture,region,rectangles,covered,copied2D);\n                        if(!use2D && framebuffer2D && d.rasterSamples<=1 && framebuffer2DRegions(src,dst,bytes,rectangles)) {\n                            for(const auto &rectangle:rectangles)covered+=rectangle.pitch*rectangle.rows;\n                            copied2D=covered;use2D=true;\n                        }\n                        if(use2D) {\n                            snapshot2D(targets[slot]+region.offset,completionScratch+snapshots.offsets[slot]+region.offset,rectangles);\n                            if(status!=GPU::Result::Success)continue;\n                            snapshot2DBytes+=copied2D;\n                            if(covered==bytes){snapshotBytes+=copied2D;snapshotUncroppedBytes+=bytes;continue;}\n                        }\n                        const uint32_t tail=bytes-covered;\n                        GPU::Shader::Dispatch copy{};copy.registry=d.registry;copy.version=d.version;copy.program=snapshotProgram->id;\n                        copy.groups[0]=8;copy.groups[1]=uint32_t((tail/4+255)/256);copy.groups[2]=1;\n                        copy.local[0]=32;copy.local[1]=copy.local[2]=1;\n                        copy.buffers[0]={1,0,tail,0};copy.buffers[1]={2,0,tail,0};\n                        ShaderBuffers memory{};memory.addresses[0]=src+covered;memory.addresses[1]=dst+covered;\n                        memory.bytes[0]=memory.bytes[1]=tail;\n                        status=dispatch(copy,*snapshotProgram,memory);\n                        if(status==GPU::Result::Success){snapshotBytes+=copied2D+tail;snapshotUncroppedBytes+=bytes;}\n                    }\n                    if(status==GPU::Result::Success) {\n                    flush(4,2);GPU::Shader::Draw part=d;part.count=primitive.count;part.instances=1;part.baseInstance+=instance;\n                    part.state.winding^=primitive.windingXor;\n                    uint64_t firstIndex=indices;\n                    if(d.indexSize) {part.indices.offset+=primitive.first*d.indexSize;part.indices.bytes=primitive.count*d.indexSize;firstIndex+=uint64_t(primitive.first)*d.indexSize;}\n                    else part.start+=primitive.first;\n                    status=raster(part,vs,fs,bindings,sampled,firstIndex,depth,stencil,context);\n                    if(status==GPU::Result::Success){if(context.inplace)++inplacePrimitives;else ++snapshotPrimitives;}\n                    }\n                    if(status!=GPU::Result::NoResources || !allocator)break;\n                    // A primitive and its copies are indivisible. Roll back\n                    // command head and uploaded data before sealing the IB.\n                    // All buffers remain unposted until complete admission.\n                    e.rewind(checkpoint);borderAddress=previousBorder;status=GPU::Result::Success;\n                    snapshotBytes=previousBytes;snapshotPrimitives=previousPrimitives;snapshot2DBytes=previous2DBytes;snapshotUncroppedBytes=previousUncropped;\n                    inplacePrimitives=previousInplace;\n                    if(retried || !checkpoint.count){status=GPU::Result::NoResources;break;}\n                    status=allocator->next(e,ib);if(status!=GPU::Result::Success)break;\n                    borderAddress=0;retried=true; // border tables belong to the old IB\n                    // Keep flushSequence: repeated values could satisfy a\n                    // wait using an earlier buffer's flush timestamp.\n                  }\n                }\n            }\n            return status;\n        }\n        return raster(d,vs,fs,bindings,sampled,indices,depth,stencil,context);"
+    },
+    "same_target_or_snapshot_binding": {
+      "file": "drivers/gpu/QcomGPU/AdrenoPipeline.h",
+      "line": 855,
+      "text": "            auto texture=GPU::Shader::colorTarget(d,slot);uint64_t address=context.inplace?targets[slot]:completionScratch+snapshots.offsets[slot];\n            texture.offset=0;\n            textureView(texture,address,4,qgpu_framebuffer_slot(fs.sampleMask,fs.fetchMask,fs.framebufferMask,slot),true);\n        }\n        uint32_t draw[] = {(d.primitive == 1 ? 2u : d.primitive == 3 ? 4u : 6u)|\n            ((d.indexSize == 2 ? 1u : 2u)<<10)|(d.indexSize ? 0 : (2u<<6)),\n            d.instances,d.count,0,uint32_t(indices),uint32_t(indices>>32),d.count};\n        p(0x38,draw,d.indexSize ? 7 : 3);\n        idle();\n        // Flush the color cache, wait for its timestamp, then let the common\n        // CACHE_FLUSH_TS fence flush UCHE. Timestamp cells use a separate\n        // writable page; shader code, constants and PM4 remain read-only.\n        flush(29,0);if(depth || stencil)flush(28,1);\n        if(fs.framebufferMask)flush(4,2);\n        idle(); return status;\n    }\n};"
+    },
+    "operation_reset": {
+      "file": "drivers/gpu/QcomGPU/AdrenoPipeline.h",
+      "line": 494,
+      "text": "    void beginOperation(uint64_t address) {ib=address;borderAddress=0;}\n    PipelineEncoder(Encoder &encoder,uint64_t address,uint64_t scratch=0,uint32_t bytes=GPU::PageBytes,bool direct=false) :\n        e(encoder),ib(address),completionScratch(scratch),scratchBytes(bytes),directShaders(direct) {}"
+    },
+    "IB_constants": {
+      "file": "drivers/gpu/QcomGPU/AdrenoSubmit.h",
+      "line": 16,
+      "text": "    RingDwords = 8192, IBDwords = 16384, MaxIndirectBuffers = 256,\n    // A540 CP_PFP_ME_CNTL reset/stopped control state. The A530v1 snapshot's\n    // bits 27/28 do not latch on A540; retaining just the low pair also starts\n    // an engine before its instruction base is installed. Keep both pairs."
+    },
+    "single_profile_slot": {
+      "file": "drivers/gpu/QcomGPU/AdrenoSubmit.h",
+      "line": 299,
+      "text": "    GPU::Result postBatch(const IndirectBuffer *buffers,uint32_t count,uint32_t &sequence,const PageTableContext *context=nullptr,bool profile=false) {\n        if (!ready()) return GPU::Result::Offline;\n        // One diagnostic slot pair, valid only for an otherwise empty engine.\n        // The native scheduler already executes one hardware job at a time.\n        if(profile && issued!=completed)return GPU::Result::Busy;\n        if(!buffers || !count || count>MaxIndirectBuffers)return GPU::Result::Invalid;\n        for(uint32_t i=0;i<count;++i) {\n            const auto &b=buffers[i];\n            if(b.reserved || !b.words || b.words>IBDwords || (b.address&3) || !deviceRange(b.address,uint64_t(b.words)*4))return GPU::Result::Invalid;"
+    },
+    "preflight_scratch_plan": {
+      "file": "drivers/gpu/QcomGPU/QcomGPUNative.cpp",
+      "line": 652,
+      "text": "                            if(!program || !GPU::Shader::framebufferLayout(*draw,GPU::Shader::rasterProgram(*program,draw->rasterSamples),layout))planValid=false;\n                            else if(layout.bytes>request.snapshotBytes)request.snapshotBytes=layout.bytes;\n                            if(draw->indexSize) {\n                                if(!GPU::allocationSize(draw->indices.bytes,allocation) ||\n                                    allocation>GPU::Native::IndexSnapshotLimit-request.indexBytes ||\n                                    !cpuRead(draw->indices.resource,draw->indices.offset,draw->indices.bytes))planValid=false;\n                                else request.indexBytes+=allocation;\n                            }\n                        }\n                    } else if(pipelined && commands[i].opcode==GPU::ShaderDispatch) {\n                        const auto *dispatch=static_cast<const GPU::Shader::Dispatch *>(copy->getBytesNoCopy(commands[i].offset,sizeof(GPU::Shader::Dispatch)));\n                        const auto *program=GPUPrograms::lookup(dispatch->program);unsigned slot=0,bytes=0;\n                        if(nativeCPUParameterBinding(program,slot,bytes)) {\n                            const auto &parameters=dispatch->buffers[slot];\n                            if(parameters.bytes<bytes || !cpuRead(parameters.resource,parameters.offset,bytes))planValid=false;\n                        }\n                    }}\n                    if(batch && pipelined) {\n                        if(!framebuffer)request.snapshotBytes=0; // Ordinary 4KiB completion scratch is not in the framebuffer pool.\n                        if(framebuffer || (h->version==GPU::Native::BatchCommandVersion && h->count>1))\n                            request.indirectBytes=uint64_t(Adreno::MaxIndirectBuffers)*Adreno::IBDwords*4;\n                    }\n                    copy->release();\n                } else if(bytes){queue->release();return kIOReturnNoMemory;}\n            }"
+    },
+    "notification_registration": {
+      "file": "drivers/gpu/QcomGPU/QcomGPUNative.cpp",
+      "line": 735,
+      "text": "    IOReturn registerNotificationPort(mach_port_t, UInt32, io_user_reference_t) APPLE_KEXT_OVERRIDE {\n        return kIOReturnUnsupported;\n    }"
+    },
+    "job_scratch_plan": {
+      "file": "drivers/gpu/QcomGPU/QcomGPUNative.cpp",
+      "line": 1237,
+      "text": "    UInt32 scratchBytes=header.count>1?GPU::PageBytes:0,indexOffsets[GPU::MaxCommands]={};UInt64 indexBytes=0;\n    bool framebuffer=false;\n    for(UInt32 i=0;result==kIOReturnSuccess && i<header.count;++i)if(commands[i].opcode==GPU::ShaderDraw) {\n        const auto &d=*reinterpret_cast<const GPU::Shader::Draw *>(bytes+commands[i].offset);\n        const auto *fragment=lookupProgram(d.fragment);GPU::Shader::FramebufferLayout layout;\n        if(!fragment || !GPU::Shader::framebufferLayout(d,GPU::Shader::rasterProgram(*fragment,d.rasterSamples),layout)) {\n            result=kIOReturnBadArgument;break;\n        }\n        if(layout.bytes>scratchBytes)scratchBytes=layout.bytes;\n        framebuffer|=GPU::Shader::rasterProgram(*fragment,d.rasterSamples).framebufferMask!=0;\n        if(d.indexSize) {\n            UInt64 allocation=0;\n            if(!GPU::allocationSize(d.indices.bytes,allocation) || allocation>IndexSnapshotLimit-indexBytes) {\n                result=kIOReturnNoResources;break;\n            }\n            indexOffsets[i]=UInt32(indexBytes);indexBytes+=allocation;\n        }\n    }\n    if(result==kIOReturnSuccess && indexBytes) {\n        const auto indexBegin=mach_absolute_time();\n        if(indexBytes>IndexSnapshotLimit-fIndexSnapshotBytes)result=kIOReturnNoResources;\n        else if(!(job.indices=acquireIndexSnapshot(indexBytes)))result=kIOReturnNoMemory;\n        else fIndexSnapshotBytes+=indexBytes;\n        trace.sample(GPU::Diagnostics::IndexAcquire,indexBegin,mach_absolute_time());\n    }\n    if(result==kIOReturnSuccess && scratchBytes) {\n        if(framebuffer && !GPU::Native::admissionFits(fFramebufferSnapshotBytes,scratchBytes,GPU::Native::FramebufferSnapshotLimit))result=kIOReturnNoResources;\n        else if(!(job.scratch=acquireScratch(scratchBytes)))result=kIOReturnNoMemory;\n        else {\n            if(framebuffer){job.framebufferBytes=job.scratch->length;fFramebufferSnapshotBytes+=job.framebufferBytes;}\n            if(!job.scratch->synchronize())result=kIOReturnIOError;"
+    },
+    "per_operation_IB": {
+      "file": "drivers/gpu/QcomGPU/QcomGPUNative.cpp",
+      "line": 1307,
+      "text": "        if(i && job.commandBuffers) {\n            if(allocator.next(encoder,ibAddress)!=GPU::Result::Success){result=kIOReturnNoResources;break;}\n            pipeline.beginOperation(ibAddress);\n        }\n        const UInt64 previousWrites=ticket->surfaceWrites;"
+    },
+    "scratch_clear": {
+      "file": "drivers/gpu/QcomGPU/QcomGPUHardware.cpp",
+      "line": 526,
+      "text": "QcomGPUBuffer *QcomGPU::acquireScratch(uint64_t bytes)\n{\n    auto *buffer=fScratchBuffers.take(bytes);\n    const auto begin=mach_absolute_time();\n    if(buffer) {\n        GPU::Diagnostics::add(fScratchHits);\n        // Write-combined kernel mapping, no client alias. Preserve full\n        // initialization, including progress/timestamp cells and padding.\n        bzero(buffer->bytes(),buffer->length);\n        fScratchClearTime.sample(begin,mach_absolute_time());\n    } else {\n        buffer=QcomGPUBuffer::allocate(bytes,fMapper);\n        fScratchAllocateTime.sample(begin,mach_absolute_time());\n        if(buffer)GPU::Diagnostics::add(fScratchAllocations);\n    }\n    const auto requests=fScratchHits+fScratchAllocations;\n    if(requests<=8 || !(requests%256))"
+    },
+    "gates_default_off": {
+      "file": "drivers/gpu/QcomGPU/QcomGPUHardware.cpp",
+      "line": 365,
+      "text": "    UInt32 fetchMode=0;PE_parse_boot_argn(\"gpu-fb-fetch\",&fetchMode,sizeof(fetchMode));\n    PE_parse_boot_argn(\"gpu-fbf\",&fetchMode,sizeof(fetchMode)); // Short alias fits the native NVRAM command-line limit.\n    fFramebufferFetchMode=fetchMode<=2?fetchMode:0;setProperty(\"GPUFramebufferFetchMode\",fFramebufferFetchMode,32);\n    kprintf(\"QcomGPU: framebuffer-fetch mode=%u (0=snapshot 1=privileged-noncompositor 2=all) experimental=1\\n\",fFramebufferFetchMode);\n    UInt32 pipe=0;PE_parse_boot_argn(\"gpu-pipe\",&pipe,sizeof(pipe));\n    fPipelinedAdmission=pipe==1;setProperty(\"GPUPipelinedAdmission\",fPipelinedAdmission);\n    kprintf(\"QcomGPU: pipelined-admission enabled=%u producer-alias-check=1\\n\",fPipelinedAdmission);\n    UInt32 secondaryCache=1;PE_parse_boot_argn(\"gpu-ib-cache\",&secondaryCache,sizeof(secondaryCache));\n    fSecondaryIBCache=secondaryCache!=0;setProperty(\"GPUSecondaryIBCache\",fSecondaryIBCache);"
+    },
+    "one_active_job": {
+      "file": "drivers/gpu/QcomGPU/QcomGPUHardware.cpp",
+      "line": 950,
+      "text": "bool QcomGPU::dispatchNextJob()\n{\n    if(fActiveJob<GPU::MaxJobs || !fJobCount)return true;\n    auto view=[&](unsigned offset) {\n        const auto &job=fJobs[(fJobHead+offset)%GPU::MaxJobs];\n        Adreno::AdmissionCandidate candidate;\n        candidate.owner=job.native?static_cast<const void *>(job.native->queue):job.client;\n        candidate.queue=job.native?0:job.queue;\n        candidate.priority=job.native?job.native->queue->priority():1;\n        candidate.ready=!job.sequence;candidate.complete=job.hardwareDone;return candidate;\n    };\n    unsigned offset=Adreno::nextAdmission(fJobCount,view);\n    if(offset==fJobCount)return true;\n    unsigned index=(fJobHead+offset)%GPU::MaxJobs;auto &job=fJobs[index];"
+    },
+    "retire_before_next_kick": {
+      "file": "drivers/gpu/QcomGPU/QcomGPUHardware.cpp",
+      "line": 1062,
+      "text": "    while (fJobCount && fJobs[fJobHead].hardwareDone) {\n        fJobs[fJobHead].retireStarted=mach_absolute_time();\n        const bool retired=!fJobs[fJobHead].addressSpace || fJobs[fJobHead].addressSpace->retire();\n        if(fJobs[fJobHead].native)sampleNative(GPU::Diagnostics::RetireAddressSpace,\n            fJobs[fJobHead].retireStarted,mach_absolute_time(),fJobs[fJobHead].native->compositor);\n        if (!retired) {\n            faultHardware();return;\n        }\n        unsigned index = fJobHead;\n        fJobHead = (fJobHead + 1) % GPU::MaxJobs; --fJobCount;\n        if (!finishJob(fJobs[index], true)) {faultHardware();return;}\n    }\n    if(!dispatchNextJob())return;\n    if (fActiveJob<GPU::MaxJobs) {\n        auto &job=fJobs[fActiveJob];uint32_t progress=0;\n        if(job.progressLimit && job.scratch)progress=static_cast<volatile uint32_t *>(job.scratch->bytes())[4];\n        auto status=job.progress.poll(mach_absolute_time(),progress,job.progressLimit,fTimeoutTicks);\n        if(status!=GPU::Result::Success) {\n            IOLog(\"QcomGPU: submission watchdog stalled or invalid progress\\n\");faultHardware(true);return;\n        }\n        fTimer->setTimeoutMS(10);\n    } else fTimer->setTimeoutMS(100); // validate retained platform state while idle too\n}"
+    },
+    "all_backing_coherence": {
+      "file": "drivers/gpu/QcomGPU/QcomGPUBuffer.cpp",
+      "line": 89,
+      "text": "bool QcomGPUBuffer::synchronize() const\n{\n    auto *backing=root();\n    // The SDM835 kernel uses noncoherent ARM I/O. Flush performs cache clean\n    // and invalidation to PoC through the original, prepared descriptor. Never\n    // create a second CPU alias with conflicting cache attributes.\n    return !backing->fShared || (backing->fPrepared && backing->fDMAPrepared &&\n        backing->fMemory->performOperation(kIOMemoryIncoherentIOFlush,0,backing->length)==kIOReturnSuccess);\n}"
+    },
+    "map_entire_backing": {
+      "file": "drivers/gpu/QcomGPU/QcomGPUMapper.cpp",
+      "line": 314,
+      "text": "        auto map=[&](const QcomGPUBuffer *buffer,unsigned access) {\n            if(status!=OK || !buffer)return;\n            buffer=buffer->backing();\n            if((access&2) && !buffer->gpuWritable()){status=Denied;return;}\n            if(!buffer->address || (buffer->address&4095) || !buffer->length || (buffer->length&4095) ||\n                buffer->length>GPU::MaxBufferBytes){status=Invalid;return;}\n            BufferPages source{s,buffer};status=p.tables.map(buffer->address,unsigned(buffer->length/4096),source,access);\n        };\n        map(ring,1); // CP ring readable in every tree; shaders cannot modify it\n        map(ib,1); // immutable PM4, code and constants; no GPU writes allowed\n        if(commands)for(unsigned i=0;i<commands->getCount();++i) {\n            auto *command=OSDynamicCast(QcomGPUBuffer,commands->getObject(i));\n            if(!command){status=Invalid;break;}\n            if(command!=ib)map(command,1);\n        }\n        map(indices,1);\n        map(scratch,3); // CP color/depth flush timestamp cells, separate from code\n        for(unsigned i=0;i<count && status==OK;++i) {\n            if(!buffers[i]){status=Invalid;break;}\n            // Separate IOSurface imports retain separate views of the same\n            // prepared root mapping. Include that backing once in this tree;\n            // all views inherit their backing descriptor's access permission.\n            bool seen=false;\n            for(unsigned j=0;j<i;++j)if(buffers[j]->backing()==buffers[i]->backing()){seen=true;break;}\n            if(!seen)map(buffers[i],buffers[i]->gpuWritable()?3:1);\n        }\n        // The kernel fence and other tasks' allocations are deliberately not\n        // mapped. The fence is written only after the kernel tree is restored.\n        if(status==OK)status=p.tables.publish();\n        if(status==OK){status=SMMU::synchronizeContext(s,s.bank,p.asid);p.badTLB=status!=OK;}"
+    },
+    "AS_retirement": {
+      "file": "drivers/gpu/QcomGPU/QcomGPUMapper.cpp",
+      "line": 241,
+      "text": "bool QcomGPUAddressSpace::retire() {\n    if(!fState || fState->retired)return true;\n    auto &privateState=*fState;auto &s=privateState.hardware;IOLockLock(s.lock);\n    auto *registered=static_cast<QcomGPUMapper::State::PrivateRoot *>(nullptr);\n    for(auto &root:s.roots)if(root.owner==this)registered=&root;\n    bool valid=!privateState.tables.faulted() && !privateState.badTLB;\n    if(valid && privateState.submitted) {\n        // A timestamp follows the return-to-kernel packet. If a reported\n        // completion still selects this tree, keep every backing allocation.\n        valid=!s.fault && s.check()==QcomPower::OK && s.pair(s.bank+0x20)!=privateState.tables.ttbr();\n        if(valid)valid=SMMU::synchronizeContext(s,s.bank,privateState.asid)==QcomPower::OK;\n    }\n    if(valid)valid=privateState.tables.destroy(true)==QcomPower::OK;\n    if(valid){if(registered)*registered={};privateState.retired=true;}\n    else s.fault=true;\n    IOLockUnlock(s.lock);return valid;\n}\nvoid QcomGPUAddressSpace::free() {\n    if(!retire()) {IOLog(\"QcomGPU: private page table retirement unproved; ASID and backing retained\\n\");return;}\n    delete fState;fState=nullptr;OSSafeReleaseNULL(fMapper);OSObject::free();\n}\nbool QcomGPUMapper::privateAddressSpacesReady() const {"
+    },
+    "extra_retirement_delay": {
+      "file": "drivers/gpu/QcomMTL/QcomMTL.mm",
+      "line": 2756,
+      "text": "    if(_retiring.count && !_retiring.firstObject.blocked && !_finishScheduled) {\n        _finishScheduled=YES;\n        dispatch_after(dispatch_time(DISPATCH_TIME_NOW,NSEC_PER_MSEC),dispatch_get_global_queue(QOS_CLASS_DEFAULT,0),^{\n            @autoreleasepool {[self finishRetirements];}\n        });\n    }"
+    },
+    "completion_poll_delay": {
+      "file": "drivers/gpu/QcomMTL/QcomMTL.mm",
+      "line": 2819,
+      "text": "- (void)armRetirement {\n    if(_pollScheduled || (!_completions.pending() && !_completionError))return;\n    _pollScheduled=YES;\n    dispatch_after(dispatch_time(DISPATCH_TIME_NOW,NSEC_PER_MSEC),dispatch_get_global_queue(QOS_CLASS_DEFAULT,0),^{\n        @autoreleasepool {[self pollNative];}\n    });\n}\n- (void)pollNative {"
+    },
+    "admission_retry_delay": {
+      "file": "drivers/gpu/QcomMTL/QcomMTL.mm",
+      "line": 2868,
+      "text": "- (kern_return_t)deferNativeForBuffer:(QcomMTLCommandBuffer *)buffer {\n    const auto now=nativeCompletionClock();\n    if(!_admissionPressureSince)_admissionPressureSince=now;\n    if(!now || now<_admissionPressureSince || now-_admissionPressureSince>=5000000000ULL)return kIOReturnNoResources;\n    [buffer->_condition lock];buffer->_blocked=YES;[buffer->_condition unlock];\n    [_owner->_nativeWaiters addObject:buffer];\n    if(!_retryScheduled) {\n        _retryScheduled=YES;\n        dispatch_after(dispatch_time(DISPATCH_TIME_NOW,2*NSEC_PER_MSEC),dispatch_get_global_queue(QOS_CLASS_DEFAULT,0),^{@autoreleasepool {\n            [_owner->_transportLock lock];_retryScheduled=NO;\n            NSArray *wakeups=_owner->_nativeWaiters.allObjects;[_owner->_nativeWaiters removeAllObjects];\n            [_owner->_transportLock unlock];\n            for(QcomMTLCommandBuffer *waiting in wakeups)[waiting wake];\n        }});\n    }\n    return kIOReturnNotReady;\n}\n- (kern_return_t)submitCommands:(const GPU::Command *)commands count:(uint32_t)count {"
+    },
+    "capability_gated_index_wait": {
+      "file": "drivers/gpu/QcomMTL/QcomMTL.mm",
+      "line": 3010,
+      "text": "    if(!_owner->_pipelinedAdmission && opcode==GPU::ShaderDraw && payload.length==sizeof(GPU::Shader::Draw) &&\n        static_cast<const GPU::Shader::Draw *>(payload.bytes)->indexSize && _owner->_nativeJobs)return kIOReturnNotReady;\n    auto &connection=_owner->_connection;"
+    },
+    "present_after_completion": {
+      "file": "drivers/gpu/QcomMTL/QcomMTL.mm",
+      "line": 3492,
+      "text": "    // The native compositor has no imported A540 surface fence yet. Defer\n    // the real drawable's present until all GPU/end-token work and surface\n    // cache publication finish. Never synthesize didPresent/presentedTime.\n    if (!_error) for (QcomMTLPresentation *pending in _presentations) {\n        @try {[pending present];}\n        @catch(NSException *exception) {\n            [_condition lock];_error=failure(exception.reason ?: @\"Drawable presentation failed\");[_condition unlock];break;\n        }\n    }\n    [_presentations removeAllObjects];\n    [_condition lock];"
+    },
+    "display_ready": {
+      "file": "drivers/display/QcomDisplay/QcomDisplay.cpp",
+      "line": 822,
+      "text": "    if (enabled != ready) return; // Native IOSurface preparation/fences are pending.\n    auto &links = *reinterpret_cast<Display::NativeSwapLinks *>(bytes + RequestLinks);\n    auto next = links.next ? reinterpret_cast<Display::NativeSwapLinks *>(static_cast<uint8_t *>(links.next) + RequestLinks) : nullptr;\n    if (!Display::detachNativeSwapHead(nativeState<void *>(PendingRequest), nativeState<void **>(PendingQueueLast), request, links, next)) {"
+    },
+    "notification_consumer": {
+      "file": "tools/gpuctl/GPUConnection.cpp",
+      "line": 185,
+      "text": "kern_return_t NativeConnection::pollCompletions(const Native::NotificationData &data,Native::CompletionWindow &window) {\n    if(!port)return NotOpen;\n    if(!data.address || !data.id)return BadArgument;\n    if(window.failed())return Error;\n    auto *memory=reinterpret_cast<IODataQueueMemory *>(uintptr_t(data.address));\n    while(IODataQueueDataAvailable(memory)) {\n        Native::Notification event{};uint32_t bytes=sizeof(event);\n        auto status=IODataQueueDequeue(memory,&event,&bytes);\n        if(status || bytes!=sizeof(event)) {\n            fprintf(stderr,\"GPU_NOTIFICATION dequeue status=0x%x bytes=%u expected=%zu\\n\",status,bytes,sizeof(event));\n            return status?status:Error;\n        }\n        auto observed=window.observe(event);\n        if(observed==Native::CompletionWindow::Observation::Malformed) {\n            fprintf(stderr,\"GPU_NOTIFICATION malformed token=%llu start=%llu end=%llu status=0x%x reserved=0x%x issued=%llu retired=%llu pending=%u\\n\",\n                (unsigned long long)event.token,(unsigned long long)event.startTime,(unsigned long long)event.endTime,\n                event.status,event.reserved,(unsigned long long)window.issued(),(unsigned long long)window.retired(),window.pending());\n            return Error;\n        }\n        if(observed==Native::CompletionWindow::Observation::Failed)return kIOReturnIOError;\n    }\n    __atomic_thread_fence(__ATOMIC_ACQUIRE);return KERN_SUCCESS;\n}\nkern_return_t NativeConnection::waitCompletion(const Native::NotificationData &data,uint64_t endToken,uint32_t timeoutMS) {\n    Native::CompletionWindow window;"
+    }
+  },
+  "historical_runtime": {
+    "GPU": "1.112.0",
+    "Metal": "0.86.0",
+    "round": 119,
+    "metrics": {
+      "report": "build/gpu-runtime/round-119-metrics/report.json",
+      "compositor_timing": [
+        {
+          "preflight": {
+            "samples": 1281,
+            "total_ticks": 41286210,
+            "mean_ms": 1.6786287568306013
+          },
+          "ib_acquire": {
+            "samples": 1281,
+            "total_ticks": 298433,
+            "mean_ms": 0.01213379033307312
+          },
+          "encoding": {
+            "samples": 1281,
+            "total_ticks": 33750461,
+            "mean_ms": 1.3722377130497008
+          },
+          "cache_prepare": {
+            "samples": 1281,
+            "total_ticks": 1319500,
+            "mean_ms": 0.053648679417122036
+          },
+          "address_space": {
+            "samples": 1281,
+            "total_ticks": 127889137,
+            "mean_ms": 5.199759993819932
+          },
+          "fence_prepare": {
+            "samples": 1281,
+            "total_ticks": 170750,
+            "mean_ms": 0.00694241152745251
+          },
+          "admission_dispatch": {
+            "samples": 1281,
+            "total_ticks": 32520605,
+            "mean_ms": 1.3222338098490762
+          },
+          "admission_total": {
+            "samples": 1281,
+            "total_ticks": 237262217,
+            "mean_ms": 9.646687849661722
+          },
+          "queue_wait": {
+            "samples": 1281,
+            "total_ticks": 68972227,
+            "mean_ms": 2.8042962447957325
+          },
+          "kick": {
+            "samples": 1281,
+            "total_ticks": 16574935,
+            "mean_ms": 0.6739093400338277
+          },
+          "poll_validation": {
+            "samples": 2256,
+            "total_ticks": 68435710,
+            "mean_ms": 1.5799467623374703
+          },
+          "run_observed": {
+            "samples": 1281,
+            "total_ticks": 344276193,
+            "mean_ms": 13.997698453356753
+          },
+          "retire_cleanup": {
+            "samples": 1281,
+            "total_ticks": 40087014,
+            "mean_ms": 1.6298714383294302
+          },
+          "native_publish": {
+            "samples": 1281,
+            "total_ticks": 1506679,
+            "mean_ms": 0.061259066809784025
+          },
+          "retire_address_space": {
+            "samples": 1281,
+            "total_ticks": 35339768,
+            "mean_ms": 1.4368562971636742
+          },
+          "retire_coherence": {
+            "samples": 1281,
+            "total_ticks": 1433997,
+            "mean_ms": 0.05830393735362997
+          },
+          "retire_surface_publish": {
+            "samples": 1281,
+            "total_ticks": 131380,
+            "mean_ms": 0.0053416926880041635
+          },
+          "retire_resources": {
+            "samples": 1281,
+            "total_ticks": 355858,
+            "mean_ms": 0.014468595498308614
+          },
+          "retire_pools": {
+            "samples": 1281,
+            "total_ticks": 2766979,
+            "mean_ms": 0.11250077250845694
+          },
+          "snapshot_map": {
+            "samples": 1281,
+            "total_ticks": 25306,
+            "mean_ms": 0.001028899947957325
+          },
+          "snapshot_copy": {
+            "samples": 1281,
+            "total_ticks": 1934605,
+            "mean_ms": 0.07865782754358575
+          },
+          "snapshot_validate": {
+            "samples": 1281,
+            "total_ticks": 49253,
+            "mean_ms": 0.0020025452120739006
+          },
+          "preflight_retire": {
+            "samples": 1281,
+            "total_ticks": 38305169,
+            "mean_ms": 1.5574245787795993
+          },
+          "preflight_ticket": {
+            "samples": 1281,
+            "total_ticks": 242811,
+            "mean_ms": 0.009872292154566744
+          },
+          "index_acquire": {
+            "samples": 827,
+            "total_ticks": 3981837,
+            "mean_ms": 0.25077066958887545
+          },
+          "index_snapshot": {
+            "samples": 3307,
+            "total_ticks": 818341,
+            "mean_ms": 0.012888396457010383
+          },
+          "retire_indices": {
+            "samples": 1281,
+            "total_ticks": 1869901,
+            "mean_ms": 0.07602707032266458
+          },
+          "retire_commands": {
+            "samples": 1281,
+            "total_ticks": 556532,
+            "mean_ms": 0.022627667187093414
+          },
+          "wrapper_submit": {
+            "samples": 1281,
+            "total_ticks": 285790714,
+            "mean_ms": 11.61977597254749
+          },
+          "wrapper_resource_create": {
+            "samples": 625,
+            "total_ticks": 61100552,
+            "mean_ms": 5.091712666666666
+          },
+          "wrapper_resource_delete": {
+            "samples": 623,
+            "total_ticks": 26372066,
+            "mean_ms": 2.204727294007491
+          },
+          "wrapper_shmem_create": {
+            "samples": 27,
+            "total_ticks": 81003,
+            "mean_ms": 0.15625578703703702
+          },
+          "wrapper_program": {
+            "samples": 25,
+            "total_ticks": 87904,
+            "mean_ms": 0.18313333333333331
+          },
+          "native_resource_free": {
+            "samples": 623,
+            "total_ticks": 26113218,
+            "mean_ms": 2.183087379614767
+          }
+        }
+      ],
+      "frame_headers": [
+        {
+          "version": "1",
+          "displayed": "289",
+          "failed": "0",
+          "samples": "289",
+          "span_ms": "43943.755",
+          "rate": "6.554",
+          "p50_us": "100005.468",
+          "p95_us": "300116.613",
+          "p99_us": "883620.932",
+          "max_us": "1653839.833",
+          "over20ms": "288",
+          "over33ms": "288",
+          "age_ms": "46021.944",
+          "timebase_ticks": "1000000",
+          "timebase_ns": "52083333"
+        }
+      ],
+      "removed_exact_known_kernel_rows": [
+        "QcomGPU: cpu-inherited-clock cluster=0 ticks=5747265559 stable=1 rcgr-cmd=2 rcgr-cfg=301 pll-mode=7 pll-l=51 pll-word8=0 pll-user=9 pll-status=10000 decoded-hz=0 measured=0\r\n",
+        "QcomGPU: cpu-inherited-clock cluster=1 ticks=5747265559 stable=1 rcgr-cmd=2 rcgr-cfg=403 pll-mode=7 pll-l=20 pll-word8=0 pll-user=9 pll-status=10000 decoded-hz=0 measured=0\r\n",
+        "QcomGPU: clock-observation sample=32 ticks=5747265559 gpu-status=0 gpu-config-hz=596000097 cpu-lut-valid=0 pwr-desired-hz=0 perf-desired-hz=0 pwr-enable=0 pwr-index=0 pwr-counter-control=14 pwr-counter=0 perf-enable=0 perf-index=0 perf-counter-control=14 perf-counter=0 irq=1251 compositor-completed=1281\r\n",
+        "QcomGPU: execution-observation ticks=5748543634 alwayson=3227831387 stable=1 counter-hz=19200000 native-samples=1281 native-total=269054542 compositor-samples=1281 compositor-total=269054542 compositor-max=2441353 invalid=0\r\n",
+        "QcomGPU: core-clock-observation scope=compositor samples=1281 alwayson-ticks=269054542 core-cycles=8351752554 min-hz=583836734 max-hz=595999284 invalid=0 counter-writes=0\r\n",
+        "QcomGPU: rbbm-busy-observation scope=compositor samples=1281 alwayson-ticks=269054542 busy-cycles=8350515011 invalid=0 selector=6 counter-writes=0\r\n",
+        "QcomGPU: gpucc-clock-tuple stable=1 pll-mode=d0000005 pll-l=3e pll-user=7 pll-alpha=1556 rcgr-cmd=0 rcgr-cfg=101 gfx-gate=4621 crc-sid=800000 crc-mnd=15010 throttle=90000 throttle-force=0 sp-clock=8ff1 writes=0\r\n",
+        "QcomGPU: render-work-observation ticks=5750054764 native-copy-bytes=6555451648 native-primitives=1450 compositor-copy-bytes=6555451648 compositor-primitives=1450 native-uncropped-bytes=6880481536 compositor-uncropped-bytes=6880481536\r\n"
+      ],
+      "removed_ansi_control_sequences": [
+        "\u001b[?2004l",
+        "\u001b[?2004h",
+        "\u001b[?2004l",
+        "\u001b[?2004h",
+        "\u001b[?2004l",
+        "\u001b[?2004h",
+        "\u001b[?2004l",
+        "\u001b[?2004h",
+        "\u001b[?2004l",
+        "\u001b[?2004h"
+      ],
+      "overlap_caution": "Nested elapsed stages overlap; do not sum them as independent CPU busy time.",
+      "displayed_frames": {
+        "samples": 289,
+        "span_s": 43.943755572916665,
+        "fps": 6.553832194021661,
+        "p50_ms": 100.00763020833334,
+        "p95_ms": 300.11661458333333,
+        "max_ms": 1653.83984375,
+        "baseline_displayed": 0,
+        "final_frame_age_ms": 46021.944
+      },
+      "core_intervals": [
+        {
+          "scope": "compositor",
+          "samples": "1281",
+          "alwayson_ticks": "269054542",
+          "core_cycles": "8351752554",
+          "mean_hz": "595989377.636",
+          "min_hz": "583836734",
+          "max_hz": "595999284",
+          "invalid": "0",
+          "reference_hz": "19200000",
+          "counter_writes": "0"
+        }
+      ],
+      "properties": {
+        "GPUNativeShaderOperations": 5526,
+        "GPUCompositorShaderOperations": 5526,
+        "GPUFramebuffer2DMode": 2,
+        "GPUNativeFramebufferCopyBytes": 6555451648,
+        "GPUCompositorFramebufferCopyBytes": 6555451648,
+        "GPUNativeFramebuffer2DBytes": 6428608512,
+        "GPUCompositorFramebuffer2DBytes": 6428608512,
+        "GPUNativeFramebufferUncroppedBytes": 6880481536,
+        "GPUCompositorFramebufferUncroppedBytes": 6880481536,
+        "GPUNativeFramebufferPrimitives": 1450,
+        "GPUCompositorFramebufferPrimitives": 1450,
+        "GPUMetalDiagnosticVersion": 0
+      },
+      "compositor_snapshot_copy": {
+        "actual_payload_bytes": 6555451648,
+        "uncropped_payload_bytes": 6880481536,
+        "saved_payload_bytes": 325029888,
+        "saved_fraction": 0.04723940995980895
+      },
+      "display_interval_vblank_multiples_60Hz": {
+        "99": 1,
+        "26": 1,
+        "17": 5,
+        "16": 4,
+        "6": 50,
+        "14": 5,
+        "21": 5,
+        "10": 10,
+        "11": 13,
+        "9": 10,
+        "4": 20,
+        "12": 30,
+        "13": 17,
+        "5": 85,
+        "7": 7,
+        "18": 2,
+        "8": 15,
+        "59": 1,
+        "20": 3,
+        "63": 1,
+        "3": 1,
+        "53": 1,
+        "25": 1
+      },
+      "display_cadence_caution": "All actual retained displayed samples; gaps include client pauses. No claim to isolate active Welcome writing or SpringBoard CADisplayLink callbacks."
+    }
+  },
+  "calculations": {
+    "example_target": {
+      "pitch": 4352,
+      "height": 1920,
+      "payload_bytes": 8355840,
+      "current_single_target_scratch_bytes": 8359936,
+      "proposed_inplace_only_scratch_bytes": 4096,
+      "removed_4KiB_mappings": 2040,
+      "scope": "Illustrative eligible single-color target; no per-HOME surface-format assumption."
+    },
+    "IB": {
+      "bytes_per_IB": 65536,
+      "current_min_bytes_for_16_shader_ops": 1048576,
+      "maximum_IB_budget_per_request": 16777216,
+      "note": "Packing benefit depends on emitted commands plus uploaded code/constants. 16 ops are not guaranteed to fit one IB; live accounting uses actual allocations."
+    },
+    "round119_GPU_ms_per_job": 10.939311003773096,
+    "round119_retire_address_fraction": 0.8815764626419917
+  },
+  "limitations": [
+    "No per-element shader/format/pass attribution; HOME mask may use fallback formats.",
+    "Stage timings are nested and have differing sample counts; cannot sum into frame time.",
+    "Normal/ASan candidate results in existing artifacts are previous work; hardware coverage of candidates remains unproved.",
+    "Source is shared and can advance beyond the captured hashes."
+  ],
+  "verification": {
+    "source_excerpts_checked": 25,
+    "local_links_checked": 17,
+    "source_changed_since_capture": [
+      "build/gpu-runtime/ui-admission-pipeline/ordered-work-audit.json"
+    ],
+    "report_lines": 106,
+    "report_sha256": "222d7ffcc3dd6c1de19a929a6539ecab488896a319389e65c41bf86b6bc4c186"
+  }
+}

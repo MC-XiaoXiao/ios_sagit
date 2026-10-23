@@ -1,0 +1,749 @@
+{
+  "image_sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+  "classes": {
+    "IOMapper": {
+      "super": "IOService",
+      "instance_size": 208,
+      "vtable_slots": 174
+    },
+    "IODMACommand": {
+      "super": "IOCommand",
+      "instance_size": 120,
+      "vtable_slots": 31
+    },
+    "IOCommand": {
+      "super": "OSObject",
+      "instance_size": 32,
+      "vtable_slots": 15
+    },
+    "IOMemoryDescriptor": {
+      "super": "OSObject",
+      "instance_size": 96,
+      "vtable_slots": 37
+    },
+    "IOGeneralMemoryDescriptor": {
+      "super": "IOMemoryDescriptor",
+      "instance_size": 176,
+      "vtable_slots": 37
+    },
+    "IOBufferMemoryDescriptor": {
+      "super": "IOGeneralMemoryDescriptor",
+      "instance_size": 232,
+      "vtable_slots": 44
+    }
+  },
+  "native_observations": {
+    "IOMapper.start": {
+      "address": "0xfffffff007884b20",
+      "page_size_offset": 196,
+      "system_mapper_flag_offset": 200,
+      "calls_hardware_init_then_get_page_size": true
+    },
+    "IOMapper.copyMapperForDeviceWithIndex": {
+      "address": "0xfffffff0078854f8",
+      "reads_only_device_own_iommu_parent": true,
+      "unresolved_id_waits_for_service": true
+    },
+    "IODMACommand.clearMemoryDescriptor": {
+      "address": "0xfffffff007881060",
+      "auto_complete_ignores_completion_result": true,
+      "clear_without_auto_completion_rejects_active_command": true
+    },
+    "IODMACommand.complete": {
+      "address": "0xfffffff0078816cc",
+      "active_preparation_consumed_on_error": true,
+      "mapper_allocation_metadata_cleared_even_after_unmap_error": true
+    },
+    "IODMACommand.setSpecification": {
+      "address": "0xfffffff007881d4c",
+      "name_inferred_from_init_call_and_public_source": true,
+      "mapping_type_mask": 15,
+      "unmapped_mapping_type": 3,
+      "unmapped_with_null_mapper_skips_system_mapper_wait_and_lookup": true,
+      "native_evidence": "build/usb/direct-dma-native-spec.json",
+      "native_evidence_sha256": "d039b96d23d29f98accf4b5e1a719524509d63ea18f058b7760e6d8210341bb8"
+    }
+  },
+  "binding_changes": {
+    "automatic_prepare_disabled": true,
+    "explicit_completion_before_clear": true,
+    "clearing_never_performs_implicit_completion": true,
+    "unknown_completion_is_sticky_and_retains_buffer": true,
+    "explicit_fault_recovery_complete": true,
+    "mapper_and_direct_modes_mutually_exclusive": true,
+    "explicit_direct_physical_window_path_implemented": true,
+    "failed_complete_never_repeated_after_root_detachment": true,
+    "unknown_external_mappers_remain_pinned": true,
+    "owned_mapper_command_retirement_recovery_source_integrated": true,
+    "Native_composite_MD_complete_failure_never_repeated": true,
+    "proof_gated_pinned_adapter_cleanup_integrated": true,
+    "uncertain_Family_enqueue_or_invariant_failure_replayed": false,
+    "fault_recovery_scope": "Owned mapper cleanup after actual root detachment; unknown MD completion, unsupported foreign/bypass command errors, invariant failures and uncertain Family handoffs remain pinned."
+  },
+  "smmu": {
+    "owned_context_and_stream_handoff_required": true,
+    "usb_stream_id_known": true,
+    "usb_bypass_proven": false,
+    "no_global_reset_or_scratch_smr_writes": true,
+    "mapper_service_implemented": true,
+    "native_mapping_lifecycle_complete": false,
+    "kernel_runtime_tested": false,
+    "usb_stream_id_source": "captured installed IORT; reference SID 0x1400 is not a live ownership grant",
+    "production_handoff_producer_complete": false,
+    "source": "drivers/usb/QcomUSB/QcomUSBMapper.cpp",
+    "handoff": "drivers/bus/QcomSMMU/ContextHandoff.h",
+    "native_workers_executed": false,
+    "native_mapping_lifecycle_source_integrated": true,
+    "existing_active_context_producer_source_integrated": true,
+    "post_EFI_pre_XNU_DMA_isolation_producer_source_integrated": true
+  },
+  "evidence": "IDA read-only decompilation of the pinned iOS18 image, local XNU IOMapper/IODMACommand and IOMemoryDescriptor sources; compiler ABI checks do not prove runtime mapping.",
+  "buffer_allocation": {
+    "helper": "drivers/include/IOBufferAllocation.h",
+    "MapperNone_in_buffer_allocation_cache_options": false,
+    "noncoherent_storage": "Normal NC using kIOMapWriteCombineCache",
+    "physical_tables_use_HostPhysicallyContiguous": true,
+    "logical_length_restored_after_kernel_page_capacity_rounding": true,
+    "system_mapper_pending_rejected_without_changing_global_policy": true,
+    "Native_IOBuffer_allocations_executed_in_kernel": false
+  },
+  "native_mapper": {
+    "vtable_slots": 174,
+    "instance_base_bytes": 208,
+    "system_mapper_flag": false,
+    "per_device_property": "iommu-parent",
+    "configuration_requires": [
+      "128-byte version1 little-endian qcom,usb-smmu-handoff from boot resource owner",
+      "Captured checksummed installed IORT and identical provider/chosen usb-iort-component",
+      "Actual controller and SMMU apertures match; dedicated level IRQ matches selected IORT context bank and same GIC domain as USB core",
+      "Existing exact stream route and stage1/AArch64 context, inherited ASID unique among active stage1 contexts",
+      "Actual retained NoC/RPM/GCC lease and controller BCR asserted",
+      "Unchanged live register fingerprint before first takeover"
+    ],
+    "initial_context": "Existing active exclusive stage1 bank: accept explicit128-byte boot handoff or capture under real resource-owner NoC/GCC/BCR checks after matching software and pre-XNU hardware-stop proofs.",
+    "map_lifetime": [
+      "Retain actual prepared descriptor and command before publishing PTEs",
+      "4KiB private Normal NC tables, XN/nG/AF/outer-shareable leaves, guarded IOVA ranges",
+      "Completed context TLBSYNC before successful map/unmap",
+      "Unknown results quarantine IOVA, tables and caller tokens",
+      "Actual root detachment under BCR precedes Native drain acknowledgement",
+      "Exact MD/command proof acknowledges consumed completion without retrying complete()"
+    ],
+    "PM_lifetime": [
+      "Isolate outside USB gate before synchronous Native termination",
+      "Keep dormant mapper/context ownership across resource park, with no private table backing",
+      "Reacquire resources and rebuild root before reset release",
+      "Re-probe DWC3 role/event state after Prepare"
+    ],
+    "provider_IRQ_exposed_to_Native_USB_nub": "core source0 only; SMMU source1 stays with mapper",
+    "fault_IRQ": "mask own level interrupt and queue admission revocation; clear only during isolated teardown",
+    "firmware_global_PTE_retirement": "context TLBIALL before format/root replacement, then context TLBSYNC; no whole-SMMU reset or global register writes",
+    "validation": "shared context/engine/page-source models and Native compiled/vtable/import checks; kernel paths not executed",
+    "effective_ASID": "8/16-bit TCR2.AS and TCR.A1 selection (TTBR0/TTBR1) observed for other active contexts; own initial handoff requires AArch64 16-bit ASID and TTBR0",
+    "park_to_activate_failure": "Park proof cleared before allocating or publishing a new root; a failed activation cannot reuse old teardown proof.",
+    "remaining": [
+      "Complete authoritative AP baseline and board policy data for the integrated unified producer; submitted NPA requests and synthetic test profiles do not establish safe production floors.",
+      "Complete authoritative unused-context/namespace allocation or shared-bank ownership when no supported exclusive inherited active, architected BYPASS or disabled-stage1/S2-bypass route exists.",
+      "Enable production board USB matching nodes only after complete source handoff exists; Native kernel and hardware execution follow source completion."
+    ],
+    "effective_VMID": "Preserve the observed inherited 8-bit guest CBAR.VMID and effective ASID; these do not prove physical TLB namespace ownership under HYP. Reject all other visible active banks and unknown SCTLR reads; latch runtime proof loss until actual root retirement and rebuild. No unused/shared-bank or namespace allocation is granted.",
+    "architecture_reference": "https://documentation-service.arm.com/static/5f900d34f86e16515cdc08fb",
+    "architecture_sections": [
+      "1.6.5 ASIDs and ASIDPNE hint",
+      "1.6.6 VMIDs",
+      "2.2 TLB attribute tagging and sharing",
+      "SMMU_CBn_TLBIALL and context TLBSYNC"
+    ],
+    "firmware_controller_resource_binding_required": true,
+    "firmware_controller_resource_binding_audit": "docs/usb/firmware-topology-audit.json",
+    "inherited_context_producer": {
+      "status": "Native resource-owner producer for an existing exclusive active context integrated; no hardware execution",
+      "version": "QcomUSB1.1.0",
+      "request": "qcom,usb-smmu-capture=<1> (native-endian uint32)",
+      "record": "qcom,usb-smmu-handoff: existing128-byte version1",
+      "common_reader": "drivers/bus/QcomSMMU/ContextHandoff.h:captureInheritedContext",
+      "native_entry": "drivers/usb/QcomUSB/QcomUSBMapper.cpp:create",
+      "resource_owner": "drivers/usb/QcomUSB/QcomUSBResources.cpp",
+      "metadata_gate": [
+        "Matching installed IORT and controller/interrupt/coherency binding",
+        "Valid pinned firmware software retirement and post-EFI/pre-XNU hardware-stop proofs",
+        "No direct-DMA or external mapper or second handoff"
+      ],
+      "runtime_gate": [
+        "Actual resource owner and real NoC/GCC lease checks",
+        "Current controller BCR asserted",
+        "Map exact IORT SMMU aperture"
+      ],
+      "snapshot": [
+        "Validate register layout before touching SMRs/banks",
+        "Exact, unique IORT stream route to an already active AArch64 stage1 bank",
+        "Preserve actual16-bit ASID and8-bit VMID; reject VMID16",
+        "Reject wildcard overlaps, another valid stream using this bank, or any other visible active bank regardless of guest VMID/ASID",
+        "Copy all128-byte handoff fields; reread source and all supported SMR/S2CR entries; recheck leases/reset before publication"
+      ],
+      "supported_SMR_limit": 128,
+      "larger_counts_rejected_not_truncated": true,
+      "reader_writes_SMMU": false,
+      "consumer": "Compare captured registers again, block only the owned stream, disable inherited context, retire global PTEs, then attach private root under the existing checked leases",
+      "interrupts": "Core+one exact context IRQ or core+complete IORT context list; select and validate actual bank IRQ. Role nub exposes core only.",
+      "empty_bank_or_bypass_allocation_implemented": false,
+      "identity_window_inferred": false,
+      "tests": {
+        "source": "tests/smmu_context_test.cpp:captureModels",
+        "invalid_state_cases": 26,
+        "each_read_fault_injected": true,
+        "lease_loss_injected": true,
+        "changed_unrelated_route_revokes": true,
+        "32_36_40_bit_output_ranges": true,
+        "writes_in_model": 0,
+        "ordinary": "build/usb/current-build.log",
+        "sanitized": "build/usb/mapper-capture-sanitized.log",
+        "Native_compile": "build/usb/current-build.log"
+      },
+      "hardware_executed": false,
+      "Native_workers_executed": false,
+      "evidence": "build/usb/hardware-capture-evidence.json",
+      "evidence_sha256": "d4165a80eeb473822d0cd44bda7802f26d82fddf46c4f57b57fbe1e1338e66ca",
+      "current_source_version": "QcomUSB1.6.0"
+    },
+    "verified_bypass_producer": {
+      "status": "source-integrated-and-offline-validated; hardware not executed",
+      "version": "QcomUSB1.2.0",
+      "producer": "drivers/bus/QcomSMMU/BypassHandoff.h:captureBypass",
+      "native_producer": "drivers/usb/QcomUSB/QcomUSBMapper.cpp:captureBypass",
+      "native_resource_owner": "drivers/usb/QcomUSB/QcomUSBResources.cpp",
+      "request": "qcom,usb-dma-capture=<1>; mutually exclusive with context capture/mapper handoff",
+      "records": {
+        "observation": "qcom,usb-smmu-bypass:64-byte version1",
+        "address_window": "qcom,usb-dma-window:32-byte version1"
+      },
+      "metadata_checks": [
+        "Actual installed IORT and ACPI/firmware controller binding",
+        "Matching pinned firmware software-stop and post-EFI/pre-XNU hardware-stop records",
+        "Exact third SMMU memory aperture and only the core IRQ",
+        "No external mapper, existing direct window or second context/bypass handoff"
+      ],
+      "runtime_checks": [
+        "Real owner-bound NoC/GCC lease and current USB BCR",
+        "Architected SMMUv2 stream matching enabled; normal supported control and bounded layout",
+        "IORT SID has exactly one valid unmasked SMR and actual S2CR.TYPE=BYPASS",
+        "IORT plus actual input/output physical address width bounds the generated identity window",
+        "All source fields and supported SMR/S2CR slots re-read before publishing; final lease/reset checks"
+      ],
+      "identity_window": {
+        "bus_base": 0,
+        "physical_base": 0,
+        "length": "1<<addressBits,32..40, bounded by actual SMMU IAS/OAS and IORT"
+      },
+      "smr_limit": 128,
+      "oversized_tables_rejected": true,
+      "context_bank_reads": 0,
+      "SMMU_writes": 0,
+      "not_inferred_from": [
+        "Missing iommu-parent/iommus",
+        "Unmatched streams or default global bypass",
+        "FAULT S2CR",
+        "Disabled context bank",
+        "Linux physical DMA mask"
+      ],
+      "Qualcomm_quirk": "BYPASS writes may read back as FAULT; upstream reserves a disabled context to emulate bypass. This path accepts only a real read-back TYPE=BYPASS and never performs a write probe.",
+      "primary_reference": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c",
+      "publication": "Allocate both OSData values first; rollback the observation if publishing the window fails. Remove capture request only after both are present. No usable DMA contract is returned before retained-route validation.",
+      "lifecycle": [
+        "Retain a read-only mapping of the actual SMMU for the resource lifetime",
+        "Check NoC availability before live SMMU accesses; no MMIO after a failed fabric check",
+        "Initial acquire checks route before and after metadata validation, with actual reset",
+        "Sample/validation/release check retained window plus exact route/global state and overlapping SMRs",
+        "Unknown route or fabric closes admission and retains the original lease; release requires fresh fabric, reset and route proof",
+        "Cold PM reconstructs the read-only map but never silently adopts a different observation"
+      ],
+      "Apple_framework": "Existing physical IOBufferMemoryDescriptor/IODMACommand path, no IOMapper instance for bypass; role nub exposes only core IRQ; existing Apple matching/families retained",
+      "tests": {
+        "source": [
+          "tests/smmu_context_test.cpp:bypassModels",
+          "tests/usb_resources_test.cpp:directDMA"
+        ],
+        "invalid_states": 19,
+        "every_read_failure_injected": true,
+        "lease_loss_injected": true,
+        "context_access_asserted_absent": true,
+        "writes_asserted_absent": true,
+        "combined_producer_and_DirectDMA_lease_model": true,
+        "live_route_change_retains_and_recovery_needs_reset": true,
+        "fabric_failure_performs_no_route_reads": true,
+        "widths": [
+          32,
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40
+        ],
+        "normal_log": "build/usb/current-build.log",
+        "sanitized_log": "build/usb/sanitized.log",
+        "focused_sanitized_log": "build/usb/bypass-sanitized.log"
+      },
+      "source_inputs": "build/usb/bypass-inputs.json",
+      "firmware_executed": false,
+      "Native_workers_executed": false,
+      "hardware_tested": false,
+      "remaining": [
+        "Complete authoritative AP baseline and board policy data for the integrated unified producer; submitted NPA requests and synthetic test profiles do not establish safe production floors.",
+        "Complete authoritative unused-context/namespace allocation or shared-bank ownership when no supported exclusive inherited active, architected BYPASS or disabled-stage1/S2-bypass route exists.",
+        "Enable production board USB matching nodes only after complete source handoff exists; Native kernel and hardware execution follow source completion."
+      ],
+      "scope": "Architected mode1 introduced in QcomUSB1.2; supported and revalidated in1.3. Mode2 is documented separately.",
+      "disabled_context_extension": "build/usb/disabled-bypass-evidence.json",
+      "evidence": "build/usb/bypass-evidence.json",
+      "evidence_sha256": "26da82cb9bc89771ed3da7416ea71ee074b32be16d6ffd54e22f27183586bfa4"
+    },
+    "bypass_IOMapper_instance_created": false,
+    "exclusive_disabled_context_bypass_producer": {
+      "status": "source-integrated; all17 ordinary and ASan/UBSan models plus8 Native Kext/ABI/import/vtable checks passed; hardware not executed",
+      "QcomUSB_version": "1.10.0",
+      "request": "qcom,usb-dma-capture=<2>; request1 remains architected TYPE=BYPASS only",
+      "producer": "drivers/bus/QcomSMMU/BypassHandoff.h:captureBypass(BypassMode::DisabledContext)",
+      "native_producer": "drivers/usb/QcomUSB/QcomUSBMapper.cpp:captureBypass",
+      "resource_owner": "drivers/usb/QcomUSB/QcomUSBResources.cpp",
+      "record": {
+        "property": "qcom,usb-smmu-bypass",
+        "version": 2,
+        "bytes": 80,
+        "legacy_version": 1,
+        "legacy_bytes": 64,
+        "address_window_bytes": 32
+      },
+      "runtime": [
+        "Real owner-bound NoC/GCC lease plus current controller BCR",
+        "Bounded actual register layout; selected bank inside ID1 and IORT, not stage2-only",
+        "Exactly one unmasked valid IORT SID route with S2CR.TYPE=TRANS",
+        "No other valid translated stream uses the selected bank",
+        "SCTLR exactly0, CBAR exactly0x10000 (stage1/S2-bypass), CBA2R0 or1, FSR outside FORMAT[10:9] exactly0",
+        "Exact observation compared again during capture and lifetime; all supported SMR/S2CR slots compared before publication"
+      ],
+      "SMMU_writes": 0,
+      "bank_allocation": false,
+      "ASID_or_VMID_allocation": false,
+      "TTBR_TCR_ASID_reads": 0,
+      "unowned_bank_reads": 0,
+      "selected_bank_reads": [
+        "SCTLR",
+        "FSR",
+        "GR1 CBAR",
+        "GR1 CBA2R"
+      ],
+      "lifecycle": [
+        "Shared retained DirectDMA lease and read-only route observer",
+        "No MMIO after a failed NoC check",
+        "Unknown state closes admission and retains window and dependent resources",
+        "Release requires restored original route/bank, current NoC and asserted BCR",
+        "Cold PM rebuilds the map and validates the same observation; no silent adoption"
+      ],
+      "remaining": [
+        "Complete authoritative AP baseline and board policy data for the integrated unified producer; submitted NPA requests and synthetic test profiles do not establish safe production floors.",
+        "Complete authoritative unused-context/namespace allocation or shared-bank ownership when no supported exclusive inherited active, architected BYPASS or disabled-stage1/S2-bypass route exists.",
+        "Enable production board USB matching nodes only after complete source handoff exists; Native kernel and hardware execution follow source completion."
+      ],
+      "firmware_executed": false,
+      "Native_workers_executed": false,
+      "hardware_tested": false,
+      "driver_complete": false,
+      "evidence": "build/usb/disabled-bypass-evidence.json",
+      "evidence_sha256": "615c9206a3133f4b816cfab4287b3942d8936a7a0f44c613b5dd15991a4b0c25",
+      "tests": {
+        "invalid_state_cases": 25,
+        "every_MMIO_read_failure": true,
+        "every_lease_check_loss": true,
+        "every_reset_check_loss": true,
+        "register_page_bytes": [
+          4096,
+          65536
+        ],
+        "unaligned_v2_decode_and_v1_v2_length_confusion": true,
+        "producer_to_DirectDMA_lease_integration": true,
+        "unified_ordinary": "build/usb/current-build.log",
+        "unified_sanitized": "build/usb/sanitized.log",
+        "unified_suites": 17,
+        "Native_kexts_compiled": 8
+      }
+    },
+    "fabric_resource_ACK_handoff_audit": "docs/usb/firmware-topology-audit.json",
+    "IORT_context_IRQ_binding": {
+      "status": "Source integrated and current unified offline validation passed; no Native or hardware execution",
+      "QcomUSB_version": "1.10.0",
+      "runtime_authority": "Actual installed checksummed IORT, Apple GIC specifiers and provider getInterruptType",
+      "IORT_flags": "bit0 edge1/level0; Apple GIC trigger edge0/level1",
+      "routes": [
+        "full bank IRQ list",
+        "one selected bank IRQ"
+      ],
+      "selected_IRQ_exclusive": true,
+      "DWC3_core_IRQ_alias_rejected": true,
+      "unknown_flags_or_native_type_mismatch_rejected": true,
+      "retained_PM_binding": "Validate original IRQ number, trigger and event-source index before enabling source or attaching root; no silent adoption",
+      "SMMU_writes_during_IRQ_validation": 0,
+      "handoff_wire_version_changed": false,
+      "source": "drivers/bus/QcomSMMU/IORT.h:ContextInterruptBinding",
+      "Native_adapter": "drivers/usb/QcomUSB/QcomUSBMapper.cpp:NativeContextInterrupts/activate",
+      "reference": "docs/usb/board-resources.json:ANOC1_context_interrupt_reference",
+      "evidence": "build/usb/context-irq-evidence.json",
+      "evidence_sha256": "a2d4f5c9b1d97c64eb200ab8c3e85003f287db0bab08cb5569a4b4a6f511cda9",
+      "inputs": "build/usb/current-inputs.json",
+      "inputs_sha256": "a0d6816ec1b651f4f5222472c109074ad9739559f12fe865eb5c2e19f81d440c",
+      "Native_workers_executed": false,
+      "hardware_tested": false,
+      "driver_complete": false
+    }
+  },
+  "verification": {
+    "models": [
+      "tests/smmu_test.cpp",
+      "tests/smmu_context_test.cpp"
+    ],
+    "focused_sanitizers": "build/usb/mapper-sanitized-tests.log",
+    "full_sanitizers": "build/usb/sanitized.log",
+    "full_ordinary_models": "build/usb/current-build.log",
+    "Native_compilation_and_vtable_import_checks": "QcomUSBMapper 174 slots, IOMapper base208 bytes; actual Kernel exports and provider ABI checked by unified build",
+    "kernelcache_sha256": "bf7ab7cec138c247309907460b6456d770ee00fc691aa82fd9d304a3bcc53173",
+    "kernelcache_kexts": 53,
+    "Native_callbacks_or_hardware_executed": false,
+    "retirement_models": "build/usb/retirement-tests.log",
+    "memory_ABI_checks": "build/usb/memory-completion-abi-tests.log",
+    "ABI_classes": 6,
+    "ABI_imports": 66,
+    "ABI_virtual_bindings": 53,
+    "ABI_function_fingerprints": 7,
+    "final_native_ABI_checks": "build/usb/current-build.log",
+    "final_native_ABI_scope": "6 provider classes, 66 exact imports, 53 provider virtual bindings and 7 function fingerprints; IOBuffer probe has 44 slots with 32 bindings.",
+    "current_collection_check": "build/usb/collection-verify.log",
+    "inherited_capture_sanitized": "build/usb/mapper-capture-sanitized.log",
+    "latest_native_build": "build/usb/current-build.log",
+    "current_USB_source_version": "1.10.0",
+    "current_RPM_source_version": "1.11.0",
+    "current_full_ordinary_and_Native_build": "build/usb/current-build.log",
+    "current_full_ordinary_and_Native_build_sha256": "1c8bb064ebc4955dc60ea44882af3d8b8e18344816d3f10271246f6890184913",
+    "current_full_sanitized": "build/usb/sanitized.log",
+    "current_full_sanitized_sha256": "b3bd4fa09609d00c9bd4c20a403b9f13e0dd4929bd846f8ea988eca720e7a7bd",
+    "resource_policy_evidence": "build/usb/resource-policy-evidence.json",
+    "resource_policy_evidence_sha256": "c723c8c67bba234888e9384fe750f865f72ae9c4f4f5819e0f5b76ed0358ea27",
+    "context_IRQ_evidence": "build/usb/context-irq-evidence.json",
+    "context_IRQ_evidence_sha256": "a2d4f5c9b1d97c64eb200ab8c3e85003f287db0bab08cb5569a4b4a6f511cda9"
+  },
+  "native_memory_completion": {
+    "evidence": "build/usb/memory-completion-native.json",
+    "evidence_sha256": "42f75791eff6e85f8f6b9a40dab80d805cbb1d197b747cee7b1ef97476eb215f",
+    "provider_sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+    "IOGeneralMemoryDescriptor.complete": "0xfffffff00788dc70",
+    "IOSubMemoryDescriptor.complete": "0xfffffff007896608",
+    "IOMultiMemoryDescriptor.complete": "0xfffffff007894000",
+    "IOInterleavedMemoryDescriptor.complete": "0xfffffff007883f0c",
+    "complete_slot": 28,
+    "instances_bytes": {
+      "IOMemoryDescriptor": 96,
+      "IOGeneralMemoryDescriptor": 176,
+      "IOBufferMemoryDescriptor": 232
+    },
+    "IOBuffer_vtable_slots": 44,
+    "compiler_bound_buffer_slots": 32,
+    "ABI_contract": "drivers/abi-22H374/apple-iomapper-abi.json",
+    "probe": "tests/smmu_kernel_compile.cpp",
+    "MD_failure_policy": "Native aggregate completion may consume children before returning an error; retain the owner and never replay that preparation. Mock APIs explicitly preserving the full preparation may retry.",
+    "owned_mapper_command_failure_policy": "Actual detached-root/retired-record acknowledgement clears consumed command state, without repeating Native complete()."
+  },
+  "adapter_recovery": {
+    "source": [
+      "drivers/usb/QcomUSB/QcomUSB.cpp",
+      "drivers/usb/QcomUSB/QcomUSBHost.cpp",
+      "drivers/usb/QcomUSB/QcomUSBDevice.cpp",
+      "drivers/usb/QcomUSB/USBDeviceRequests.h"
+    ],
+    "proof": "Nub incarnation receives immutable recovery admission only after a read-only query of the retained owned mapper confirms actual context ownership and detached root under BCR/fabric proof. Query runs outside role/Family gates.",
+    "fault_route": "Current client+controller epoch validated under nub lock; route+admission epoch validated by ConnectorFence before closing admission and scheduling the ordinary role worker.",
+    "late_or_foreign_fault_notice_cannot_revoke_new_incarnation": true,
+    "ordinary_and_ISO_cleanup": "Only actual DMA cleanup failures are retried, once per failed owner, after root proof; command completion is not repeated. Invariant and uncertain Native enqueue failures remain pinned.",
+    "Device_contextless_cleanup": "Drain nodes that have already delivered their Native error callback, without dereferencing or invoking the old tag/aggregate.",
+    "Device_stop": "Drain remaining work before joining/cancelling worker handles; recheck permanent pin after join and Family stop; refuse reuse of an existing State.",
+    "Host_stop": "Recover eligible ordinary/ISO payload cleanup before quiesce waits; preserve existing data/copy parameters and original completer ordering.",
+    "pins": "Retain once under IRQ-safe lock, publish pin after retain, and release outside locks only after complete teardown. Native MD completion errors and persistent cleanup/invariant failures stay pinned and veto sleep.",
+    "kernel_workers_executed": false,
+    "owned_type_check": "Both retirement query and command-record acknowledgement require OSDynamicCast(QcomUSBMapper, mapper); foreign IOMapper responses cannot authorize recovery."
+  },
+  "SMMU_guest_namespace_guard": {
+    "QcomUSB_version": "1.10.0",
+    "evidence": "build/usb/stock-smmu-namespace-evidence.json",
+    "evidence_sha256": "2587844798d6b8d412418d9d17d260549aa08caf0754d594d61eda3b7078e511",
+    "policy": "Preserve the observed inherited 8-bit guest CBAR.VMID and effective ASID; these do not prove physical TLB namespace ownership under HYP. Reject all other visible active banks and unknown SCTLR reads; latch runtime proof loss until actual root retirement and rebuild. No unused/shared-bank or namespace allocation is granted.",
+    "record_bytes": 128,
+    "record_version": 1,
+    "other_bank_MMIO_writes": 0,
+    "new_script_entrypoints": 0,
+    "active_bank_rejections": 480,
+    "inactive_bank_controls": 480,
+    "pre_fix_host_counterexample_reproduced": true,
+    "Native_fault_latch_compiled": true,
+    "Native_fault_latch_executed_in_kernel": false,
+    "production_namespace_owner_grants_found": false
+  },
+  "QDSS_STATE_policy": {
+    "QcomRPM_version": "1.11.0",
+    "evidence": "build/usb/clock-state-evidence.json",
+    "evidence_sha256": "9e718a345d172a9fadf6da956981a1dffeb558e3d53011e9255412899810960a",
+    "policy_index": 19,
+    "units": "STATE",
+    "wire_key": "STAT",
+    "allowed_values": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "clock_records": 27,
+    "record_bytes": 16,
+    "Native_legal_state_pairs": 25,
+    "USB_GPU_legal_state_pairs": 50,
+    "actual_collection_minimum_RPM": "1.11.0",
+    "new_script_entrypoints": 0,
+    "production_AP_baselines_inferred": false,
+    "firmware_or_Native_workers_executed": false
+  },
+  "RPM_clock_limit_handoff": {
+    "QcomRPM_version": "1.11.0",
+    "evidence": "build/usb/clock-limit-evidence.json",
+    "evidence_sha256": "64d03588d157584ef0729a698209af5c0d2e8e828c095e1a732caa9fe900339b",
+    "policy_schema_version": 2,
+    "request_records": 27,
+    "limit_records": 12,
+    "limit_record_bytes": 16,
+    "limit_property": "qcom,rpm-clock-limit-handoff",
+    "wire_key": "max",
+    "explicit_caps_with_primary_in_same_message": true,
+    "omitted_caps_rejected_before_connect": true,
+    "NoC_request_ceiling_fits_both_sets": true,
+    "firmware_observation": {
+      "version": 2,
+      "bytes": 20544,
+      "capacity": 160,
+      "selected_keys": 134,
+      "grants": 0
+    },
+    "cold_transport_ABI_changed": false,
+    "Native_firmware_or_hardware_executed": false,
+    "new_script_entrypoints": 0
+  },
+  "PMIC_clock_control_order": {
+    "QcomRPM_version": "1.11.0",
+    "introduced_version": "1.11.0",
+    "evidence": "build/usb/clock-order-evidence.json",
+    "evidence_sha256": "353b72b0d795e9b74e91e1321785b0eeadb8b7a7b1d8a96ee421bdeeda5ce4c2",
+    "paired_resources": 6,
+    "control_keys": [
+      "swen",
+      "pccb"
+    ],
+    "set_count": 2,
+    "ordering": "Desired enabled control ACK precedes withdrawing its peer; both-off never adds an enable",
+    "definitive_NACK_retries_current_step": true,
+    "unknown_ACK_latches_before_next_request": true,
+    "combined_KVP_not_sufficient_due_to_firmware_SW_before_PIN": true,
+    "policy_schema_version_unchanged": 2,
+    "clock_messages_unchanged": 56,
+    "full_model_ACK_steps": 88,
+    "Native_and_EFI_share_implementation": true,
+    "hardware_or_firmware_executed": false,
+    "new_script_entrypoints": 0
+  },
+  "Native_bundled_completion": {
+    "QcomUSB_version": "1.10.0",
+    "introduced_version": "1.7.0",
+    "evidence": "build/usb/bundled-evidence.json",
+    "evidence_sha256": "46c3d64cc67efa6c7d4403b9223cfc38b3fcc2cfc5f4d00231bb2b52a3444d4e",
+    "Native_completion_kind": 3,
+    "one_prepared_MD_and_TD_per_submitted_request": true,
+    "HCD_does_not_construct_Native_bundle_arrays": true,
+    "Family_owns_grouping_and_MD_completion": true,
+    "Family_group_keys": [
+      "target",
+      "action",
+      "context"
+    ],
+    "Native_maximum_requests_per_callback": 16,
+    "independent_timeout_abort_and_DMA_retirement": true,
+    "ISO_bundled_shape_rejected": true,
+    "bulk_streams_not_advertised": true,
+    "ordinary_transfer_scenarios": 32,
+    "TD_retirements_in_new_models": 536,
+    "uncertain_enqueue_cases": 2,
+    "Native_workers_executed": false,
+    "hardware_tested": false,
+    "new_script_entrypoints": 0
+  },
+  "Native_Host_current": {
+    "QcomUSB_version": "1.10.0",
+    "QcomPMIC_version": "1.1.0",
+    "introduced_version": "1.8.0",
+    "evidence": "build/usb/current-evidence.json",
+    "evidence_sha256": "4ba63306edce888a4b8ddf74eddbf6d391114cf0415e1f53a91c87fc58dba12e",
+    "leased_connector_budget": true,
+    "IORegistry_diagnostic_is_not_budget_authority": true,
+    "connector_RPC_version": 2,
+    "connector_RPC_bytes": 56,
+    "platform_RPC_version": 5,
+    "platform_RPC_bytes": 80,
+    "resource_contract_version": 2,
+    "resource_contract_bytes": 32,
+    "connector_notice_bytes": 24,
+    "platform_notice_bytes": 24,
+    "Native_pool_unit": "mA",
+    "Source_property_unit": "microamps",
+    "one_shared_Native_pool_per_controller": true,
+    "Native_pool_owns_allocate_release": true,
+    "Native_initBusCurrent_slot": 214,
+    "Native_minimum_current_offset": 624,
+    "USB2_enumeration_mA": 100,
+    "USB3_enumeration_mA": 150,
+    "USB2_port_ceiling_mA": 500,
+    "USB3_port_ceiling_mA": 900,
+    "sleep_supply_and_port_limits_mA": 0,
+    "fresh_contract_and_pool_on_connection_and_cold_PM": true,
+    "Source_budget_does_not_enable_VBUS": true,
+    "fake_hardware_guaranteed_power_flag": false,
+    "legacy_OSData_port_current_limit_used": false,
+    "offline_model_cases": 51,
+    "Native_workers_executed": false,
+    "hardware_tested": false,
+    "new_script_entrypoints": 0
+  },
+  "Native_companion_ports": {
+    "QcomUSB_version": "1.10.0",
+    "introduced_version": "1.9.0",
+    "evidence": "build/usb/companion-evidence.json",
+    "evidence_sha256": "5cb26172a439793ccc58cc6c1d483745ac9d1c45d84a978a1568cce5f5165364",
+    "controller_query_slot": 235,
+    "Native_cached_query_slot": 219,
+    "borrowed_return_and_Native_retain_atomic_under_controller_gate": true,
+    "Native_cache_slots": 6,
+    "Native_handleStopPhase2_releases_caches": true,
+    "single_connector_protocol_pair_without_fixed_port_order": true,
+    "partial_port_table_not_exposed": true,
+    "unsupported_SuperPlus_queries_return_no_peer": true,
+    "topology_speed_queries": 343,
+    "invalid_topologies": 8,
+    "cache_stop_cold_PM_lifecycles": 16,
+    "Native_workers_executed": false,
+    "hardware_tested": false
+  },
+  "Native_routed_ports_and_PM": {
+    "QcomUSB_version": "1.10.0",
+    "introduced_version": "1.10.0",
+    "evidence": "build/usb/routed-evidence.json",
+    "evidence_sha256": "b47a6b096fa34d3340e61a4ec369fd7671c1f2bc6a5507003d144c6e583e876a",
+    "original_hardware_port_numbers_preserved": true,
+    "unrouted_USB3_Native_service_and_current_reserve_absent": true,
+    "Native_reset_stop_accept_null_entries": true,
+    "USB2_500mA_budget_restored": true,
+    "UsbConnector_OSNumber_before_Native_start": true,
+    "physical_USB_C_HS_code": 8,
+    "physical_USB_C_SS_switched_code": 9,
+    "Native_driver_state3_request_after_PM_registration": true,
+    "vote_failure_faults_before_PortsCreated_admission": true,
+    "current_policy_cases": 51,
+    "routed_publication_lifecycles": 16,
+    "property_failure_positions": 18,
+    "PM_registration_scenarios": 16,
+    "Native_workers_executed": false,
+    "hardware_tested": false,
+    "new_script_entrypoints": 0
+  },
+  "Native_unmatched_stream_bypass": {
+    "QcomUSB_version": "1.13.0",
+    "source_integrated": true,
+    "evidence": "build/usb/unmatched-bypass-evidence.json",
+    "implementation": "drivers/bus/QcomSMMU/BypassHandoff.h",
+    "Native_adapter": "drivers/usb/QcomUSB/QcomUSBMapper.cpp",
+    "selector": "qcom,usb-dma-capture=<3>",
+    "resource_profile_mode": "unmatched-bypass",
+    "record": {
+      "property": "qcom,usb-smmu-bypass",
+      "version": 3,
+      "bytes": 64,
+      "slot": "UINT32_MAX",
+      "SMR": 0,
+      "S2CR": 0
+    },
+    "runtime_preconditions": [
+      "Actual installed IORT/controller and software/hardware stop match",
+      "Retained NoC/GCC lease and USB BCR asserted for capture",
+      "Stream matching enabled and every valid SMR excludes the actual USB SID",
+      "Actual sCR0.USFCFG=0 and unchanged global ID/control registers"
+    ],
+    "context_reads": 0,
+    "namespace_allocation": false,
+    "SMMU_writes": 0,
+    "mode_selected_automatically": false,
+    "complete_AP_baseline_required": true,
+    "runtime_route_rechecked": true,
+    "fault_retains_original_DMA_and_fabric_lease": true,
+    "cold_PM_must_preserve_original_observation": true,
+    "firmware_static_mode_is_runtime_grant": false,
+    "production_USB_nodes_enabled": false,
+    "hardware_tested": false,
+    "architecture": "ARM IHI0062D.c2.3.6 https://documentation-service.arm.com/static/5f900d34f86e16515cdc08fb",
+    "status": "source integrated; full offline validation and current toolchain revalidation passed; no execution",
+    "evidence_sha256": "d06f0d02d224b8ba31fe6ef8f0cf56a8657474d2702279117188d2d26cd01a9a",
+    "checks": "build/usb/unmatched-bypass-toolchain-checks.json",
+    "test_counts": {
+      "normal_model_suites": 17,
+      "sanitized_model_suites": 17,
+      "bridge_python": 48,
+      "driver_toolchain_python": 19,
+      "kernelcache_python": 30,
+      "Cpp_CTest": 5,
+      "standalone_arm64_Kexts": 8,
+      "local_collection_Kexts": 11,
+      "full_collection_Kexts": 53
+    }
+  },
+  "stock_resource_extraction": {
+    "command": "make analyze-usb-resources",
+    "implementation": "scripts/toolchain.py:analyze_usb_resources",
+    "report": "build/usb/firmware-resource-extraction.json",
+    "interface_analysis": "build/usb/firmware-interface-analysis.json",
+    "pinned_original_firmware_files": 5,
+    "pinned_kernel_sources": 5,
+    "SMMU_device_descriptors": 6,
+    "USB_SID_reference": "0x1400",
+    "USB_static_assignment": {
+      "device": "ANOC1",
+      "assignment_index": 6,
+      "declared_VMID": 3,
+      "lookup_guard_word": 0,
+      "is_context_grant": false
+    },
+    "dynamic_SID_SMC": "0x02000c18",
+    "dynamic_SID_supported_internal_device": "MMNOC4; ANOC1 internal0 is outside this reviewed path",
+    "complete_AP_readback_contract_proven": false,
+    "production_policy_values_guessed": false,
+    "missing_production_values": "null",
+    "new_script_entrypoints": 0,
+    "offline_only": true,
+    "report_sha256": "afdb316c67fcda0b8f97e1d46050be09e1d043e4fb0f0da4d107a3655757fbaf",
+    "interface_analysis_sha256": "0609974b6d68bfe66046e78801b2b0492d6c6762ef43cfc60d496b1661613edc"
+  },
+  "Disabled_context_FSR_format": {
+    "QcomUSB_version": "1.13.0",
+    "implementation": "drivers/bus/QcomSMMU/BypassHandoff.h",
+    "FSR_ignored_mask": "0x600",
+    "required_status": "Every other FSR bit must be0; SCTLR must remain0 and existing S2-bypass/ownership checks are unchanged",
+    "format_zero_assumed": false,
+    "wire_layout_changed": false,
+    "regression_witness": "build/usb/unmatched-bypass-fsr-counterexample.json",
+    "evidence": "build/usb/unmatched-bypass-evidence.json",
+    "hardware_tested": false,
+    "status": "saved/current headers replayed with the same model; corrected ordinary and ASan/UBSan models passed",
+    "evidence_sha256": "d06f0d02d224b8ba31fe6ef8f0cf56a8657474d2702279117188d2d26cd01a9a"
+  }
+}

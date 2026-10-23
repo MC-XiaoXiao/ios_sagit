@@ -1,0 +1,135 @@
+{
+  "schema": 2,
+  "date": "2026-10-16",
+  "status": "components-cross-linked-and-offline-verified",
+  "request_fully_complete": false,
+  "scope": "compiled WLFW client, IOKit DMA/CE backends, native WLAN registration bridge, DriverKit executable and native network family collection; physical platform and full IO80211 control/data binding remain incomplete",
+  "hardware_tested": false,
+  "installed": false,
+  "device_tree_enabled": false,
+  "artifacts": {
+    "build/output/Extensions/QcomWLAN.kext/Contents/MacOS/QcomWLAN": {
+      "sha256": "7ffac1f9c718b870eb5089cd357bc873f97ac7e05fd3dbba461dc073e42d6a6b",
+      "bytes": 160720
+    },
+    "build/output/Extensions/QcomWLAN.kext/Contents/Info.plist": {
+      "sha256": "1e53ff5ee5826df4a0dbc498e3302968230003a8ce02a33b19016df9e5d762a3",
+      "bytes": 1766
+    },
+    "build/output/QcomWLANDriver.dext/QcomWLANDriver": {
+      "sha256": "4f6893b87fc500132fe3b7a5cc5a29e26e62c0968c273d3c2a6cf4a08f531e6a",
+      "bytes": 54384
+    },
+    "build/output/QcomWLANDriver.dext/Info.plist": {
+      "sha256": "8840fa3c83698da60de1946f579d95e6cdb0281bbfe66ba98f3b118f90be6da9",
+      "bytes": 1828
+    },
+    "build/output/QcomWLANDriver.dext/build.json": {
+      "sha256": "58912cd37c1ecf32a83afe5cb582d0d510629ba1fc69ac77c115147e9827ddf8",
+      "bytes": 51077
+    },
+    "build/output/wifictl": {
+      "sha256": "4fc938dadd1c71267b50f8697ac7e7839b82a81a1367cbc4e1a61661980baa75",
+      "bytes": 50912
+    },
+    "build/output/kernelcache.wifi": {
+      "sha256": "db6a510646d7df63fdb570398a6656406cb1debffcb069926587fa71582be6f4",
+      "bytes": 26083328
+    }
+  },
+  "kernel_collection": {
+    "kext_count": 33,
+    "status": "passed",
+    "errors": [],
+    "warnings": [],
+    "manifest": "build/output/kernelcache.wifi.manifest.json",
+    "verification": "build/output/kernelcache.wifi.verification.json"
+  },
+  "driverkit": {
+    "status": "cross-linked-offline",
+    "metadata": {
+      "architecture": "arm64",
+      "file_type": "MH_EXECUTE",
+      "platform": "DriverKit",
+      "minimum_version": "24.6",
+      "sdk_version": "24.6",
+      "pie": true,
+      "entry": "__osclassinfo",
+      "class": "QcomWLANDriver",
+      "superclass": "IOService",
+      "instance_size": 48,
+      "dependencies": [
+        "/System/DriverKit/System/Library/Frameworks/DriverKit.framework/DriverKit",
+        "/System/DriverKit/System/Library/Frameworks/NetworkingDriverKit.framework/NetworkingDriverKit",
+        "/System/DriverKit/usr/lib/libc++.dylib"
+      ],
+      "signature": {
+        "identifier": "org.darwin.driver.QcomWLANDriver",
+        "ad_hoc": true,
+        "code_pages_verified": 14,
+        "entitlements": false,
+        "cms": false
+      }
+    },
+    "tracked_build_inputs": 379,
+    "native_registration_bridge_compiled": true,
+    "native_wlan_control_ready": false,
+    "apple_private_entitlements": false,
+    "fresh_cache_and_library_extraction_reproduced": true,
+    "reference_contract": "drivers/abi-22H374/driverkit-abi.json"
+  },
+  "checks": [
+    {
+      "command": "make wifi",
+      "status": "passed",
+      "host_suites": [
+        "wlan",
+        "wlan-firmware",
+        "wlan-runtime"
+      ],
+      "python_wlan_tests": 9,
+      "boot_bridge_tests": 27,
+      "patcher_cpp_suites": 5,
+      "kernel_sdk_compile": true,
+      "log": "build/wifi/final-build.log"
+    },
+    {
+      "command": "make test-wifi-sanitized",
+      "status": "passed",
+      "sanitizers": [
+        "address",
+        "undefined"
+      ],
+      "log": "build/wifi/final-build.log"
+    },
+    {
+      "command": "make test-wifi verify-wifi",
+      "status": "passed",
+      "log": "build/wifi/final-verification.log"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p 'test_kernelcache*.py'",
+      "status": "passed",
+      "tests": 30,
+      "log": "build/wifi/collection-regressions.log"
+    },
+    {
+      "command": "prepare_wifi_driverkit() with caches and libraries absent",
+      "status": "passed",
+      "scope": "rebuilt disposable sealed reader, re-extracted cache and four libraries, matched every pinned hash; source/tool directory removed automatically"
+    }
+  ],
+  "remaining": {
+    "verified_board_data_assets": false,
+    "modem_glink_provider_bound": false,
+    "scm_msa_reservation_and_permission_binding": false,
+    "clock_noc_resource_worker_bound": false,
+    "anoc2_stream_context_bound": false,
+    "ce_interrupts_bound": false,
+    "htc_wmi_htt_control_and_data_plane": false,
+    "io80211_scan_join_keys_and_native_queue_producer": false
+  },
+  "entrypoint_behavior": "QcomWLAN platform acquire remains NotReady; validated asset OSData may clear only BoardData; native readiness is not published",
+  "naming": "new driver, bundle and build output names have no phone-model prefix or suffix",
+  "temporary_tools": "no new persistent build script; temporary reader and prototype binaries removed; reproducible extraction lives in the existing toolchain entry"
+}

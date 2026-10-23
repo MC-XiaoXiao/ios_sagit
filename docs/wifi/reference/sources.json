@@ -1,0 +1,102 @@
+{
+  "snoc.c": {
+    "url": "https://android.googlesource.com/kernel/common/+/refs/tags/android15-6.6-2024-11_r1/drivers/net/wireless/ath/ath10k/snoc.c?format=TEXT",
+    "sha256": "ee2a8e29cbc94ff351b32dd7ce3242e754f043bbb5a1b49af3b90a0f611648c2",
+    "license": "ISC",
+    "purpose": "wire format and device model reference"
+  },
+  "snoc.h": {
+    "url": "https://android.googlesource.com/kernel/common/+/refs/tags/android15-6.6-2024-11_r1/drivers/net/wireless/ath/ath10k/snoc.h?format=TEXT",
+    "sha256": "a90f3aa6da91736f08ca5541d62042894d372b5b54af15a91f935e02c43563c6",
+    "license": "ISC",
+    "purpose": "wire format and device model reference"
+  },
+  "qmi.h": {
+    "url": "https://android.googlesource.com/kernel/common/+/refs/tags/android15-6.6-2024-11_r1/drivers/net/wireless/ath/ath10k/qmi.h?format=TEXT",
+    "sha256": "97416ce96a93bb9748ee19109bb5350eb673a66b12968acacf66691c9ecb0e36",
+    "license": "ISC",
+    "purpose": "wire format and device model reference"
+  },
+  "htc.h": {
+    "url": "https://android.googlesource.com/kernel/common/+/refs/tags/android15-6.6-2024-11_r1/drivers/net/wireless/ath/ath10k/htc.h?format=TEXT",
+    "sha256": "953d8f95c9ba0824b02126ef00c66437467d0738be52eacf8ed81b0a4fa82f93",
+    "license": "ISC",
+    "purpose": "wire format and device model reference"
+  },
+  "ce.h": {
+    "url": "https://android.googlesource.com/kernel/common/+/refs/tags/android15-6.6-2024-11_r1/drivers/net/wireless/ath/ath10k/ce.h?format=TEXT",
+    "sha256": "09342e5e4028d2e54e81496b97e64cf941d16ecbec77157df214e88383fa14bd",
+    "license": "ISC",
+    "purpose": "wire format and device model reference"
+  },
+  "qmi_wlfw_v01.h": {
+    "url": "https://github.com/torvalds/linux/blob/820b689b4a7a6ca1b4fdabf26a17196a2e379a97/drivers/net/wireless/ath/ath10k/qmi_wlfw_v01.h",
+    "sha256": "b6f3cad8faf3cbf5e69e07c784fd6af4fd059a49525af7cabdfa33bf2b990a18",
+    "license": "ISC",
+    "purpose": "WLFW service and message IDs"
+  },
+  "LICENSE.ISC": {
+    "url": "https://github.com/torvalds/linux/blob/820b689b4a7a6ca1b4fdabf26a17196a2e379a97/LICENSES/deprecated/ISC",
+    "sha256": "cbdf535b99a9f4cb208c5495c6dd9a1f84104d83c03f8f0d98ee7a0c43805388",
+    "license": "ISC",
+    "purpose": "upstream license text for the retained reference sources"
+  },
+  "qmi.c": {
+    "url": "https://android.googlesource.com/kernel/common/+/refs/tags/android15-6.6-2024-11_r1/drivers/net/wireless/ath/ath10k/qmi.c?format=TEXT",
+    "sha256": "d365eef4b7e73958c79d70e79414b648dce167d1792ec271b3911c4f3fb586d5",
+    "license": "ISC",
+    "purpose": "WCN3990 wire fields, startup order and exact target/register configuration reference"
+  },
+  "qmi_wlfw_v01.c": {
+    "url": "https://android.googlesource.com/kernel/common/+/refs/tags/android15-6.6-2024-11_r1/drivers/net/wireless/ath/ath10k/qmi_wlfw_v01.c?format=TEXT",
+    "sha256": "9dc29bc8b1c8542d404e14be5ba1a7b0a34873912eddeee4ebd07e47dcf31f6a",
+    "license": "ISC",
+    "purpose": "WCN3990 wire fields, startup order and exact target/register configuration reference"
+  },
+  "hw.c": {
+    "url": "https://android.googlesource.com/kernel/common/+/refs/tags/android15-6.6-2024-11_r1/drivers/net/wireless/ath/ath10k/hw.c?format=TEXT",
+    "sha256": "2943aef2e60085d0d0b841b67f32820d9c9dac5fa5d50374b728cef5e47d8ebf",
+    "license": "ISC",
+    "purpose": "WCN3990 wire fields, startup order and exact target/register configuration reference"
+  },
+  "ce.c": {
+    "url": "https://android.googlesource.com/kernel/common/+/refs/tags/android15-6.6-2024-11_r1/drivers/net/wireless/ath/ath10k/ce.c?format=TEXT",
+    "sha256": "c7383b14ae794691582fc8a361ed8f386da2f313d24cbf9f5d167709b1b1c9ab",
+    "license": "ISC",
+    "purpose": "WCN3990 wire fields, startup order and exact target/register configuration reference"
+  },
+  "core.c": {
+    "url": "https://android.googlesource.com/kernel/common/+/refs/tags/android15-6.6-2024-11_r1/drivers/net/wireless/ath/ath10k/core.c?format=TEXT",
+    "sha256": "f4b7388f3d265c51bceaa18f48011b6a1dc78b4caa5dd6537ebf9e9493ece347",
+    "license": "ISC",
+    "purpose": "WCN3990 wire fields, startup order and exact target/register configuration reference"
+  },
+  "qrtr-ns.c": {
+    "url": "../../../tools/src/linux-simple-mass-storage/kernel/net/qrtr/ns.c",
+    "source_commit": "d8a7102b31211b675c1997161f11b56eb7b5a84f",
+    "sha256": "a5abad263e5e92ac948b7dff377dba080ab42242ac56a52c3bb59df94abca9a4",
+    "license": "GPL-2.0 OR BSD-3-Clause",
+    "purpose": "project-local QRTR raw discovery/credit reference; source snapshot is retained here"
+  },
+  "qrtr-core.c": {
+    "url": "../../../tools/src/linux-simple-mass-storage/kernel/net/qrtr/qrtr.c",
+    "source_commit": "d8a7102b31211b675c1997161f11b56eb7b5a84f",
+    "sha256": "2e5b49d44660b8a20f23496516596039ee264a366136e10b343da95e731bb2bb",
+    "license": "GPL-2.0-only",
+    "purpose": "project-local QRTR raw discovery/credit reference; source snapshot is retained here"
+  },
+  "LICENSE.GPL-2.0": {
+    "url": "../../../tools/src/linux-simple-mass-storage/kernel/LICENSES/preferred/GPL-2.0",
+    "source_commit": "d8a7102b31211b675c1997161f11b56eb7b5a84f",
+    "sha256": "f6b78c087c3ebdf0f3c13415070dd480a3f35d8fc76f3d02180a407c1c812f79",
+    "license": "GPL-2.0-only",
+    "purpose": "project-local QRTR raw discovery/credit reference; source snapshot is retained here"
+  },
+  "LICENSE.BSD-3-Clause": {
+    "url": "../../../tools/src/linux-simple-mass-storage/kernel/LICENSES/preferred/BSD-3-Clause",
+    "source_commit": "d8a7102b31211b675c1997161f11b56eb7b5a84f",
+    "sha256": "7a83b1aeb460458db9a4bd521d7f237c45b1650f6e60ea5ffc71e49472454de3",
+    "license": "BSD-3-Clause",
+    "purpose": "project-local QRTR raw discovery/credit reference; source snapshot is retained here"
+  }
+}

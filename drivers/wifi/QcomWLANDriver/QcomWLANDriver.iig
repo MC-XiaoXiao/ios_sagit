@@ -1,0 +1,10 @@
+// SPDX-License-Identifier: BSD-2-Clause
+#include <DriverKit/IOService.iig>
+
+// DriverKit user-service lifecycle. Generate with the matching Apple IIG;
+// this source does not declare a guessed private WLAN interface vtable.
+class QcomWLANDriver : public IOService {
+public:
+    virtual kern_return_t Start(IOService *provider) override;
+    virtual kern_return_t Stop(IOService *provider) override;
+};

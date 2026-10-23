@@ -1,0 +1,83 @@
+{
+  "schema": 1,
+  "platform": "DriverKit",
+  "platform_id": 10,
+  "version": "24.6",
+  "source_cryptex": "build/apfs/firmware/094-33089-038.dmg",
+  "cache": "build/wifi/reference/dyld/dyld_shared_cache_arm64",
+  "cache_sha256": "076165c0de3852f8369a437f6e4a7d9f550d9bdc866563ba1bc16a45d6cf72fd",
+  "frameworks": {
+    "DriverKit": {
+      "path": "build/wifi/reference/frameworks/DriverKit",
+      "sha256": "ac031c282d8ad421a2c16879d5fdabefe3757945ab5170415c45be7008da85b3",
+      "install_name": "/System/DriverKit/System/Library/Frameworks/DriverKit.framework/DriverKit",
+      "export_count": 1868
+    },
+    "NetworkingDriverKit": {
+      "path": "build/wifi/reference/frameworks/NetworkingDriverKit",
+      "sha256": "0ec4fbf2e7b5661b479b5a5013628241e725e439d0e9d1c4e7864ba37e23a254",
+      "install_name": "/System/DriverKit/System/Library/Frameworks/NetworkingDriverKit.framework/NetworkingDriverKit",
+      "export_count": 925
+    },
+    "IO80211DriverKit": {
+      "path": "build/wifi/reference/frameworks/IO80211DriverKit",
+      "sha256": "86ca47d54ef6761f5e650909f40c38e10c135fd74e3ec9377b374d97e3ceb0f4",
+      "install_name": "/System/DriverKit/System/Library/PrivateFrameworks/IO80211DriverKit.framework/IO80211DriverKit",
+      "export_count": 14121
+    },
+    "libc++.dylib": {
+      "path": "build/wifi/reference/frameworks/libc++.dylib",
+      "sha256": "99c05db43a7ce233988edaeb4637ad676438b00fa305eb22a772c724d14ee689",
+      "install_name": "/System/DriverKit/usr/lib/libc++.dylib",
+      "export_count": 580
+    }
+  },
+  "public_class_sizes": {
+    "OSObject": 40,
+    "IOService": 48
+  },
+  "function_bindings": {
+    "__ZN17IOUserNetworkWLAN21registerWlanInterfaceE10ether_addrP24IOUserNetworkLogicalLinkP29IOUserNetworkPacketBufferPoolS4_": {
+      "framework": "NetworkingDriverKit",
+      "address": "0x1800db3a4",
+      "bytes": "ff4303d1f85f09a9f6570aa9f44f0ba9fd7b0ca9fd030391f60304aaf50303aaf40302aaf70301aaf30300aa684300b008f143f9080140f9a8831cf878470190",
+      "calling_convention": "x0=WLAN object, x1=6-byte ether_addr by value, x2=logical link, x3=TX pool, x4=RX pool; w0=IOReturn"
+    },
+    "__ZN24IOUserNetworkLogicalLink6CreateEPP21IOUserNetworkQueueSetjPPS_": {
+      "framework": "NetworkingDriverKit",
+      "address": "0x1800dbd68",
+      "bytes": "ffc301d1f85f03a9f65704a9f44f05a9fd7b06a9fd830191f40302aaf30301aaf50300aa77470190f7221291e8024039880700377f420071e8010054d40100b4"
+    },
+    "__ZN21IOUserNetworkQueueSet6CreateEPP24IOUserNetworkPacketQueuejjPPS_": {
+      "framework": "NetworkingDriverKit",
+      "address": "0x1800dbeac",
+      "bytes": "ff0302d1f85f04a9f65705a9f44f06a9fd7b07a9fdc30191f50303aaf40302aaf30301aaf60300aa784701901823129108034039280a0037280180129f02086a"
+    }
+  },
+  "scope": "public IOService lifecycle, opaque native WLAN registration and logical-link construction; IO80211 scan/join/key/control RPCs remain unported",
+  "sealed_reader": {
+    "patch": "tools/patches/go-apfs-sealed-readonly.patch",
+    "patch_sha256": "a324c8392b122811fb26df67a460dd98344880168ae60a4dd83bcb50a00cca2e",
+    "source_files": {
+      "pkg/apfs/volume_superblock.go": "0dd9e918f70d59d8b5f5c17c4b6d02d281d6024214ccc969d66bbe74779b717f",
+      "pkg/apfs/file_system_btree.go": "0b992fbaa1f74822a774d606fbc2a9105ae2ae4586e5c135c99fdc37a8245a79",
+      "pkg/apfs/volume.go": "302e787e06424ae8f9ced1a203f57a16f4fe1cbf64b607f25952062a4fd1ac72",
+      "pkg/apfs/btree_node.go": "25296dc50474419595dc7e4430e2e7e7203936f53aef7ce82b9dddd1244de913"
+    },
+    "scope": "temporary read-only extraction, hashed child OIDs and sealed extent tree; APFS seal authentication is not claimed"
+  },
+  "cache_symbols_sha256": "7a5435c5afa14b951ea024a0ba6e5b57e73ae4bbb0cd49122e025725e05cc7da",
+  "extractor_sha256": "0664017d3fc7b41fedd65c3fe75b2eaf61175eacca0f22614064c9ea5555afe9",
+  "public_vtable_binding": {
+    "framework": "DriverKit",
+    "address": "0x180952638",
+    "bytes": "00000000000000000000000000000000008c028001000000708b028001000000ac8b028001000000f48b0280010000002c8d04800100000098e8028001000000dcb3028001000000e8ffffffffffffff000000000000000098e90280010000008cea028001000000",
+    "primary_virtual_slots": 7,
+    "OSObjectInterface_offset": 24,
+    "secondary_virtual_slots": 2
+  },
+  "public_rpc_ids": {
+    "IOService_Start_ID": "0xab6f76dde6d693f2",
+    "IOService_Stop_ID": "0x98e715041c459fa5"
+  }
+}

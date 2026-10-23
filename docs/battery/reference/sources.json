@@ -1,0 +1,42 @@
+{
+  "msm-pmi8998.dtsi": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/arch/arm/boot/dts/qcom/msm-pmi8998.dtsi",
+    "sha256": "b785eeb7df5a6a22eecdd7068d6fb594f4f6ad34492626bfd68287233be91984"
+  },
+  "qpnp-fg-gen3.c": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/drivers/power/supply/qcom/qpnp-fg-gen3.c",
+    "sha256": "9a1d49a3ddfef1d29da0b9a923f28748d07dab2b113c0bd3986f351751180da9"
+  },
+  "fg-core.h": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/drivers/power/supply/qcom/fg-core.h",
+    "sha256": "322c8565d61951657e54cb9486f7fe590b01cee0a14e074271286f07cb5601b0"
+  },
+  "fg-reg.h": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/drivers/power/supply/qcom/fg-reg.h",
+    "sha256": "4c3912c2edcd40de316f431b31fbb086b67ced0aa98965b6b497fcf5283fb3a0"
+  },
+  "smb-reg.h": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/drivers/power/supply/qcom/smb-reg.h",
+    "sha256": "6f419702fe1c3485158a43b2920056abc0fc0a02f0465bb0084f2e6bc6a1a85e"
+  },
+  "smb-lib.c": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/drivers/power/supply/qcom/smb-lib.c",
+    "sha256": "b75fdf5a3df32a1ae0c8dfb73862bd5f88ca3eed815f7286aeff7508fc3d1245"
+  },
+  "qcom-fg-util.c": {
+    "url": "https://android.googlesource.com/kernel/msm/+/c4689af91bc5889198657495dd6e70d4f7e689ea/drivers/power/supply/qcom/fg-util.c?format=TEXT",
+    "sha256": "1bad0de0cff1709f96fe3e897bdebdd25a2d332de9c7ab794c8ef1b42caaded2"
+  },
+  "qcom-fg-reg.h": {
+    "url": "https://android.googlesource.com/kernel/msm/+/c4689af91bc5889198657495dd6e70d4f7e689ea/drivers/power/supply/qcom/fg-reg.h?format=TEXT",
+    "sha256": "4e8fd8813a3ceabdbf3d7191f03f61147b259b1d58fcb0680ff10eb93cf080c1"
+  },
+  "AppleSmartBattery.cpp": {
+    "url": "https://raw.githubusercontent.com/apple-oss-distributions/PowerManagement/d415e45501842834a280930c3eed9186544a67f0/AppleSmartBatteryManager/AppleSmartBattery.cpp",
+    "sha256": "d2a877b9fa3a1fee347beff3435ddf9d93af97d6fd3513e3e4fa6beaf929f9ba"
+  },
+  "BatteryData.c": {
+    "url": "https://raw.githubusercontent.com/apple-oss-distributions/PowerManagement/d415e45501842834a280930c3eed9186544a67f0/pmconfigd/BatteryData.c",
+    "sha256": "ba18f003eb050d71e454d66e44c3396ed46ab202f19d2d4cc46f56b5ebeca123"
+  }
+}

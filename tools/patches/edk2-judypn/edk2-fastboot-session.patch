@@ -1,0 +1,24 @@
+diff --git a/EmbeddedPkg/Application/AndroidFastboot/AndroidFastbootApp.c b/EmbeddedPkg/Application/AndroidFastboot/AndroidFastbootApp.c
+index 2cde7a0..76c7ce8 100644
+--- a/EmbeddedPkg/Application/AndroidFastboot/AndroidFastbootApp.c
++++ b/EmbeddedPkg/Application/AndroidFastboot/AndroidFastbootApp.c
+@@ -445,7 +445,11 @@ FastbootAppEntryPoint (
+   EFI_SIMPLE_TEXT_INPUT_PROTOCOL  *TextIn;
+   EFI_INPUT_KEY                   Key;
+ 
++Restart:
+   mDataBuffer = NULL;
++  mState = ExpectCmdState;
++  mNumDataBytes = mBytesReceivedSoFar = 0;
++  mRunEfi = FALSE;
+ 
+   Status = gBS->LocateProtocol (
+                   &gAndroidFastbootTransportProtocolGuid,
+@@ -572,5 +576,7 @@ FastbootAppEntryPoint (
+     Print(L"EFI payload returned: %r\r\n", Status);
+   }
+   if (mDataBuffer != NULL) { FreePool(mDataBuffer); mDataBuffer=NULL; }
++  // V40 has no exposed UART: restore USB control after a returning EFI payload.
++  if (mRunEfi) goto Restart;
+   return EFI_SUCCESS;
+ }

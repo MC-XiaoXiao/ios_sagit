@@ -1,0 +1,20 @@
+QcomOSM / sagit MSM8998 v2 CPU initialization
+
+The initialization, calibration and register code in this directory is
+GPL-2.0-only and is derived from The Linux Foundation's Qualcomm clock and
+CPR regulator drivers as distributed in Xiaomi's sagit-n-oss source tree.
+Original source copyright and license notices are retained in:
+  docs/power/reference/xiaomi-clock-osm.c
+  docs/power/reference/xiaomi-cprh-kbss-regulator.c
+  docs/power/reference/xiaomi-cpr3-regulator.c
+  docs/power/reference/xiaomi-cpr3-util.c
+  docs/power/reference/xiaomi-msm8998-regulator.dtsi
+  docs/power/reference/xiaomi-msm8998-v2.dtsi
+
+Pinned source commit, URLs, SHA-256 hashes and exact generated table policy:
+  docs/power/osm-reference-sources.json
+  docs/power/osm-firmware-sources.json
+  scripts/generate-cprh-tables.py
+
+No proprietary firmware, sequencer instruction image, per-device eFuse
+contents or arbitrary CPU voltage profile is embedded in the implementation.

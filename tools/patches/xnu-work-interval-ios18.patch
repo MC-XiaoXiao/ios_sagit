@@ -1,0 +1,25 @@
+--- a/bsd/kern/sys_work_interval.c
++++ b/bsd/kern/sys_work_interval.c
+@@ -68,8 +68,20 @@
+ 			return error;
+ 		}
+ 
+-		if ((error = priv_check_cred(kauth_cred_get(), PRIV_WORK_INTERVAL, 0)) != 0) {
+-			return error;
++		uint32_t create_flags = create_params.wicp_create_flags;
++		uint32_t type = create_flags & WORK_INTERVAL_TYPE_MASK;
++		/* Match iOS 18: UIKit's CA_CLIENT interval needs no entitlement. */
++		if (create_flags & WORK_INTERVAL_FLAG_UNRESTRICTED) {
++			if (!(create_flags & WORK_INTERVAL_FLAG_GROUP) ||
++			    (type != WORK_INTERVAL_TYPE_DEFAULT &&
++			    type != WORK_INTERVAL_TYPE_COREAUDIO &&
++			    type != WORK_INTERVAL_TYPE_CA_CLIENT)) {
++				return EINVAL;
++			}
++		} else if (type != WORK_INTERVAL_TYPE_CA_CLIENT) {
++			if ((error = priv_check_cred(kauth_cred_get(), PRIV_WORK_INTERVAL, 0)) != 0) {
++				return error;
++			}
+ 		}
+ 
+ 		create_args = (struct kern_work_interval_create_args) {

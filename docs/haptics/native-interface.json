@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "firmware": "iPhone14,6 iOS 18.6.2 22G100",
+  "architecture": "arm64e",
+  "purpose": "comparison only; not a runtime dependency",
+  "files": {
+    "build/haptics/native/com.apple.driver.AppleAOPHaptics": "03ca9a6fad471331b024ea79f33bf66911592805f5371e6aa54ebb1d524c1bee",
+    "build/haptics/native/com.apple.driver.AppleHapticsSupportLEAP": "b5832badf9dbcb78fec7d35ac0754e0c3dd83d7fae7f851883786beb7214fa95",
+    "build/haptics/native/com.apple.driver.AppleHapticsSupportNVM": "09860d93b0c1c46d9ae2fd9e10b7bf2c6f28027cb73c695d966af91b5e149005",
+    "build/haptics/native/classes.json": "275379f47004ab817de97267bd1112330d4d05494d42fa89b6c6f4837bbdf4dc"
+  },
+  "decompiler_evidence": "docs/haptics/native-decompile.txt",
+  "decompiler_sha256": "6d17aae6f8a75fa9e290a4c87e0fa49bbe29f1f6241dbf2b5d7c26cca28371dd",
+  "semantic_labels": {
+    "0xfffffff008c6fb44": "AppleAOPEmbeddedAudio::_obtainAOPNub (matching AppleAOPAudioDeviceProvider)",
+    "0xfffffff008c704f8": "AppleAOPHaptics setup of function-haptics_session",
+    "0xfffffff008c71c80": "AppleAOPHaptics::_notifyHapticsSessionStartStop",
+    "0xfffffff008fbeff8": "AppleHapticsSupportUserClient::initWithTask entitlement check"
+  },
+  "limitations": [
+    "Extracted Kexts retain PAC/chained references; decompiler imports and helper calls are unresolved.",
+    "Semantic labels derive from strings and callers, not exported function symbols.",
+    "No arm64 subclass ABI or general Core Haptics playback protocol was inferred from arm64e offsets."
+  ],
+  "hardware_tested": false
+}

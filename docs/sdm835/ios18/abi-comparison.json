@@ -1,0 +1,58 @@
+{
+  "source_kernel_sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+  "local_kernel_sha256": "66372b73e5b15bf5280c0846df2a40b2a2f31815732cdbd75882459ebebc9ad1",
+  "common_registered_class_names": 122,
+  "instance_size_differences": [
+    {
+      "class": "IOMemoryMap",
+      "source": {
+        "super": "OSObject",
+        "meta": "0xfffffff0079e5608",
+        "registration": "0xfffffff007892094",
+        "vtable": "0xfffffff0071764d0",
+        "slots": 24,
+        "instance_size": 88
+      },
+      "local": {
+        "super": "OSObject",
+        "meta": "0xfffffff007b67140",
+        "registration": "0xfffffff0079d70a0",
+        "vtable": "0xfffffff0071d23a8",
+        "slots": 24,
+        "instance_size": 368
+      }
+    }
+  ],
+  "vtable_count_differences": [
+    {
+      "class": "OSKext",
+      "source": {
+        "super": "OSObject",
+        "meta": "0xfffffff0079e4230",
+        "registration": "0xfffffff0077f0204",
+        "vtable": "0xfffffff00716d058",
+        "slots": 80,
+        "instance_size": 224
+      },
+      "local": {
+        "super": "OSObject",
+        "meta": "0xfffffff007b65718",
+        "registration": "0xfffffff007930b18",
+        "vtable": "0xfffffff0071c8220",
+        "slots": 82,
+        "instance_size": 224
+      }
+    }
+  ],
+  "unlocated_source_vtables": [
+    "IODTNVRAMPlatformNotifier",
+    "IOEventLink",
+    "IOExtensiblePaniclog",
+    "IOPMClientAck",
+    "IOServiceStateNotificationDispatchSource",
+    "IOServiceStateNotificationEventSource",
+    "IOWorkGroup",
+    "OSKextSavedMutableSegment",
+    "_IOMemoryDescriptorMixedData"
+  ]
+}

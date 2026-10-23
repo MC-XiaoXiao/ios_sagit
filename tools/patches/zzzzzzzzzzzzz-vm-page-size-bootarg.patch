@@ -1,0 +1,23 @@
+--- a/osfmk/arm/arm_init.c
++++ b/osfmk/arm/arm_init.c
+@@ -436,6 +436,20 @@
+ 
+ 		/* 32-bit apps always see 16KB page size */
+ 		page_shift_user32 = PAGE_MAX_SHIFT;
++
++#if DEVELOPMENT || DEBUG
++		/* Software VM pages may group several hardware translation granules. */
++		unsigned int requested_page_size = 0;
++		if (PE_parse_boot_argn("vm-pagesize", &requested_page_size, sizeof(requested_page_size))) {
++			if (requested_page_size == (1U << ARM_PGSHIFT)) {
++				PAGE_SHIFT_CONST = ARM_PGSHIFT;
++			} else if (requested_page_size == PAGE_MAX_SIZE) {
++				PAGE_SHIFT_CONST = PAGE_MAX_SHIFT;
++			} else {
++				panic("unsupported VM page size: %u", requested_page_size);
++			}
++		}
++#endif
+ #ifdef  APPLETYPHOON
+ 		if (PE_parse_boot_argn("cpus_defeatures", &cpus_defeatures, sizeof(cpus_defeatures))) {
+ 			if ((cpus_defeatures & 0xF) != 0) {

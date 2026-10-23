@@ -1,0 +1,54 @@
+{
+  "repository": "MiCode/Xiaomi_Kernel_OpenSource",
+  "commit": "3fb35ef1f0fe1f714be3df39724cbc8eb217181e",
+  "sources": [
+    {
+      "path": "docs/power/reference/xiaomi-msm-clocks-hwio-8998.h",
+      "upstream_path": "include/dt-bindings/clock/msm-clocks-hwio-8998.h",
+      "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/include/dt-bindings/clock/msm-clocks-hwio-8998.h",
+      "sha256": "38b29e3327e977d2d8e405ff73d8a856536fd0ef8d9e1c0c44ea32394ac86461",
+      "bytes": 16268
+    },
+    {
+      "path": "docs/power/reference/xiaomi-clock-gcc-8998.c",
+      "upstream_path": "drivers/clk/msm/clock-gcc-8998.c",
+      "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/drivers/clk/msm/clock-gcc-8998.c",
+      "sha256": "c56f9115bba341c8ff30017164a30cc99750ce88a3c69b00d50b3adbc18aa68c",
+      "bytes": 79013
+    },
+    {
+      "path": "docs/power/reference/xiaomi-clock-local2.c",
+      "upstream_path": "drivers/clk/msm/clock-local2.c",
+      "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/drivers/clk/msm/clock-local2.c",
+      "sha256": "d70add0a581831903c78114505757053a21f3c13e7728662d82462055d520f43",
+      "bytes": 76259
+    }
+  ],
+  "clock_contract": {
+    "aux": {
+      "cmd_phys": "0x0014805c",
+      "source": 1,
+      "hid": 3,
+      "hz": 300000000
+    },
+    "osm": {
+      "cmd_phys": "0x179d112c",
+      "source": 1,
+      "hid": 2,
+      "hz": 200000000,
+      "parent_contract": "The original clock-osm frequency table fixes LMH selector 1 to 300 MHz, divided by 1.5. No frequency-counter measurement or unverified physical parent wiring is claimed."
+    },
+    "rbcpr": {
+      "cmd_phys": "0x00148044",
+      "branch_phys": "0x00148008",
+      "source": 0,
+      "hid": 1,
+      "hz": 19200000
+    }
+  },
+  "notes": [
+    "Existing clock-osm.c and xiaomi-clock-osm.c pin the OSM source/HID contract; their provenance is tracked in the existing reference manifests.",
+    "Firmware bridge uses no ClockDxe suffix or unavailable named clock; post-EBS acquisition uses direct RCG/CBCR registers."
+  ],
+  "sequence_review": "The original aux, OSM and RBCPR rcg definitions do not set non_local_children, non_local_control_timeout or force_enable_rcgr. clock-local2.c rcg_clk_set_rate therefore writes CFG and latches UPDATE without forcing the old source first. The bridge follows that sequence, then retains ROOT_EN and verifies ROOT_OFF is clear; it also checks CMD dirty bits before accepting evidence."
+}

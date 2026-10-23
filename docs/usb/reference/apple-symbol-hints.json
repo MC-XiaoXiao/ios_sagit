@@ -1,0 +1,15 @@
+{
+  "reference_only": true,
+  "source": "/home/xxiao/Projects/Project_iOS2ARM/tools/symbolicator/kernel/25.6/kexts/AppleT7000USBOTGDevice.json",
+  "source_sha256": "0ea11c56f4b78fbee7f4b04ecafe476c9aff7757230a8357331e13f619c71ff9",
+  "version": {
+    "min": "25.6.0",
+    "max": "25.7.0"
+  },
+  "symbols": [
+    "__ZN22AppleSynopsysOTGDevice16activateEndpointEiiii33tIOUSBDeviceInterfacePipeProperty",
+    "__ZN22AppleSynopsysOTGDevice20prepareConfigurationEP7OSArray",
+    "__ZN22AppleSynopsysOTGDevice17doRemoteWakeGatedEv"
+  ],
+  "use": "Names/signature hints only, independently checked against the pinned iOS18 arm64 call paths. Never copy vtable positions or object sizes across versions."
+}

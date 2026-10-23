@@ -1,0 +1,188 @@
+{
+  "date": "2026-10-15T02:28:31.388218-07:00",
+  "scope": "NVRAM bridge handoff and two real-device boots",
+  "baseline_log": "build/corecrypto-diagnosis/hardware-security-options/uart.txt",
+  "kernelcache": "/home/xxiao/Projects/MI6_iOS/build/output/kernelcache.sdm835.platform",
+  "kernelcache_sha256": "42c6cb2f3b203642afd3121b881b30f4f733dbb1c09ce805ec19fb43b33c55cc",
+  "bridge": "build/nvram-handoff/bridge-sha384/XnuBridge.efi",
+  "bridge_sha256": "410ce7aa7e4d470379d5c9dec5a9a4953aaa3c836712c35edb26e9a1849d2e10",
+  "nvram": {
+    "format": "CHRP-v2",
+    "persistent": false,
+    "bank_size": 16384,
+    "bank_count": 1,
+    "current_bank": 0,
+    "source": "empty-volatile",
+    "proxy_sha256": "1512623f0bd5aa9e0dfbf98f365eee1b860dc0e106ad8c812c1fca85741ad0fd",
+    "common_partition": {
+      "offset": 48,
+      "bytes": 8144
+    },
+    "system_partition": {
+      "offset": 8208,
+      "bytes": 8176
+    }
+  },
+  "cases": [
+    {
+      "round": 1,
+      "log": "build/nvram-handoff/hardware-1/uart.txt",
+      "report": "build/nvram-handoff/hardware-1/report.json",
+      "payload_sha256": "2bf3a9715ee18a3dbfd3c25ea1c6b1ce5297d1c4d84fd8b5ad17c5bce6d7d46a",
+      "checks": {
+        "nvram_properties_accepted": true,
+        "partitions_parsed": true,
+        "configure_iokit_completed": true,
+        "old_nvram_panic_absent": true,
+        "corecrypto_fips_panic_absent": true,
+        "new_panic_present": true,
+        "panic_report_complete": true,
+        "watchdog_recovered": true
+      },
+      "native_backtrace_frames": 19,
+      "evidence": [
+        {
+          "line": 121,
+          "text": "IONVRAM.cpp:getNVRAMProperties:1257 - _bankSize=0x4000, _bankCount=0x1, _currentBank=0"
+        },
+        {
+          "line": 122,
+          "text": "IONVRAMCHRPHandler.cpp:unserializeImage:487 - NVRAM : commonPartitionOffset - 0x30, commonPartitionSize - 0x1fd0, systemPartitionOffset - 0x2010, systemPartitionSize - 0x1ff0"
+        },
+        {
+          "line": 123,
+          "text": "[XNU IOKit] ConfigureIOKit done"
+        },
+        {
+          "line": 137,
+          "text": "�panic(cpu 0 caller 0xfffffff006eba378): panic: non-sensical crypto hash method: "
+        },
+        {
+          "line": 202,
+          "text": "** Stackshot Succeeded ** Bytes Traced 2406 (Uncompressed 7136) **"
+        },
+        {
+          "line": 204,
+          "text": "panic(cpu 0 caller 0xfffffff006eba378): panic: non-sensical crypto hash method: "
+        }
+      ]
+    },
+    {
+      "round": 2,
+      "log": "build/nvram-handoff/hardware-2/uart.txt",
+      "report": "build/nvram-handoff/hardware-2/report.json",
+      "payload_sha256": "2bf3a9715ee18a3dbfd3c25ea1c6b1ce5297d1c4d84fd8b5ad17c5bce6d7d46a",
+      "checks": {
+        "nvram_properties_accepted": true,
+        "partitions_parsed": true,
+        "configure_iokit_completed": true,
+        "old_nvram_panic_absent": true,
+        "corecrypto_fips_panic_absent": true,
+        "new_panic_present": true,
+        "panic_report_complete": true,
+        "watchdog_recovered": true
+      },
+      "native_backtrace_frames": 19,
+      "evidence": [
+        {
+          "line": 116,
+          "text": "IONVRAM.cpp:getNVRAMProperties:1257 - _bankSize=0x4000, _bankCount=0x1, _currentBank=0"
+        },
+        {
+          "line": 117,
+          "text": "IONVRAMCHRPHandler.cpp:unserializeImage:487 - NVRAM : commonPartitionOffset - 0x30, commonPartitionSize - 0x1fd0, systemPartitionOffset - 0x2010, systemPartitionSize - 0x1ff0"
+        },
+        {
+          "line": 118,
+          "text": "[XNU IOKit] ConfigureIOKit done"
+        },
+        {
+          "line": 132,
+          "text": "�panic(cpu 0 caller 0xfffffff006eba378): panic: non-sensical crypto hash method: "
+        },
+        {
+          "line": 197,
+          "text": "** Stackshot Succeeded ** Bytes Traced 2426 (Uncompressed 7136) **"
+        },
+        {
+          "line": 199,
+          "text": "panic(cpu 0 caller 0xfffffff006eba378): panic: non-sensical crypto hash method: "
+        }
+      ]
+    }
+  ],
+  "checks": {
+    "make_test_bridge": "passed",
+    "host_tests": 22,
+    "qemu_EL1_EL2": "passed",
+    "xnu_original_checksum_functions": "passed",
+    "kernelcache_independent_verification": "passed",
+    "host_tests_after_hash_method_change": 15
+  },
+  "original_panic_resolved": true,
+  "full_boot_completed": false,
+  "partitions_written": false,
+  "current_blocker": "XNU trust_cache_runtime_init panics: amfi interface not available @kern_trustcache.c:589. AppleMobileFileIntegrity is present with its dependency closure in the 23-Kext collection, but the AMFI interface is NULL when trust-cache initialization runs; its loading/initialization requires further investigation. NVRAM and crypto-hash-method panics have been passed on device.",
+  "analysis": "build/nvram-handoff/hash-method-analysis.txt",
+  "note": "handshake structure not initialized is printed by the later shared-memory coredump backend (out_shmem.c:501), not the cause of this panic.",
+  "changed_source_files": [
+    "scripts/bridge_nvram.py",
+    "scripts/build-bridge.py",
+    "device_trees/xiaomi-sagit.dts",
+    "tests/test_bridge_nvram.py",
+    "tests/test_boot_bridge.py",
+    "Makefile",
+    "docs/sdm835/boot-bridge.md"
+  ],
+  "sha384_case": {
+    "log": "build/nvram-handoff/hardware-sha384-1/uart.txt",
+    "report": "build/nvram-handoff/hardware-sha384-1/report.json",
+    "payload_sha256": "410ce7aa7e4d470379d5c9dec5a9a4953aaa3c836712c35edb26e9a1849d2e10",
+    "kernelcache_sha256": "42c6cb2f3b203642afd3121b881b30f4f733dbb1c09ce805ec19fb43b33c55cc",
+    "crypto_hash_method": "sha2-384",
+    "checks": {
+      "nvram_partitions_parsed": true,
+      "nvram_panic_absent": true,
+      "hash_method_panic_absent": true,
+      "fips_panic_absent": true,
+      "trust_cache_amfi_check_reached": true,
+      "native_panic_complete": true,
+      "watchdog_recovered": true
+    },
+    "native_backtrace_frames": 11,
+    "device_tree_changes": "build/nvram-handoff/sha384-dt-diff.json",
+    "comparison_note": "Same kernelcache and NVRAM bytes. Build-time entropy changed; concurrent work also added a disabled GPU DT node, preserved in the new package.",
+    "evidence": [
+      {
+        "line": 116,
+        "text": "IONVRAM.cpp:getNVRAMProperties:1257 - _bankSize=0x4000, _bankCount=0x1, _currentBank=0"
+      },
+      {
+        "line": 117,
+        "text": "IONVRAMCHRPHandler.cpp:unserializeImage:487 - NVRAM : commonPartitionOffset - 0x30, commonPartitionSize - 0x1fd0, systemPartitionOffset - 0x2010, systemPartitionSize - 0x1ff0"
+      },
+      {
+        "line": 118,
+        "text": "[XNU IOKit] ConfigureIOKit done"
+      },
+      {
+        "line": 122,
+        "text": "Security policy loaded: AppleImage4 hooks (AppleImage4)"
+      },
+      {
+        "line": 135,
+        "text": "�panic(cpu 0 caller 0xfffffff0077f83fc): amfi interface not available @kern_trustcache.c:589"
+      },
+      {
+        "line": 192,
+        "text": "** Stackshot Succeeded ** Bytes Traced 2384 (Uncompressed 7072) **"
+      },
+      {
+        "line": 194,
+        "text": "panic(cpu 0 caller 0xfffffff0077f83fc): amfi interface not available @kern_trustcache.c:589"
+      }
+    ]
+  },
+  "crypto_hash_method_panic_resolved": true,
+  "amfi_startup_followup": "docs/sdm835/ios18/amfi-startup-validation.json"
+}

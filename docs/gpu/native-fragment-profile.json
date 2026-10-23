@@ -1,0 +1,2287 @@
+{
+  "schema": 1,
+  "versions": {
+    "gpu": "1.60.0",
+    "metal": "0.52.0",
+    "shader": 36,
+    "jit": 33,
+    "surface_metadata": 2
+  },
+  "native_frameworks": [
+    "Metal",
+    "QuartzCore",
+    "IOSurface",
+    "IOGPUFamily"
+  ],
+  "native_library": "original22H374 QuartzCore default.metallib; portable AIR slice only",
+  "native_library_sha256": "8ca2bef447981ae26acbe3c5023043ad9dcc312e893f44781d7373b1e27adfa7",
+  "compiler_language": "Mesa AMD_gpu_shader_half_float syntax used only inside the private compiler; no OpenGL/AMD device capability advertised",
+  "half_arithmetic": "AIR scalar/vector IEEE binary16 SSA, explicit float16_t/f16vec values and f16 operations/conversions in NIR/IR3; half texture values rounded before use; no float32 alias",
+  "stage_transport": "existing float32 hardware interface; half values converted at stage boundaries; logical half varying identities include a precision suffix for type-safe linking",
+  "half_memory": "typed16-bit SSBO alias views for packed scalar/vector loads/stores; exact byte GEPs and per-lane2-byte NIR bounds/alignment guards; A5xx LDGB/STGB TYPE_U16 and half registers; no widened word store",
+  "half_buffers": [
+    "device",
+    "constant"
+  ],
+  "half_threadgroup_memory": false,
+  "native_half_stage_attributes": true,
+  "fragment_outputs": "float/half scalars or vectors1..4; float32 color transport, missing channels0 and alpha1",
+  "air_intrinsics": [
+    "half/float conversions",
+    "half scalar/vector arithmetic/comparison/PHI/select",
+    "half texture sample/read/write with typed metadata validation",
+    "saturate/fast_saturate",
+    "dfdx/dfdy/fwidth; half derivatives transported through float32 and narrowed",
+    "function-constant any/all.v2..4i1 predicates exposed to LLVM constant propagation"
+  ],
+  "function_constants": "shared host/runtime State: bounded native aggregate evaluation, typed any/all boolean reductions, SCCP and ADCE before InstCombine then SimplifyCFG and ADCE; native fast-math/address-space/alias metadata preserved; active whole-poison returns still rejected",
+  "max_initializer_object_bytes": 4096,
+  "max_initializer_instructions": 8192,
+  "native_programs": [
+    {
+      "label": "upsample_vert_lph",
+      "name": "upsample_vert_lph",
+      "stage": 1,
+      "bufferMask": 44,
+      "sampleMask": 0,
+      "fetchMask": 0,
+      "varyingCount": 3,
+      "colorMask": 0,
+      "codeWords": 416,
+      "msaaCodeWords": 0,
+      "halfRegs": 6,
+      "framebufferMask": 0,
+      "valid": true
+    },
+    {
+      "label": "upsample_frag_lph",
+      "name": "upsample_frag_lph",
+      "stage": 2,
+      "bufferMask": 64,
+      "sampleMask": 8,
+      "fetchMask": 0,
+      "varyingCount": 3,
+      "colorMask": 1,
+      "codeWords": 480,
+      "msaaCodeWords": 480,
+      "halfRegs": 11,
+      "framebufferMask": 0,
+      "valid": true
+    },
+    {
+      "label": "fixed_vert_lph_spc",
+      "name": "fixed_vert_lph_spc",
+      "stage": 1,
+      "bufferMask": 12,
+      "sampleMask": 0,
+      "fetchMask": 0,
+      "varyingCount": 2,
+      "colorMask": 0,
+      "codeWords": 352,
+      "msaaCodeWords": 0,
+      "halfRegs": 5,
+      "framebufferMask": 0,
+      "valid": true
+    },
+    {
+      "label": "attachment_clear_frag_lph",
+      "name": "attachment_clear_frag_lph",
+      "stage": 2,
+      "bufferMask": 0,
+      "sampleMask": 0,
+      "fetchMask": 0,
+      "varyingCount": 0,
+      "colorMask": 3,
+      "codeWords": 32,
+      "msaaCodeWords": 32,
+      "halfRegs": 0,
+      "framebufferMask": 0,
+      "valid": true
+    },
+    {
+      "label": "path_clear_frag_lph",
+      "name": "path_clear_frag_lph",
+      "stage": 2,
+      "bufferMask": 0,
+      "sampleMask": 0,
+      "fetchMask": 0,
+      "varyingCount": 0,
+      "colorMask": 4,
+      "codeWords": 32,
+      "msaaCodeWords": 32,
+      "halfRegs": 0,
+      "framebufferMask": 0,
+      "valid": true
+    },
+    {
+      "label": "color-copy",
+      "name": "fixed_frag_lph_cph",
+      "stage": 2,
+      "bufferMask": 0,
+      "sampleMask": 0,
+      "fetchMask": 0,
+      "varyingCount": 1,
+      "colorMask": 1,
+      "codeWords": 32,
+      "msaaCodeWords": 32,
+      "halfRegs": 1,
+      "framebufferMask": 0,
+      "valid": true
+    },
+    {
+      "label": "texture-copy",
+      "name": "fixed_frag_lph_cph",
+      "stage": 2,
+      "bufferMask": 4,
+      "sampleMask": 8,
+      "fetchMask": 0,
+      "varyingCount": 2,
+      "colorMask": 1,
+      "codeWords": 160,
+      "msaaCodeWords": 160,
+      "halfRegs": 3,
+      "framebufferMask": 0,
+      "valid": true
+    },
+    {
+      "label": "texture-color",
+      "name": "fixed_frag_lph_cph",
+      "stage": 2,
+      "bufferMask": 4,
+      "sampleMask": 8,
+      "fetchMask": 0,
+      "varyingCount": 2,
+      "colorMask": 1,
+      "codeWords": 160,
+      "msaaCodeWords": 160,
+      "halfRegs": 4,
+      "framebufferMask": 0,
+      "valid": true
+    },
+    {
+      "label": "color-source-over",
+      "name": "fixed_frag_lph_cph",
+      "stage": 2,
+      "bufferMask": 0,
+      "sampleMask": 0,
+      "fetchMask": 1,
+      "varyingCount": 1,
+      "colorMask": 1,
+      "codeWords": 224,
+      "msaaCodeWords": 224,
+      "halfRegs": 4,
+      "framebufferMask": 0,
+      "valid": true
+    },
+    {
+      "label": "texture-source-over",
+      "name": "fixed_frag_lph_cph",
+      "stage": 2,
+      "bufferMask": 4,
+      "sampleMask": 8,
+      "fetchMask": 1,
+      "varyingCount": 2,
+      "colorMask": 1,
+      "codeWords": 352,
+      "msaaCodeWords": 352,
+      "halfRegs": 6,
+      "framebufferMask": 0,
+      "valid": true
+    },
+    {
+      "label": "framebuffer-color-source-over",
+      "name": "fixed_frag_lph_cph",
+      "stage": 2,
+      "bufferMask": 0,
+      "sampleMask": 0,
+      "fetchMask": 0,
+      "varyingCount": 1,
+      "colorMask": 1,
+      "codeWords": 128,
+      "msaaCodeWords": 128,
+      "halfRegs": 4,
+      "framebufferMask": 1,
+      "valid": true
+    },
+    {
+      "label": "framebuffer-texture-source-over",
+      "name": "fixed_frag_lph_cph",
+      "stage": 2,
+      "bufferMask": 4,
+      "sampleMask": 8,
+      "fetchMask": 0,
+      "varyingCount": 2,
+      "colorMask": 1,
+      "codeWords": 224,
+      "msaaCodeWords": 224,
+      "halfRegs": 7,
+      "framebufferMask": 1,
+      "valid": true
+    },
+    {
+      "label": "path_blit_frag_lph",
+      "name": "path_blit_frag_lph",
+      "stage": 2,
+      "bufferMask": 0,
+      "sampleMask": 0,
+      "fetchMask": 0,
+      "varyingCount": 1,
+      "colorMask": 7,
+      "codeWords": 128,
+      "msaaCodeWords": 128,
+      "halfRegs": 3,
+      "framebufferMask": 4,
+      "valid": true
+    }
+  ],
+  "runtime_proof": "build/drivers/gpu-draw-batches/native-runtime.json",
+  "profile_proof_scope": "production runtime LLVM C API frontend, in-memory IR3 compiler, JIT profile, existing kernel linker and framebuffer snapshot PipelineEncoder; original QuartzCore AIR; offline only",
+  "hardware_tested": false,
+  "metal_native_objects_executed": false,
+  "system_ui_gpu_acceleration_verified": false,
+  "remaining": [
+    "remaining CoreAnimation fragment profiles/helpers and language operations beyond the documented native configurations",
+    "framebuffer snapshot cost; general buffer/texture raster-order groups and imageblocks",
+    "full pipeline/function descriptor SPI and system selection",
+    "broader native CoreAnimation color formats, including wider and float render targets",
+    "half shared memory, MSL half source syntax, remaining integer/AIR operations",
+    "native GPU/display shared scanout/fences and target execution"
+  ],
+  "references": [
+    "https://developer.apple.com/metal/Metal-Shading-Language-Specification.pdf",
+    "https://llvm.org/docs/LangRef.html",
+    "https://registry.khronos.org/OpenGL/extensions/AMD/AMD_gpu_shader_half_float.txt",
+    "https://gitlab.freedesktop.org/mesa/mesa/-/blob/mesa-24.3.4/src/freedreno/ir3/ir3_a4xx.c",
+    "https://gitlab.freedesktop.org/mesa/mesa/-/blob/mesa-24.3.4/src/gallium/drivers/freedreno/a5xx/fd5_emit.c"
+  ],
+  "fixed_vertex_fragment_and_msaa_links": [
+    {
+      "label": "color-copy",
+      "msaa": false,
+      "linked": true,
+      "linkage_count": 2,
+      "linkage_stride": 8
+    },
+    {
+      "label": "color-copy",
+      "msaa": true,
+      "linked": true,
+      "linkage_count": 2,
+      "linkage_stride": 8
+    },
+    {
+      "label": "texture-copy",
+      "msaa": false,
+      "linked": true,
+      "linkage_count": 2,
+      "linkage_stride": 6
+    },
+    {
+      "label": "texture-copy",
+      "msaa": true,
+      "linked": true,
+      "linkage_count": 2,
+      "linkage_stride": 6
+    },
+    {
+      "label": "texture-color",
+      "msaa": false,
+      "linked": true,
+      "linkage_count": 3,
+      "linkage_stride": 10
+    },
+    {
+      "label": "texture-color",
+      "msaa": true,
+      "linked": true,
+      "linkage_count": 3,
+      "linkage_stride": 10
+    },
+    {
+      "label": "color-source-over",
+      "msaa": false,
+      "linked": true,
+      "linkage_count": 2,
+      "linkage_stride": 8
+    },
+    {
+      "label": "color-source-over",
+      "msaa": true,
+      "linked": true,
+      "linkage_count": 2,
+      "linkage_stride": 8
+    },
+    {
+      "label": "texture-source-over",
+      "msaa": false,
+      "linked": true,
+      "linkage_count": 3,
+      "linkage_stride": 10
+    },
+    {
+      "label": "texture-source-over",
+      "msaa": true,
+      "linked": true,
+      "linkage_count": 3,
+      "linkage_stride": 10
+    }
+  ],
+  "independent_code_comparison": "build/drivers/gpu-draw-batches/native-code-comparison.json",
+  "verified_entry_points": 7,
+  "verified_compiled_programs": 13,
+  "verified_compiled_payloads": 24,
+  "full_description_bytes": 2424,
+  "all_full_descriptions_isa_and_immediates_equal": true,
+  "fixed_fragment_profiles": [
+    {
+      "label": "color-copy",
+      "selected_native_entry": "fixed_frag_lph_cph",
+      "values": "build/drivers/gpu-fixed-compositor/color-copy-values.json",
+      "values_sha256": "49bece52ec3d5e62e5fba06c25bd714e280e8ae58921cec1dc6c79eba5c3abec",
+      "effective_constants": [
+        {
+          "index": 0,
+          "type": 53,
+          "data": "00",
+          "name": "fc_generic"
+        },
+        {
+          "index": 4,
+          "type": 53,
+          "data": "00",
+          "name": "fc_framebuffer_fetch"
+        },
+        {
+          "index": 5,
+          "type": 49,
+          "data": "01",
+          "name": "fc_attachment_count"
+        },
+        {
+          "index": 7,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_lod_bias"
+        },
+        {
+          "index": 8,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_noise_scale"
+        },
+        {
+          "index": 9,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_ycbcr_matrix"
+        },
+        {
+          "index": 10,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_gamma_luts"
+        },
+        {
+          "index": 11,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_asg_77_weights"
+        },
+        {
+          "index": 12,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_attachment_0"
+        },
+        {
+          "index": 13,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_attachment_1"
+        },
+        {
+          "index": 14,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_attachment_2"
+        },
+        {
+          "index": 15,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_image_0A"
+        },
+        {
+          "index": 16,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_image_1A"
+        },
+        {
+          "index": 17,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_image_0B"
+        },
+        {
+          "index": 18,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_image_1B"
+        },
+        {
+          "index": 19,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_image_0C"
+        },
+        {
+          "index": 20,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_image_1C"
+        },
+        {
+          "index": 21,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_noise_tex"
+        },
+        {
+          "index": 23,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_color_params"
+        },
+        {
+          "index": 24,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_color_trc0"
+        },
+        {
+          "index": 25,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_color_trc1"
+        },
+        {
+          "index": 26,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_color_cube0"
+        },
+        {
+          "index": 27,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_color_cube1"
+        },
+        {
+          "index": 3,
+          "type": 49,
+          "data": "00",
+          "name": "fc_vertex_layout"
+        },
+        {
+          "index": 28,
+          "type": 49,
+          "data": "00",
+          "name": "fc_texture_function"
+        },
+        {
+          "index": 29,
+          "type": 49,
+          "data": "01",
+          "name": "fc_blend_function"
+        },
+        {
+          "index": 31,
+          "type": 49,
+          "data": "00",
+          "name": "fc_destination_function"
+        },
+        {
+          "index": 32,
+          "type": 49,
+          "data": "00",
+          "name": "fc_image_count"
+        },
+        {
+          "index": 34,
+          "type": 49,
+          "data": "00",
+          "name": "fc_dest_index"
+        },
+        {
+          "index": 35,
+          "type": 49,
+          "data": "01",
+          "name": "fc_dest_count"
+        },
+        {
+          "index": 51,
+          "type": 49,
+          "data": "00",
+          "name": "fc_texcoord_count0"
+        },
+        {
+          "index": 52,
+          "type": 49,
+          "data": "00",
+          "name": "fc_texcoord_count1"
+        },
+        {
+          "index": 53,
+          "type": 49,
+          "data": "00",
+          "name": "fc_memoryless_index0"
+        },
+        {
+          "index": 54,
+          "type": 49,
+          "data": "00",
+          "name": "fc_memoryless_index1"
+        }
+      ]
+    },
+    {
+      "label": "texture-copy",
+      "selected_native_entry": "fixed_frag_lph_cph",
+      "values": "build/drivers/gpu-fixed-compositor/texture-copy-values.json",
+      "values_sha256": "84bfd7604f0df5b2684e2a8ed07433d0985e218158d5a495c80347b1027c6747",
+      "effective_constants": [
+        {
+          "index": 0,
+          "type": 53,
+          "data": "00",
+          "name": "fc_generic"
+        },
+        {
+          "index": 4,
+          "type": 53,
+          "data": "00",
+          "name": "fc_framebuffer_fetch"
+        },
+        {
+          "index": 5,
+          "type": 49,
+          "data": "01",
+          "name": "fc_attachment_count"
+        },
+        {
+          "index": 7,
+          "type": 53,
+          "data": "01",
+          "name": "fc_has_lod_bias"
+        },
+        {
+          "index": 8,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_noise_scale"
+        },
+        {
+          "index": 9,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_ycbcr_matrix"
+        },
+        {
+          "index": 10,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_gamma_luts"
+        },
+        {
+          "index": 11,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_asg_77_weights"
+        },
+        {
+          "index": 12,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_attachment_0"
+        },
+        {
+          "index": 13,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_attachment_1"
+        },
+        {
+          "index": 14,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_attachment_2"
+        },
+        {
+          "index": 15,
+          "type": 53,
+          "data": "01",
+          "name": "fc_has_image_0A"
+        },
+        {
+          "index": 16,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_image_1A"
+        },
+        {
+          "index": 17,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_image_0B"
+        },
+        {
+          "index": 18,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_image_1B"
+        },
+        {
+          "index": 19,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_image_0C"
+        },
+        {
+          "index": 20,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_image_1C"
+        },
+        {
+          "index": 21,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_noise_tex"
+        },
+        {
+          "index": 23,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_color_params"
+        },
+        {
+          "index": 24,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_color_trc0"
+        },
+        {
+          "index": 25,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_color_trc1"
+        },
+        {
+          "index": 26,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_color_cube0"
+        },
+        {
+          "index": 27,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_color_cube1"
+        },
+        {
+          "index": 3,
+          "type": 49,
+          "data": "00",
+          "name": "fc_vertex_layout"
+        },
+        {
+          "index": 28,
+          "type": 49,
+          "data": "01",
+          "name": "fc_texture_function"
+        },
+        {
+          "index": 29,
+          "type": 49,
+          "data": "01",
+          "name": "fc_blend_function"
+        },
+        {
+          "index": 31,
+          "type": 49,
+          "data": "00",
+          "name": "fc_destination_function"
+        },
+        {
+          "index": 32,
+          "type": 49,
+          "data": "01",
+          "name": "fc_image_count"
+        },
+        {
+          "index": 34,
+          "type": 49,
+          "data": "00",
+          "name": "fc_dest_index"
+        },
+        {
+          "index": 35,
+          "type": 49,
+          "data": "01",
+          "name": "fc_dest_count"
+        },
+        {
+          "index": 51,
+          "type": 49,
+          "data": "01",
+          "name": "fc_texcoord_count0"
+        },
+        {
+          "index": 52,
+          "type": 49,
+          "data": "00",
+          "name": "fc_texcoord_count1"
+        },
+        {
+          "index": 53,
+          "type": 49,
+          "data": "00",
+          "name": "fc_memoryless_index0"
+        },
+        {
+          "index": 54,
+          "type": 49,
+          "data": "00",
+          "name": "fc_memoryless_index1"
+        },
+        {
+          "index": 45,
+          "type": 49,
+          "data": "00",
+          "name": "fc_image_function0"
+        },
+        {
+          "index": 47,
+          "type": 49,
+          "data": "00",
+          "name": "fc_coord_function0"
+        },
+        {
+          "index": 49,
+          "type": 49,
+          "data": "01",
+          "name": "fc_plane_count0"
+        },
+        {
+          "index": 63,
+          "type": 49,
+          "data": "00",
+          "name": "fc_filter0"
+        }
+      ]
+    },
+    {
+      "label": "texture-color",
+      "selected_native_entry": "fixed_frag_lph_cph",
+      "values": "build/drivers/gpu-fixed-compositor/texture-color-values.json",
+      "values_sha256": "2554f09ba95caea00ec1a97c6c10ed09e53200956807c5964641843763895642",
+      "effective_constants": [
+        {
+          "index": 0,
+          "type": 53,
+          "data": "00",
+          "name": "fc_generic"
+        },
+        {
+          "index": 4,
+          "type": 53,
+          "data": "00",
+          "name": "fc_framebuffer_fetch"
+        },
+        {
+          "index": 5,
+          "type": 49,
+          "data": "01",
+          "name": "fc_attachment_count"
+        },
+        {
+          "index": 7,
+          "type": 53,
+          "data": "01",
+          "name": "fc_has_lod_bias"
+        },
+        {
+          "index": 8,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_noise_scale"
+        },
+        {
+          "index": 9,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_ycbcr_matrix"
+        },
+        {
+          "index": 10,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_gamma_luts"
+        },
+        {
+          "index": 11,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_asg_77_weights"
+        },
+        {
+          "index": 12,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_attachment_0"
+        },
+        {
+          "index": 13,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_attachment_1"
+        },
+        {
+          "index": 14,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_attachment_2"
+        },
+        {
+          "index": 15,
+          "type": 53,
+          "data": "01",
+          "name": "fc_has_image_0A"
+        },
+        {
+          "index": 16,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_image_1A"
+        },
+        {
+          "index": 17,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_image_0B"
+        },
+        {
+          "index": 18,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_image_1B"
+        },
+        {
+          "index": 19,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_image_0C"
+        },
+        {
+          "index": 20,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_image_1C"
+        },
+        {
+          "index": 21,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_noise_tex"
+        },
+        {
+          "index": 23,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_color_params"
+        },
+        {
+          "index": 24,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_color_trc0"
+        },
+        {
+          "index": 25,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_color_trc1"
+        },
+        {
+          "index": 26,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_color_cube0"
+        },
+        {
+          "index": 27,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_color_cube1"
+        },
+        {
+          "index": 3,
+          "type": 49,
+          "data": "00",
+          "name": "fc_vertex_layout"
+        },
+        {
+          "index": 28,
+          "type": 49,
+          "data": "03",
+          "name": "fc_texture_function"
+        },
+        {
+          "index": 29,
+          "type": 49,
+          "data": "01",
+          "name": "fc_blend_function"
+        },
+        {
+          "index": 31,
+          "type": 49,
+          "data": "00",
+          "name": "fc_destination_function"
+        },
+        {
+          "index": 32,
+          "type": 49,
+          "data": "01",
+          "name": "fc_image_count"
+        },
+        {
+          "index": 34,
+          "type": 49,
+          "data": "00",
+          "name": "fc_dest_index"
+        },
+        {
+          "index": 35,
+          "type": 49,
+          "data": "01",
+          "name": "fc_dest_count"
+        },
+        {
+          "index": 51,
+          "type": 49,
+          "data": "01",
+          "name": "fc_texcoord_count0"
+        },
+        {
+          "index": 52,
+          "type": 49,
+          "data": "00",
+          "name": "fc_texcoord_count1"
+        },
+        {
+          "index": 53,
+          "type": 49,
+          "data": "00",
+          "name": "fc_memoryless_index0"
+        },
+        {
+          "index": 54,
+          "type": 49,
+          "data": "00",
+          "name": "fc_memoryless_index1"
+        },
+        {
+          "index": 45,
+          "type": 49,
+          "data": "00",
+          "name": "fc_image_function0"
+        },
+        {
+          "index": 47,
+          "type": 49,
+          "data": "00",
+          "name": "fc_coord_function0"
+        },
+        {
+          "index": 49,
+          "type": 49,
+          "data": "01",
+          "name": "fc_plane_count0"
+        },
+        {
+          "index": 63,
+          "type": 49,
+          "data": "00",
+          "name": "fc_filter0"
+        }
+      ]
+    },
+    {
+      "label": "color-source-over",
+      "selected_native_entry": "fixed_frag_lph_cph",
+      "values": "build/drivers/gpu-fixed-compositor/color-source-over-values.json",
+      "values_sha256": "4077bc979d0431b71944594eeb1542b6a255845706f80a6b758ecd10dc6c8c7c",
+      "effective_constants": [
+        {
+          "index": 0,
+          "type": 53,
+          "data": "00",
+          "name": "fc_generic"
+        },
+        {
+          "index": 4,
+          "type": 53,
+          "data": "00",
+          "name": "fc_framebuffer_fetch"
+        },
+        {
+          "index": 5,
+          "type": 49,
+          "data": "01",
+          "name": "fc_attachment_count"
+        },
+        {
+          "index": 7,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_lod_bias"
+        },
+        {
+          "index": 8,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_noise_scale"
+        },
+        {
+          "index": 9,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_ycbcr_matrix"
+        },
+        {
+          "index": 10,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_gamma_luts"
+        },
+        {
+          "index": 11,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_asg_77_weights"
+        },
+        {
+          "index": 12,
+          "type": 53,
+          "data": "01",
+          "name": "fc_has_attachment_0"
+        },
+        {
+          "index": 13,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_attachment_1"
+        },
+        {
+          "index": 14,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_attachment_2"
+        },
+        {
+          "index": 15,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_image_0A"
+        },
+        {
+          "index": 16,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_image_1A"
+        },
+        {
+          "index": 17,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_image_0B"
+        },
+        {
+          "index": 18,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_image_1B"
+        },
+        {
+          "index": 19,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_image_0C"
+        },
+        {
+          "index": 20,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_image_1C"
+        },
+        {
+          "index": 21,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_noise_tex"
+        },
+        {
+          "index": 23,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_color_params"
+        },
+        {
+          "index": 24,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_color_trc0"
+        },
+        {
+          "index": 25,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_color_trc1"
+        },
+        {
+          "index": 26,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_color_cube0"
+        },
+        {
+          "index": 27,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_color_cube1"
+        },
+        {
+          "index": 3,
+          "type": 49,
+          "data": "00",
+          "name": "fc_vertex_layout"
+        },
+        {
+          "index": 28,
+          "type": 49,
+          "data": "00",
+          "name": "fc_texture_function"
+        },
+        {
+          "index": 29,
+          "type": 49,
+          "data": "03",
+          "name": "fc_blend_function"
+        },
+        {
+          "index": 31,
+          "type": 49,
+          "data": "00",
+          "name": "fc_destination_function"
+        },
+        {
+          "index": 32,
+          "type": 49,
+          "data": "00",
+          "name": "fc_image_count"
+        },
+        {
+          "index": 34,
+          "type": 49,
+          "data": "00",
+          "name": "fc_dest_index"
+        },
+        {
+          "index": 35,
+          "type": 49,
+          "data": "01",
+          "name": "fc_dest_count"
+        },
+        {
+          "index": 51,
+          "type": 49,
+          "data": "00",
+          "name": "fc_texcoord_count0"
+        },
+        {
+          "index": 52,
+          "type": 49,
+          "data": "00",
+          "name": "fc_texcoord_count1"
+        },
+        {
+          "index": 53,
+          "type": 49,
+          "data": "00",
+          "name": "fc_memoryless_index0"
+        },
+        {
+          "index": 54,
+          "type": 49,
+          "data": "00",
+          "name": "fc_memoryless_index1"
+        }
+      ]
+    },
+    {
+      "label": "texture-source-over",
+      "selected_native_entry": "fixed_frag_lph_cph",
+      "values": "build/drivers/gpu-fixed-compositor/texture-source-over-values.json",
+      "values_sha256": "2ecfe5374395accf40cb366ee3664592b52baa33f141e9c70913ab19b651e159",
+      "effective_constants": [
+        {
+          "index": 0,
+          "type": 53,
+          "data": "00",
+          "name": "fc_generic"
+        },
+        {
+          "index": 4,
+          "type": 53,
+          "data": "00",
+          "name": "fc_framebuffer_fetch"
+        },
+        {
+          "index": 5,
+          "type": 49,
+          "data": "01",
+          "name": "fc_attachment_count"
+        },
+        {
+          "index": 7,
+          "type": 53,
+          "data": "01",
+          "name": "fc_has_lod_bias"
+        },
+        {
+          "index": 8,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_noise_scale"
+        },
+        {
+          "index": 9,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_ycbcr_matrix"
+        },
+        {
+          "index": 10,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_gamma_luts"
+        },
+        {
+          "index": 11,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_asg_77_weights"
+        },
+        {
+          "index": 12,
+          "type": 53,
+          "data": "01",
+          "name": "fc_has_attachment_0"
+        },
+        {
+          "index": 13,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_attachment_1"
+        },
+        {
+          "index": 14,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_attachment_2"
+        },
+        {
+          "index": 15,
+          "type": 53,
+          "data": "01",
+          "name": "fc_has_image_0A"
+        },
+        {
+          "index": 16,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_image_1A"
+        },
+        {
+          "index": 17,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_image_0B"
+        },
+        {
+          "index": 18,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_image_1B"
+        },
+        {
+          "index": 19,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_image_0C"
+        },
+        {
+          "index": 20,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_image_1C"
+        },
+        {
+          "index": 21,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_noise_tex"
+        },
+        {
+          "index": 23,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_color_params"
+        },
+        {
+          "index": 24,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_color_trc0"
+        },
+        {
+          "index": 25,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_color_trc1"
+        },
+        {
+          "index": 26,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_color_cube0"
+        },
+        {
+          "index": 27,
+          "type": 53,
+          "data": "00",
+          "name": "fc_has_color_cube1"
+        },
+        {
+          "index": 3,
+          "type": 49,
+          "data": "00",
+          "name": "fc_vertex_layout"
+        },
+        {
+          "index": 28,
+          "type": 49,
+          "data": "03",
+          "name": "fc_texture_function"
+        },
+        {
+          "index": 29,
+          "type": 49,
+          "data": "03",
+          "name": "fc_blend_function"
+        },
+        {
+          "index": 31,
+          "type": 49,
+          "data": "00",
+          "name": "fc_destination_function"
+        },
+        {
+          "index": 32,
+          "type": 49,
+          "data": "01",
+          "name": "fc_image_count"
+        },
+        {
+          "index": 34,
+          "type": 49,
+          "data": "00",
+          "name": "fc_dest_index"
+        },
+        {
+          "index": 35,
+          "type": 49,
+          "data": "01",
+          "name": "fc_dest_count"
+        },
+        {
+          "index": 51,
+          "type": 49,
+          "data": "01",
+          "name": "fc_texcoord_count0"
+        },
+        {
+          "index": 52,
+          "type": 49,
+          "data": "00",
+          "name": "fc_texcoord_count1"
+        },
+        {
+          "index": 53,
+          "type": 49,
+          "data": "00",
+          "name": "fc_memoryless_index0"
+        },
+        {
+          "index": 54,
+          "type": 49,
+          "data": "00",
+          "name": "fc_memoryless_index1"
+        },
+        {
+          "index": 45,
+          "type": 49,
+          "data": "00",
+          "name": "fc_image_function0"
+        },
+        {
+          "index": 47,
+          "type": 49,
+          "data": "00",
+          "name": "fc_coord_function0"
+        },
+        {
+          "index": 49,
+          "type": 49,
+          "data": "01",
+          "name": "fc_plane_count0"
+        },
+        {
+          "index": 63,
+          "type": 49,
+          "data": "00",
+          "name": "fc_filter0"
+        }
+      ]
+    }
+  ],
+  "fixed_profile_scope": "untouched native AIR and normal native Metal function-constant specialization; profiles are diagnostic inputs, not hard-coded replacements or forced defaults",
+  "texture_profile_bindings": {
+    "source_texture": 3,
+    "source_sampler": 0,
+    "lod_bias_buffer": 2,
+    "lod_bias_format": "float32 scalar; choose zero for no LOD bias",
+    "destination_snapshot_texture": 0,
+    "destination_snapshot_scope": "legacy five configurations use separate application-bound destination texture0; new native framebuffer configurations use private per-primitive snapshots without that binding"
+  },
+  "fixed_color_scope": "input half4 color with clamped output alpha; texture-color multiplies sampled half4 by color; source-over uses source + destination * (1-source.a), then clamps output alpha",
+  "framebuffer_fetch_abi": "drivers/abi-22H374/framebuffer-fetch-abi.json",
+  "framebuffer_kernel_pipeline_cases": [
+    {
+      "label": "framebuffer-color-source-over",
+      "samples": 1,
+      "kernel_pipeline_encoded": true,
+      "copy_dispatches": 2,
+      "primitive_draws": 2,
+      "private_scratch_bytes": 8192,
+      "framebufferMask": 1,
+      "colorFormat": 1,
+      "large": false,
+      "command_buffers": 1,
+      "flush_sequence": 8,
+      "command_words": 3062
+    },
+    {
+      "label": "framebuffer-color-source-over",
+      "samples": 2,
+      "kernel_pipeline_encoded": true,
+      "copy_dispatches": 2,
+      "primitive_draws": 2,
+      "private_scratch_bytes": 12288,
+      "framebufferMask": 1,
+      "colorFormat": 1,
+      "large": false,
+      "command_buffers": 1,
+      "flush_sequence": 8,
+      "command_words": 3062
+    },
+    {
+      "label": "framebuffer-color-source-over",
+      "samples": 4,
+      "kernel_pipeline_encoded": true,
+      "copy_dispatches": 2,
+      "primitive_draws": 2,
+      "private_scratch_bytes": 20480,
+      "framebufferMask": 1,
+      "colorFormat": 1,
+      "large": false,
+      "command_buffers": 1,
+      "flush_sequence": 8,
+      "command_words": 3062
+    },
+    {
+      "label": "framebuffer-color-source-over",
+      "samples": 1,
+      "kernel_pipeline_encoded": true,
+      "copy_dispatches": 2,
+      "primitive_draws": 2,
+      "private_scratch_bytes": 8192,
+      "framebufferMask": 1,
+      "colorFormat": 7,
+      "large": false,
+      "command_buffers": 1,
+      "flush_sequence": 8,
+      "command_words": 3062
+    },
+    {
+      "label": "framebuffer-color-source-over",
+      "samples": 2,
+      "kernel_pipeline_encoded": true,
+      "copy_dispatches": 2,
+      "primitive_draws": 2,
+      "private_scratch_bytes": 8192,
+      "framebufferMask": 1,
+      "colorFormat": 7,
+      "large": false,
+      "command_buffers": 1,
+      "flush_sequence": 8,
+      "command_words": 3062
+    },
+    {
+      "label": "framebuffer-color-source-over",
+      "samples": 4,
+      "kernel_pipeline_encoded": true,
+      "copy_dispatches": 2,
+      "primitive_draws": 2,
+      "private_scratch_bytes": 8192,
+      "framebufferMask": 1,
+      "colorFormat": 7,
+      "large": false,
+      "command_buffers": 1,
+      "flush_sequence": 8,
+      "command_words": 3062
+    },
+    {
+      "label": "framebuffer-color-source-over",
+      "samples": 4,
+      "kernel_pipeline_encoded": true,
+      "copy_dispatches": 256,
+      "primitive_draws": 256,
+      "private_scratch_bytes": 8192,
+      "framebufferMask": 1,
+      "colorFormat": 7,
+      "large": true,
+      "command_buffers": 37,
+      "flush_sequence": 878,
+      "command_words": 388198
+    },
+    {
+      "label": "framebuffer-color-source-over",
+      "samples": 1,
+      "kernel_pipeline_encoded": true,
+      "copy_dispatches": 2,
+      "primitive_draws": 2,
+      "private_scratch_bytes": 8192,
+      "framebufferMask": 1,
+      "colorFormat": 8,
+      "large": false,
+      "command_buffers": 1,
+      "flush_sequence": 8,
+      "command_words": 3062
+    },
+    {
+      "label": "framebuffer-color-source-over",
+      "samples": 2,
+      "kernel_pipeline_encoded": true,
+      "copy_dispatches": 2,
+      "primitive_draws": 2,
+      "private_scratch_bytes": 8192,
+      "framebufferMask": 1,
+      "colorFormat": 8,
+      "large": false,
+      "command_buffers": 1,
+      "flush_sequence": 8,
+      "command_words": 3062
+    },
+    {
+      "label": "framebuffer-color-source-over",
+      "samples": 4,
+      "kernel_pipeline_encoded": true,
+      "copy_dispatches": 2,
+      "primitive_draws": 2,
+      "private_scratch_bytes": 12288,
+      "framebufferMask": 1,
+      "colorFormat": 8,
+      "large": false,
+      "command_buffers": 1,
+      "flush_sequence": 8,
+      "command_words": 3062
+    },
+    {
+      "label": "framebuffer-texture-source-over",
+      "samples": 1,
+      "kernel_pipeline_encoded": true,
+      "copy_dispatches": 2,
+      "primitive_draws": 2,
+      "private_scratch_bytes": 8192,
+      "framebufferMask": 1,
+      "colorFormat": 1,
+      "large": false,
+      "command_buffers": 1,
+      "flush_sequence": 8,
+      "command_words": 3110
+    },
+    {
+      "label": "framebuffer-texture-source-over",
+      "samples": 2,
+      "kernel_pipeline_encoded": true,
+      "copy_dispatches": 2,
+      "primitive_draws": 2,
+      "private_scratch_bytes": 12288,
+      "framebufferMask": 1,
+      "colorFormat": 1,
+      "large": false,
+      "command_buffers": 1,
+      "flush_sequence": 8,
+      "command_words": 3110
+    },
+    {
+      "label": "framebuffer-texture-source-over",
+      "samples": 4,
+      "kernel_pipeline_encoded": true,
+      "copy_dispatches": 2,
+      "primitive_draws": 2,
+      "private_scratch_bytes": 20480,
+      "framebufferMask": 1,
+      "colorFormat": 1,
+      "large": false,
+      "command_buffers": 1,
+      "flush_sequence": 8,
+      "command_words": 3110
+    },
+    {
+      "label": "framebuffer-texture-source-over",
+      "samples": 1,
+      "kernel_pipeline_encoded": true,
+      "copy_dispatches": 2,
+      "primitive_draws": 2,
+      "private_scratch_bytes": 8192,
+      "framebufferMask": 1,
+      "colorFormat": 7,
+      "large": false,
+      "command_buffers": 1,
+      "flush_sequence": 8,
+      "command_words": 3110
+    },
+    {
+      "label": "framebuffer-texture-source-over",
+      "samples": 2,
+      "kernel_pipeline_encoded": true,
+      "copy_dispatches": 2,
+      "primitive_draws": 2,
+      "private_scratch_bytes": 8192,
+      "framebufferMask": 1,
+      "colorFormat": 7,
+      "large": false,
+      "command_buffers": 1,
+      "flush_sequence": 8,
+      "command_words": 3110
+    },
+    {
+      "label": "framebuffer-texture-source-over",
+      "samples": 4,
+      "kernel_pipeline_encoded": true,
+      "copy_dispatches": 2,
+      "primitive_draws": 2,
+      "private_scratch_bytes": 8192,
+      "framebufferMask": 1,
+      "colorFormat": 7,
+      "large": false,
+      "command_buffers": 1,
+      "flush_sequence": 8,
+      "command_words": 3110
+    },
+    {
+      "label": "framebuffer-texture-source-over",
+      "samples": 4,
+      "kernel_pipeline_encoded": true,
+      "copy_dispatches": 256,
+      "primitive_draws": 256,
+      "private_scratch_bytes": 8192,
+      "framebufferMask": 1,
+      "colorFormat": 7,
+      "large": true,
+      "command_buffers": 37,
+      "flush_sequence": 878,
+      "command_words": 394342
+    },
+    {
+      "label": "framebuffer-texture-source-over",
+      "samples": 1,
+      "kernel_pipeline_encoded": true,
+      "copy_dispatches": 2,
+      "primitive_draws": 2,
+      "private_scratch_bytes": 8192,
+      "framebufferMask": 1,
+      "colorFormat": 8,
+      "large": false,
+      "command_buffers": 1,
+      "flush_sequence": 8,
+      "command_words": 3110
+    },
+    {
+      "label": "framebuffer-texture-source-over",
+      "samples": 2,
+      "kernel_pipeline_encoded": true,
+      "copy_dispatches": 2,
+      "primitive_draws": 2,
+      "private_scratch_bytes": 8192,
+      "framebufferMask": 1,
+      "colorFormat": 8,
+      "large": false,
+      "command_buffers": 1,
+      "flush_sequence": 8,
+      "command_words": 3110
+    },
+    {
+      "label": "framebuffer-texture-source-over",
+      "samples": 4,
+      "kernel_pipeline_encoded": true,
+      "copy_dispatches": 2,
+      "primitive_draws": 2,
+      "private_scratch_bytes": 12288,
+      "framebufferMask": 1,
+      "colorFormat": 8,
+      "large": false,
+      "command_buffers": 1,
+      "flush_sequence": 8,
+      "command_words": 3110
+    },
+    {
+      "label": "path_blit_frag_lph",
+      "samples": 1,
+      "kernel_pipeline_encoded": true,
+      "copy_dispatches": 2,
+      "primitive_draws": 2,
+      "private_scratch_bytes": 8192,
+      "framebufferMask": 4,
+      "colorFormat": 1,
+      "large": false,
+      "command_buffers": 1,
+      "flush_sequence": 8,
+      "command_words": 3062
+    },
+    {
+      "label": "path_blit_frag_lph",
+      "samples": 2,
+      "kernel_pipeline_encoded": true,
+      "copy_dispatches": 2,
+      "primitive_draws": 2,
+      "private_scratch_bytes": 12288,
+      "framebufferMask": 4,
+      "colorFormat": 1,
+      "large": false,
+      "command_buffers": 1,
+      "flush_sequence": 8,
+      "command_words": 3062
+    },
+    {
+      "label": "path_blit_frag_lph",
+      "samples": 4,
+      "kernel_pipeline_encoded": true,
+      "copy_dispatches": 2,
+      "primitive_draws": 2,
+      "private_scratch_bytes": 20480,
+      "framebufferMask": 4,
+      "colorFormat": 1,
+      "large": false,
+      "command_buffers": 1,
+      "flush_sequence": 8,
+      "command_words": 3062
+    },
+    {
+      "label": "path_blit_frag_lph",
+      "samples": 1,
+      "kernel_pipeline_encoded": true,
+      "copy_dispatches": 2,
+      "primitive_draws": 2,
+      "private_scratch_bytes": 8192,
+      "framebufferMask": 4,
+      "colorFormat": 7,
+      "large": false,
+      "command_buffers": 1,
+      "flush_sequence": 8,
+      "command_words": 3062
+    },
+    {
+      "label": "path_blit_frag_lph",
+      "samples": 2,
+      "kernel_pipeline_encoded": true,
+      "copy_dispatches": 2,
+      "primitive_draws": 2,
+      "private_scratch_bytes": 8192,
+      "framebufferMask": 4,
+      "colorFormat": 7,
+      "large": false,
+      "command_buffers": 1,
+      "flush_sequence": 8,
+      "command_words": 3062
+    },
+    {
+      "label": "path_blit_frag_lph",
+      "samples": 4,
+      "kernel_pipeline_encoded": true,
+      "copy_dispatches": 2,
+      "primitive_draws": 2,
+      "private_scratch_bytes": 8192,
+      "framebufferMask": 4,
+      "colorFormat": 7,
+      "large": false,
+      "command_buffers": 1,
+      "flush_sequence": 8,
+      "command_words": 3062
+    },
+    {
+      "label": "path_blit_frag_lph",
+      "samples": 4,
+      "kernel_pipeline_encoded": true,
+      "copy_dispatches": 256,
+      "primitive_draws": 256,
+      "private_scratch_bytes": 8192,
+      "framebufferMask": 4,
+      "colorFormat": 7,
+      "large": true,
+      "command_buffers": 37,
+      "flush_sequence": 878,
+      "command_words": 388198
+    },
+    {
+      "label": "path_blit_frag_lph",
+      "samples": 1,
+      "kernel_pipeline_encoded": true,
+      "copy_dispatches": 2,
+      "primitive_draws": 2,
+      "private_scratch_bytes": 8192,
+      "framebufferMask": 4,
+      "colorFormat": 8,
+      "large": false,
+      "command_buffers": 1,
+      "flush_sequence": 8,
+      "command_words": 3062
+    },
+    {
+      "label": "path_blit_frag_lph",
+      "samples": 2,
+      "kernel_pipeline_encoded": true,
+      "copy_dispatches": 2,
+      "primitive_draws": 2,
+      "private_scratch_bytes": 8192,
+      "framebufferMask": 4,
+      "colorFormat": 8,
+      "large": false,
+      "command_buffers": 1,
+      "flush_sequence": 8,
+      "command_words": 3062
+    },
+    {
+      "label": "path_blit_frag_lph",
+      "samples": 4,
+      "kernel_pipeline_encoded": true,
+      "copy_dispatches": 2,
+      "primitive_draws": 2,
+      "private_scratch_bytes": 12288,
+      "framebufferMask": 4,
+      "colorFormat": 8,
+      "large": false,
+      "command_buffers": 1,
+      "flush_sequence": 8,
+      "command_words": 3062
+    }
+  ],
+  "framebuffer_fragment_profiles": [
+    {
+      "label": "framebuffer-color-source-over",
+      "selected_native_entry": "fixed_frag_lph_cph",
+      "values": "build/drivers/gpu-framebuffer-fetch/color-source-over-values.json",
+      "values_sha256": "e8ac5b07e9d065ad369cef1cd8e5378bfd30227df4a658494a032fadd8a8eb19",
+      "effective_constants": [
+        {
+          "index": 0,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 4,
+          "type": 53,
+          "data": "01"
+        },
+        {
+          "index": 5,
+          "type": 49,
+          "data": "01"
+        },
+        {
+          "index": 7,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 8,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 9,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 10,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 11,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 12,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 13,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 14,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 15,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 16,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 17,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 18,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 19,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 20,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 21,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 23,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 24,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 25,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 26,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 27,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 3,
+          "type": 49,
+          "data": "00"
+        },
+        {
+          "index": 28,
+          "type": 49,
+          "data": "00"
+        },
+        {
+          "index": 29,
+          "type": 49,
+          "data": "03"
+        },
+        {
+          "index": 31,
+          "type": 49,
+          "data": "00"
+        },
+        {
+          "index": 32,
+          "type": 49,
+          "data": "00"
+        },
+        {
+          "index": 34,
+          "type": 49,
+          "data": "00"
+        },
+        {
+          "index": 35,
+          "type": 49,
+          "data": "01"
+        },
+        {
+          "index": 51,
+          "type": 49,
+          "data": "00"
+        },
+        {
+          "index": 52,
+          "type": 49,
+          "data": "00"
+        },
+        {
+          "index": 53,
+          "type": 49,
+          "data": "00"
+        },
+        {
+          "index": 54,
+          "type": 49,
+          "data": "00"
+        }
+      ],
+      "native_framebuffer_fetch": true,
+      "requires_destination_texture0": false
+    },
+    {
+      "label": "framebuffer-texture-source-over",
+      "selected_native_entry": "fixed_frag_lph_cph",
+      "values": "build/drivers/gpu-framebuffer-fetch/texture-source-over-values.json",
+      "values_sha256": "3192b4afe569354bc7eedfcae2d54bf4a80870635e8a42240ab74d29e008e8f8",
+      "effective_constants": [
+        {
+          "index": 0,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 4,
+          "type": 53,
+          "data": "01"
+        },
+        {
+          "index": 5,
+          "type": 49,
+          "data": "01"
+        },
+        {
+          "index": 7,
+          "type": 53,
+          "data": "01"
+        },
+        {
+          "index": 8,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 9,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 10,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 11,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 12,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 13,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 14,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 15,
+          "type": 53,
+          "data": "01"
+        },
+        {
+          "index": 16,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 17,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 18,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 19,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 20,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 21,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 23,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 24,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 25,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 26,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 27,
+          "type": 53,
+          "data": "00"
+        },
+        {
+          "index": 3,
+          "type": 49,
+          "data": "00"
+        },
+        {
+          "index": 28,
+          "type": 49,
+          "data": "03"
+        },
+        {
+          "index": 29,
+          "type": 49,
+          "data": "03"
+        },
+        {
+          "index": 31,
+          "type": 49,
+          "data": "00"
+        },
+        {
+          "index": 32,
+          "type": 49,
+          "data": "01"
+        },
+        {
+          "index": 34,
+          "type": 49,
+          "data": "00"
+        },
+        {
+          "index": 35,
+          "type": 49,
+          "data": "01"
+        },
+        {
+          "index": 51,
+          "type": 49,
+          "data": "01"
+        },
+        {
+          "index": 52,
+          "type": 49,
+          "data": "00"
+        },
+        {
+          "index": 53,
+          "type": 49,
+          "data": "00"
+        },
+        {
+          "index": 54,
+          "type": 49,
+          "data": "00"
+        },
+        {
+          "index": 45,
+          "type": 49,
+          "data": "00"
+        },
+        {
+          "index": 47,
+          "type": 49,
+          "data": "00"
+        },
+        {
+          "index": 49,
+          "type": 49,
+          "data": "01"
+        },
+        {
+          "index": 63,
+          "type": 49,
+          "data": "00"
+        }
+      ],
+      "native_framebuffer_fetch": true,
+      "requires_destination_texture0": false
+    }
+  ],
+  "framebuffer_position_aliases": "native fixed fragment arguments may alias the same center/no-perspective float4 position; both map to gl_FragCoord after exact metadata/type validation",
+  "mask_formats_abi": "drivers/abi-22H374/mask-formats-abi.json",
+  "draw_batches_abi": "drivers/abi-22H374/draw-batches-abi.json"
+}

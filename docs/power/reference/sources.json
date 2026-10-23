@@ -1,0 +1,110 @@
+{
+  "gcc-msm8998.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/clk/qcom/gcc-msm8998.c",
+    "sha256": "b76f60946140ca6387979222ef4ea8a7a3530d09e1ddf6c1e5a431b6e132745b"
+  },
+  "gdsc.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/clk/qcom/gdsc.c",
+    "sha256": "e1210770ad3e4406adaca4eb0d6d103823d73a65068cf1ff48183bb1a347d32d"
+  },
+  "gdsc.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/clk/qcom/gdsc.h",
+    "sha256": "ba487640dc1a0acbecb3605417b2bd34418c6914d24c64a54a145565d1a15f86"
+  },
+  "clk-branch.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/clk/qcom/clk-branch.c",
+    "sha256": "913cdda2b6ed31b05f37a0b3467a6a03e12a92b041382f7f760e287e5afeb59b"
+  },
+  "qcom,gcc-msm8998.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/include/dt-bindings/clock/qcom,gcc-msm8998.h",
+    "sha256": "2a37bb6fe9e1571c3c336d93962564bb9a013e8f11030d189414265d6805d404"
+  },
+  "clk-alpha-pll.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/clk/qcom/clk-alpha-pll.c",
+    "sha256": "9c90a18189062a6630ce90451afa02ca1bd95f46631d5f48f6f8ddcf5ba95236"
+  },
+  "clk-rcg2.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/clk/qcom/clk-rcg2.c",
+    "sha256": "ff1bc46cf2d10b3d31499f2188b3d9793a00ee4f1bc92a62c724c28cd0d8d6a5"
+  },
+  "clk-alpha-pll.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/clk/qcom/clk-alpha-pll.h",
+    "sha256": "b7bde0db18140258c39728b0165a431049e5d9f3f40492d5b2276659ecb6f6e7"
+  },
+  "gpucc-msm8998.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/clk/qcom/gpucc-msm8998.c",
+    "sha256": "dea2f5c43640ea5a8ea40220e9595795b043e1894013b4ea974d1863ae7631b0"
+  },
+  "qcom-cpufreq-hw.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/cpufreq/qcom-cpufreq-hw.c",
+    "sha256": "d18dddee249b345b92fd05fa468401b0d0fa3650129bb8ec3feb83adb92d9f2d"
+  },
+  "smd-rpm.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/soc/qcom/smd-rpm.c",
+    "sha256": "e15c2afc6b081a28d437c5208492d03fd54766e359cca15d18b4c43ce2d829de"
+  },
+  "spmi-pmic-arb.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/spmi/spmi-pmic-arb.c",
+    "sha256": "37913bfb3d7678bbb87f4f4ab6445d1910bd6d1259c7f6a45ce3970a62c7c0f2"
+  },
+  "rpmpd.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/pmdomain/qcom/rpmpd.c",
+    "sha256": "0e893a1c23d447fd1f3e82555f733da5ff013639a59251aca1713678d7b3e5c6"
+  },
+  "qcom,gpucc-msm8998.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/include/dt-bindings/clock/qcom,gpucc-msm8998.h",
+    "sha256": "78fd8e641dea0dca3af4d251431bdb4c414d4ae109ddaba748d9917bfcf08b05"
+  },
+  "qcom,mmcc-msm8998.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/include/dt-bindings/clock/qcom,mmcc-msm8998.h",
+    "sha256": "e7fb71b62c2d4efd74b7c5bac173b7b01358474dc50a1453eedc3035441baab0"
+  },
+  "smd-rpm.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/include/linux/soc/qcom/smd-rpm.h",
+    "sha256": "33afc99246fea2c1136c07f7e0d61a3c56a065f0ae091c401322f9b3573dc73d"
+  },
+  "qcom_smd-regulator.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/regulator/qcom_smd-regulator.c",
+    "sha256": "aedb5834f2dcf49ec57014d2d9e408a300b402402445439a494fa25d8c7a7951"
+  },
+  "qcom_spmi-regulator.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/regulator/qcom_spmi-regulator.c",
+    "sha256": "29962177ba7108cf5791124aec5bd6552561b9750619bd93e25e332b18285245"
+  },
+  "clk-branch.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/clk/qcom/clk-branch.h",
+    "sha256": "d1cdd6eda43aaf475916c3e429ed70f83786b63a2cf1037d2639abf159b6519a"
+  },
+  "mmcc-msm8998.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/refs/tags/v6.12/drivers/clk/qcom/mmcc-msm8998.c",
+    "sha256": "3487a2523e25f959d1712f513b8b85a2cfa02f84731d78036251daba832e3183"
+  },
+  "qcom_glink_rpm.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/refs/tags/v6.12/drivers/rpmsg/qcom_glink_rpm.c",
+    "sha256": "f68aaf8d09459404d080cb45b21fa5707b8e92b8f08ca598b0955821f98ce43f"
+  },
+  "qcom_glink_native.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/refs/tags/v6.12/drivers/rpmsg/qcom_glink_native.c",
+    "sha256": "0238242a1620174c083aceefa45f165913214ae3be84476e45e5caed47239466"
+  },
+  "clock-osm.c": {
+    "url": "https://android.googlesource.com/kernel/msm/+/e60e904d4e7457386748f5e80fe8b56da7a79bd1/drivers/clk/msm/clock-osm.c?format=TEXT",
+    "sha256": "e8d82f689b1195ee4cb04b6e9e4ccfd53ad0e7be442f02ea8fa8fd94783ca0bb"
+  },
+  "qcom-rpmpd.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/refs/tags/v6.12/include/dt-bindings/power/qcom-rpmpd.h",
+    "sha256": "e053ecdd9c4c5a8698002e4a29a0a1f0c0c0eac7b966a6d5912ea839af7207fa"
+  },
+  "qcom-apcs-ipc-mailbox.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/refs/tags/v6.12/drivers/mailbox/qcom-apcs-ipc-mailbox.c",
+    "sha256": "72b44ee93ef8ad62b0335d68d08d057eae40b22ce15cb65c39c26feffa3ff2de"
+  },
+  "clock-mmss-8998.c": {
+    "url": "https://android.googlesource.com/kernel/msm/+/e60e904d4e7457386748f5e80fe8b56da7a79bd1/drivers/clk/msm/clock-mmss-8998.c?format=TEXT",
+    "sha256": "163749552b889b5a27d74120ccbbc5963d5ed89b1ae982c531e0a254cadebd38"
+  },
+  "clock-local2.c": {
+    "url": "https://android.googlesource.com/kernel/msm/+/e60e904d4e7457386748f5e80fe8b56da7a79bd1/drivers/clk/msm/clock-local2.c?format=TEXT",
+    "sha256": "84f5d1db4acdd2481434c9390825f90ac128e1d50ac49f4cccfa5f0900594d30"
+  }
+}

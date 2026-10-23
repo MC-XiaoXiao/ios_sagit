@@ -1,0 +1,381 @@
+{
+  "schema_version": 1,
+  "reference": {
+    "system": "iOS 18.7.10 (22H374)",
+    "source": "build/apfs/firmware/094-33089-038.dmg",
+    "source_sha256": "617c55c3c1b27944a976ae1be22a88068a1e62a157610ddc13d8c8a849e16192",
+    "layout": "build/display-runtime/cache-layout.json",
+    "method": "Read native Mach-O text/Objective-C metadata from verified dyld cache VM mappings in the decrypted Cryptex APFS image; no user library replacement."
+  },
+  "framebuffer_discovery": {
+    "image_base": "0x1b6fdc000",
+    "initialization_block": "0x1b6fe7eac",
+    "code_sha256": "a6335250ccf05f2185a2e8195de03ff580270d2503ab4d19ec82c5121a6d8f2d",
+    "device_tree_parent": "IODeviceTree:/arm-io",
+    "child_property": "device_type",
+    "counted_values": [
+      "display-subsystem",
+      "ext-display-subsystem"
+    ],
+    "count_global": "0x1f2c36ff0",
+    "property_scan": "0x1b6fe7f08",
+    "comparison_start": "0x1b6fe7fe8",
+    "native_framebuffer_match": "IOMobileFramebuffer",
+    "matching_callback": "0x1b6fe86e8",
+    "implementation": "The native library counts direct display-subsystem children before waiting for matching framebuffer services. Publish one physical DPU child; DSI and panel nodes must not each add a display."
+  },
+  "quartzcore": {
+    "image_base": "0x184339000",
+    "class": "CADisplay",
+    "class_object": "0x1f29c7c80",
+    "metaclass": "0x1f29c7ca8",
+    "selector_base": "0x1fa851c78",
+    "class_method_list": "0x18463b4e8",
+    "class_methods": {
+      "displays": "0x1843d0fb8",
+      "mainDisplay": "0x184347fcc",
+      "updateDisplays": "0x1844c2d6c",
+      "automaticallyNotifiesObserversForKey:": "0x184484428",
+      "TVOutDisplay": "0x1844aba7c"
+    },
+    "displays_code_sha256": "28c73f0a83edd0fac052088942bb8840f3b34415ed24bd9feb4d90bef1cf6939",
+    "display_initialization_helper": "0x184347d90",
+    "initialization_load_helper": "0x184411e18",
+    "note": "CADisplay enumeration uses its native initialization and cached display array. A nonzero IORegistry framebuffer count alone does not prove that array is populated.",
+    "update_displays_semantics": "Native +[CADisplay updateDisplays] at 0x1844c2d6c clears the initialization byte at 0x1f29cc820. Later displays calls can reload the native remote display snapshot. A fresh process also starts with that byte clear.",
+    "system_session_client": {
+      "environment": "CA_SYSTEM_SESSION_CLIENT=1",
+      "native_gate": "0x184411dd4",
+      "lookup": "0x18433f040",
+      "semantics": "Native gate checks a nonzero environment integer and root effective uid. If native xpc_user_sessions_enabled is true, server lookup queries native foreground uid and calls bootstrap_look_up_per_user; otherwise ordinary bootstrap_look_up remains. No uid or bootstrap mutation required.",
+      "next_probe": "Use native environment gate before first CADisplay call; separately compare user0/mobile501/foreground service visibility."
+    },
+    "refresh_properties_audit": {
+      "reader": "0x1844b973c",
+      "number_reader": "0x1843c1460",
+      "note": "IOMFBDisplayRefresh displayMinRefreshInterval is read as integer (CFNumber type9, kCFNumberIntType), sign-extended and stored. The current driver Q32.32 value is not being read as IEEE double; do not change timing representation on that disproven hypothesis.",
+      "legacy_native_getter": "0xfffffff005c26e34",
+      "legacy_native_reference_values": {
+        "min_q32_32_seconds": 71582788,
+        "normal_max_q32_32_seconds": 178956970,
+        "forced_fixed_max_q32_32_seconds": 71582788,
+        "min_nanoseconds": 16666666
+      },
+      "reference_class": "AppleH7DisplayPipe inherits the same IOMobileFramebufferLegacy timing getter at virtual slot309."
+    },
+    "preferred_scale_native_getter": {
+      "entry": "0x18448e338",
+      "selector": "-[CADisplayMode preferredScale]",
+      "native_behavior": "Uses explicit mode value when nonzero; internal-panel mode fallback asks original MGGetFloat32Answer(main-screen-scale,2). A cached explicit zero survives that default.",
+      "MG_key_cfstring": "0x1e6942898",
+      "MG_key_string": "0x18465dffb",
+      "persistent_cache_consequence": "The disk screen-info scale0 can propagate both mode preferredScale and primary pointScale; clearing only process-local lookup or changing DT does not invalidate the persistent cache."
+    }
+  },
+  "project_change": {
+    "file": "device_trees/msm8998.dtsi",
+    "node": "/soc@0/display-controller@c901000",
+    "property": "device_type",
+    "value": "display-subsystem",
+    "apple_dt_path": "IODeviceTree:/arm-io/display-controller@c901000",
+    "test": "tests/test_boot_bridge.py::test_display_handoff_keeps_runtime_resources_uncommitted"
+  },
+  "runtime_wait_run_14": {
+    "report": "build/display-runtime/handoff-14/report.json",
+    "shared_cache_slide": "0x172b4000",
+    "native_get_main_frame": "0x1b6fe6190",
+    "native_populate_wait_frame": "0x1b6fe82b8",
+    "self_snapshot_result": "task_threads and thread_get_state returned KERN_SUCCESS",
+    "initialization_worker": [
+      "CoreFoundation 0x1828d4ed4",
+      "CoreFoundation 0x1828d336c",
+      "CoreFoundation 0x1828d3d78",
+      "libxpc 0x1e1423828",
+      "libdispatch 0x18a0c2d7c",
+      "libsystem_kernel mach_msg"
+    ],
+    "cfprefsd_exec_last_stage": "/usr/sbin/cfprefsd: MAC label update enter; no leave",
+    "hypothesis": "Native display initialization waits on a CoreFoundation preferences XPC request while cfprefsd has not completed exec. Validate by allowing only that additional executable through the existing development Sandbox exec hook."
+  },
+  "frontboard_mode_validation": {
+    "reference_image": "/System/Library/PrivateFrameworks/FrontBoardServices.framework/FrontBoardServices",
+    "image_base": "0x19c056000",
+    "initializer": "0x19c05f1a0",
+    "selector": "_initWithWidth:height:preferredScale:scaleOverride:refreshRate:gamut:hdr:rotation:virtual:validityCheck:",
+    "observed_trap": "0x19c05f3e4",
+    "trap_call": "0x19c05f3e0",
+    "validation_policy": 1,
+    "conditions": "For finite inputs, native initializer requires width/height neither0 norUINT64_MAX, preferredScale!=UINT64_MAX, nonnegative scaleOverride, positive refreshRate, gamut<2,HDR<3,rotation<4. When preferredScale=0 it also rejects approximately-zero scaleOverride using BaseBoard BSFloatIsZero. No general finiteness check was established.",
+    "same_native_trap_observed_in": [
+      "SpringBoard run 23 PC 0x1aa2c33e4 minus cache slide 0xe264000",
+      "PreBoard and SpringBoard run 24 PC 0x19fbbf3e4 minus cache slide 0x3b60000"
+    ],
+    "next": "Compare native user501 BackBoardServices screen-info reply, mode scale/rotation and MobileGestalt metadata. Refresh60 has been confirmed from native CADisplay in run28.",
+    "crash_reports_export": "build/display-runtime/handoff-26/display-crashes-summary.json",
+    "crash_report_count": 62,
+    "preserved_registers": {
+      "width_x25": 1242,
+      "height_x26": 2208,
+      "preferred_scale_x24": 0,
+      "gamut_x23": 0,
+      "hdr_x22": 0,
+      "validity_check_x28": 1
+    },
+    "crash_evidence_limit": "All 62 SpringBoard/PreBoard reports retain the same integer mode parameters. FPS/scale live in D8/D9 and are absent from ARM_THREAD_STATE64 crash reports; no exact failing floating-point field is established. Rotation X21 is reused on the fatal path and cannot be read as the original rotation there.",
+    "cadisplay_mode": {
+      "refresh_rate_getter": "0x18440791c",
+      "mode_constructor": "0x184484810",
+      "synthetic_mode_constructor": "0x1844c2aa8",
+      "methods": "build/display-runtime/CADisplayMode-methods.json",
+      "encoding": "Native ordinary mode word stores width bits 0..13, height bits 14..27, and unsigned Q16.16 Hz bits 29..53. UINT64_MAX selects reciprocal refresh interval from the owning display."
+    },
+    "scale_zero_helper": {
+      "stub": "0x1a1c62b08",
+      "native_target": "0x18a27d69c",
+      "implementation": "FABS D0,D0; compare magnitude with epsilon constant; return approximate-zero predicate. Previous interpretation as a finiteness check was incorrect.",
+      "bks_scale_for_display": "0x18a1aaa7c",
+      "bks_main_screen_info_wrapper": "0x18a1aa6fc",
+      "bks_main_screen_info_mig": "0x18a1aa7e4",
+      "bks_reference_uuid": "3a438d9142c73a13b8a78aef17b697c7",
+      "main_info_behavior": "Wrapper zero-initializes result fields, invokes native MIG, then copies results even on query error. A failed lookup can therefore overwrite the caller scale default1 with0; root namespace failure alone does not establish the values returned to mobile SpringBoard."
+    },
+    "bks_scale_selection": {
+      "display_scale_helper": "0x18a1aaa7c",
+      "main_screen_info": "0x18a1aa6fc",
+      "external_display_scale": "0x18a1aab2c",
+      "logic": "Helper compares the input display pointer with [CADisplay displays].firstObject. Identical main object uses native BKS main-screen-info scale. Other objects, including a distinct immutable copy, use display.pointScale; if tag&0xe0 it uses currentMode.preferredScale instead.",
+      "selectors_audited": {
+        "displays": "0x18a23b2e0",
+        "firstObject": "0x18a23b6c0",
+        "pointScale": "0x18a23cc00",
+        "tag": "0x18a23e980",
+        "currentMode": "0x18a23ad00",
+        "preferredScale": "0x18a23cda0"
+      },
+      "runtime_evidence_limit": "Run29 confirms native global BKS main-screen scale1. It does not measure immutable CADisplay pointScale or tag; next client adds those fields."
+    }
+  },
+  "mobile_gestalt_screen_info": {
+    "image": "/usr/lib/libMobileGestalt.dylib",
+    "image_base": "0x19ceeb000",
+    "screen_info_initializer": "0x19cefaed0",
+    "registry_integer_reader": "0x19cef1ad0",
+    "chosen_path": "IODeviceTree:/chosen",
+    "properties": {
+      "display-scale": "U32 native integer. Missing property defaults to0, later stored as float scale in the 24-byte screen-info record.",
+      "display-rotation": "U32 degrees. Missing defaults toUINT32_MAX ->orientation-1; present value converts(360-degrees)%360 to radians."
+    },
+    "framebuffer_path": "For supported device classes the same routine uses original IOMobileFramebufferGetMainDisplay/GetDisplaySize/GetDotPitch to obtain geometry/pitch.",
+    "existing_bridge_gap": "No chosen display-scale or display-rotation was emitted by display handoff before run30.",
+    "generic_profile_fix": {
+      "display_scale": 3,
+      "display_rotation": 0,
+      "implementation": "scripts/build-bridge.py configure_display_handoff; Apple DT conversion includes both numeric properties.",
+      "test": "tests/test_boot_bridge.py::test_display_handoff_keeps_runtime_resources_uncommitted; nonzero scale/valid quarter-turn and LE32 checks."
+    },
+    "hardware_validation": "Pending run30, after exporting run29 native screen-info result.",
+    "run30_evidence": {
+      "build_chosen_scale": 3,
+      "build_chosen_rotation": 0,
+      "MG_cached_scale": 0,
+      "CADisplay_pointScale": 0,
+      "CADisplay_immutable_pointScale": 0,
+      "CADisplay_tag": 0,
+      "CADisplay_nativeOrientation": "rot0",
+      "CADisplay_refreshRate": 60,
+      "BKS_global_scale": 1,
+      "persistent_cache": "build/display-runtime/handoff-30/mobilegestalt-cache.plist",
+      "screen_info_extra_key": "oBbtJ8x+s1q0OkaiocPuog",
+      "cached_screen_record": "1080x1920,ppi429,scale0,orientation-1,screenClass-1",
+      "next": "Read runtime chosen then invoke original _MGRebuildCache with backup; verify cache and next server startup."
+    },
+    "native_cache_rebuild": {
+      "library": "/usr/lib/libMobileGestalt.dylib",
+      "uuid": "beed77de987a347eada988634a6be56a",
+      "export": "_MGRebuildCache",
+      "entry": "0x19cf2f6ac",
+      "image_offset": "0x446ac",
+      "prefix16": "ff4301d1f44f03a9fd7b04a9fd030191",
+      "prototype_audit": "Offline function0x19cf2f6ac removes/reset/recomputes cache with no input arguments; NOT established as the _MGRebuildCache export. Never call via assumed alias.",
+      "backup": "/private/var/display-gestalt-cache.original.plist",
+      "backup_policy": "Native Foundation copy refuses overwrite; compare source/backup bytes and native sync before original cache mutation. Require runtime chosen scale1..3.",
+      "hardware_status": "Run31 rejected original _MGRebuildCache by UUID/offset/entry guard. Cache retained. The proposed offline entry identification is unconfirmed; no native rebuild API called."
+    },
+    "cache_invalidation": {
+      "procedure": "Verify actual chosen scale1..3, regular cache file<=1MiB, CacheVersion22H374 and native24-byte screen CacheExtra record with scale0. Refuse backup overwrite, copy via native Foundation, compare source/backup and native sync; native unlink only this cache then sync. Next original process/library recomputes answers.",
+      "backup": "/private/var/display-gestalt-cache.original.plist",
+      "persistent_cache_answers_written": false,
+      "native_private_rebuild_function_called": false,
+      "status": "Run32 backup/unlink/USB absence verified; run33 native effective scale3 and orientation0 verified"
+    },
+    "run33_evidence": {
+      "same_efi_as_run32": true,
+      "cache_absence_verified_before_boot": true,
+      "MG_main_screen_scale": 3,
+      "MG_main_screen_orientation": 0,
+      "BKS_scale": 3,
+      "CADisplay_pointScale": 3,
+      "CADisplay_immutable_pointScale": 3,
+      "CADisplayMode_preferredScale": 3,
+      "CADisplayMode_refreshRate": 60,
+      "CADisplay_count": 6,
+      "primary": "LCD primary",
+      "user_breakpoint_count_300s": 0,
+      "actual_swap_or_first_frame_verified": false,
+      "report": "build/display-runtime/handoff-33/report.json",
+      "persistent_cache_after_boot_present": false,
+      "answer_source": "Original library recomputed live answers from native chosen/IOMFB; no replacement cache answers written."
+    }
+  },
+  "native_physical_vs_logical_geometry": {
+    "run": 29,
+    "iomfb_physical": [
+      1080,
+      1920
+    ],
+    "cadisplay_bounds": [
+      1242,
+      2208
+    ],
+    "bks_screen_info": [
+      1242,
+      2208
+    ],
+    "note": "Different values do not alone prove an invalid mode: a logical rendering canvas may differ from the physical raster. Validate native transforms, IOSurface dimensions and actual native swap before changing geometry."
+  },
+  "migration_xpc_analysis": {
+    "reference": "22H374 original DataMigration/ProgressUI/backboardd/PreBoard",
+    "evidence": "build/display-runtime/migration-reference/analysis.json",
+    "observed_wait": "Run33 original backboardd BKMigrator migrateIfNecessary -> DMPerformMigrationIfNeeded -> DMConnection migrateCheckingNecessity... -> DMXPCConnection sendMessageSync:; request msgID0, migrationResult reply.",
+    "native_server": "com.apple.datamigrator System XPC service, mobile role account",
+    "server_waits": {
+      "request_dispatch": "0x100002824",
+      "migration_queue_wait": "0x100007658",
+      "migration_start": "0x10000d8f4",
+      "keybag_unlock_gate": "0x10000cfa4",
+      "preboard_completion_wait": "0x10000b2d4",
+      "progress_host_wait": "0x10000da28",
+      "progress_host_timeout_seconds": 60
+    },
+    "startup_semantics": {
+      "system_shell": "Normal system-shell startup is ordered after migration; native alternate shells can check in immediately while migration is blocked. Native backboardd _lock_completeCheckInForShell:completionBlock: 0x100074b68 implements alternate bypass.",
+      "unlock_completion": "MigratorAlternateAppDelegate waits on dispatch semaphore forever at 0x10000b2d4. Only normal PreBoard exit plus MKBDeviceUnlockedSinceBoot() nonzero releases it; failed/nonzero/still-locked cases do not report migration success.",
+      "progress_window_order": "_migrateWith... calls _unlockKeyBagUseOfForceIsAuthorized first, gathers plugin reps, then for nonempty plugins waits at most 60 seconds for progress host before dispatching _createProgressWindow on main queue."
+    },
+    "runtime_limit": "DataMigration server/PreBoard cause not yet established by original run33 single-task samples; run34 whole-system snapshots in progress. Turnstile final thread1114 has two hops and is not assumed to be the direct server.",
+    "progress_ui": {
+      "source": "Original 22H374 Cryptex cache",
+      "uuid": "eaad30b25553385fb9c34451355bd10e",
+      "base": "0x20e8db000",
+      "metadata": "build/display-runtime/migration-reference/progress-ui-methods.json",
+      "native_constructor": {
+        "selector": "initWithOptions:contextLevel:appearance:",
+        "encoding": "@36@0:8Q16f24q28",
+        "options": 5,
+        "context_level": "export kPUIDefaultContextLevel (float)",
+        "appearance": 0
+      },
+      "context_path": "_createContext 0x20e8dcb54 calls original +[CAContext remoteContextWithOptions:], retries up to 3 times with native sleep(2), sets secure flag for returned context; no framebuffer direct draw.",
+      "drawing": "CALayer and CoreGraphics progress/logo drawing. Native _updateIOSurface 0x20e8dd57c also contains lock/CG bitmap/renderInContext/unlock path; presence does not establish the runtime _renderWithIOSurface flag is enabled or that the server composites without GPU.",
+      "diagnostic": "displayctl progress-ui uses original UUID, runtime selector type-encoding checks, native default context level, native options 5 and a fixed 0.5 diagnostic progress; visibility lasts 10 run-loop seconds. No migration or keybag success is synthesized.",
+      "objc_reference": "https://github.com/apple-oss-distributions/objc4/blob/main/runtime/objc-runtime-new.h",
+      "metadata_caution": "Small method-list flags occupy low two size bits; shared-cache selector names use a common base. Original native ivar offsets differ by eight bytes from reconstructed IDA type layout; use original offsets/instructions for field identity."
+    },
+    "diagnostic_source": "tools/displayctl/displayctl.mm",
+    "run34": {
+      "backboardd_pid": 156,
+      "backboardd_migration_thread": 1300,
+      "xpc_server_pid": 112,
+      "xpc_server_thread": 1750,
+      "migration_worker_thread": 864,
+      "worker_queue": "com.apple.datamigrator.migration",
+      "worker_pcs": [
+        "0x10000b2d8",
+        "0x10000d0c8",
+        "0x10000d8f4"
+      ],
+      "method": "-[MigratorAlternateAppDelegate waitUntilPreboardDidFinishUnlock]",
+      "samples_seconds": [
+        378.90336395833333,
+        381.8571991666667,
+        457.48790625
+      ],
+      "sample_interval_seconds": 78.58454229166665,
+      "preboard_pid": 182,
+      "preboard_main_thread": 1788,
+      "preboard_main_state": "CFRunLoop / UIApplicationMain event loop; no synchronous downstream wait captured",
+      "springboard_pid": 183,
+      "springboard_main_thread": 1818,
+      "springboard_wait": "Native check-in waits through backboardd migration thread.",
+      "evidence": "build/display-runtime/handoff-34/migration-summary.json",
+      "caution": "Native launchd GetJob(com.apple.PreBoard) returns ESRCH for the dynamically launched application despite a live PreBoard process in the system snapshots."
+    },
+    "progress_ui_runtime": {
+      "native_uuid_and_type_encodings_verified": true,
+      "options": 5,
+      "fixed_diagnostic_progress": 0.5,
+      "window_and_layer_created": true,
+      "error": "unsupported screen class, no apple logo found",
+      "physical_observation": "User saw no Logo/progress; screen console text had stopped earlier. UART and native processes continued running.",
+      "first_frame_verified": false,
+      "evidence": "build/display-runtime/handoff-34/progress-clean.txt"
+    },
+    "screen_class": {
+      "width": 1080,
+      "height": 1920,
+      "scale": 3,
+      "ppi": 429,
+      "orientation": 0,
+      "main-screen-class": null,
+      "DeviceClass": "iPod",
+      "DeviceClassNumber": 2,
+      "classification_cause": "Native exact width/height/scale/pitch table does not contain 1080x1920/3/429. This is not evidence of a missing chosen screen-class property.",
+      "progress_assets": "Original iPad firmware contains only iPad-specific @2x PNG resources.",
+      "physical_parameters_changed": false
+    },
+    "software_renderer_reference": "build/display-runtime/migration-reference/quartzcore-software-renderer.json",
+    "native_canvas_source": {
+      "evidence": "build/display-runtime/migration-reference/iomfb-canvas-analysis.json",
+      "api": "IOMobileFramebufferGetCanvasSizes",
+      "address": "0x1b6fe102c",
+      "default_plus_canvas": "For physical1080x1920 the original C library appends1242x2208 unless custom canvas dimensions are nonzero.",
+      "quartzcore_consumer": "0x184613290 uses last native canvas; native CA_CANVAS_WIDTH/HEIGHT are optional overrides.",
+      "actual_swap_geometry_verified": false
+    },
+    "native_context_authorization": {
+      "evidence": "build/display-runtime/migration-reference/ca-context-authorization.json",
+      "declarations": "build/display-runtime/migration-reference/ca-context-methods.json",
+      "native_application_rights": "build/display-runtime/migration-reference/native-display-entitlements.json",
+      "original_preboard_has_quartzcore_rights": true,
+      "diagnostic_host_identity_readback_pending": true,
+      "scope": "An unhosted displayable context needs original per-process rights; a loaded diagnostic dylib does not change Bash rights. This diagnostic limitation is not proof of missing entitlements in the original PreBoard.",
+      "runtime_run37": {
+        "evidence": "build/display-runtime/handoff-37/identities-clean.txt",
+        "self_entitlements": true,
+        "original_peer_entitlements": {
+          "PreBoard": true,
+          "SpringBoard": true,
+          "backboardd": true,
+          "datamigrator": true
+        },
+        "native_audit_token_query_succeeded": true,
+        "context_isSecure": true,
+        "displayable_requested": true,
+        "physical_first_frame": false,
+        "physical_observation": "User confirmed unchanged console text / no change."
+      }
+    },
+    "native_no_submission_run38": {
+      "evidence": "build/display-runtime/handoff-38/uart.txt",
+      "source": "drivers/display/QcomDisplay/QcomDisplay.cpp",
+      "diagnostic_limit": "Four messages per verification/surface/begin hook per service instance.",
+      "verify_swap_calls_captured": 0,
+      "verify_swap_surfaces_calls_captured": 0,
+      "swap_begin_calls_captured": 1,
+      "swap_begin_state": "Native shutdown only: ready=1 pending=0 active=0 queued=0",
+      "interpretation": "No framebuffer submission observed during the 60-second native displayable layer probe. No submitted surface/rectangle exists to support a geometry rejection diagnosis yet.",
+      "native_render_wait_reference": "build/display-runtime/migration-reference/native-render-state-analysis.json"
+    },
+    "preboard_unlock_reference": "build/display-runtime/migration-reference/preboard-unlock-analysis.json"
+  }
+}

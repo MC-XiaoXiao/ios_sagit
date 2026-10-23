@@ -1,0 +1,48 @@
+{
+  "provider": "iPad7c iOS 18 AppleARMPlatform/IOHIDFamily",
+  "provider_sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+  "classes": [
+    {
+      "name": "AppleARMIICController",
+      "super": "IOService",
+      "instance_size": 264,
+      "vtable_slots": 180
+    },
+    {
+      "name": "AppleARMIICDevice",
+      "super": "IOService",
+      "instance_size": 160,
+      "vtable_slots": 174
+    },
+    {
+      "name": "IOHIDDevice",
+      "super": "IOService",
+      "instance_size": 208,
+      "vtable_slots": 207
+    },
+    {
+      "name": "IOHIDEventDriver",
+      "super": "IOHIDEventService",
+      "instance_size": 264,
+      "vtable_slots": 220
+    },
+    {
+      "name": "AppleS5L8940XI2CController",
+      "super": "AppleARMIICController",
+      "instance_size": 464,
+      "vtable_slots": 180
+    }
+  ],
+  "i2c_private_call_contract_verified": false,
+  "i2c_implementation": "GenericI2CController/GenericI2CDevice are local IOService subclasses, no AppleARMIIC private method calls",
+  "hid_implementation": "Native IOHIDDevice subclass and IOHIDEventDriver matching; pinned by drivers/abi-22H374/apple-hid-abi.json",
+  "hardware_verified": false,
+  "native_property_strings": {
+    "DigitizerCollectionDispatch": {
+      "file_offset": "0xc43c0c"
+    },
+    "DisplayIntegrated": {
+      "file_offset": "0xc43846"
+    }
+  }
+}

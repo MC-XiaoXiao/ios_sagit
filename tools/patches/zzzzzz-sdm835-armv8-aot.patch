@@ -1,0 +1,39 @@
+--- a/osfmk/arm64/arm_vm_init.c
++++ b/osfmk/arm64/arm_vm_init.c
+@@ -285,6 +285,13 @@
+ 
+ SECURITY_READ_ONLY_LATE(static vm_offset_t)   segPLKTEXTEXECB;
+ SECURITY_READ_ONLY_LATE(static unsigned long) segSizePLKTEXTEXEC;
++
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++/* Static ARMv8.0 helpers inserted by kernelcache_patcher; no trap emulation. */
++__attribute__((used)) const char sdm835_armv8_aot_v1[] = "MI6_ARMV8_AOT_V1";
++SECURITY_READ_ONLY_LATE(static vm_offset_t) segARMV8EXECB;
++SECURITY_READ_ONLY_LATE(static unsigned long) segSizeARMV8EXEC;
++#endif
+ 
+ SECURITY_READ_ONLY_LATE(static vm_offset_t)   segPLKDATACONSTB;
+ SECURITY_READ_ONLY_LATE(static unsigned long) segSizePLKDATACONST;
+@@ -1402,6 +1409,12 @@
+ 
+ 	/* Map coalesced kext TEXT_EXEC segment RX (could be empty) */
+ 	arm_vm_page_granular_ROX(segPLKTEXTEXECB, segSizePLKTEXTEXEC, ARM64_GRANULE_ALLOW_BLOCK | ARM64_GRANULE_ALLOW_HINT, ARM64_PAGE_GUARDED); // Refined in OSKext::readPrelinkedExtensions
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++	/* Helpers remain pinned below end_kern and executable after bootstrap MMU teardown. */
++	if (segSizeARMV8EXEC) {
++		arm_vm_page_granular_ROX(segARMV8EXECB, segSizeARMV8EXEC, 0, ARM64_PAGE_UNGUARDED);
++	}
++#endif
+ 
+ 	/* if new segments not present, set space between PRELINK_TEXT and xnu TEXT to RWNX
+ 	 * otherwise we no longer expect any space between the coalesced kext read only segments and xnu rosegments
+@@ -2044,6 +2057,9 @@
+ 	segPRELINKTEXTB  = (vm_offset_t) getsegdatafromheader(&_mh_execute_header, "__PRELINK_TEXT", &segSizePRELINKTEXT);
+ 	segPLKDATACONSTB = (vm_offset_t) getsegdatafromheader(&_mh_execute_header, "__PLK_DATA_CONST", &segSizePLKDATACONST);
+ 	segPLKTEXTEXECB  = (vm_offset_t) getsegdatafromheader(&_mh_execute_header, "__PLK_TEXT_EXEC", &segSizePLKTEXTEXEC);
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++	segARMV8EXECB = (vm_offset_t) getsegdatafromheader(&_mh_execute_header, "__ARMV8_EXEC", &segSizeARMV8EXEC);
++#endif
+ 	segTEXTB         = (vm_offset_t) getsegdatafromheader(&_mh_execute_header, "__TEXT", &segSizeTEXT);
+ 	segDATACONSTB    = (vm_offset_t) getsegdatafromheader(&_mh_execute_header, "__DATA_CONST", &segSizeDATACONST);
+ 	segTEXTEXECB     = (vm_offset_t) getsegdatafromheader(&_mh_execute_header, "__TEXT_EXEC", &segSizeTEXTEXEC);

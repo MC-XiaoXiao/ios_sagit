@@ -1,0 +1,288 @@
+{
+  "status": "passed-offline",
+  "verified_at_utc": "2026-10-20T13:33:58.461832+00:00",
+  "hardware_tested": false,
+  "device_connected": false,
+  "device_flashed": false,
+  "actual_frequency_measured": false,
+  "scope": "sagit MSM8998 v2.0/v2.1, fixed board policy with per-device runtime QFPROM calibration",
+  "root_cause": "QcomOSM only consumed enabled firmware LUTs; the HLOS CPRh/LUT/policy/ACD initialization and runtime ownership handoff were missing. v1/v2 runtime register offsets alone do not fix this.",
+  "completed": [
+    "runtime firmware identity and QFPROM collection",
+    "retained aux/OSM/CPR clock configuration with bounded readback",
+    "observable secure OSM precondition checks and restricted SCM writes",
+    "per-chip CPRh calibration, old-loop quiesce and full controller/corner initialization",
+    "dual-bank OSM LUT, policy/FSM, MEM-ACC/APM and ACD initialization; enable last",
+    "commit-last 80-byte firmware handoff and native driver admission",
+    "atomic reinitialization diagnostics and full target-LUT checks before and after desired-index ACK"
+  ],
+  "validation": {
+    "vendor_c_differential_cases": 3072,
+    "full_pipeline_model_combinations": 64,
+    "sanitizers": [
+      "address",
+      "undefined-behavior"
+    ],
+    "handoff_python_tests": 4,
+    "bridge_python_regressions": 49,
+    "perfcontrol_integration_tests": 4,
+    "kernelcache_kexts": 23,
+    "kernelcache_errors": [],
+    "QcomOSM_version": "1.3.0",
+    "built_apple_dt_record": [
+      0,
+      80,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "logs": [
+      {
+        "path": "build/osm-bringup/tests.log",
+        "bytes": 1693,
+        "sha256": "561990b08ce856c50b77be1bb460322b074583d76c9c0554472103795b27daac"
+      },
+      {
+        "path": "build/osm-bringup/tests-sanitized.log",
+        "bytes": 1253,
+        "sha256": "4abb30c48760f558881df51f0e0b86a21113736c8fcbf90ffedca7eaa2d06d5b"
+      },
+      {
+        "path": "build/osm-bringup/handoff-tests.log",
+        "bytes": 596,
+        "sha256": "b8c199773b2030f4f24bcc9a3cf96c2b97a441cac5903b0ea833e8fcf5dd5106"
+      },
+      {
+        "path": "build/osm-bringup/bridge-tests.log",
+        "bytes": 8198,
+        "sha256": "768a6ead530cee2f4448ba77c75f369926a6626e9286d791af2ed532bd88dbc3"
+      },
+      {
+        "path": "build/osm-bringup/perfcontrol-integration.log",
+        "bytes": 884,
+        "sha256": "b530eee6b161e73dcbfb83f2373619a63f4aab7e0abe440b086af0dac834258f"
+      },
+      {
+        "path": "build/osm-bringup/kernelcache-build.log",
+        "bytes": 2252,
+        "sha256": "346552c113066839acb6bc7f949338d1b91ace03fb6756d0bb38948cc547edef"
+      },
+      {
+        "path": "build/osm-bringup/bridge-build.log",
+        "bytes": 624,
+        "sha256": "d369106f353823ca24cf3bdc3556daff223b4c9d61fd6269294901a70bb438b2"
+      },
+      {
+        "path": "build/osm-bringup/driver-check.log",
+        "bytes": 113,
+        "sha256": "a6e8bd779a88c580b349452c350acbecf8b88f332595e3cd0d4b5d311003e502"
+      },
+      {
+        "path": "build/osm-bringup/collection-check.log",
+        "bytes": 4876,
+        "sha256": "e53d89c9c12f595e0fbe3bbdd996d442bc10227a5905f87f5be50b9701b958cc"
+      }
+    ]
+  },
+  "artifacts": [
+    {
+      "path": "build/osm-bringup/kernelcache",
+      "bytes": 22953984,
+      "sha256": "963a57f732f933bb7894f971d1bda508dec260ad5f791ca82e74bf51a19affa0"
+    },
+    {
+      "path": "build/osm-bringup/kernelcache.manifest.json",
+      "bytes": 2525,
+      "sha256": "98b995df11e556c4d5370ae625e37babda0eaf39b802db623b45562fd504fd6d"
+    },
+    {
+      "path": "build/osm-bringup/kernelcache.verification.json",
+      "bytes": 5934,
+      "sha256": "844b7c58cfda797039caa4671f6d03c09671433a5285f8666ffa31d0cc7ac7e4"
+    },
+    {
+      "path": "build/osm-bringup/bridge/XnuBridge.efi",
+      "bytes": 23051264,
+      "sha256": "19439e1270c70b1ed853be8b43c7a1a850fb19981a7fc9d450ac120d463b4eb8"
+    },
+    {
+      "path": "build/osm-bringup/bridge/build.json",
+      "bytes": 3783,
+      "sha256": "de50592b235b0da953ec3331183957fe5423c2cfbf7ef406cc23ff03e3333932"
+    }
+  ],
+  "sources": [
+    {
+      "path": "README.md",
+      "bytes": 26600,
+      "sha256": "0ff4c128b0fa8bf2e7f5ff69e6d7b314449f346fbc673449c00192b20576aa23"
+    },
+    {
+      "path": "Makefile",
+      "bytes": 22526,
+      "sha256": "7a93c6521377b5ff6020d76cf218dcfe090eb6d11a970581b15acf885eb2cdbf"
+    },
+    {
+      "path": "drivers/Build.json",
+      "bytes": 78265,
+      "sha256": "6a9919a4b0322e62b9379aee232650abf20bffb7c10f3efdeaf80a7e2738e32d"
+    },
+    {
+      "path": "drivers/clock/QcomOSM/QcomOSM.cpp",
+      "bytes": 11056,
+      "sha256": "95dc6632e8d94b0c7d93d60f5ea2094eece496dfd11f5c7b8f1f71b9cf5cf5b1"
+    },
+    {
+      "path": "drivers/clock/QcomOSM/QcomOSM.h",
+      "bytes": 940,
+      "sha256": "405eb827428e3f074f358b70ef3d71464656c5c4cb345464639cd3ebea598aec"
+    },
+    {
+      "path": "drivers/clock/QcomOSM/Info.plist",
+      "bytes": 1794,
+      "sha256": "ae3f862f7d4d3d32f1e4e5c90c0392bc56b11fe09f0955158a70c0c60d05192e"
+    },
+    {
+      "path": "drivers/clock/QcomOSM/OSMController.h",
+      "bytes": 10042,
+      "sha256": "5195555bf58238a8ec46913d7df91172341c92ecae92913843ed6dfaa2977f42"
+    },
+    {
+      "path": "boot/bridge/uefi.c",
+      "bytes": 26420,
+      "sha256": "37281c3d01d2d4449788cd2cd712de1f793380200425ef13c69b575cddf9b96c"
+    },
+    {
+      "path": "boot/bridge/osm_firmware.h",
+      "bytes": 11506,
+      "sha256": "d67fdf052ecb89d72ee116a6d3a79d2eddd0721397bd415dec1e0ec2aa7e870d"
+    },
+    {
+      "path": "boot/bridge/osm_handoff.cpp",
+      "bytes": 12026,
+      "sha256": "03b3cbf57767107489cbfee93d641e152aba147f92a5f2ae4a2b67294c07b44f"
+    },
+    {
+      "path": "scripts/build-bridge.py",
+      "bytes": 123076,
+      "sha256": "5470261d0ccb08d4c6733d1fa277a6d6ce7694445448ecac2e6662d650985e73"
+    },
+    {
+      "path": "scripts/osm_handoff.py",
+      "bytes": 1651,
+      "sha256": "299d61528a74bb6fdeadd787605680e81d364f6452c6f49d9179a2d9e7347d40"
+    },
+    {
+      "path": "scripts/generate-cprh-tables.py",
+      "bytes": 9324,
+      "sha256": "6c9d17730b3fd5f36d84f61197a81a1fd80a8c11fae8425f16c685105da36ab4"
+    },
+    {
+      "path": "scripts/test-cprh-calibration.py",
+      "bytes": 8730,
+      "sha256": "d2a533530d971a100fc2337dd7b4f105858f7468585fcd2f811b48138ee0f8ba"
+    },
+    {
+      "path": "device_trees/msm8998.dtsi",
+      "bytes": 12567,
+      "sha256": "3826486691858d483f76d77c9824fe1fb688ac10f682ab4996953dc228e0061c"
+    },
+    {
+      "path": "tests/power_test.cpp",
+      "bytes": 55468,
+      "sha256": "d90c71cb5c959f727a23c8e77abc837a01910bf78ca225596ff2d79da8236f8a"
+    },
+    {
+      "path": "tests/test_osm_handoff.py",
+      "bytes": 4345,
+      "sha256": "48dd36441b56f888cadd6b34bb170881f4e23f5812231d584e484969dadf6157"
+    },
+    {
+      "path": "tests/osm_handoff_test.cpp",
+      "bytes": 3381,
+      "sha256": "a2203a469b357e29f37333228f48080f8b7d074ec45e4035c2a795af773d3456"
+    },
+    {
+      "path": "tests/osm_firmware_test.cpp",
+      "bytes": 11503,
+      "sha256": "bb7fbc63d481a489484a24d58643f37edba3a0a2d31e5c6e717ace57fbb354d8"
+    },
+    {
+      "path": "tests/osm_initialization_test.cpp",
+      "bytes": 16265,
+      "sha256": "acb5c759880d98442c3443fab1d57253d3f5923ae8a95c1c86175ae1a1847ef8"
+    },
+    {
+      "path": "tests/cprh_calibration_test.cpp",
+      "bytes": 6095,
+      "sha256": "f6b864ae947d98d32e7d8d83732ed2e1ca0fc9b835a45d4db23aabc391cf8cdd"
+    },
+    {
+      "path": "tests/cprh_initialization_test.cpp",
+      "bytes": 6995,
+      "sha256": "e2fbc868bd1f6824a2416c89395e95a54f183adeb550db24bf1d1ae2669d3c91"
+    },
+    {
+      "path": "drivers/clock/QcomOSM/CPRhCalibration.h",
+      "bytes": 13640,
+      "sha256": "e4de8bd4ba43647b6c57d2fd0e0a3c6231fdaf9e3c880850091069c8964e22b7"
+    },
+    {
+      "path": "drivers/clock/QcomOSM/CPRhInitialization.h",
+      "bytes": 8873,
+      "sha256": "40f43d89d51fdefc155a5280c29ab9edc52c8fd2af9ee91432baccca564d7353"
+    },
+    {
+      "path": "drivers/clock/QcomOSM/CPRhSagitV2Tables.h",
+      "bytes": 22995,
+      "sha256": "fde7ed7493eaab056f2a0c3c2db64522aa42b3c0d1d36b8168fafe18b5317422"
+    },
+    {
+      "path": "drivers/clock/QcomOSM/OSMInitialization.h",
+      "bytes": 18801,
+      "sha256": "c4dc0a60f60c780e114efc446a99a61e8f942512c79e5fad5eea85303751f7e6"
+    },
+    {
+      "path": "drivers/clock/QcomOSM/OSMHandoff.h",
+      "bytes": 3392,
+      "sha256": "30e1950a0b547a141bee123b4d9d6d1fe0fdcca51c93a1b14ccc9549869c9408"
+    },
+    {
+      "path": "drivers/clock/QcomOSM/OSMSecureIO.h",
+      "bytes": 2167,
+      "sha256": "d917126d2e7c0ee6e744a0d06ba4243b0f76d4626befb1ea8ece94e560ab0c18"
+    },
+    {
+      "path": "drivers/clock/QcomOSM/NOTICE.txt",
+      "bytes": 952,
+      "sha256": "f4a7c74608dd97c102e84276f626b1db29d39c3833eab8d6f2ca2706ea7c3990"
+    }
+  ],
+  "limitations": [
+    "Original TZ must provide valid protected sequencer/PLL/PMIC initialization; fixed parameter checks are not firmware attestation.",
+    "Derived configured clock rates and accepted desired P-state are not instantaneous frequency-counter measurements.",
+    "Real frequency/voltage transitions, thermals and stability remain unverified; no hardware testing was performed.",
+    "The raw Image keeps the CPU handoff uncommitted; CPU initialization is implemented only by the EFI bridge."
+  ],
+  "reproduce": [
+    "make test-osm",
+    "make test-osm-sanitized",
+    "python3 scripts/toolchain.py pack-drivers --target SDM835 --collection power --driver-output build/osm-bringup/Extensions --output build/osm-bringup/kernelcache --kernelcache build/ios18-kext-analysis/kernelcache.release.ipad7c.macho -j 3",
+    "python3 scripts/build-bridge.py --kernel build/osm-bringup/kernelcache --cpu-osm-handoff --cpus 8 --output build/osm-bringup/bridge"
+  ]
+}

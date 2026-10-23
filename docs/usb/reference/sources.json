@@ -1,0 +1,330 @@
+{
+  "msm8998.dtsi": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/arch/arm64/boot/dts/qcom/msm8998.dtsi",
+    "sha256": "a939e05d08e3f239877d300801fbc7afce6617fc24347f94683238fe65793392",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "core.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/usb/dwc3/core.h",
+    "sha256": "a68158690b09c2b6f117b214b6c5caf7bd7048db1d4aca68f4654cfd78638e9c",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "core.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/usb/dwc3/core.c",
+    "sha256": "74bb63d884584f0d6f7a45724ba022ba461d48b46afa05ca7a0024d83fbd1c2e",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "gadget.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/usb/dwc3/gadget.c",
+    "sha256": "8dcd869a16a02066f8793410430d9bc084d470e07a8f0b0e49d7706d25a2fd10",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "dwc3-qcom.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/usb/dwc3/dwc3-qcom.c",
+    "sha256": "bec5907a001c6d7c9c3d03102ef78405fdb0580461316413dc02cb1d7b25008a",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "xhci.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/usb/host/xhci.h",
+    "sha256": "15df205b61c7ca4eb49899c1ba11a7301004c7f6e0a09f4442032f335322a0cf",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "phy-qcom-qusb2.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/phy/qualcomm/phy-qcom-qusb2.c",
+    "sha256": "e5bd586c6b06212805202782651260d649979efc97565b7df0d4635ef46b7339",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "phy-qcom-qmp-usb.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/phy/qualcomm/phy-qcom-qmp-usb.c",
+    "sha256": "1cebeeadd122ba9892b0fa8771ac541df3b5fb56d2196d0df0e3a27f86fab6fa",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "gadget.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/usb/dwc3/gadget.h",
+    "sha256": "c24bbe664bcb9678df59bef9b930952748b45285841c59f6aa7c6981c1862123",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "apple-reference-vtables.json": {
+    "sha256": "a6cb2927cbe9568acca5fa1ea77146eba2e65d4ad8cfe602bae4e71c33989d03",
+    "url": "Local symbol-bearing Apple reference Kexts; each input path and SHA-256 is recorded in this file",
+    "license": "Derived ABI observations; reference only"
+  },
+  "ep0.c": {
+    "url": "https://github.com/torvalds/linux/blob/v6.12/drivers/usb/dwc3/ep0.c",
+    "sha256": "3b68f7fa192ab1c4e29c9b110e62fa960cb2b60b8429e2eea2f531fc6a89cd6e",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "apple-symbol-hints.json": {
+    "url": "Local symbolicator signature hints; source path, hash, version and limits are recorded in this file",
+    "sha256": "f02e5eaf83bb623407a9245c4e2d598f11b3cdbb5baecbdd27861d45d47403fc",
+    "license": "Derived ABI observations; reference only"
+  },
+  "phy-qcom-qmp.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/phy/qualcomm/phy-qcom-qmp.h",
+    "sha256": "475088fe668c2661f572a6664c5a76f7cfc7ca5cbf8eef7c0ba7b813571fab5d",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "phy-qcom-qmp-common.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/phy/qualcomm/phy-qcom-qmp-common.h",
+    "sha256": "6812948a3dcc49351e2493676b79c3ee9fb4eeaa516a041b13c3fa93c31c5b2e",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "phy-qcom-qmp-pcs-misc-v3.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/phy/qualcomm/phy-qcom-qmp-pcs-misc-v3.h",
+    "sha256": "43cdccceca31fcda6dd32ccb77f32547941f5acd5a7870f33988f6c39930d26e",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "phy-qcom-qmp-qserdes-com-v3.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v3.h",
+    "sha256": "1375cba01d3124f36514877a40e247028d28312d650f7dc4d490866fd740cf46",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "phy-qcom-qmp-qserdes-txrx-v3.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-txrx-v3.h",
+    "sha256": "62da2ec2e394ec3ef70d33280f44814dc3d55e900ab2620c4c4e35f276320688",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "phy-qcom-qmp-pcs-v3.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/phy/qualcomm/phy-qcom-qmp-pcs-v3.h",
+    "sha256": "655f52d837b0a91bc4f7c632682ca16f29fbb939acae9ca9489662008a87a8de",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "phy-qcom-qmp-usbc.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/phy/qualcomm/phy-qcom-qmp-usbc.c",
+    "sha256": "05a6b7cd82c7d443a81d8ee853fe08107856e0775b7c3ff23d92eb248d48e2c9",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "qcom_pmi8998_charger.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/power/supply/qcom_pmi8998_charger.c",
+    "sha256": "292362c7409095078bd6d9701a552f78f982ac33a5fcb41260eecd5406273d55",
+    "license": "GPL-2.0-only (hardware reference only; not compiled)"
+  },
+  "pmi8998.dtsi": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/arch/arm64/boot/dts/qcom/pmi8998.dtsi",
+    "sha256": "4a69295199eff2fd00519b735ec11f5c483b57bfa4b8081025b03431be547e3e",
+    "license": "GPL-2.0-only (hardware reference only; not compiled)"
+  },
+  "smb-lib.c": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/drivers/power/supply/qcom/smb-lib.c",
+    "sha256": "b75fdf5a3df32a1ae0c8dfb73862bd5f88ca3eed815f7286aeff7508fc3d1245",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "smb-reg.h": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/drivers/power/supply/qcom/smb-reg.h",
+    "sha256": "6f419702fe1c3485158a43b2920056abc0fc0a02f0465bb0084f2e6bc6a1a85e",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "smb-lib.h": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/drivers/power/supply/qcom/smb-lib.h",
+    "sha256": "5505e00e63438e2f9c6fbaba66ef44cc1833fcde0ffa436f8e43740e47170eb2",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "qcom-spmi-rradc.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/iio/adc/qcom-spmi-rradc.c",
+    "sha256": "614ebd8fdd458e50680a475864f0592d33a371d1ad6bf5f6de23d1aab64d7ede",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "qcom-spmi-pmic.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/include/soc/qcom/qcom-spmi-pmic.h",
+    "sha256": "8a40cce8a28b78d4541253b99979243eef7f60d13245ae42832af1902f46a91d",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "qpnp-smb2.c": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/drivers/power/supply/qcom/qpnp-smb2.c",
+    "sha256": "46be1c2f91186d92dafa9eeed81a0662d3711785f17c7c9b142619e35a732b7a",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "qcom-spmi-pmic.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/mfd/qcom-spmi-pmic.c",
+    "sha256": "cba250364921bfff3e8cfe10372906631cf2cba70365b2d75eabb8822084b9bd",
+    "license": "GPL-2.0-only (hardware reference only; not compiled)"
+  },
+  "smb-lib-typec.c": {
+    "url": "https://android.googlesource.com/kernel/msm.git/+/e6a9e729094cbc8f6f81ee0839270954ea4d3c3e/drivers/power/supply/qcom/smb-lib.c?format=TEXT",
+    "sha256": "86db3cb9c2b3fb66762302defe55a32be97ba21228ee9b1c94fb0467a4d758c1",
+    "license": "GPL-2.0-only (hardware reference only; not compiled)"
+  },
+  "qpnp-revid.h": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/include/linux/qpnp/qpnp-revid.h",
+    "sha256": "cc0ac570489ade82d720ebcb251d2c6b24a158963554028d5e5c4b6169d4d98a",
+    "license": "GPL-2.0-only (hardware reference only; not compiled)"
+  },
+  "msm8998-bus.dtsi": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/arch/arm/boot/dts/qcom/msm8998-bus.dtsi",
+    "sha256": "74b1f325562fd3631e1e4a636d9d17eba541d4de68092ef3dfc010e9f33950b7",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "msm-bus-ids.h": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/include/dt-bindings/msm/msm-bus-ids.h",
+    "sha256": "cfa226b1c844fe01b1bd7c5f4a777c57d7f73fbfd1ebd32ea58731bb7882acb9",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "clk-smd-rpm.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/clk/qcom/clk-smd-rpm.c",
+    "sha256": "c5df7a96bb4f1470fcdaec3f546db0d6c8032f6eccae0637c4b8434225644030",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "icc-rpm.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/interconnect/qcom/icc-rpm.c",
+    "sha256": "d4bc8aec119f06f47015423a9d80ec2244fdb38cac3cb9d79086c2994897a988",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "smd-rpm.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/interconnect/qcom/smd-rpm.c",
+    "sha256": "298aa83b4479943b0423a1a4de56b3058c072371740752d1f5ed501bdedaed4f",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "msm_bus_rpm_smd.c": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/drivers/soc/qcom/msm_bus/msm_bus_rpm_smd.c",
+    "sha256": "caf0d8ee8ac9374b15093453cb15f1512be533eb8d194a377b92193a500b30c4",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "msm_bus_noc_adhoc.c": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/drivers/soc/qcom/msm_bus/msm_bus_noc_adhoc.c",
+    "sha256": "12ffedc1c9aaeae1d8caa182e6e1d8a11a03e8ac7bdec07623696049ea8db500",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "msm_bus_fabric_adhoc.c": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/drivers/soc/qcom/msm_bus/msm_bus_fabric_adhoc.c",
+    "sha256": "285b5c97b97dce08a5f557c9458997b6af53d34f976d00f020d85ceaab6e4f13",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "msm_bus_arb_adhoc.c": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/drivers/soc/qcom/msm_bus/msm_bus_arb_adhoc.c",
+    "sha256": "46279923a59b05e8078f211732e440bf0be20b725ca9fe109d70f4f7da11f1b9",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "msm_bus_noc.h": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/drivers/soc/qcom/msm_bus/msm_bus_noc.h",
+    "sha256": "b7fb97584bcf0f388f50d90c646be58bb924c33e5587a8627e04558c72eee8ef",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "arm-smmu.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/iommu/arm/arm-smmu/arm-smmu.h",
+    "sha256": "ed85998794695d1a824dc1b86f680c8d124546688fd2665e00e3cbcfa9546b53",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "arm-smmu.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/iommu/arm/arm-smmu/arm-smmu.c",
+    "sha256": "d5a22b62915e52d2f01744fc68507a8bdf626b68fe090bef6a66a633ecb4fb4a",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "arm-smmu-qcom.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c",
+    "sha256": "75760784bbf68942a4055acdc0886c3559c4993fd49e39e0a3abc20f5f52be44",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "io-pgtable-arm.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/iommu/io-pgtable-arm.c",
+    "sha256": "b78adbf87352e574556638fae1206d62bfbc06787a85125f75b9d5da0abab278",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "msm-arm-smmu-8998.dtsi": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/arch/arm/boot/dts/qcom/msm-arm-smmu-8998.dtsi",
+    "sha256": "8974b8b64ca43d30fcb4bb3cad222230888cd621aacff526a1e919d3b6e60bdc",
+    "license": "GPL-2.0 (hardware reference only; not compiled)",
+    "additional_ANOC1_verification": {
+      "revision": "5853fcdbec23aa0ea3be20bc7739581e0285eff0",
+      "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/5853fcdbec23aa0ea3be20bc7739581e0285eff0/arch/arm/boot/dts/qcom/msm-arm-smmu-8998.dtsi",
+      "file_sha256": "ce5871fa8490f694b6d401c04f8cced194962162ad946d5849d7d0fd25558feb",
+      "ANOC1_block_bytes_equal": true,
+      "ANOC1_block_sha256": "4ddd0f3b644e9787b4147fc9adf8d1ec914f0d9ca30d2648b61c2502643796be",
+      "full_file_bytes_equal": false
+    }
+  },
+  "msm-arm-smmu-impl-defs-8998.dtsi": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/arch/arm/boot/dts/qcom/msm-arm-smmu-impl-defs-8998.dtsi",
+    "sha256": "fe35742703488393ea7fb654cec57900eb72b4fddaf7a7f0f8c9210b996ba356",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "dwc3-msm.c": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/drivers/usb/dwc3/dwc3-msm.c",
+    "sha256": "eb7ebd5bc533ff65450c97dd6b1295bb5fb3abfeff925fd330c1a690891dfde4",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "xhci-hub.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/usb/host/xhci-hub.c",
+    "sha256": "7cc388b724285c0bee84fa54691a5c23b21a9b29416398cd4e6338b6ba3e008e",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "xhci-ext-caps.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/usb/host/xhci-ext-caps.h",
+    "sha256": "fda6202346115b8af9559fd64b1e721f88503023b9667eaa0da68af33793581a",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "xhci-port.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/usb/host/xhci-port.h",
+    "sha256": "a2ccd447b34c2a4111c7e2f9db4d935fe5c6741c0d1f40300667bbf63f4650f5",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "xhci-mem.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/usb/host/xhci-mem.c",
+    "sha256": "0f08d57f08bebc82cdcbae2764255da5bdd152d95d4fedfb37035a74e313364c",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "xhci-ring.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/usb/host/xhci-ring.c",
+    "sha256": "db650d3b8f65a795391ae30c7b9dfa06a1f77bb54fc1e6967bdb5c18a416dc1a",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "board/soc.dtsi": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/5853fcdbec23aa0ea3be20bc7739581e0285eff0/arch/arm/boot/dts/qcom/msm8998.dtsi",
+    "sha256": "d95f4c35adeaee684a7fe14ad1995be0a9126e0130cd37953c49b1195a0eb6e1",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "board/port.dtsi": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/5853fcdbec23aa0ea3be20bc7739581e0285eff0/arch/arm/boot/dts/qcom/sagit-msm8998-mtp.dtsi",
+    "sha256": "88b71a78ceeaf4506be2aab9c3b8d03095b6d7da636a3837a34ef907f94c890d",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "board/port.dts": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/5853fcdbec23aa0ea3be20bc7739581e0285eff0/arch/arm/boot/dts/qcom/sagit-msm8998-mtp.dts",
+    "sha256": "490c22a5ccfbfa72fdd0b34c3a3c11afa9c6c858f9010e912f436c086ec473b6",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "board/pmic.dtsi": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/5853fcdbec23aa0ea3be20bc7739581e0285eff0/arch/arm/boot/dts/qcom/msm-pmi8998.dtsi",
+    "sha256": "60cf238c54b989332770ba6dff009b359a154e2f90ef8257a165ef7a34fe4f5c",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "board/regulators.dtsi": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/5853fcdbec23aa0ea3be20bc7739581e0285eff0/arch/arm/boot/dts/qcom/msm8998-regulator.dtsi",
+    "sha256": "3a9e77bad96898be61d06e1ce6d02c71912df50d77dea50142a1a7b53b3ff594",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "board/phy.c": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/5853fcdbec23aa0ea3be20bc7739581e0285eff0/drivers/usb/phy/phy-msm-qusb-v2.c",
+    "sha256": "98b4e005ed3378201eba2bcca8801a0687a13f598bab46ee8d74fe9bb91209ce",
+    "license": "GPL-2.0 (hardware reference only; not compiled)"
+  },
+  "qcom_glink_ssr.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/rpmsg/qcom_glink_ssr.c",
+    "sha256": "8d9357ede12cd460ae93cd77c0c18ded01cc776279d865a4e47f4892384360e7",
+    "license": "GPL-2.0-only (wire-format reference only; not compiled)"
+  },
+  "board/gcc.c": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/5853fcdbec23aa0ea3be20bc7739581e0285eff0/drivers/clk/msm/clock-gcc-8998.c",
+    "sha256": "c56f9115bba341c8ff30017164a30cc99750ce88a3c69b00d50b3adbc18aa68c",
+    "license": "GPL-2.0-only (hardware reference only; not compiled)"
+  },
+  "board/clock-rpm.c": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/5853fcdbec23aa0ea3be20bc7739581e0285eff0/drivers/clk/msm/clock-rpm.c",
+    "sha256": "4476953040f22e6bc8aefa3d386ed0f9d27590f828684480673144923869b60e",
+    "license": "GPL-2.0-only (hardware reference only; not compiled)"
+  },
+  "board/vdd-level.h": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/5853fcdbec23aa0ea3be20bc7739581e0285eff0/drivers/clk/msm/vdd-level-8998.h",
+    "sha256": "cdd74dd17e65c49ba0d039edfa65874c58c46a7d7bccfa877a17091fef4be4bd",
+    "license": "GPL-2.0-only (hardware reference only; not compiled)"
+  },
+  "board/regulator-level.h": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/5853fcdbec23aa0ea3be20bc7739581e0285eff0/include/linux/regulator/rpm-smd-regulator.h",
+    "sha256": "6f5461eae8eddaedb429700861388e64d1277f6597895b5180d852df0c547627",
+    "license": "GPL-2.0-only (hardware reference only; not compiled)"
+  },
+  "board/arm-smmu.c": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/5853fcdbec23aa0ea3be20bc7739581e0285eff0/drivers/iommu/arm-smmu.c",
+    "sha256": "cb88c1414d11ab34d344aca0b67636f591f6a0202ec3f5a5060495fd639f6db6",
+    "license": "GPL-2.0-only (hardware reference only; not compiled)"
+  }
+}

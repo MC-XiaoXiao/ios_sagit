@@ -1,0 +1,47 @@
+--- a/osfmk/arm/pmap/pmap.c
++++ b/osfmk/arm/pmap/pmap.c
+@@ -130,6 +130,19 @@
+ static void flush_mmu_tlb_full_asid_async(pmap_t pmap);
+ static pt_entry_t wimg_to_pte(unsigned int wimg, pmap_paddr_t pa);
+ MARK_AS_PMAP_TEXT static void pmap_phys_write_disable(vm_address_t va);
++
++#if (defined(ARM64_BOARD_CONFIG_VMAPPLE) || defined(ARM64_BOARD_CONFIG_SDM835)) && !XNU_MONITOR
++/* No monitor exists on VMAPPLE. */
++void ml_enable_monitor(void) {}
++
++#if SCHED_HYGIENE_DEBUG && (DEBUG || DEVELOPMENT)
++/* Preserve the urgent-AST preemption check without private instrumentation. */
++bool pmap_pending_preemption(void)
++{
++    return _pmap_pending_preemption_real();
++}
++#endif
++#endif
+ 
+ const struct page_table_ops native_pt_ops =
+ {
+--- a/osfmk/arm64/caches_asm.s
++++ b/osfmk/arm64/caches_asm.s
+@@ -310,6 +310,22 @@
+ 	dsb		sy
+ 	ret
+ 
++#if defined(ARM64_BOARD_CONFIG_VMAPPLE) || defined(ARM64_BOARD_CONFIG_SDM835)
++/* Force cache maintenance using the existing Arm loop, without private HID writes. */
++    .text
++    .align 2
++    .globl EXT(CleanPoC_DcacheRegion_Force_nopreempt)
++    .globl EXT(CleanPoC_DcacheRegion_Force_nopreempt_nohid)
++LEXT(CleanPoC_DcacheRegion_Force_nopreempt)
++LEXT(CleanPoC_DcacheRegion_Force_nopreempt_nohid)
++    ARM64_PROLOG
++    cbnz x1, 2f
++    dsb sy
++    ret
++2:
++    b EXT(CleanPoC_DcacheRegion_internal)
++#endif
++
+ /*
+  *	void CleanPoC_DcacheRegion(vm_offset_t va, size_t length)
+  *

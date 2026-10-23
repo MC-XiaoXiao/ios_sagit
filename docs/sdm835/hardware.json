@@ -1,0 +1,130 @@
+{
+  "soc": "SDM835 / MSM8998",
+  "board": "Xiaomi Mi 6 / sagit",
+  "cpu": {
+    "model": "Kryo 280",
+    "mpidr": [
+      0,
+      1,
+      2,
+      3,
+      256,
+      257,
+      258,
+      259
+    ],
+    "clusters": 2,
+    "cores_per_cluster": 4,
+    "kernel_isa": "armv8-a+crc+crypto",
+    "kernel_page_size": 4096,
+    "kernel_pa_bits": 40,
+    "runtime_feature_validation_required": true
+  },
+  "interrupts": {
+    "controller": "GICv3",
+    "gicd_base": "0x17a00000",
+    "gicd_size": "0x10000",
+    "gicr_base": "0x17b00000",
+    "gicr_size": "0x100000",
+    "redistributor_stride": "0x20000",
+    "timer_intid": 27,
+    "ipi_intid": 0,
+    "group": "Group1NS"
+  },
+  "timer": {
+    "frequency_hz": 19200000,
+    "registers": "CNTVCT_EL0 / CNTV_CVAL_EL0 / CNTV_CTL_EL0"
+  },
+  "psci": {
+    "conduit": "smc",
+    "cpu_on64": "0xc4000003",
+    "cpu_off": "0x84000002"
+  },
+  "uart": {
+    "compatible": "qcom,msm-uartdm-v1.4",
+    "console_base": "0x0c1b0000",
+    "size": "0x1000",
+    "spi": 114,
+    "intid": 146,
+    "mode": "8N1; polling; firmware baud retained",
+    "pins": [
+      "GPIO4",
+      "GPIO5"
+    ],
+    "pin_function": "blsp_uart8_a",
+    "clocks": "GCC BLSP2 UART2 apps + BLSP2 AHB, initialized by loader"
+  },
+  "memory": {
+    "dram_base": "0x80000000",
+    "dram_size": "must be supplied by the actual device loader",
+    "upstream_reserved_examples": [
+      {
+        "label": "hyp_mem",
+        "base": "0x85800000",
+        "size": "0x600000"
+      },
+      {
+        "label": "xbl_mem",
+        "base": "0x85e00000",
+        "size": "0x100000"
+      },
+      {
+        "label": "tz_mem",
+        "base": "0x86200000",
+        "size": "0x2d00000"
+      },
+      {
+        "label": "spss_mem",
+        "base": "0x8ab00000",
+        "size": "0x700000"
+      },
+      {
+        "label": "adsp_mem",
+        "base": "0x8b200000",
+        "size": "0x1a00000"
+      },
+      {
+        "label": "mpss_mem",
+        "base": "0x8cc00000",
+        "size": "0x7000000"
+      },
+      {
+        "label": "venus_mem",
+        "base": "0x93c00000",
+        "size": "0x500000"
+      },
+      {
+        "label": "mba_mem",
+        "base": "0x94100000",
+        "size": "0x200000"
+      },
+      {
+        "label": "slpi_mem",
+        "base": "0x94300000",
+        "size": "0xf00000"
+      },
+      {
+        "label": "ipa_fw_mem",
+        "base": "0x95200000",
+        "size": "0x10000"
+      },
+      {
+        "label": "ipa_gsi_mem",
+        "base": "0x95210000",
+        "size": "0x5000"
+      },
+      {
+        "label": "gpu_mem",
+        "base": "0x95600000",
+        "size": "0x100000"
+      },
+      {
+        "label": "wlan_msa_mem",
+        "base": "0x95700000",
+        "size": "0x100000"
+      }
+    ],
+    "warning": "Examples are not a memory allocation plan. Actual firmware DT and board reservations must be preserved."
+  },
+  "provenance": "sources.json; reference snapshots retain their original license headers"
+}

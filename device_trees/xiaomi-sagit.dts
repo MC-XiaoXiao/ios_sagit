@@ -1,0 +1,106 @@
+// SPDX-License-Identifier: BSD-2-Clause
+/dts-v1/;
+/include/ "msm8998.dtsi"
+/ {
+    // XNU exposes model as hw.product/hw.machine. Native iOS 18
+    // MobileGestalt classifies its prefix; unknown names fall back to iPod.
+    // This is a custom product identifier, not an Apple hardware profile.
+    model = "iPhoneMi6,1";
+    compatible = "xiaomi,sagit", "qcom,msm8998";
+    target-type = "SDM835";
+    platform-name = "SDM835";
+    product {
+        product-name = "Xiaomi Mi 6";
+        product-soc-name = "Qualcomm Snapdragon 835";
+    };
+    // Backed by the volatile CHRP snapshot passed inline in chosen by the bridge.
+    options {};
+    aliases { serial0 = &uart8; };
+    // Placeholder: the bridge replaces this with its firmware-allocated arena.
+    memory@a0000000 { device_type = "memory"; reg = <0 0xa0000000 0 0>; };
+    // Runtime address/size supplied by the bridge, backed by ordinary RAM.
+    pram@0 { reg = <0 0 0 0>; };
+    chosen {
+        stdout-path = "serial0:115200n8";
+        serial-device = <&uart8>;
+        debug-enabled = <1>;
+        embedded-panic-log-size = <0x100000>;
+        nvram-bank-size = <0x4000>;
+        nvram-bank-count = <1>;
+        nvram-current-bank = <0>;
+        // AppleImage4 algorithm selector; this does not supply a signed manifest.
+        crypto-hash-method = "sha2-384";
+        // AMFI requires a uint32 here; retain platform-only code enforcement.
+        amfi-only-platform-code = <1>;
+        dram-base = /bits/ 64 <0>;
+        dram-size = /bits/ 64 <0>;
+        bootargs = "-v serial=3 debug=0x14a keepsyms=1 disable-uart-irq=1 mirror-console=1 cpus=4";
+        firmware-version = "MI6 XNU bridge";
+        // Filled from the firmware ChipInfo protocol before entering XNU.
+        // IOPlatformExpert derives and publishes its native platform UUID.
+        unique-chip-id = /bits/ 64 <0>;
+        chip-id = <0>;
+        // Replaced at runtime with firmware entropy; no constant seed is used.
+        random-seed = [00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                       00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                       00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                       00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00];
+        // Image4 needs this container; authenticated manifest data is absent.
+        manifest-properties {};
+        memory-map {
+            Kernel = /bits/ 64 <0 0>;
+            DeviceTree = /bits/ 64 <0 0>;
+            BootArgs = /bits/ 64 <0 0>;
+            PanicLog = /bits/ 64 <0 0>;
+        };
+    };
+    defaults { serial-device = <&uart8>; };
+};
+// PM8998 primary SPMI slave, PM8941-compatible RTC peripheral (observer reads).
+&spmi { qcom,pmic-rtc = <0 0x6000>; };
+// Read-only PMI8998 FG/charger observer: version, SID, SOC, INFO, CHGR, MISC, ms.
+// Uses retained firmware configuration; does not grant charger/SRAM writes.
+&spmi { qcom,battery-observer = <1 2 0x4000 0x4100 0x1000 0x1600 5000>; };
+// PMI8998 LRA: version, exclusive-ownership flag, SID, base, period us,
+// maximum mV, current limit mA, maximum pulse ms. Flag 0 prevents binding and
+// all motor writes. Enable only after AP-exclusive SPMI ownership is handed off.
+&spmi { qcom,pmi8998-haptics = <1 0 3 0xc000 5000 3248 800 15000>; };
+// Consumer usage, source (0=PON, 1=PMIC GPIO), SID, line, debounce ms.
+// PON status bits are asserted on press; PMIC GPIO6 is active low.
+&spmi {
+    qcom,owned-irqs = <0 0x08 0 3>, <0 0xc5 0 3>, <0 0x08 1 3>;
+    qcom,button-map = <0x30 0 0 0 15>, <0xe9 1 0 6 15>, <0xea 0 0 1 15>;
+};
+&soc {
+    compatible = "arm-io,sdm835", "arm-io,generic", "simple-bus";
+    touch_i2c: i2c@c179000 {
+        compatible = "qcom,i2c-qup-v2.2.1";
+        reg = <0 0x0c179000 0 0x600>;
+        #address-cells = <1>;
+        #size-cells = <0>;
+        // Enabled only by --touch-handoff-profile. QUP uses bounded PIO;
+        // GIC SPI99/BAM DMA are not enabled by this backend.
+        status = "disabled";
+        touchscreen@20 {
+            compatible = "synaptics,dsx-i2c-force";
+            reg = <0x20>;
+            interrupt-parent = <&tlmm>;
+            interrupts = <125 8>;
+            // Reset GPIO89 and panel GPIO8 remain with the shared display.
+            status = "disabled";
+        };
+    };
+    fingerprint {
+        // One physical device and one Apple matching category: the driver
+        // whose trusted application identifies the sensor wins matching.
+        compatible = "goodix,fingerprint", "fpc,fpc1020";
+        interrupt-parent = <&tlmm>;
+        interrupts = <121 1>;
+        power-gpios = <&tlmm 35 0>;
+        reset-gpios = <&tlmm 37 1>;
+        irq-gpios = <&tlmm 121 0>;
+        // prepare-input + bridge --input-firmware supplies authenticated
+        // app packets and grants only these pins and BLSP2 QUP6 clocks.
+        status = "disabled";
+    };
+};

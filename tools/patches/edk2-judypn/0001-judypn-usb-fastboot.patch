@@ -1,0 +1,586 @@
+diff --git a/Platform/LG/sdm845/judypn.dsc b/Platform/LG/sdm845/judypn.dsc
+index 4204d88..acec9fb 100644
+--- a/Platform/LG/sdm845/judypn.dsc
++++ b/Platform/LG/sdm845/judypn.dsc
+@@ -17,7 +17,7 @@
+ !include Platform/Qualcomm/sdm845/sdm845.dsc
+ 
+ [BuildOptions.common]
+-  GCC:*_*_AARCH64_CC_FLAGS = -DLG_PIL_FIXED=1 -DAB_SLOTS_SUPPORT=1 -DENABLE_SIMPLE_INIT -DENABLE_LINUX_SIMPLE_MASS_STORAGE
++  GCC:*_*_AARCH64_CC_FLAGS = -DQCOM_FASTBOOT_CONSOLE -DLG_PIL_FIXED=1 -DAB_SLOTS_SUPPORT=1 -DENABLE_SIMPLE_INIT -DENABLE_LINUX_SIMPLE_MASS_STORAGE
+ 
+ [PcdsFixedAtBuild.common]
+ 
+@@ -29,4 +29,8 @@
+ 
+   gRenegadePkgTokenSpaceGuid.PcdDeviceVendor|"LG"
+   gRenegadePkgTokenSpaceGuid.PcdDeviceProduct|"V40 ThinQ"
+-  gRenegadePkgTokenSpaceGuid.PcdDeviceCodeName|"Judypn"
+\ No newline at end of file
++  gRenegadePkgTokenSpaceGuid.PcdDeviceCodeName|"judypn"
++[Components.common]
++  Silicon/Qualcomm/QcomPkg/Drivers/QcomFastboot/QcomFastboot.inf
++  Silicon/Qualcomm/QcomPkg/Drivers/QcomFastboot/TestPayload/Probe.inf
++  EmbeddedPkg/Application/AndroidFastboot/AndroidFastbootApp.inf
+diff --git a/Platform/LG/sdm845/judypn.fdf.inc b/Platform/LG/sdm845/judypn.fdf.inc
+index e05445a..79bc959 100644
+--- a/Platform/LG/sdm845/judypn.fdf.inc
++++ b/Platform/LG/sdm845/judypn.fdf.inc
+@@ -18,7 +18,11 @@
+     SECTION UI = "AcpiTables"
+   }
+ 
+-  // Mainline device tree blob
++  // V40 board tree; the upstream mainline entry pointed at LG G7.
+   FILE FREEFORM = 25462CDA-221F-47DF-AC1D-259CFAA4E326 {
+-    SECTION RAW = Platform/LG/sdm845/FdtBlob/sdm845-lge-judyln.dtb
++    SECTION RAW = Platform/LG/sdm845/FdtBlob_compat/judypn.dtb
+   }
++
++  INF Silicon/Qualcomm/QcomPkg/Drivers/QcomFastboot/QcomFastboot.inf
++  INF Silicon/Qualcomm/QcomPkg/Drivers/QcomFastboot/TestPayload/Probe.inf
++  INF EmbeddedPkg/Application/AndroidFastboot/AndroidFastbootApp.inf
+diff --git a/Platform/RenegadePkg/Library/PlatformBootManagerLib/PlatformBm.c b/Platform/RenegadePkg/Library/PlatformBootManagerLib/PlatformBm.c
+index 8f3cb32..d64b1c9 100644
+--- a/Platform/RenegadePkg/Library/PlatformBootManagerLib/PlatformBm.c
++++ b/Platform/RenegadePkg/Library/PlatformBootManagerLib/PlatformBm.c
+@@ -695,6 +695,30 @@ VOID EFIAPI PlatformBootManagerAfterConsole(VOID)
+ #endif
+ 
+   PlatformSetup();
++#ifdef QCOM_FASTBOOT_CONSOLE
++  {
++    EFI_GUID FastbootGuid = {0x9588502a,0x5370,0x11e3,{0x86,0x31,0xd7,0xc5,0x95,0x13,0x64,0xc8}};
++    EFI_BOOT_MANAGER_LOAD_OPTION *Options;
++    UINTN Count, Index;
++    PlatformRegisterFvBootOption(&FastbootGuid, L"UEFI Fastboot", LOAD_OPTION_ACTIVE);
++    Options = EfiBootManagerGetLoadOptions(&Count, LoadOptionTypeBoot);
++    for (Index=0; Index<Count; Index++) {
++      if (StrCmp(Options[Index].Description, L"UEFI Fastboot") == 0) {
++        Print(L"Entering UEFI Fastboot (USB, no UART)\r\n");
++        EfiBootManagerBoot(&Options[Index]);
++        break;
++      }
++    }
++    // 'continue' exits to the screen shell, as on the Mi 6 build.
++    for (Index=0; Index<Count; Index++) {
++      if (StrCmp(Options[Index].Description, L"UEFI Shell") == 0) {
++        EfiBootManagerBoot(&Options[Index]);
++        break;
++      }
++    }
++    EfiBootManagerFreeLoadOptions(Options, Count);
++  }
++#endif
+ }
+ 
+ /**
+diff --git a/Silicon/Qualcomm/QcomPkg/QcomCommonDsc.inc b/Silicon/Qualcomm/QcomPkg/QcomCommonDsc.inc
+index fcf5187..1504e73 100644
+--- a/Silicon/Qualcomm/QcomPkg/QcomCommonDsc.inc
++++ b/Silicon/Qualcomm/QcomPkg/QcomCommonDsc.inc
+@@ -144,6 +144,7 @@
+ !include SimpleInit.inc
+ 
+ [LibraryClasses.common]
++  AndroidBootImgLib|EmbeddedPkg/Library/AndroidBootImgLib/AndroidBootImgLib.inf
+   ArmLib|ArmPkg/Library/ArmLib/ArmBaseLib.inf
+   ArmMmuLib|ArmPkg/Library/ArmMmuLib/ArmMmuBaseLib.inf
+ !if $(USE_PHYSICAL_TIMER) == TRUE
+diff --git a/build.sh b/build.sh
+index d67e9bf..234f5fd 100755
+--- a/build.sh
++++ b/build.sh
+@@ -50,7 +50,7 @@ function _build(){
+ 	source "${_EDK2}/edksetup.sh"
+ 	[ -d "${WORKSPACE}" ]||mkdir "${WORKSPACE}"
+ 	set -x
+-	make -C "${_EDK2}/BaseTools"||exit "$?"
++	make -C "${_EDK2}/BaseTools" -j "${BUILD_JOBS:-3}"||exit "$?"
+ 
+ 	SPLIT_DSDT=false
+ 	EXT=""
+@@ -118,7 +118,7 @@ function _build(){
+ 	echo "Building BootShim"
+ 	pushd "${ROOTDIR}/tools/BootShim"
+ 	rm -f BootShim.bin BootShim.elf BootShim.Dualboot.bin BootShim.Dualboot.elf
+-	make UEFI_BASE=${FD_BASE} UEFI_SIZE=${FD_SIZE}
++	make CROSS_COMPILE="${CROSS_COMPILE}" UEFI_BASE=${FD_BASE} UEFI_SIZE=${FD_SIZE}
+ 	popd
+ 
+ 	_call_hook platform_pre_build||return "$?"
+@@ -126,7 +126,7 @@ function _build(){
+ 	cp "${ROOTDIR}/tools/"{build_rule.txt,tools_def.txt} "${ROOTDIR}/Common/edk2/Conf/"
+ 	build \
+ 		-s \
+-		-n 0 \
++		-n "${BUILD_JOBS:-3}" \
+ 		-a AARCH64 \
+ 		-t "${TOOLCHAIN}" \
+ 		-p "${ROOTDIR}/Platform/${VENDOR_NAME}/${SOC_PLATFORM_L}/${PLATFORM_NAME}.dsc" \
+diff --git a/tools/BootShim/Makefile b/tools/BootShim/Makefile
+index e2b69c7..3896a35 100755
+--- a/tools/BootShim/Makefile
++++ b/tools/BootShim/Makefile
+@@ -1,6 +1,6 @@
+ ARCH              = arm64
+ TARGET            = aarch64-linux-gnu
+-CROSS_COMPILE     = $(TARGET)-
++CROSS_COMPILE     ?= $(TARGET)-
+ CC                = $(CROSS_COMPILE)gcc
+ OBJCOPY           = $(CROSS_COMPILE)objcopy
+ 
+diff --git a/Silicon/Qualcomm/QcomPkg/Drivers/QcomFastboot/QcomFastboot.c b/Silicon/Qualcomm/QcomPkg/Drivers/QcomFastboot/QcomFastboot.c
+new file mode 100644
+index 0000000..2958298
+--- /dev/null
++++ b/Silicon/Qualcomm/QcomPkg/Drivers/QcomFastboot/QcomFastboot.c
+@@ -0,0 +1,325 @@
++// SPDX-License-Identifier: BSD-2-Clause-Patent
++#include <Uefi.h>
++#include <Protocol/AndroidFastbootTransport.h>
++#include <Protocol/AndroidFastbootPlatform.h>
++#include <Protocol/BlockIo.h>
++#include <Protocol/UsbFunctionIo.h>
++#include <Uefi/UefiGpt.h>
++#include <Library/UefiBootServicesTableLib.h>
++#include <Library/BaseLib.h>
++#include <Library/BaseMemoryLib.h>
++#include <Library/MemoryAllocationLib.h>
++#include <Library/PrintLib.h>
++#include <Library/UefiLib.h>
++#include <Library/PcdLib.h>
++#include "QcomUsb.h"
++
++#define RX_SIZE (1024 * 1024)
++STATIC EFI_GUID mUsbGuid = {0xd9d9ce48,0x44b8,0x4f49,{0x8e,0x3e,0x2a,0x3b,0x92,0x7d,0xc6,0xc1}};
++STATIC EFI_GUID mUsbInitGuid = {0x1c0cffce,0xfc8d,0x4e44,{0x8c,0x78,0x9c,0x9e,0x5b,0x53,0x0d,0x36}};
++STATIC QCOM_USB *mUsb;
++STATIC EFI_EVENT mTimer, mReceive;
++STATIC VOID *mRx, *mTx;
++STATIC BOOLEAN mRunning, mRxPending, mTxDone;
++STATIC UINTN mDownloadRemaining;
++STATIC LIST_ENTRY mPackets;
++typedef struct { LIST_ENTRY Link; UINTN Size; VOID *Data; } PACKET;
++#pragma pack(1)
++typedef struct {
++  USB_CONFIG_DESCRIPTOR Config;
++  USB_INTERFACE_DESCRIPTOR Interface;
++  USB_ENDPOINT_DESCRIPTOR In, Out;
++} CONFIG;
++#pragma pack()
++STATIC USB_DEVICE_DESCRIPTOR mDevice = {18,1,0x200,0,0,0,64,0x18d1,0xd00d,0x100,1,2,3,1};
++STATIC CONFIG mConfig = {{9,2,sizeof(CONFIG),1,1,0,0x80,250},{9,4,0,0,2,0xff,0x42,3,0},{7,5,0x81,2,512,0},{7,5,1,2,512,0}};
++STATIC QCOM_USB_QUALIFIER mQualifier = {10,6,0x200,0,0,0,64,1,0};
++STATIC CHAR16 mManufacturer[] = {0x0310,L'E',L'D',L'K',L'2',L' ',L'D',L'X'};
++STATIC CHAR16 mProduct[] = {0x031e,L'E',L'D',L'K',L'2',L' ',L'F',L'a',L's',L't',L'b',L'o',L'o',L't',L' '};
++STATIC CHAR16 mSerial[] = {0x0318,L'e',L'd',L'k',L'2',L'-',L'j',L'u',L'd',L'y',L'p',L'n'};
++STATIC UINT16 mLanguage[] = {0x0304,0x0409};
++STATIC EFI_USB_STRING_DESCRIPTOR *mStrings[] = {(VOID *)mLanguage,(VOID *)mManufacturer,(VOID *)mProduct,(VOID *)mSerial};
++
++STATIC VOID QueueRx(VOID) {
++  UINTN Size=mDownloadRemaining ? MIN(mDownloadRemaining,RX_SIZE) : 64;
++  if (mRunning && !mRxPending && !EFI_ERROR(mUsb->Send(1, Size, mRx))) mRxPending = TRUE;
++}
++STATIC VOID Pump(VOID) {
++  UINT32 Event; UINTN Size; QCOM_USB_EVENT_DATA Data;
++  EFI_STATUS Status;
++  if (!mRunning) return;
++  Size = sizeof(Data); ZeroMem(&Data,sizeof(Data)); Event = 0;
++  Status = mUsb->HandleEvent(&Event, &Size, &Data);
++  if (EFI_ERROR(Status)) return;
++  if (Event == 1) {
++    if (Data.State == 0) QueueRx();
++    else mRxPending = FALSE;
++  } else if (Event == 2 && Data.Transfer.Status == 1) {
++    if (Data.Transfer.Endpoint == 0x81) mTxDone = TRUE;
++    else if (Data.Transfer.Endpoint == 1) {
++      PACKET *Packet;
++      mRxPending = FALSE;
++      if (Data.Transfer.Bytes != 0 && Data.Transfer.Bytes <= RX_SIZE) {
++        Packet = AllocateZeroPool(sizeof(*Packet));
++        if (mDownloadRemaining) mDownloadRemaining-=MIN(mDownloadRemaining,Data.Transfer.Bytes);
++        if (Packet != NULL) {
++          Packet->Data = AllocateCopyPool(Data.Transfer.Bytes, Data.Transfer.Buffer);
++          if (Packet->Data != NULL) {
++            Packet->Size = Data.Transfer.Bytes;
++            InsertTailList(&mPackets, &Packet->Link);
++            gBS->SignalEvent(mReceive);
++          } else FreePool(Packet);
++        }
++      }
++    }
++  }
++}
++STATIC VOID EFIAPI Tick(EFI_EVENT Event, VOID *Context) { Pump(); }
++STATIC VOID EFIAPI Dummy(EFI_EVENT Event, VOID *Context) { }
++STATIC EFI_STATUS ConnectPeripheral(VOID) {
++  EFI_STATUS Status;
++  EFI_USBFN_IO_PROTOCOL *Function;
++  QCOM_USB_CONFIG *Config;
++  EFI_HANDLE *Handles;
++  UINTN Count, Index;
++  EFI_GUID ConfigGuid = {0xe722b03f,0xb250,0x42ce,{0x8e,0xbd,0x5b,0xd5,0x18,0x12,0xd0,0x37}};
++
++  Status=gBS->LocateProtocol(&gEfiUsbFunctionIoProtocolGuid,NULL,(VOID **)&Function);
++  if (!EFI_ERROR(Status)) return EFI_SUCCESS;
++  Status=gBS->LocateProtocol(&ConfigGuid,NULL,(VOID **)&Config);
++  if (EFI_ERROR(Status)) return Status;
++  if (Config->Revision!=0x10002 && Config->Revision!=0x10003) return EFI_UNSUPPORTED;
++  Status=Config->StartController(Config,0,4);
++  Print(L"USB switch to peripheral: %r\r\n",Status);
++  Status=gBS->LocateProtocol(&gEfiUsbFunctionIoProtocolGuid,NULL,(VOID **)&Function);
++  if (!EFI_ERROR(Status)) return EFI_SUCCESS;
++
++  // Older firmware retains the detected host role in StartController even
++  // when peripheral mode is requested. Rebind the primary controller using
++  // the public USB_CONFIG core/mode fields consumed by DriverBindingSupported.
++  Status=gBS->LocateHandleBuffer(ByProtocol,&ConfigGuid,NULL,&Count,&Handles);
++  if (EFI_ERROR(Status)) return Status;
++  for (Index=0;Index<Count;Index++) {
++    UINT32 PreviousMode;
++    Status=gBS->HandleProtocol(Handles[Index],&ConfigGuid,(VOID **)&Config);
++    if (EFI_ERROR(Status) || (Config->Revision!=0x10002 && Config->Revision!=0x10003) || Config->Core!=0) continue;
++    Status=gBS->DisconnectController(Handles[Index],NULL,NULL);
++    if (EFI_ERROR(Status) && Status!=EFI_NOT_STARTED) continue;
++    PreviousMode=Config->Mode;
++    Config->Mode=4;
++    Status=gBS->ConnectController(Handles[Index],NULL,NULL,TRUE);
++    Print(L"USB Function bind core %u: %r\r\n",Config->Core,Status);
++    if (EFI_ERROR(Status)) {
++      Config->Mode=PreviousMode;
++      gBS->ConnectController(Handles[Index],NULL,NULL,TRUE);
++    }
++  }
++  FreePool(Handles);
++  Status=gBS->LocateProtocol(&gEfiUsbFunctionIoProtocolGuid,NULL,(VOID **)&Function);
++  Print(L"USB Function interface: %r\r\n",Status);
++  return Status;
++}
++STATIC EFI_STATUS Start(EFI_EVENT Receive) {
++  EFI_STATUS Status; EFI_EVENT InitEvent; VOID *Configs = &mConfig;
++  if (mRunning) return EFI_ALREADY_STARTED;
++  InitializeListHead(&mPackets); mReceive = Receive;
++  Status=ConnectPeripheral();
++  if (EFI_ERROR(Status)) return Status;
++  Status = gBS->LocateProtocol(&mUsbGuid,NULL,(VOID **)&mUsb);
++  Print(L"Qualcomm USB locate before init: %r\r\n", Status);
++  if (EFI_ERROR(Status)) {
++  Status = gBS->CreateEventEx(EVT_NOTIFY_SIGNAL,TPL_CALLBACK,Dummy,NULL,&mUsbInitGuid,&InitEvent);
++  if (EFI_ERROR(Status)) return Status;
++  gBS->SignalEvent(InitEvent); gBS->CloseEvent(InitEvent);
++  Status = gBS->LocateProtocol(&mUsbGuid,NULL,(VOID **)&mUsb);
++  if (EFI_ERROR(Status)) return Status;
++  }
++  Print(L"Qualcomm USB protocol ready\r\n");
++  Status = mUsb->Start(&mDevice,&Configs,&mQualifier,NULL,4,mStrings);
++  Print(L"Qualcomm USB Start: %r, revision %lx\r\n",Status,mUsb->Revision);
++  if (EFI_ERROR(Status)) return Status;
++  Status = mUsb->Allocate(RX_SIZE,&mRx);
++  Print(L"Qualcomm USB RX allocate: %r\r\n", Status);
++  if (EFI_ERROR(Status)) { mUsb->Stop(); return Status; }
++  Status = mUsb->Allocate(4096,&mTx);
++  if (EFI_ERROR(Status)) { mUsb->Free(mRx); mRx=NULL; mUsb->Stop(); return Status; }
++  mRunning=TRUE; mRxPending=FALSE; mDownloadRemaining=0;
++  Status=gBS->CreateEvent(EVT_TIMER|EVT_NOTIFY_SIGNAL,TPL_CALLBACK,Tick,NULL,&mTimer);
++  if (!EFI_ERROR(Status)) Status=gBS->SetTimer(mTimer,TimerPeriodic,10000);
++  return Status;
++}
++STATIC EFI_STATUS Stop(VOID) {
++  if (!mRunning) return EFI_SUCCESS;
++  mRunning=FALSE;
++  if (mTimer) { gBS->CloseEvent(mTimer); mTimer=NULL; }
++  mUsb->Abort(1); mUsb->Abort(0x81);
++  mUsb->Free(mRx); mUsb->Free(mTx); mRx=mTx=NULL;
++  mUsb->Stop();
++  while (!IsListEmpty(&mPackets)) {
++    PACKET *Packet=(PACKET *)GetFirstNode(&mPackets);
++    RemoveEntryList(&Packet->Link); FreePool(Packet->Data); FreePool(Packet);
++  }
++  return EFI_SUCCESS;
++}
++STATIC EFI_STATUS Send(UINTN Size, CONST VOID *Buffer, EFI_EVENT *Fatal) {
++  UINTN Budget=200000; EFI_STATUS Status;
++  if (!mRunning || Size>4096) return EFI_BAD_BUFFER_SIZE;
++  // Match the receive request to Fastboot's announced data length. Waiting
++  // for a short USB packet hangs when a download ends on a packet boundary.
++  if (Size==12 && CompareMem(Buffer,"DATA",4)==0) {
++    CHAR8 Hex[9];
++    CopyMem(Hex,(CONST UINT8 *)Buffer+4,8); Hex[8]=0;
++    mDownloadRemaining=AsciiStrHexToUintn(Hex);
++  }
++  CopyMem(mTx,Buffer,Size); mTxDone=FALSE;
++  Status=mUsb->Send(0x81,Size,mTx);
++  if (EFI_ERROR(Status)) return Status;
++  while (!mTxDone && --Budget) { Pump(); gBS->Stall(10); }
++  return mTxDone ? EFI_SUCCESS : EFI_TIMEOUT;
++}
++STATIC EFI_STATUS Receive(UINTN *Size, VOID **Buffer) {
++  PACKET *Packet;
++  if (IsListEmpty(&mPackets)) { QueueRx(); return EFI_NOT_READY; }
++  Packet=(PACKET *)GetFirstNode(&mPackets); RemoveEntryList(&Packet->Link);
++  *Size=Packet->Size; *Buffer=Packet->Data; FreePool(Packet);
++  return EFI_SUCCESS;
++}
++
++// Discover the named GPT partition on the actual UFS LUN; never hard-code LBAs.
++STATIC EFI_BLOCK_IO_PROTOCOL *mBootDisk;
++STATIC EFI_LBA mBootStart, mBootEnd;
++STATIC UINT64 mBootAttributes;
++STATIC EFI_STATUS FindBoot(CONST CHAR16 *Name) {
++  EFI_HANDLE *Handles; UINTN Count, Index; EFI_STATUS Status;
++  Status=gBS->LocateHandleBuffer(ByProtocol,&gEfiBlockIoProtocolGuid,NULL,&Count,&Handles);
++  if (EFI_ERROR(Status)) return Status;
++  mBootDisk=NULL;
++  for (Index=0;Index<Count;Index++) {
++    EFI_BLOCK_IO_PROTOCOL *Disk; EFI_PARTITION_TABLE_HEADER *Header;
++    VOID *Block, *Table; UINTN BlockSize, TableBytes, Pages, Entry;
++    UINT32 Crc, Saved; UINTN Alignment;
++    if (EFI_ERROR(gBS->HandleProtocol(Handles[Index],&gEfiBlockIoProtocolGuid,(VOID **)&Disk))) continue;
++    BlockSize=Disk->Media->BlockSize;
++    if (!Disk->Media->MediaPresent || Disk->Media->LogicalPartition ||
++        (BlockSize!=512 && BlockSize!=1024 && BlockSize!=2048 && BlockSize!=4096) ||
++        Disk->Media->LastBlock<2) continue;
++    Alignment=MAX((UINTN)Disk->Media->IoAlign,(UINTN)EFI_PAGE_SIZE);
++    Block=AllocateAlignedPages(1,Alignment); if (!Block) continue;
++    Status=Disk->ReadBlocks(Disk,Disk->Media->MediaId,1,BlockSize,Block);
++    Header=Block;
++    if (EFI_ERROR(Status) || Header->Header.Signature!=EFI_PTAB_HEADER_ID || Header->Header.HeaderSize<92 || Header->Header.HeaderSize>BlockSize) { FreeAlignedPages(Block,1); continue; }
++    Saved=Header->Header.CRC32; Header->Header.CRC32=0;
++    gBS->CalculateCrc32(Header,Header->Header.HeaderSize,&Crc); Header->Header.CRC32=Saved;
++    if (Crc!=Saved || Header->MyLBA!=1 || Header->AlternateLBA>Disk->Media->LastBlock ||
++        Header->FirstUsableLBA>Header->LastUsableLBA || Header->LastUsableLBA>Disk->Media->LastBlock ||
++        Header->NumberOfPartitionEntries>256 || Header->SizeOfPartitionEntry<sizeof(EFI_PARTITION_ENTRY) ||
++        Header->SizeOfPartitionEntry>512 || (Header->SizeOfPartitionEntry%128)!=0) { FreeAlignedPages(Block,1); continue; }
++    TableBytes=Header->NumberOfPartitionEntries*Header->SizeOfPartitionEntry;
++    if (!TableBytes) { FreeAlignedPages(Block,1); continue; }
++    if (Header->PartitionEntryLBA<2 || Header->PartitionEntryLBA>Disk->Media->LastBlock ||
++        ALIGN_VALUE(TableBytes,BlockSize)/BlockSize>Disk->Media->LastBlock-Header->PartitionEntryLBA+1 ||
++        Header->PartitionEntryLBA+ALIGN_VALUE(TableBytes,BlockSize)/BlockSize>Header->FirstUsableLBA) { FreeAlignedPages(Block,1); continue; }
++    Pages=EFI_SIZE_TO_PAGES(ALIGN_VALUE(TableBytes,BlockSize));
++    Table=AllocateAlignedPages(Pages,Alignment);
++    if (!Table) { FreeAlignedPages(Block,1); continue; }
++    Status=Disk->ReadBlocks(Disk,Disk->Media->MediaId,Header->PartitionEntryLBA,ALIGN_VALUE(TableBytes,BlockSize),Table);
++    if (!EFI_ERROR(Status)) {
++      gBS->CalculateCrc32(Table,TableBytes,&Crc);
++      if (Crc==Header->PartitionEntryArrayCRC32) for (Entry=0;Entry<Header->NumberOfPartitionEntries;Entry++) {
++        EFI_PARTITION_ENTRY *Part=(VOID *)((UINT8 *)Table+Entry*Header->SizeOfPartitionEntry);
++        EFI_GUID EmptyGuid = {0};
++        if (StrnCmp(Part->PartitionName,Name,ARRAY_SIZE(Part->PartitionName))==0 &&
++            CompareMem(&Part->PartitionTypeGUID,&EmptyGuid,sizeof(EmptyGuid))!=0 &&
++            Part->StartingLBA>=Header->FirstUsableLBA && Part->EndingLBA<=Header->LastUsableLBA && Part->StartingLBA<=Part->EndingLBA) {
++          if (mBootDisk) { FreeAlignedPages(Table,Pages); FreeAlignedPages(Block,1); FreePool(Handles); return EFI_COMPROMISED_DATA; }
++          mBootDisk=Disk; mBootStart=Part->StartingLBA; mBootEnd=Part->EndingLBA;
++          mBootAttributes=Part->Attributes;
++        }
++      }
++    }
++    FreeAlignedPages(Table,Pages); FreeAlignedPages(Block,1);
++  }
++  FreePool(Handles);
++  return mBootDisk ? EFI_SUCCESS : EFI_NOT_FOUND;
++}
++// Qualcomm GPT active-slot bit, also defined by upstream BootSlotLib. Never
++// guess a slot or change slot attributes from the Fastboot flashing path.
++STATIC EFI_STATUS CurrentSlot(CHAR8 *Slot) {
++  EFI_STATUS Status; BOOLEAN A, B;
++  Status=FindBoot(L"boot_a"); if (EFI_ERROR(Status)) return Status;
++  A=(mBootAttributes & LShiftU64(1,50))!=0;
++  Status=FindBoot(L"boot_b"); if (EFI_ERROR(Status)) return Status;
++  B=(mBootAttributes & LShiftU64(1,50))!=0;
++  if (A==B) return EFI_COMPROMISED_DATA;
++  *Slot=A ? 'a' : 'b';
++  return EFI_SUCCESS;
++}
++STATIC EFI_STATUS SelectBoot(CONST CHAR8 *Name) {
++  CHAR8 Slot; EFI_STATUS Status;
++  if (!AsciiStrCmp(Name,"boot_a")) return FindBoot(L"boot_a");
++  if (!AsciiStrCmp(Name,"boot_b")) return FindBoot(L"boot_b");
++  if (AsciiStrCmp(Name,"boot")) return EFI_ACCESS_DENIED;
++  Status=CurrentSlot(&Slot); if (EFI_ERROR(Status)) return Status;
++  return FindBoot(Slot=='a' ? L"boot_a" : L"boot_b");
++}
++STATIC EFI_STATUS Init(VOID) { return EFI_SUCCESS; }
++STATIC VOID UnInit(VOID) { }
++STATIC EFI_STATUS Flash(CHAR8 *Name, UINTN Size, VOID *Data) {
++  EFI_STATUS Status; UINTN BlockSize, Bytes, Pages; VOID *Write, *Read;
++  UINT32 KernelSize, RamdiskSize, SecondSize, PageSize, HeaderVersion, RecoverySize, HeaderSize;
++  UINT64 Required;
++  if (AsciiStrCmp(Name,"boot") && AsciiStrCmp(Name,"boot_a") && AsciiStrCmp(Name,"boot_b")) return EFI_ACCESS_DENIED;
++  if (!Data || Size<1632 || Size>64*1024*1024 || CompareMem(Data,"ANDROID!",8)!=0) return EFI_INVALID_PARAMETER;
++  CopyMem(&KernelSize,(UINT8 *)Data+8,4);
++  CopyMem(&RamdiskSize,(UINT8 *)Data+16,4);
++  CopyMem(&SecondSize,(UINT8 *)Data+24,4);
++  CopyMem(&PageSize,(UINT8 *)Data+36,4);
++  CopyMem(&HeaderVersion,(UINT8 *)Data+40,4);
++  if (!KernelSize || HeaderVersion>1 || (PageSize!=2048 && PageSize!=4096)) return EFI_UNSUPPORTED;
++  if (HeaderVersion==1) {
++    if (Size<1648) return EFI_BAD_BUFFER_SIZE;
++    CopyMem(&RecoverySize,(UINT8 *)Data+1632,4);
++    CopyMem(&HeaderSize,(UINT8 *)Data+1644,4);
++    if (RecoverySize || HeaderSize!=1648) return EFI_UNSUPPORTED;
++  }
++  Required=PageSize+ALIGN_VALUE((UINT64)KernelSize,PageSize)+ALIGN_VALUE((UINT64)RamdiskSize,PageSize)+ALIGN_VALUE((UINT64)SecondSize,PageSize);
++  if (Required>Size) return EFI_BAD_BUFFER_SIZE;
++  Status=SelectBoot(Name); if (EFI_ERROR(Status)) return Status;
++  BlockSize=mBootDisk->Media->BlockSize; Bytes=ALIGN_VALUE(Size,BlockSize);
++  if (Bytes>(mBootEnd-mBootStart+1)*BlockSize || mBootDisk->Media->ReadOnly) return EFI_BAD_BUFFER_SIZE;
++  Pages=EFI_SIZE_TO_PAGES(Bytes);
++  Write=AllocateAlignedPages(Pages,MAX((UINTN)mBootDisk->Media->IoAlign,(UINTN)EFI_PAGE_SIZE));
++  Read=AllocateAlignedPages(Pages,MAX((UINTN)mBootDisk->Media->IoAlign,(UINTN)EFI_PAGE_SIZE));
++  if (!Write || !Read) { if (Write) FreeAlignedPages(Write,Pages); if (Read) FreeAlignedPages(Read,Pages); return EFI_OUT_OF_RESOURCES; }
++  ZeroMem(Write,Bytes); CopyMem(Write,Data,Size);
++  Status=mBootDisk->WriteBlocks(mBootDisk,mBootDisk->Media->MediaId,mBootStart,Bytes,Write);
++  if (!EFI_ERROR(Status)) Status=mBootDisk->FlushBlocks(mBootDisk);
++  if (!EFI_ERROR(Status)) Status=mBootDisk->ReadBlocks(mBootDisk,mBootDisk->Media->MediaId,mBootStart,Bytes,Read);
++  if (!EFI_ERROR(Status) && CompareMem(Write,Read,Bytes)!=0) Status=EFI_CRC_ERROR;
++  Print(L"Fastboot flash %a + readback: %r (%u bytes)\r\n",Name,Status,Size);
++  FreeAlignedPages(Write,Pages); FreeAlignedPages(Read,Pages); return Status;
++}
++STATIC EFI_STATUS Erase(CHAR8 *Name) { return EFI_UNSUPPORTED; }
++STATIC EFI_STATUS GetVar(CHAR8 *Name, CHAR8 *Value) {
++  Value[0]=0;
++  if (!AsciiStrCmp(Name,"product")) AsciiStrCpyS(Value,61,(CHAR8 *)PcdGetPtr(PcdDeviceCodeName));
++  else if (!AsciiStrCmp(Name,"serialno")) AsciiStrCpyS(Value,61,"edk2-judypn");
++  else if (!AsciiStrCmp(Name,"version-bootloader")) AsciiStrCpyS(Value,61,"edk2-fastboot-1");
++  else if (!AsciiStrCmp(Name,"max-download-size")) AsciiStrCpyS(Value,61,"0x04000000");
++  else if (!AsciiStrCmp(Name,"has-slot:boot")) AsciiStrCpyS(Value,61,"yes");
++  else if (!AsciiStrCmp(Name,"slot-count")) AsciiStrCpyS(Value,61,"2");
++  else if (!AsciiStrCmp(Name,"current-slot")) {
++    EFI_STATUS Status=CurrentSlot(Value); if (EFI_ERROR(Status)) return Status;
++    Value[1]=0;
++  } else if (!AsciiStrCmp(Name,"partition-size:boot") || !AsciiStrCmp(Name,"partition-size:boot_a") || !AsciiStrCmp(Name,"partition-size:boot_b")) {
++    EFI_STATUS Status=SelectBoot(Name+15); if (EFI_ERROR(Status)) return Status;
++    AsciiSPrint(Value,61,"0x%lx",(mBootEnd-mBootStart+1)*mBootDisk->Media->BlockSize);
++  }
++  return EFI_SUCCESS;
++}
++STATIC EFI_STATUS Oem(CHAR8 *Command) { return EFI_UNSUPPORTED; }
++STATIC FASTBOOT_TRANSPORT_PROTOCOL mTransport={Start,Stop,Send,Receive};
++STATIC FASTBOOT_PLATFORM_PROTOCOL mPlatform={Init,UnInit,Flash,Erase,GetVar,Oem};
++EFI_STATUS EFIAPI QcomFastbootEntry(EFI_HANDLE Handle, EFI_SYSTEM_TABLE *SystemTable) {
++  return gBS->InstallMultipleProtocolInterfaces(&Handle,&gAndroidFastbootTransportProtocolGuid,&mTransport,&gAndroidFastbootPlatformProtocolGuid,&mPlatform,NULL);
++}
+diff --git a/Silicon/Qualcomm/QcomPkg/Drivers/QcomFastboot/QcomFastboot.inf b/Silicon/Qualcomm/QcomPkg/Drivers/QcomFastboot/QcomFastboot.inf
+new file mode 100644
+index 0000000..8596b28
+--- /dev/null
++++ b/Silicon/Qualcomm/QcomPkg/Drivers/QcomFastboot/QcomFastboot.inf
+@@ -0,0 +1,33 @@
++[Defines]
++  INF_VERSION = 0x00010005
++  BASE_NAME = QcomFastboot
++  FILE_GUID = a78dafb8-467e-4fd0-b117-03c2f8ced2cc
++  MODULE_TYPE = DXE_DRIVER
++  ENTRY_POINT = QcomFastbootEntry
++[Sources]
++  QcomFastboot.c
++  QcomUsb.h
++[Packages]
++  MdePkg/MdePkg.dec
++  EmbeddedPkg/EmbeddedPkg.dec
++  Platform/RenegadePkg/RenegadePkg.dec
++[LibraryClasses]
++  UefiDriverEntryPoint
++  UefiBootServicesTableLib
++  BaseLib
++  BaseMemoryLib
++  MemoryAllocationLib
++  PrintLib
++  DebugLib
++  UefiLib
++  PcdLib
++[Protocols]
++  gAndroidFastbootTransportProtocolGuid
++  gAndroidFastbootPlatformProtocolGuid
++  gEfiBlockIoProtocolGuid
++  gEfiUsbFunctionIoProtocolGuid
++[Depex]
++  TRUE
++
++[Pcd]
++  gRenegadePkgTokenSpaceGuid.PcdDeviceCodeName
+diff --git a/Silicon/Qualcomm/QcomPkg/Drivers/QcomFastboot/QcomUsb.h b/Silicon/Qualcomm/QcomPkg/Drivers/QcomFastboot/QcomUsb.h
+new file mode 100644
+index 0000000..cce1883
+--- /dev/null
++++ b/Silicon/Qualcomm/QcomPkg/Drivers/QcomFastboot/QcomUsb.h
+@@ -0,0 +1,45 @@
++// SPDX-License-Identifier: BSD-2-Clause-Patent
++// ABI subset of Qualcomm's BSD-licensed EFIUsbDevice.h, from
++// SHIFTPHONES/android_bootable_bootloader_edk2, QcomModulePkg/Include/Protocol.
++#include <IndustryStandard/Usb.h>
++typedef struct {
++  UINT32 Status;
++  UINT8 Endpoint;
++  UINTN Bytes;
++  VOID *Buffer;
++} QCOM_USB_TRANSFER;
++typedef union {
++  UINT32 State;
++  QCOM_USB_TRANSFER Transfer;
++  UINT8 Oem[64];
++} QCOM_USB_EVENT_DATA;
++#pragma pack(1)
++typedef struct {
++  UINT8 Length, Type;
++  UINT16 BcdUsb;
++  UINT8 Class, SubClass, Protocol, PacketSize, Configurations, Reserved;
++} QCOM_USB_QUALIFIER;
++#pragma pack()
++typedef struct {
++  UINTN Revision;
++  EFI_STATUS (EFIAPI *Start)(USB_DEVICE_DESCRIPTOR *, VOID **, QCOM_USB_QUALIFIER *, VOID *, UINT8, EFI_USB_STRING_DESCRIPTOR **);
++  EFI_STATUS (EFIAPI *Send)(UINT8, UINTN, VOID *);
++  EFI_STATUS (EFIAPI *HandleEvent)(UINT32 *, UINTN *, QCOM_USB_EVENT_DATA *);
++  EFI_STATUS (EFIAPI *Allocate)(UINTN, VOID **);
++  EFI_STATUS (EFIAPI *Free)(VOID *);
++  EFI_STATUS (EFIAPI *Stop)(VOID);
++  EFI_STATUS (EFIAPI *Abort)(UINT8);
++  EFI_STATUS (EFIAPI *Stall)(UINT8, BOOLEAN);
++  VOID *StartEx;
++} QCOM_USB;
++// USB configuration ABI: the first nine entries precede controller switching.
++typedef struct {
++  UINT32 Revision;
++  VOID *Legacy[9];
++  EFI_STATUS (EFIAPI *StartController)(VOID *, UINT32, UINT32);
++  EFI_STATUS (EFIAPI *StopController)(VOID *, UINT32, UINT32);
++  VOID *EnterLpm, *ExitLpm;
++  EFI_STATUS (EFIAPI *ToggleMode)(VOID *, UINT32);
++  VOID *GetCoreCount, *GetSupportedMode;
++  UINT32 Core, Mode;
++} QCOM_USB_CONFIG;
+diff --git a/Silicon/Qualcomm/QcomPkg/Drivers/QcomFastboot/TestPayload/Probe.c b/Silicon/Qualcomm/QcomPkg/Drivers/QcomFastboot/TestPayload/Probe.c
+new file mode 100644
+index 0000000..0bb36b2
+--- /dev/null
++++ b/Silicon/Qualcomm/QcomPkg/Drivers/QcomFastboot/TestPayload/Probe.c
+@@ -0,0 +1,8 @@
++// SPDX-License-Identifier: BSD-2-Clause-Patent
++#include <Uefi.h>
++#include <Library/UefiLib.h>
++EFI_STATUS EFIAPI ProbeEntry(EFI_HANDLE Handle, EFI_SYSTEM_TABLE *SystemTable) {
++  if (SystemTable == NULL || SystemTable->ConOut == NULL) return EFI_NOT_READY;
++  Print(L"FASTBOOT_EFI_PAYLOAD_OK\r\n");
++  return EFI_SUCCESS;
++}
+diff --git a/Silicon/Qualcomm/QcomPkg/Drivers/QcomFastboot/TestPayload/Probe.inf b/Silicon/Qualcomm/QcomPkg/Drivers/QcomFastboot/TestPayload/Probe.inf
+new file mode 100644
+index 0000000..859427e
+--- /dev/null
++++ b/Silicon/Qualcomm/QcomPkg/Drivers/QcomFastboot/TestPayload/Probe.inf
+@@ -0,0 +1,13 @@
++[Defines]
++  INF_VERSION = 0x00010005
++  BASE_NAME = FastbootPayloadProbe
++  FILE_GUID = 3e087c7e-378d-49d7-bcee-4c3304971ccb
++  MODULE_TYPE = UEFI_APPLICATION
++  ENTRY_POINT = ProbeEntry
++[Sources]
++  Probe.c
++[Packages]
++  MdePkg/MdePkg.dec
++[LibraryClasses]
++  UefiApplicationEntryPoint
++  UefiLib

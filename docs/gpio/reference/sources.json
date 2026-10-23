@@ -1,0 +1,98 @@
+{
+  "pm8941-pwrkey.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/input/misc/pm8941-pwrkey.c",
+    "sha256": "a6294dcb20e933aa7d8f2a878283111e5ac9b592575e393455d4ed624655df20"
+  },
+  "pm8998.dtsi": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/arch/arm64/boot/dts/qcom/pm8998.dtsi",
+    "sha256": "dd5853ad8690fb529adfe996d68533b50ba0cf472829d6ae244172285b99a7d6"
+  },
+  "IOHIDDevice.h": {
+    "url": "https://raw.githubusercontent.com/apple-oss-distributions/IOHIDFamily/main/IOHIDFamily/IOHIDDevice.h",
+    "sha256": "530ddeff278dfb6cc5a6deeb0b3c44d0f0caaed2f7cc72b4c8404109896c92c4"
+  },
+  "pinctrl-msm.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/pinctrl/qcom/pinctrl-msm.c",
+    "sha256": "e8a5f175150c967266dee459b1eeadb793975fc9dc5b7c6eb6991a42d6962f9b"
+  },
+  "pinctrl-msm8998.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/pinctrl/qcom/pinctrl-msm8998.c",
+    "sha256": "96402265d3aa737fe25fafb5a2a73603e2efb7804103d49cf1084be25ac8722a"
+  },
+  "pinctrl-spmi-gpio.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/pinctrl/qcom/pinctrl-spmi-gpio.c",
+    "sha256": "5b410d9972e1d3ac1ff99002e6d74db21397ea552beee00b9c2d3c9f486415bc"
+  },
+  "spmi-pmic-arb.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/spmi/spmi-pmic-arb.c",
+    "sha256": "37913bfb3d7678bbb87f4f4ab6445d1910bd6d1259c7f6a45ce3970a62c7c0f2"
+  },
+  "IOHIDDevice.cpp": {
+    "url": "https://raw.githubusercontent.com/apple-oss-distributions/IOHIDFamily/main/IOHIDFamily/IOHIDDevice.cpp",
+    "sha256": "c5772188f7d1a8d74bd26b15a6779135ffdd548d4088bc08fcbe1a7947d1bd60"
+  },
+  "IOHIDEventDriver.cpp": {
+    "url": "https://raw.githubusercontent.com/apple-oss-distributions/IOHIDFamily/main/IOHIDFamily/IOHIDEventDriver.cpp",
+    "sha256": "8317ac1de89a4c877c1f32256ecee939dec824c1bdff3dd5b18617a249282781"
+  },
+  "button-routing.dts": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/arch/arm64/boot/dts/qcom/msm8998-xiaomi-sagit.dts",
+    "sha256": "f20b86bb673d5cec3ba7bb5c1973abcce0377fb27cc22d5b3c58ee940b8b730f"
+  },
+  "fingerprint-routing.dtsi": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/sagit-n-oss/arch/arm/boot/dts/qcom/sagit-msm8998-mtp.dtsi",
+    "sha256": "b5ea7890a131e642931a137ea77aee35bc246691b62f290b7745871c96d537f8"
+  },
+  "fpc1020_tee.c": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/sagit-n-oss/drivers/input/fingerprint/fpc1268_tee/fpc1020_tee.c",
+    "sha256": "586b3e878148ba3b32ac25b11a092a3990945e513ef389a3a411fd0f57e4296d"
+  },
+  "gf_spi.c": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/sagit-n-oss/drivers/input/fingerprint/goodix/gf_spi.c",
+    "sha256": "79d376f4061088cb84e4ae14eb8a70ba3b7d0852555eb44c3b457a2bb6a8e609"
+  },
+  "gf_ta.c": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/sagit-n-oss/drivers/input/fingerprint/goodix_ta/gf_spi.c",
+    "sha256": "1e97f644b19acd5cc010c1b33e8116d690a518a61ecb662def04aae8bed84098"
+  },
+  "gf_platform.c": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/sagit-n-oss/drivers/input/fingerprint/goodix/platform.c",
+    "sha256": "c76bfd07981c042c1d3c1ab09ed400faec7c03cfaa7caab8ed7a4d4fb41b3a34"
+  },
+  "input-keylayout.kl": {
+    "url": "https://raw.githubusercontent.com/LineageOS/android_device_xiaomi_sagit/lineage-22.2/configs/keylayout/uinput-goodix.kl",
+    "sha256": "0f6eff9a4a6d4db4057eec5171c642c57203860c6a09d7c0e67381fc7be71f55"
+  },
+  "input-kernel.config": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/sagit-n-oss/arch/arm64/configs/sagit_user_defconfig",
+    "sha256": "7eab9da5572ad2999f851a987278c9e507b80b7ee8009f825404ac48f86b2c5a"
+  },
+  "fingerprint-device.mk": {
+    "url": "https://raw.githubusercontent.com/LineageOS/android_device_xiaomi_sagit/lineage-22.2/device.mk",
+    "sha256": "a2bdd7fd0c99d336df2f04fa4c6fa451e44eaa15e5c6ef89b941694f183f2aec"
+  },
+  "qseecom.c": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/sagit-n-oss/drivers/misc/qseecom.c",
+    "sha256": "5a612942fc5088bce2bc627613165397d630150c32d1b14d59d286f428950abf"
+  },
+  "qseecomi.h": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/sagit-n-oss/include/soc/qcom/qseecomi.h",
+    "sha256": "0e1eff40b72277e4a5a0165c23a9e68c89213756fca911d096206a321d7aa84e"
+  },
+  "scm.c": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/sagit-n-oss/drivers/soc/qcom/scm.c",
+    "sha256": "72ce1e1f4599f6b173db5e947fc7f7372b97e520728d3ee6e767560a10b12484"
+  },
+  "scm.h": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/sagit-n-oss/include/soc/qcom/scm.h",
+    "sha256": "c6194433644b3442982e4ac853e942e6826a6e5097da41928c9432a7a75fa32c"
+  },
+  "fingerprint-regulator.dtsi": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/sagit-n-oss/arch/arm/boot/dts/qcom/msm8998-regulator.dtsi",
+    "sha256": "a68d369f48493902c4c3c90567d3c5669c5408a1f16399b7433d3bf6592f26ec"
+  },
+  "fingerprint-pinctrl.dtsi": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/sagit-n-oss/arch/arm/boot/dts/qcom/msm8998-pinctrl.dtsi",
+    "sha256": "4ec03f880d7abcf002700731ab67fe33cec76044a80b7f89a92b72255046d9c6"
+  }
+}

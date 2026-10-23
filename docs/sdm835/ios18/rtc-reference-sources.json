@@ -1,0 +1,14 @@
+[
+  {
+    "path": "/home/xxiao/Projects/Project_iOS2ARM/kernels/raspi_linux/drivers/rtc/rtc-pm8xxx.c",
+    "git_commit": "d485ddf2eea99380b2724f6dc638d3d72e5294b3",
+    "sha256": "a7364852aae55844e117d7799bd1be339775ae576af6d131269da6d5500826d6",
+    "used_for": "PM8941-compatible control 0x6046, seconds 0x6048 and rollover handling; offset is separate from raw RTC seconds"
+  },
+  {
+    "path": "/home/xxiao/Projects/Project_iOS2ARM/kernels/raspi_linux/arch/arm64/boot/dts/qcom/pm8998.dtsi",
+    "git_commit": "d485ddf2eea99380b2724f6dc638d3d72e5294b3",
+    "sha256": "dd5853ad8690fb529adfe996d68533b50ba0cf472829d6ae244172285b99a7d6",
+    "used_for": "PM8998 primary slave 0, RTC base 0x6000"
+  }
+]

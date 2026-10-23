@@ -1,0 +1,125 @@
+{
+  "bundle_identifier": "com.apple.driver.AppleARMPlatform",
+  "bundle_version": "1.0.2",
+  "compatible_version": "1.0.0",
+  "architecture": "arm64",
+  "provider_sdk": "iphoneos18.7.internal",
+  "provider_build": "22H368",
+  "base_class": "AppleARMPE",
+  "super_class": "IODTPlatformExpert",
+  "instance_size": 296,
+  "super_instance_size": 240,
+  "vtable_slots": 215,
+  "super_vtable_slots": 215,
+  "required_symbols": [
+    "__ZN10AppleARMPE10gMetaClassE",
+    "__ZN10AppleARMPEC2EPK11OSMetaClass",
+    "__ZN10AppleARMPED2Ev",
+    "__ZN10AppleARMIO10gMetaClassE",
+    "__ZN10AppleARMIOC2EPK11OSMetaClass",
+    "__ZN10AppleARMIOD2Ev",
+    "__ZTV10AppleARMIO",
+    "__ZN10AppleARMIO12publishBelowEP15IORegistryEntry",
+    "__ZN10AppleARMIO23registerAltErrorHandlerEP16AppleARMFunction",
+    "__ZN25AppleARMMIPIDSIController10gMetaClassE",
+    "__ZN25AppleARMMIPIDSIControllerC2EPK11OSMetaClass",
+    "__ZN25AppleARMMIPIDSIControllerD2Ev",
+    "__ZN25AppleARMMIPIDSIController13setPropertiesEP8OSObject",
+    "__ZN25AppleARMMIPIDSIController15reservedSlot175Ev",
+    "__ZN25AppleARMMIPIDSIController26newDeviceWithRegistryEntryEP15IORegistryEntryP9IOService",
+    "__ZN25AppleARMMIPIDSIController12publishBelowEP15IORegistryEntry",
+    "__ZNK25AppleARMMIPIDSIController14compareNubNameEPK9IOServiceP8OSStringPS4_",
+    "__ZTV25AppleARMMIPIDSIController",
+    "__ZN25AppleARMMIPIDSIController13nativeSlot176Ev",
+    "__ZN25AppleARMMIPIDSIController13nativeSlot177Ev",
+    "__ZN21AppleARMMIPIDSIDevice10gMetaClassE",
+    "__ZN21AppleARMMIPIDSIDevice9metaClassE"
+  ],
+  "note": "Subclass-only ABI contract. The original AppleARMPlatform and its dependency closure are still required. Import accounting is not a kernel-collection link or a boot test.",
+  "classes": {
+    "AppleARMPE": {
+      "super": "IODTPlatformExpert",
+      "instance_size": 296,
+      "vtable_slots": 215
+    },
+    "AppleARMIO": {
+      "super": "IOPlatformIO",
+      "instance_size": 216,
+      "vtable_slots": 186
+    },
+    "AppleARMIODevice": {
+      "super": "IOService",
+      "instance_size": 216,
+      "vtable_slots": 178
+    },
+    "IOService": {
+      "instance_size": 136,
+      "vtable_slots": 168
+    },
+    "IODTPlatformExpert": {
+      "instance_size": 240,
+      "vtable_slots": 215
+    },
+    "IOPlatformIO": {
+      "instance_size": 136,
+      "vtable_slots": 169
+    },
+    "AppleARMMIPIDSIController": {
+      "super": "IOService",
+      "instance_size": 144,
+      "vtable_slots": 181
+    },
+    "AppleARMMIPIDSIDevice": {
+      "super": "IOService",
+      "instance_size": 144,
+      "vtable_slots": 177
+    }
+  },
+  "audited_virtual_slots": {
+    "AppleARMIO": {
+      "createDeviceWithProvider": 176,
+      "publishBelow": 178,
+      "getNubResources": 182,
+      "registerAltErrorHandler": 184
+    }
+  },
+  "image_sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+  "virtual_symbols": {
+    "__ZN10AppleARMIO12publishBelowEP15IORegistryEntry": {
+      "class": "AppleARMIO",
+      "slot": 178
+    },
+    "__ZN10AppleARMIO23registerAltErrorHandlerEP16AppleARMFunction": {
+      "class": "AppleARMIO",
+      "slot": 184
+    },
+    "__ZN25AppleARMMIPIDSIController13setPropertiesEP8OSObject": {
+      "class": "AppleARMMIPIDSIController",
+      "slot": 44
+    },
+    "__ZN25AppleARMMIPIDSIController15reservedSlot175Ev": {
+      "class": "AppleARMMIPIDSIController",
+      "slot": 175
+    },
+    "__ZN25AppleARMMIPIDSIController26newDeviceWithRegistryEntryEP15IORegistryEntryP9IOService": {
+      "class": "AppleARMMIPIDSIController",
+      "slot": 178
+    },
+    "__ZN25AppleARMMIPIDSIController12publishBelowEP15IORegistryEntry": {
+      "class": "AppleARMMIPIDSIController",
+      "slot": 179
+    },
+    "__ZNK25AppleARMMIPIDSIController14compareNubNameEPK9IOServiceP8OSStringPS4_": {
+      "class": "AppleARMMIPIDSIController",
+      "slot": 180
+    },
+    "__ZN25AppleARMMIPIDSIController13nativeSlot176Ev": {
+      "class": "AppleARMMIPIDSIController",
+      "slot": 176
+    },
+    "__ZN25AppleARMMIPIDSIController13nativeSlot177Ev": {
+      "class": "AppleARMMIPIDSIController",
+      "slot": 177
+    }
+  }
+}

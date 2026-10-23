@@ -1,0 +1,117 @@
+{
+  "schema": 1,
+  "versions": {
+    "gpu": "1.71.0",
+    "metal": "0.65.0",
+    "shader": 36,
+    "jit": 33,
+    "surface_metadata": 2
+  },
+  "native_interfaces": [
+    "MTLFunctionDescriptor",
+    "MTLFunctionConstantValues",
+    "MTLRenderPipelineDescriptor",
+    "MTLComputePipelineDescriptor",
+    "MTLPipelineOption",
+    "Metal completion-handler typedefs",
+    "MTLBinaryArchive",
+    "MTLBinaryArchiveDescriptor"
+  ],
+  "function_creation": {
+    "selectors": [
+      "newFunctionWithDescriptor:error:",
+      "newFunctionWithDescriptor:completionHandler:"
+    ],
+    "implementation": "Copy the native descriptor before CPU compilation or asynchronous dispatch; resolve original named AIR entry and typed effective constants through the existing compiler and program cache. specializedName belongs to the returned function object, not the shader/cache identity.",
+    "options": "None and FailOnBinaryArchiveMiss use native A540 archive lookup by library content, selected name, resolved effective constants and library thread limit. A strict miss fails even with an empty archive list; ordinary misses use the existing compiler. Visible/intersection functions and unknown flags remain unsupported.",
+    "archive_hints": "Only archives from this device and exact build/OS/compiler/AOT profile are accepted. Cached AIR function hits still inspect declarations and resolve constants, but bypass AIR lowering and IR3 compilation and lazily register the stored pointer-free image through existing kernel JIT validation. Ordinary MSL source library creation remains eager.",
+    "missing_constants": "Required constants must resolve even when descriptor.constantValues is nil; ordinary newFunctionWithName: reflection behavior remains.",
+    "ownership": "Returned function retains the same dynamic program and device as ordinary named specialization; alias names/options are per returned object."
+  },
+  "pipeline_creation": {
+    "render_selectors": [
+      "newRenderPipelineStateWithDescriptor:options:reflection:error:",
+      "newRenderPipelineStateWithDescriptor:completionHandler:",
+      "newRenderPipelineStateWithDescriptor:options:completionHandler:"
+    ],
+    "compute_selectors": [
+      "newComputePipelineStateWithFunction:options:reflection:error:",
+      "newComputePipelineStateWithFunction:completionHandler:",
+      "newComputePipelineStateWithFunction:options:completionHandler:",
+      "newComputePipelineStateWithDescriptor:options:reflection:error:",
+      "newComputePipelineStateWithDescriptor:options:completionHandler:"
+    ],
+    "implementation": "Synchronous and asynchronous selectors share the same validated existing render/compute pipeline state, registered functions and native IOGPU backend. Descriptor snapshots are taken before asynchronous dispatch.",
+    "options": "None and FailOnBinaryArchiveMiss consult validated Compute/Render pipeline records and function identities; a strict miss errors and an optional miss uses normal creation. BindingInfo/BufferTypeInfo and unknown flags remain unsupported; reflection outputs remain nil.",
+    "compute_descriptor": "Honor label, maximum group thread limit and execution-width-multiple promise. Cap each pipeline independently without mutating shared functions; reject an impossible fixed64-thread limit or execution-width limit. Validate the multiple promise when recording dispatch.",
+    "unsupported_descriptor_features": [
+      "stage-in compute descriptors",
+      "indirect command buffers",
+      "dynamic/preloaded libraries and additional/linked binary functions",
+      "vertex amplification and non-triangle topology",
+      "call stack depth beyond one",
+      "shader validation instrumentation"
+    ],
+    "async_completion": "Exactly one callback for accepted nonnil handlers on the default global dispatch queue, with a retained supported pipeline or NSError. This reports CPU pipeline creation only; GPU completion remains native fence-driven."
+  },
+  "apple_objects": "Use original framework descriptors, constants and SDK signatures; do not redefine Apple protocols/classes or read descriptor ivars.",
+  "submission": "Metal/IOGPU resource, command, event and IOSurface ABI unchanged; exact verified GPU1.71 backend reused.",
+  "native_call_evidence": {
+    "source": "22H374 original Metal and QuartzCore analysis images; exact hashes and call windows recorded under build/drivers/gpu-native-pipelines",
+    "quartzcore_function_call": "0x18440d2c8 -> newFunctionWithDescriptor:error:",
+    "quartzcore_pipeline_call": "0x184409aac -> newRenderPipelineStateWithDescriptor:options:reflection:error:, options4 (FailOnBinaryArchiveMiss), reflection null; original native archive-cache lookup path",
+    "scope": "Static original image analysis, not execution of iOS methods."
+  },
+  "evidence": {
+    "inspection": "build/drivers/gpu-native-pipelines/inspection.json",
+    "native_analysis": "build/drivers/gpu-native-pipelines/native-call-analysis.json"
+  },
+  "remaining": [
+    "binding/type pipeline reflection",
+    "archive support for remaining function kinds and automatic library/pipeline lazy compilation",
+    "dynamic function linking and remaining native descriptor SPI",
+    "system Metal loading, CARenderServer selection, native GPU/display fences and actual target execution"
+  ],
+  "hardware_executed": false,
+  "ios_metal_executed": false,
+  "system_ui_gpu_acceleration_verified": false,
+  "references": [
+    "https://developer.apple.com/documentation/metal/pipeline-state-creation",
+    "https://developer.apple.com/documentation/metal/mtlfunctiondescriptor",
+    "tools/sdk/iPhoneOS18.6.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLDevice.h",
+    "tools/sdk/iPhoneOS18.6.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLFunctionDescriptor.h",
+    "https://developer.apple.com/documentation/metal/mtlbinaryarchive",
+    "tools/sdk/iPhoneOS18.6.sdk/System/Library/Frameworks/Metal.framework/Headers/MTLBinaryArchive.h"
+  ],
+  "introduced_versions": {
+    "gpu": "1.71.0",
+    "metal": "0.65.0",
+    "shader": 36,
+    "jit": 33,
+    "surface_metadata": 2
+  },
+  "binary_archives": {
+    "interfaces": [
+      "newBinaryArchiveWithDescriptor:error:",
+      "addComputePipelineFunctionsWithDescriptor:error:",
+      "addRenderPipelineFunctionsWithDescriptor:error:",
+      "serializeToURL:error:",
+      "MTLFunctionDescriptor.binaryArchives",
+      "MTLRenderPipelineDescriptor.binaryArchives",
+      "MTLComputePipelineDescriptor.binaryArchives"
+    ],
+    "format": "QMTLARC1 version1,112-byte header, SHA-256 over immutable complete file with digest field zeroed;256 functions,1024 pipelines,16 MiB and16 lookup archives",
+    "compatibility": "GPU540, registry,Shader36,JIT33, fingerprint of adapter/compiler sources, native code generator dylib, AOT header and LLVM SDK ABI, then actual native OS version/build string, executed adapter build policy and Clang version",
+    "payload": "AOT catalog references validated by name/stage/id and current registry; JIT images contain no process IDs/pointers and include the paired MSAA variant",
+    "pipeline_keys": "resolved function identities plus validated execution state: thread limit/multiple, formats, color blend/write state, sample/coverage, vertex layouts; labels and per-process handles excluded",
+    "loading": "bounded local read, complete checksum/schema/graph validation before any native registration; lazy weak registration cache, real kernel program/job lifetimes unchanged",
+    "writing": "thread-safe snapshot, full validation and atomic local file replacement; duplicate pipeline functions accepted",
+    "limitations": [
+      "normal pipeline descriptors receive already resolved function objects; archive function descriptors bypass AIR lowering/IR3, MSL newLibraryWithSource still creates its library eagerly",
+      "tile/mesh pipelines, stitched libraries, visible/intersection functions, Apple GPU archives and multi-device FAT archives unsupported",
+      "no complete Metal family claim or performance result; JIT privilege and independent ISA isolation requirements unchanged"
+    ],
+    "target_probe": "existing metalctl pipeline-test/jit-test, compiled only; save/reload AOT and JIT records, archive-only hit/miss, corrupt-file rejection, restored Compute and Render readback",
+    "hardware_executed": false
+  }
+}

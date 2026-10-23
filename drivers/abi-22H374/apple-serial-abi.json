@@ -1,0 +1,33 @@
+{
+  "bundle_identifier": "com.apple.iokit.IOSerialFamily",
+  "image_sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+  "architecture": "arm64",
+  "classes": {
+    "IOSerialDriverSync": {
+      "super": "IOService",
+      "instance_size": 136,
+      "vtable_slots": 180
+    },
+    "IOSerialStreamSync": {
+      "super": "IOService",
+      "instance_size": 152,
+      "vtable_slots": 181
+    },
+    "IOSerialBSDClient": {
+      "super": "IOService",
+      "instance_size": 464,
+      "vtable_slots": 169
+    }
+  },
+  "required_symbols": [
+    "__ZN18IOSerialDriverSync10gMetaClassE",
+    "__ZN18IOSerialDriverSyncC2EPK11OSMetaClass",
+    "__ZN18IOSerialDriverSyncD2Ev",
+    "__ZN18IOSerialStreamSync10gMetaClassE",
+    "__ZN18IOSerialStreamSyncC1EPK11OSMetaClass",
+    "__ZN18IOSerialStreamSyncD2Ev",
+    "__ZTV18IOSerialDriverSync",
+    "__ZN18IOSerialStreamSync9metaClassE"
+  ],
+  "note": "Native iOS 18 serial family retained. Twelve serial driver methods at slots168..179; stream init at180. Legacy reserved methods are absent. No copied implementation."
+}

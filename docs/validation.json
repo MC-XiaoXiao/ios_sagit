@@ -1,0 +1,576 @@
+{
+  "source": "xnu-toolchain-linux-x86_64.tar.gz",
+  "fresh_target_build": true,
+  "relocated": true,
+  "system_compilers_hidden": [
+    "clang",
+    "llvm",
+    "gcc",
+    "g++",
+    "cc",
+    "c++"
+  ],
+  "download_tools_hidden": [
+    "curl",
+    "wget"
+  ],
+  "result": "success",
+  "kernels": [
+    {
+      "file": "mach.development.vmapple",
+      "sha256": "3ec442c6dea450d51c54c05efe41b38426dc82641253791c992ead17ac2ad792",
+      "bytes": 16181640,
+      "architecture": "arm64",
+      "platform": "iPhoneOS",
+      "sdk": "18.6",
+      "entry": "0xfffffff0074a6488",
+      "undefined_symbols": [],
+      "segments": [
+        {
+          "name": "__TEXT",
+          "address": "0xfffffff007004000",
+          "size": 1507328,
+          "file_offset": 0,
+          "file_size": 1507328
+        },
+        {
+          "name": "__DATA_CONST",
+          "address": "0xfffffff007174000",
+          "size": 1196032,
+          "file_offset": 1507328,
+          "file_size": 1196032
+        },
+        {
+          "name": "__TEXT_EXEC",
+          "address": "0xfffffff007298000",
+          "size": 8372224,
+          "file_offset": 2703360,
+          "file_size": 8372224
+        },
+        {
+          "name": "__KLD",
+          "address": "0xfffffff007a94000",
+          "size": 16384,
+          "file_offset": 11075584,
+          "file_size": 16384
+        },
+        {
+          "name": "__LASTDATA_CONST",
+          "address": "0xfffffff007a98000",
+          "size": 16384,
+          "file_offset": 11091968,
+          "file_size": 16384
+        },
+        {
+          "name": "__LAST",
+          "address": "0xfffffff007a9c000",
+          "size": 0,
+          "file_offset": 0,
+          "file_size": 0
+        },
+        {
+          "name": "__KLDDATA",
+          "address": "0xfffffff007a9c000",
+          "size": 16384,
+          "file_offset": 11108352,
+          "file_size": 16384
+        },
+        {
+          "name": "__DATA",
+          "address": "0xfffffff007aa0000",
+          "size": 1130496,
+          "file_offset": 11124736,
+          "file_size": 278528
+        },
+        {
+          "name": "__BOOTDATA",
+          "address": "0xfffffff007bb4000",
+          "size": 819200,
+          "file_offset": 11403264,
+          "file_size": 819200
+        },
+        {
+          "name": "__PRELINK_TEXT",
+          "address": "0xfffffff004004000",
+          "size": 0,
+          "file_offset": 12222464,
+          "file_size": 0
+        },
+        {
+          "name": "__PRELINK_INFO",
+          "address": "0xfffffff007c7c000",
+          "size": 0,
+          "file_offset": 12222464,
+          "file_size": 0
+        },
+        {
+          "name": "__PLK_TEXT_EXEC",
+          "address": "0xfffffff007c7c000",
+          "size": 0,
+          "file_offset": 12222464,
+          "file_size": 0
+        },
+        {
+          "name": "__PRELINK_DATA",
+          "address": "0xfffffff007c7c000",
+          "size": 0,
+          "file_offset": 12222464,
+          "file_size": 0
+        },
+        {
+          "name": "__PLK_DATA_CONST",
+          "address": "0xfffffff007c7c000",
+          "size": 0,
+          "file_offset": 12222464,
+          "file_size": 0
+        },
+        {
+          "name": "__PLK_LLVM_COV",
+          "address": "0xfffffff007c7c000",
+          "size": 0,
+          "file_offset": 12222464,
+          "file_size": 0
+        },
+        {
+          "name": "__PLK_LINKEDIT",
+          "address": "0xfffffff007c7c000",
+          "size": 0,
+          "file_offset": 12222464,
+          "file_size": 0
+        },
+        {
+          "name": "__LINKINFO",
+          "address": "0xfffffff007c7c000",
+          "size": 294912,
+          "file_offset": 12222464,
+          "file_size": 294912
+        },
+        {
+          "name": "__LINKEDIT",
+          "address": "0xfffffff007cc4000",
+          "size": 3670016,
+          "file_offset": 12517376,
+          "file_size": 3664264
+        }
+      ]
+    },
+    {
+      "file": "mach.development.vmapple.unstripped",
+      "sha256": "181f980decdddd9a5570dab865a7429bcace110ce51c6daa4bb5cf0fcc892e4b",
+      "bytes": 20593680,
+      "architecture": "arm64",
+      "platform": "iPhoneOS",
+      "sdk": "18.6",
+      "entry": "0xfffffff0074a6488",
+      "undefined_symbols": [],
+      "segments": [
+        {
+          "name": "__TEXT",
+          "address": "0xfffffff007004000",
+          "size": 1507328,
+          "file_offset": 0,
+          "file_size": 1507328
+        },
+        {
+          "name": "__DATA_CONST",
+          "address": "0xfffffff007174000",
+          "size": 1196032,
+          "file_offset": 1507328,
+          "file_size": 1196032
+        },
+        {
+          "name": "__TEXT_EXEC",
+          "address": "0xfffffff007298000",
+          "size": 8372224,
+          "file_offset": 2703360,
+          "file_size": 8372224
+        },
+        {
+          "name": "__KLD",
+          "address": "0xfffffff007a94000",
+          "size": 16384,
+          "file_offset": 11075584,
+          "file_size": 16384
+        },
+        {
+          "name": "__LASTDATA_CONST",
+          "address": "0xfffffff007a98000",
+          "size": 16384,
+          "file_offset": 11091968,
+          "file_size": 16384
+        },
+        {
+          "name": "__LAST",
+          "address": "0xfffffff007a9c000",
+          "size": 0,
+          "file_offset": 0,
+          "file_size": 0
+        },
+        {
+          "name": "__KLDDATA",
+          "address": "0xfffffff007a9c000",
+          "size": 16384,
+          "file_offset": 11108352,
+          "file_size": 16384
+        },
+        {
+          "name": "__DATA",
+          "address": "0xfffffff007aa0000",
+          "size": 1130496,
+          "file_offset": 11124736,
+          "file_size": 278528
+        },
+        {
+          "name": "__BOOTDATA",
+          "address": "0xfffffff007bb4000",
+          "size": 819200,
+          "file_offset": 11403264,
+          "file_size": 819200
+        },
+        {
+          "name": "__PRELINK_TEXT",
+          "address": "0xfffffff004004000",
+          "size": 0,
+          "file_offset": 12222464,
+          "file_size": 0
+        },
+        {
+          "name": "__PRELINK_INFO",
+          "address": "0xfffffff007c7c000",
+          "size": 0,
+          "file_offset": 12222464,
+          "file_size": 0
+        },
+        {
+          "name": "__PLK_TEXT_EXEC",
+          "address": "0xfffffff007c7c000",
+          "size": 0,
+          "file_offset": 12222464,
+          "file_size": 0
+        },
+        {
+          "name": "__PRELINK_DATA",
+          "address": "0xfffffff007c7c000",
+          "size": 0,
+          "file_offset": 12222464,
+          "file_size": 0
+        },
+        {
+          "name": "__PLK_DATA_CONST",
+          "address": "0xfffffff007c7c000",
+          "size": 0,
+          "file_offset": 12222464,
+          "file_size": 0
+        },
+        {
+          "name": "__PLK_LLVM_COV",
+          "address": "0xfffffff007c7c000",
+          "size": 0,
+          "file_offset": 12222464,
+          "file_size": 0
+        },
+        {
+          "name": "__PLK_LINKEDIT",
+          "address": "0xfffffff007c7c000",
+          "size": 0,
+          "file_offset": 12222464,
+          "file_size": 0
+        },
+        {
+          "name": "__LINKINFO",
+          "address": "0xfffffff007c7c000",
+          "size": 294912,
+          "file_offset": 12222464,
+          "file_size": 294912
+        },
+        {
+          "name": "__LINKEDIT",
+          "address": "0xfffffff007cc4000",
+          "size": 8077312,
+          "file_offset": 12517376,
+          "file_size": 8076304
+        }
+      ]
+    }
+  ],
+  "rpc_parser_cases": "null, short header, short receive buffer, bad version, valid port/OOL descriptor, unknown descriptor, truncated descriptor/body, UINT32_MAX descriptor count; kernel ABI sizes checked",
+  "main_build": [
+    {
+      "file": "mach.development.vmapple",
+      "sha256": "81e12ce494e62137dc0d602b839d1c1f3a6f7469a39bfcc3862b47ae713ad09f",
+      "bytes": 16181640,
+      "architecture": "arm64",
+      "platform": "iPhoneOS",
+      "sdk": "18.6",
+      "entry": "0xfffffff0074a6488",
+      "undefined_symbols": [],
+      "segments": [
+        {
+          "name": "__TEXT",
+          "address": "0xfffffff007004000",
+          "size": 1507328,
+          "file_offset": 0,
+          "file_size": 1507328
+        },
+        {
+          "name": "__DATA_CONST",
+          "address": "0xfffffff007174000",
+          "size": 1196032,
+          "file_offset": 1507328,
+          "file_size": 1196032
+        },
+        {
+          "name": "__TEXT_EXEC",
+          "address": "0xfffffff007298000",
+          "size": 8372224,
+          "file_offset": 2703360,
+          "file_size": 8372224
+        },
+        {
+          "name": "__KLD",
+          "address": "0xfffffff007a94000",
+          "size": 16384,
+          "file_offset": 11075584,
+          "file_size": 16384
+        },
+        {
+          "name": "__LASTDATA_CONST",
+          "address": "0xfffffff007a98000",
+          "size": 16384,
+          "file_offset": 11091968,
+          "file_size": 16384
+        },
+        {
+          "name": "__LAST",
+          "address": "0xfffffff007a9c000",
+          "size": 0,
+          "file_offset": 0,
+          "file_size": 0
+        },
+        {
+          "name": "__KLDDATA",
+          "address": "0xfffffff007a9c000",
+          "size": 16384,
+          "file_offset": 11108352,
+          "file_size": 16384
+        },
+        {
+          "name": "__DATA",
+          "address": "0xfffffff007aa0000",
+          "size": 1130496,
+          "file_offset": 11124736,
+          "file_size": 278528
+        },
+        {
+          "name": "__BOOTDATA",
+          "address": "0xfffffff007bb4000",
+          "size": 819200,
+          "file_offset": 11403264,
+          "file_size": 819200
+        },
+        {
+          "name": "__PRELINK_TEXT",
+          "address": "0xfffffff004004000",
+          "size": 0,
+          "file_offset": 12222464,
+          "file_size": 0
+        },
+        {
+          "name": "__PRELINK_INFO",
+          "address": "0xfffffff007c7c000",
+          "size": 0,
+          "file_offset": 12222464,
+          "file_size": 0
+        },
+        {
+          "name": "__PLK_TEXT_EXEC",
+          "address": "0xfffffff007c7c000",
+          "size": 0,
+          "file_offset": 12222464,
+          "file_size": 0
+        },
+        {
+          "name": "__PRELINK_DATA",
+          "address": "0xfffffff007c7c000",
+          "size": 0,
+          "file_offset": 12222464,
+          "file_size": 0
+        },
+        {
+          "name": "__PLK_DATA_CONST",
+          "address": "0xfffffff007c7c000",
+          "size": 0,
+          "file_offset": 12222464,
+          "file_size": 0
+        },
+        {
+          "name": "__PLK_LLVM_COV",
+          "address": "0xfffffff007c7c000",
+          "size": 0,
+          "file_offset": 12222464,
+          "file_size": 0
+        },
+        {
+          "name": "__PLK_LINKEDIT",
+          "address": "0xfffffff007c7c000",
+          "size": 0,
+          "file_offset": 12222464,
+          "file_size": 0
+        },
+        {
+          "name": "__LINKINFO",
+          "address": "0xfffffff007c7c000",
+          "size": 294912,
+          "file_offset": 12222464,
+          "file_size": 294912
+        },
+        {
+          "name": "__LINKEDIT",
+          "address": "0xfffffff007cc4000",
+          "size": 3670016,
+          "file_offset": 12517376,
+          "file_size": 3664264
+        }
+      ]
+    },
+    {
+      "file": "mach.development.vmapple.unstripped",
+      "sha256": "644df96fee6219c2ffe409ef877b08c4b342c976c9444a7603ad7301a3cec07e",
+      "bytes": 20552000,
+      "architecture": "arm64",
+      "platform": "iPhoneOS",
+      "sdk": "18.6",
+      "entry": "0xfffffff0074a6488",
+      "undefined_symbols": [],
+      "segments": [
+        {
+          "name": "__TEXT",
+          "address": "0xfffffff007004000",
+          "size": 1507328,
+          "file_offset": 0,
+          "file_size": 1507328
+        },
+        {
+          "name": "__DATA_CONST",
+          "address": "0xfffffff007174000",
+          "size": 1196032,
+          "file_offset": 1507328,
+          "file_size": 1196032
+        },
+        {
+          "name": "__TEXT_EXEC",
+          "address": "0xfffffff007298000",
+          "size": 8372224,
+          "file_offset": 2703360,
+          "file_size": 8372224
+        },
+        {
+          "name": "__KLD",
+          "address": "0xfffffff007a94000",
+          "size": 16384,
+          "file_offset": 11075584,
+          "file_size": 16384
+        },
+        {
+          "name": "__LASTDATA_CONST",
+          "address": "0xfffffff007a98000",
+          "size": 16384,
+          "file_offset": 11091968,
+          "file_size": 16384
+        },
+        {
+          "name": "__LAST",
+          "address": "0xfffffff007a9c000",
+          "size": 0,
+          "file_offset": 0,
+          "file_size": 0
+        },
+        {
+          "name": "__KLDDATA",
+          "address": "0xfffffff007a9c000",
+          "size": 16384,
+          "file_offset": 11108352,
+          "file_size": 16384
+        },
+        {
+          "name": "__DATA",
+          "address": "0xfffffff007aa0000",
+          "size": 1130496,
+          "file_offset": 11124736,
+          "file_size": 278528
+        },
+        {
+          "name": "__BOOTDATA",
+          "address": "0xfffffff007bb4000",
+          "size": 819200,
+          "file_offset": 11403264,
+          "file_size": 819200
+        },
+        {
+          "name": "__PRELINK_TEXT",
+          "address": "0xfffffff004004000",
+          "size": 0,
+          "file_offset": 12222464,
+          "file_size": 0
+        },
+        {
+          "name": "__PRELINK_INFO",
+          "address": "0xfffffff007c7c000",
+          "size": 0,
+          "file_offset": 12222464,
+          "file_size": 0
+        },
+        {
+          "name": "__PLK_TEXT_EXEC",
+          "address": "0xfffffff007c7c000",
+          "size": 0,
+          "file_offset": 12222464,
+          "file_size": 0
+        },
+        {
+          "name": "__PRELINK_DATA",
+          "address": "0xfffffff007c7c000",
+          "size": 0,
+          "file_offset": 12222464,
+          "file_size": 0
+        },
+        {
+          "name": "__PLK_DATA_CONST",
+          "address": "0xfffffff007c7c000",
+          "size": 0,
+          "file_offset": 12222464,
+          "file_size": 0
+        },
+        {
+          "name": "__PLK_LLVM_COV",
+          "address": "0xfffffff007c7c000",
+          "size": 0,
+          "file_offset": 12222464,
+          "file_size": 0
+        },
+        {
+          "name": "__PLK_LINKEDIT",
+          "address": "0xfffffff007c7c000",
+          "size": 0,
+          "file_offset": 12222464,
+          "file_size": 0
+        },
+        {
+          "name": "__LINKINFO",
+          "address": "0xfffffff007c7c000",
+          "size": 294912,
+          "file_offset": 12222464,
+          "file_size": 294912
+        },
+        {
+          "name": "__LINKEDIT",
+          "address": "0xfffffff007cc4000",
+          "size": 8044544,
+          "file_offset": 12517376,
+          "file_size": 8034624
+        }
+      ]
+    }
+  ],
+  "toolchain_script_sha256": "7292e0aa72b373736abbb7803c49ca31953b238ec61c3e53b78b878ebf6bea52"
+}

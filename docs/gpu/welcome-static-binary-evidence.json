@@ -1,0 +1,739 @@
+{
+  "analysis_only": true,
+  "device_tests_performed": false,
+  "firmware": "iOS 18.7.10 / 22H374 arm64",
+  "springboard": {
+    "pathForTime": {
+      "addr": "0x1d263f144",
+      "code": "CGPath *__cdecl sub_1D263F144(SBCursiveTextPath *self, SEL a2, double a3)\n{\n  return sub_1D3224C00(a1: a3 / self->_duration);\n}",
+      "refs": [
+        {
+          "addr": "0x1d3224c00",
+          "name": "sub_1D3224C00"
+        }
+      ]
+    },
+    "controller": {
+      "startCycle": {
+        "addr": "0x1d2682b40",
+        "code": "void __cdecl sub_1D2682B40(SBDashBoardSetupViewController *self, SEL a2, unsigned __int64 a3, double a4)\n{\n  unsigned __int64 v4; // x8\n  __int64 v7; // x20\n  __int64 v8; // x0\n  __int64 v9; // [xsp+30h] [xbp-40h] BYREF\n  _BYTE v10[8]; // [xsp+38h] [xbp-38h] BYREF\n\n  v4 = self->_componentsToCycle | a3; /*0x1d2682b64*/\n  self->_componentsToCycle = v4; /*0x1d2682b68*/\n  if ( !self->_isCyclingComponents && v4 != 0 && (sub_1D3215A80(a1: self->_cycleStartTimer, a2) & 1) == 0 ) /*0x1d2682b98*/\n  {\n    sub_1D31B7220(a1: self); /*0x1d2682ba4*/\n    if ( a4 <= 0.0 ) /*0x1d2682bac*/\n    {\n      sub_1D3193D80(a1: self); /*0x1d2682c68*/\n    }\n    else\n    {\n      MEMORY[0x1D39B60F4](a1: v10, a2: self); /*0x1d2682bb8*/\n      v7 = MEMORY[0x1E5D27518]; /*0x1d2682bc8*/\n      MEMORY[0x1D39B6088](a1: &v9, a2: v10); /*0x1d2682bfc*/\n      v8 = sub_1D32380C0(a1: v7, a2: a4); /*0x1d2682c14*/\n      self->_cycleStartTimer = (NSTimer *)MEMORY[0x1D39B6070](a1: v8); /*0x1d2682c20*/\n      MEMORY[0x1D39B6220](); /*0x1d2682c24*/\n      MEMORY[0x1D39B6094](a1: &v9); /*0x1d2682c2c*/\n      MEMORY[0x1D39B6094](a1: v10); /*0x1d2682c34*/\n    }\n  }\n}",
+        "refs": [
+          {
+            "addr": "0x1d31b7220",
+            "name": "sub_1D31B7220"
+          },
+          {
+            "addr": "0x1d3193d80",
+            "name": "sub_1D3193D80"
+          },
+          {
+            "addr": "0x1d32380c0",
+            "name": "sub_1D32380C0"
+          },
+          {
+            "addr": "0x1d3215a80",
+            "name": "sub_1D3215A80"
+          }
+        ]
+      },
+      "animateCycle": {
+        "addr": "0x1d2682cec",
+        "code": "void __cdecl sub_1D2682CEC(SBDashBoardSetupViewController *self, SEL a2)\n{\n  char v3; // w21\n  __int64 v4; // x0\n  __int64 v5; // x0\n  __int64 v6; // x20\n  __int64 v7; // x0\n  int v8; // w0\n  unsigned __int64 componentsToCycle; // x8\n  __int64 v10; // x0\n  __int64 v11; // x20\n  __int64 v12; // x0\n  __int64 v13; // [xsp+20h] [xbp-30h] BYREF\n  _BYTE v14[8]; // [xsp+28h] [xbp-28h] BYREF\n\n  MEMORY[0x1D39B6100](a1: &self->_coverSheetViewController, a2); /*0x1d2682d10*/\n  v3 = sub_1D32116E0(); /*0x1d2682d1c*/\n  MEMORY[0x1D39B61A8](); /*0x1d2682d20*/\n  v4 = sub_1D3270160(a1: self); /*0x1d2682d28*/\n  MEMORY[0x1D39B6070](a1: v4); /*0x1d2682d2c*/\n  v5 = sub_1D3272C60(); /*0x1d2682d34*/\n  v6 = MEMORY[0x1D39B6070](a1: v5); /*0x1d2682d3c*/\n  v7 = MEMORY[0x1D39B61A8](); /*0x1d2682d40*/\n  MEMORY[0x1D39B61C0](a1: v7); /*0x1d2682d44*/\n  v8 = sub_1D3194BC0(a1: self); /*0x1d2682d4c*/\n  if ( (v3 & 1) == 0 && v6 != 0 && v8 == 2 ) /*0x1d2682d5c*/\n  {\n    componentsToCycle = self->_componentsToCycle; /*0x1d2682d68*/\n    self->_isCyclingComponents = componentsToCycle != 0; /*0x1d2682d7c*/\n    if ( componentsToCycle != 0 ) /*0x1d2682d80*/\n    {\n      MEMORY[0x1D39B60F4](a1: v14, a2: self); /*0x1d2682d8c*/\n      sub_1D31C82C0(a1: self); /*0x1d2682d94*/\n      v10 = sub_1D325B980(a1: self); /*0x1d2682d9c*/\n      v11 = MEMORY[0x1D39B6070](a1: v10); /*0x1d2682da4*/\n      MEMORY[0x1D39B6088](a1: &v13, a2: v14); /*0x1d2682de4*/\n      v12 = sub_1D31D5880(a1: v11); /*0x1d2682df8*/\n      MEMORY[0x1D39B61A8](a1: v12); /*0x1d2682dfc*/\n      MEMORY[0x1D39B6094](a1: &v13); /*0x1d2682e04*/\n      MEMORY[0x1D39B6094](a1: v14); /*0x1d2682e0c*/\n    }\n  }\n  else\n  {\n    self->_isCyclingComponents = false; /*0x1d2682e1c*/\n  }\n}",
+        "refs": [
+          {
+            "addr": "0x1d32116e0",
+            "name": "sub_1D32116E0"
+          },
+          {
+            "addr": "0x1d3270160",
+            "name": "sub_1D3270160"
+          },
+          {
+            "addr": "0x1d3272c60",
+            "name": "sub_1D3272C60"
+          },
+          {
+            "addr": "0x1d3194bc0",
+            "name": "sub_1D3194BC0"
+          },
+          {
+            "addr": "0x1d31c82c0",
+            "name": "sub_1D31C82C0"
+          },
+          {
+            "addr": "0x1d325b980",
+            "name": "sub_1D325B980"
+          },
+          {
+            "addr": "0x1d31d5880",
+            "name": "sub_1D31D5880"
+          }
+        ]
+      },
+      "languageCycle": {
+        "addr": "0x1d2682f68",
+        "code": "void __cdecl sub_1D2682F68(SBDashBoardSetupViewController *self, SEL a2)\n{\n  unsigned __int64 v3; // x22\n\n  v3 = self->_currentStringsIndex + 1; /*0x1d2682f88*/\n  self->_currentStringsIndex = v3; /*0x1d2682f8c*/\n  if ( v3 >= sub_1D31E61C0(a1: self->_currentStringsOrdering) ) /*0x1d2682fa4*/\n  {\n    self->_currentStringsOrdering = (NSMutableArray *)sub_1D321EA40(a1: self->_stringsOrdering); /*0x1d2682fcc*/\n    MEMORY[0x1D39B6220](); /*0x1d2682fd0*/\n    self->_currentStringsIndex = 0; /*0x1d2682fd4*/\nLABEL_5:\n    if ( !self->_shouldResetOrderingOnNextCycle ) /*0x1d2682fe8*/\n      return; /*0x1d2682fe8*/\n    goto LABEL_6; /*0x1d2682fe8*/\n  }\n  if ( self->_currentStringsIndex <= 5 ) /*0x1d2682fb0*/\n    goto LABEL_5; /*0x1d2682fb0*/\nLABEL_6:\n  sub_1D31B7220(a1: self); /*0x1d2682fec*/\n}",
+        "refs": [
+          {
+            "addr": "0x1d321ea40",
+            "name": "sub_1D321EA40"
+          },
+          {
+            "addr": "0x1d31e61c0",
+            "name": "sub_1D31E61C0"
+          },
+          {
+            "addr": "0x1d31b7220",
+            "name": "sub_1D31B7220"
+          }
+        ]
+      },
+      "loadView": {
+        "addr": "0x1d2681da4",
+        "code": "void __cdecl sub_1D2681DA4(SBDashBoardSetupViewController *self, SEL a2)\n{\n  __int64 v3; // x0\n  __int64 v4; // x0\n  double v5; // d8\n  double v6; // d1\n  double v7; // d9\n  double v8; // d2\n  double v9; // d10\n  double v10; // d3\n  double v11; // d11\n  __int64 v12; // x0\n  __int64 v13; // x21\n  __int64 v14; // x0\n  __int64 v15; // x20\n  __int64 v16; // x0\n  __int64 v17; // x0\n  __int64 v18; // x0\n  __int64 v19; // x0\n  OS_dispatch_queue *queue; // x21\n  __int64 v21; // x0\n  __int64 v22; // x0\n  _QWORD v23[6]; // [xsp+0h] [xbp-80h] BYREF\n\n  v3 = sub_1D321B780(a1: MEMORY[0x1E5E592D0], a2); /*0x1d2681dd0*/\n  v4 = MEMORY[0x1D39B6070](a1: v3); /*0x1d2681dd4*/\n  v5 = sub_1D31DCEA0(a1: v4); /*0x1d2681de0*/\n  v7 = v6; /*0x1d2681de4*/\n  v9 = v8; /*0x1d2681de8*/\n  v11 = v10; /*0x1d2681dec*/\n  v12 = MEMORY[0x1D39B61A8](); /*0x1d2681df0*/\n  MEMORY[0x1D39B460C](a1: v12); /*0x1d2681df4*/\n  v13 = MEMORY[0x1D39B6010](a1: off_1EE10F1C0); /*0x1d2681e0c*/\n  MEMORY[0x1D39B6100](a1: &self->_coverSheetViewController); /*0x1d2681e1c*/\n  v14 = sub_1D31E63E0(); /*0x1d2681e24*/\n  MEMORY[0x1D39B6070](a1: v14); /*0x1d2681e28*/\n  sub_1D31AA120(a1: self); /*0x1d2681e40*/\n  v15 = sub_1D3205120(a1: v13, a2: v5, a3: v7, a4: v9, a5: v11); /*0x1d2681e6c*/\n  v16 = MEMORY[0x1D39B61CC](); /*0x1d2681e70*/\n  MEMORY[0x1D39B61C0](a1: v16); /*0x1d2681e74*/\n  sub_1D323D000(a1: v15); /*0x1d2681e80*/\n  v17 = sub_1D32011C0(a1: v15); /*0x1d2681e88*/\n  MEMORY[0x1D39B6070](a1: v17); /*0x1d2681e8c*/\n  v18 = sub_1D31D34A0(); /*0x1d2681ea4*/\n  v19 = MEMORY[0x1D39B61B4](a1: v18); /*0x1d2681ea8*/\n  queue = self->_queue; /*0x1d2681eb4*/\n  v23[0] = MEMORY[0x1E5E8C6D0]; /*0x1d2681ec0*/\n  v23[1] = 3221225472LL; /*0x1d2681ecc*/\n  v23[2] = sub_1D2681F34; /*0x1d2681ee0*/\n  v23[3] = &unk_1EE11B210; /*0x1d2681ee0*/\n  v23[4] = self; /*0x1d2681ee4*/\n  v23[5] = v15; /*0x1d2681ee4*/\n  MEMORY[0x1D39B62B0](a1: v19); /*0x1d2681ee8*/\n  sub_1D2DAB788(a1: queue, a2: v23); /*0x1d2681ef8*/\n  v21 = sub_1D3259D40(a1: self); /*0x1d2681f04*/\n  v22 = MEMORY[0x1D39B6220](a1: v21); /*0x1d2681f0c*/\n  MEMORY[0x1D39B61A8](a1: v22); /*0x1d2681f10*/\n}",
+        "refs": [
+          {
+            "addr": "0x1d321b780",
+            "name": "sub_1D321B780"
+          },
+          {
+            "addr": "0x1d31dcea0",
+            "name": "sub_1D31DCEA0"
+          },
+          {
+            "addr": "0x1ee10f1c0",
+            "name": "off_1EE10F1C0"
+          },
+          {
+            "addr": "0x1d31e63e0",
+            "name": "sub_1D31E63E0"
+          },
+          {
+            "addr": "0x1d31aa120",
+            "name": "sub_1D31AA120"
+          },
+          {
+            "addr": "0x1d3205120",
+            "name": "sub_1D3205120"
+          },
+          {
+            "addr": "0x1d323d000",
+            "name": "sub_1D323D000"
+          },
+          {
+            "addr": "0x1d32011c0",
+            "name": "sub_1D32011C0"
+          },
+          {
+            "addr": "0x1d31d34a0",
+            "name": "sub_1D31D34A0"
+          },
+          {
+            "addr": "0x1d2681f34",
+            "name": "sub_1D2681F34"
+          },
+          {
+            "addr": "0x1ee11b210",
+            "name": "unk_1EE11B210"
+          },
+          {
+            "addr": "0x1d2dab788",
+            "name": "sub_1D2DAB788"
+          },
+          {
+            "addr": "0x1d3259d40",
+            "name": "sub_1D3259D40"
+          }
+        ]
+      },
+      "viewAppeared": {
+        "addr": "0x1d26821c4",
+        "code": "// local variable allocation has failed, the output may be wrong!\nvoid __cdecl sub_1D26821C4(SBDashBoardSetupViewController *self, SEL a2, bool a3)\n{\n  __int64 v4; // x0\n  __int64 v5; // x0\n  __int64 v6; // x0\n  __int64 v7; // x0\n  __int64 v8; // x0\n  __int64 v9; // x0\n  _QWORD v10[2]; // [xsp+0h] [xbp-20h] BYREF\n\n  v10[0] = self; /*0x1d26821e0*/\n  v10[1] = classRef_SBDashBoardSetupViewController; /*0x1d26821e0*/\n  MEMORY[0x1D39B6118](a1: v10, a2: 0x1FADE27F8uLL, a3); /*0x1d26821f0*/\n  sub_1D31995E0(a1: self); /*0x1d26821f8*/\n  sub_1D31C28A0(a1: self, a2: 0.5); /*0x1d2682208*/\n  v4 = sub_1D325B980(a1: self); /*0x1d2682210*/\n  MEMORY[0x1D39B6070](a1: v4); /*0x1d2682214*/\n  v5 = sub_1D3248480(a1: 0.5); /*0x1d2682228*/\n  MEMORY[0x1D39B61A8](a1: v5); /*0x1d268222c*/\n  v6 = sub_1D325B980(a1: self); /*0x1d2682234*/\n  MEMORY[0x1D39B6070](a1: v6); /*0x1d2682238*/\n  v7 = sub_1D323ECE0(a1: 0.5); /*0x1d268224c*/\n  MEMORY[0x1D39B61A8](a1: v7); /*0x1d2682250*/\n  v8 = sub_1D31CFBA0(a1: MEMORY[0x1E5DA8E00]); /*0x1d2682260*/\n  MEMORY[0x1D39B6070](a1: v8); /*0x1d2682264*/\n  v9 = sub_1D3239640(a1: self); /*0x1d2682274*/\n  MEMORY[0x1D39B61A8](a1: v9); /*0x1d2682278*/\n}",
+        "refs": [
+          {
+            "addr": "0x1ee439f68",
+            "name": "classRef_SBDashBoardSetupViewController"
+          },
+          {
+            "addr": "0x1d31995e0",
+            "name": "sub_1D31995E0"
+          },
+          {
+            "addr": "0x1d31c28a0",
+            "name": "sub_1D31C28A0"
+          },
+          {
+            "addr": "0x1d325b980",
+            "name": "sub_1D325B980"
+          },
+          {
+            "addr": "0x1d3248480",
+            "name": "sub_1D3248480"
+          },
+          {
+            "addr": "0x1d323ece0",
+            "name": "sub_1D323ECE0"
+          },
+          {
+            "addr": "0x1d31cfba0",
+            "name": "sub_1D31CFBA0"
+          },
+          {
+            "addr": "0x1d3239640",
+            "name": "sub_1D3239640"
+          }
+        ]
+      },
+      "updateStrings": {
+        "addr": "0x1d26830e8",
+        "code": "void __cdecl sub_1D26830E8(SBDashBoardSetupViewController *self, SEL a2)\n{\n  __int64 v3; // x0\n  __int64 v4; // x28\n  __int64 v5; // x0\n  __int64 v6; // x21\n  __int64 v7; // x0\n  __int64 v8; // x23\n  __int64 v9; // x21\n  __int64 v10; // x0\n  __int64 v11; // x0\n  __int64 v12; // x0\n  __int64 v13; // x0\n  __int64 v14; // x0\n  __int64 v15; // x0\n  __int64 v16; // x0\n  __int64 v17; // x0\n  __int64 v18; // x0\n  __int64 v19; // x0\n  __int64 v20; // x0\n  double v21; // d0\n  __int64 v22; // x0\n  __int64 v23; // x0\n  __int64 v24; // x27\n  __int64 v25; // x0\n  __int64 v26; // x0\n  __int64 v27; // x0\n  __int64 v28; // x0\n  __int64 v29; // x0\n  __int64 v30; // x0\n  __int64 v31; // x0\n  __int64 v32; // x0\n  __int64 v33; // x0\n  __int64 v34; // x0\n  __int64 v35; // x0\n  __int64 v36; // x0\n  __int64 v37; // x0\n  __int64 v38; // x0\n  __int64 v39; // x0\n  __int64 v40; // x0\n  __int64 v41; // x0\n  __int64 v42; // x0\n  __int64 v43; // x0\n  __int64 v44; // x0\n  __int64 v45; // x0\n  __int64 v46; // x0\n  __int64 v47; // x26\n  __int64 v48; // x0\n  __int64 v49; // x0\n  __int64 v50; // x0\n  __int64 v51; // x0\n  __int64 v52; // x0\n  __int64 v53; // x0\n  __int64 v54; // x0\n  __int64 v55; // x0\n  __int64 v56; // x0\n  __int64 v57; // x0\n  __int64 v58; // x0\n  __int64 v59; // x0\n  __int64 v60; // x0\n  __int64 v61; // x0\n  __int64 v62; // x0\n  __int64 v63; // x0\n  __int64 v64; // x0\n  __int64 v65; // x0\n  __int64 v66; // x0\n  __int64 v67; // x0\n  __int64 v68; // x0\n  SBDashBoardSetupViewController *v69; // x0\n  SEL v70; // x1\n  id v71; // x2\n  id v72; // x3\n  __int64 v73; // [xsp+58h] [xbp-58h]\n\n  v73 = *MEMORY[0x1E5E8C7D0]; /*0x1d2683118*/\n  v3 = sub_1D325B980(a1: self); /*0x1d268311c*/\n  v4 = MEMORY[0x1D39B6070](a1: v3); /*0x1d2683124*/\n  v5 = sub_1D319C2A0(a1: self); /*0x1d268312c*/\n  MEMORY[0x1D39B6070](a1: v5); /*0x1d2683130*/\n  v6 = MEMORY[0x1E5D425E0]; /*0x1d268313c*/\n  MEMORY[0x1D39B6124](a1: self); /*0x1d2683144*/\n  v7 = sub_1D31DDAA0(a1: v6); /*0x1d2683150*/\n  v8 = MEMORY[0x1D39B6070](a1: v7); /*0x1d2683158*/\n  v9 = MEMORY[0x1E5D425E0]; /*0x1d268315c*/\n  v10 = sub_1D3219F00(); /*0x1d2683160*/\n  MEMORY[0x1D39B6070](a1: v10); /*0x1d2683164*/\n  v11 = sub_1D31D8FE0(a1: MEMORY[0x1E5D273A8]); /*0x1d2683180*/\n  MEMORY[0x1D39B6070](a1: v11); /*0x1d2683184*/\n  v12 = sub_1D3228CE0(a1: v9); /*0x1d2683198*/\n  MEMORY[0x1D39B6070](a1: v12); /*0x1d268319c*/\n  v13 = sub_1D31F54C0(); /*0x1d26831a4*/\n  MEMORY[0x1D39B6070](a1: v13); /*0x1d26831a8*/\n  MEMORY[0x1D39B6358](); /*0x1d26831b8*/\n  v14 = MEMORY[0x1D39B61F0](); /*0x1d26831c0*/\n  v15 = MEMORY[0x1D39B61B4](a1: v14); /*0x1d26831c4*/\n  v16 = MEMORY[0x1D39B61E4](a1: v15); /*0x1d26831c8*/\n  v17 = MEMORY[0x1D39B61D8](a1: v16); /*0x1d26831cc*/\n  MEMORY[0x1D39B460C](a1: v17); /*0x1d26831d0*/\n  MEMORY[0x1D39B6358](); /*0x1d2683200*/\n  MEMORY[0x1D39B6298](); /*0x1d2683208*/\n  v18 = sub_1D321A120(a1: v8); /*0x1d2683234*/\n  MEMORY[0x1D39B6070](a1: v18); /*0x1d2683238*/\n  v19 = sub_1D321A120(a1: v8); /*0x1d2683258*/\n  MEMORY[0x1D39B6070](a1: v19); /*0x1d268325c*/\n  v20 = MEMORY[0x1D39B61B4](); /*0x1d2683264*/\n  MEMORY[0x1D39B61D8](a1: v20); /*0x1d2683268*/\n  v21 = sub_1D3257D80(a1: v4); /*0x1d268327c*/\n  if ( v21 < 1.5 ) /*0x1d2683288*/\n    v21 = 1.5; /*0x1d2683288*/\n  self->_customDelayDuration = v21; /*0x1d2683294*/\n  sub_1D323E4C0(a1: v4); /*0x1d26832b0*/\n  if ( self->_isStoreRestricted ) /*0x1d26832bc*/\n  {\n    v22 = sub_1D3194C80(a1: self); /*0x1d26832e0*/\n    MEMORY[0x1D39B6070](a1: v22); /*0x1d26832e4*/\n    v23 = sub_1D31DD620(a1: self->_storeRestrictedStrings); /*0x1d26832f4*/\n    v24 = MEMORY[0x1D39B6070](a1: v23); /*0x1d26832fc*/\n    v25 = sub_1D3263820(a1: MEMORY[0x1E5D42A60]); /*0x1d2683310*/\n    MEMORY[0x1D39B6070](a1: v25); /*0x1d2683314*/\n    v26 = sub_1D3263820(a1: MEMORY[0x1E5D42A60]); /*0x1d2683330*/\n    MEMORY[0x1D39B6070](a1: v26); /*0x1d2683334*/\n    v27 = sub_1D3263820(a1: MEMORY[0x1E5D42A60]); /*0x1d2683350*/\n    MEMORY[0x1D39B6070](a1: v27); /*0x1d2683354*/\n    v28 = sub_1D31DD680(a1: v24); /*0x1d268336c*/\n    MEMORY[0x1D39B6070](a1: v28); /*0x1d2683370*/\n    v29 = sub_1D31DD680(a1: v24); /*0x1d268338c*/\n    MEMORY[0x1D39B6070](a1: v29); /*0x1d2683390*/\n    v30 = sub_1D31DD680(a1: v24); /*0x1d26833a8*/\n    MEMORY[0x1D39B6070](a1: v30); /*0x1d26833ac*/\n    v31 = sub_1D319EA40(a1: self); /*0x1d26833c0*/\n    MEMORY[0x1D39B6070](a1: v31); /*0x1d26833c4*/\n    v32 = sub_1D319EA40(a1: self); /*0x1d26833d8*/\n    MEMORY[0x1D39B6070](a1: v32); /*0x1d26833dc*/\n    v33 = sub_1D319EA40(a1: self); /*0x1d26833f0*/\n    MEMORY[0x1D39B6070](a1: v33); /*0x1d26833f4*/\n    v34 = sub_1D3255C40(a1: v4); /*0x1d2683410*/\n    v35 = MEMORY[0x1D39B61CC](a1: v34); /*0x1d2683414*/\n    v36 = MEMORY[0x1D39B61E4](a1: v35); /*0x1d2683418*/\n    v37 = MEMORY[0x1D39B6190](a1: v36); /*0x1d268341c*/\n    v38 = MEMORY[0x1D39B61D8](a1: v37); /*0x1d2683420*/\n    v39 = MEMORY[0x1D39B61B4](a1: v38); /*0x1d2683424*/\n    v40 = MEMORY[0x1D39B6220](a1: v39); /*0x1d2683430*/\n    v41 = MEMORY[0x1D39B6208](a1: v40); /*0x1d2683434*/\n    v42 = MEMORY[0x1D39B6220](a1: v41); /*0x1d268343c*/\n    v43 = MEMORY[0x1D39B6220](a1: v42); /*0x1d2683444*/\n    v44 = MEMORY[0x1D39B61FC](a1: v43); /*0x1d2683448*/\n    MEMORY[0x1D39B61F0](a1: v44); /*0x1d268344c*/\n  }\n  if ( self->_isActivationLocked ) /*0x1d2683458*/\n  {\n    v45 = sub_1D3194C80(a1: self); /*0x1d2683478*/\n    MEMORY[0x1D39B6070](a1: v45); /*0x1d268347c*/\n    v46 = sub_1D31DD620(a1: self->_activationLockStrings); /*0x1d268348c*/\n    v47 = MEMORY[0x1D39B6070](a1: v46); /*0x1d2683494*/\n    v48 = sub_1D3263820(a1: MEMORY[0x1E5D42A60]); /*0x1d26834a8*/\n    MEMORY[0x1D39B6070](a1: v48); /*0x1d26834ac*/\n    v49 = sub_1D3263820(a1: MEMORY[0x1E5D42A60]); /*0x1d26834c4*/\n    MEMORY[0x1D39B6070](a1: v49); /*0x1d26834c8*/\n    v50 = sub_1D31DD680(a1: v47); /*0x1d26834dc*/\n    MEMORY[0x1D39B6070](a1: v50); /*0x1d26834e0*/\n    v51 = sub_1D31DD680(a1: v47); /*0x1d26834f4*/\n    MEMORY[0x1D39B6070](a1: v51); /*0x1d26834f8*/\n    v52 = sub_1D319EA40(a1: self); /*0x1d268350c*/\n    MEMORY[0x1D39B6070](a1: v52); /*0x1d2683510*/\n    v53 = sub_1D319EA40(a1: self); /*0x1d2683524*/\n    MEMORY[0x1D39B6070](a1: v53); /*0x1d2683528*/\n    v54 = sub_1D323A7A0(a1: v4); /*0x1d2683540*/\n    v55 = MEMORY[0x1D39B61C0](a1: v54); /*0x1d2683544*/\n    v56 = MEMORY[0x1D39B61FC](a1: v55); /*0x1d2683548*/\n    v57 = MEMORY[0x1D39B61CC](a1: v56); /*0x1d268354c*/\n    v58 = MEMORY[0x1D39B6190](a1: v57); /*0x1d2683550*/\n    v59 = MEMORY[0x1D39B61B4](a1: v58); /*0x1d2683554*/\n    v60 = MEMORY[0x1D39B61E4](a1: v59); /*0x1d2683558*/\n    v61 = MEMORY[0x1D39B61F0](a1: v60); /*0x1d268355c*/\n    MEMORY[0x1D39B61D8](a1: v61); /*0x1d2683560*/\n  }\n  v62 = sub_1D324C4E0(a1: v4); /*0x1d268356c*/\n  v63 = MEMORY[0x1D39B6220](a1: v62); /*0x1d2683574*/\n  v64 = MEMORY[0x1D39B6220](a1: v63); /*0x1d268357c*/\n  v65 = MEMORY[0x1D39B6220](a1: v64); /*0x1d2683584*/\n  v66 = MEMORY[0x1D39B6220](a1: v65); /*0x1d268358c*/\n  v67 = MEMORY[0x1D39B61A8](a1: v66); /*0x1d2683590*/\n  v68 = MEMORY[0x1D39B6190](a1: v67); /*0x1d2683594*/\n  if ( *MEMORY[0x1E5E8C7D0] != v73 ) /*0x1d26835ac*/\n  {\n    v69 = (SBDashBoardSetupViewController *)MEMORY[0x1D39B5A94](a1: v68); /*0x1d26835d0*/\n    sub_1D26835D4(self: v69, a2: v70, a3: v71, a4: v72); /*0x1d26835d1*/\n  }\n}",
+        "refs": [
+          {
+            "addr": "0x1d325b980",
+            "name": "sub_1D325B980"
+          },
+          {
+            "addr": "0x1d319c2a0",
+            "name": "sub_1D319C2A0"
+          },
+          {
+            "addr": "0x1d31ddaa0",
+            "name": "sub_1D31DDAA0"
+          },
+          {
+            "addr": "0x1d3219f00",
+            "name": "sub_1D3219F00"
+          },
+          {
+            "addr": "0x1d31d8fe0",
+            "name": "sub_1D31D8FE0"
+          },
+          {
+            "addr": "0x1d3228ce0",
+            "name": "sub_1D3228CE0"
+          },
+          {
+            "addr": "0x1d31f54c0",
+            "name": "sub_1D31F54C0"
+          },
+          {
+            "addr": "0x1d321a120",
+            "name": "sub_1D321A120"
+          },
+          {
+            "addr": "0x1d3257d80",
+            "name": "sub_1D3257D80"
+          },
+          {
+            "addr": "0x1d323e4c0",
+            "name": "sub_1D323E4C0"
+          },
+          {
+            "addr": "0x1d3194c80",
+            "name": "sub_1D3194C80"
+          },
+          {
+            "addr": "0x1d31dd620",
+            "name": "sub_1D31DD620"
+          },
+          {
+            "addr": "0x1d3263820",
+            "name": "sub_1D3263820"
+          },
+          {
+            "addr": "0x1d31dd680",
+            "name": "sub_1D31DD680"
+          },
+          {
+            "addr": "0x1d319ea40",
+            "name": "sub_1D319EA40"
+          },
+          {
+            "addr": "0x1d3255c40",
+            "name": "sub_1D3255C40"
+          },
+          {
+            "addr": "0x1d323a7a0",
+            "name": "sub_1D323A7A0"
+          },
+          {
+            "addr": "0x1d324c4e0",
+            "name": "sub_1D324C4E0"
+          },
+          {
+            "addr": "0x1d26835d4",
+            "name": "sub_1D26835D4"
+          }
+        ]
+      }
+    },
+    "displaylink": {
+      "addr": "0x1d2bf318c",
+      "code": "void __cdecl __noreturn sub_1D2BF318C(SBDashBoardSetupView *self, SEL a2)\n{\n  __int64 v3; // x0\n  CADisplayLink *displayLink; // x20\n  CADisplayLink *v5; // x19\n  __int64 v6; // x0\n\n  if ( self->_displayLink != nullptr ) /*0x1d2bf31b0*/\n    sub_1D31B61C0(a1: self); /*0x1d2bf31b8*/\n  v3 = sub_1D31EE760(a1: MEMORY[0x1E5D630E8], a2, a3: self, a4: 0x1FAE1C3B3uLL); /*0x1d2bf31d0*/\n  self->_displayLink = (CADisplayLink *)MEMORY[0x1D39B6070](a1: v3); /*0x1d2bf31dc*/\n  MEMORY[0x1D39B6220](); /*0x1d2bf31e0*/\n  displayLink = self->_displayLink; /*0x1d2bf31e4*/\n  MEMORY[0x1D39B3238](a1: 80.0, a2: 120.0, a3: 120.0); /*0x1d2bf31fc*/\n  sub_1D324F340(a1: displayLink); /*0x1d2bf3204*/\n  sub_1D3246720(a1: self->_displayLink); /*0x1d2bf3214*/\n  v5 = self->_displayLink; /*0x1d2bf3218*/\n  v6 = sub_1D321B760(a1: MEMORY[0x1E5D274E8]); /*0x1d2bf3224*/\n  MEMORY[0x1D39B6070](a1: v6); /*0x1d2bf3228*/\n  sub_1D31D3580(a1: v5); /*0x1d2bf3244*/\n  JUMPOUT(0x1D39B616CLL); /*0x1d39b616c*/\n}",
+      "refs": [
+        {
+          "addr": "0x1d31b61c0",
+          "name": "sub_1D31B61C0"
+        },
+        {
+          "addr": "0x1d31ee760",
+          "name": "sub_1D31EE760"
+        },
+        {
+          "addr": "0x1d324f340",
+          "name": "sub_1D324F340"
+        },
+        {
+          "addr": "0x1d3246720",
+          "name": "sub_1D3246720"
+        },
+        {
+          "addr": "0x1d321b760",
+          "name": "sub_1D321B760"
+        },
+        {
+          "addr": "0x1d31d3580",
+          "name": "sub_1D31D3580"
+        }
+      ]
+    },
+    "configure": {
+      "addr": "0x1d2c5dd64",
+      "code": "void __cdecl __noreturn sub_1D2C5DD64(SBCursiveTextView *self, SEL a2)\n{\n  CAShapeLayer *textLayer; // x20\n  __int64 v4; // x0\n\n  self->_textLayer = (CAShapeLayer *)MEMORY[0x1D39B601C](a1: MEMORY[0x1E5D631F8], a2); /*0x1d2c5dd94*/\n  MEMORY[0x1D39B6220](); /*0x1d2c5dd98*/\n  textLayer = self->_textLayer; /*0x1d2c5dd9c*/\n  sub_1D31DCEA0(a1: self); /*0x1d2c5dda4*/\n  sub_1D3245320(a1: textLayer); /*0x1d2c5ddac*/\n  sub_1D32531C0(a1: self->_textLayer, a2: 1.0); /*0x1d2c5ddb8*/\n  sub_1D3253160(a1: self->_textLayer, a2: 0.1); /*0x1d2c5ddc8*/\n  sub_1D3253140(a1: self->_textLayer, a2: 0.0, a3: 1.0); /*0x1d2c5ddd8*/\n  v4 = sub_1D3218160(a1: self); /*0x1d2c5dde0*/\n  MEMORY[0x1D39B6070](a1: v4); /*0x1d2c5dde4*/\n  sub_1D31D3380(); /*0x1d2c5ddf0*/\n  JUMPOUT(0x1D39B616CLL); /*0x1d39b616c*/\n}",
+      "refs": [
+        {
+          "addr": "0x1d31dcea0",
+          "name": "sub_1D31DCEA0"
+        },
+        {
+          "addr": "0x1d3245320",
+          "name": "sub_1D3245320"
+        },
+        {
+          "addr": "0x1d32531c0",
+          "name": "sub_1D32531C0"
+        },
+        {
+          "addr": "0x1d3253160",
+          "name": "sub_1D3253160"
+        },
+        {
+          "addr": "0x1d3253140",
+          "name": "sub_1D3253140"
+        },
+        {
+          "addr": "0x1d3218160",
+          "name": "sub_1D3218160"
+        },
+        {
+          "addr": "0x1d31d3380",
+          "name": "sub_1D31D3380"
+        }
+      ]
+    },
+    "setTime": {
+      "addr": "0x1d2c5df34",
+      "code": "void __cdecl __noreturn sub_1D2C5DF34(SBCursiveTextView *self, SEL a2, float a3)\n{\n  __int64 v4; // x0\n  __int64 v5; // x21\n\n  v4 = sub_1D3224C40(a1: self->_textPath, a2, a3); /*0x1d2c5df58*/\n  v5 = MEMORY[0x1D39B3820](a1: v4, a2: &self->_textTransform); /*0x1d2c5df70*/\n  sub_1D324E0E0(a1: self->_textLayer); /*0x1d2c5df84*/\n  sub_1D3253180(a1: self->_textLayer); /*0x1d2c5df90*/\n  MEMORY[0x1D39B385C](a1: v5); /*0x1d2c5df98*/\n  JUMPOUT(0x1D39B385CLL); /*0x1d39b385c*/\n}",
+      "refs": [
+        {
+          "addr": "0x1d3224c40",
+          "name": "sub_1D3224C40"
+        },
+        {
+          "addr": "0x1d324e0e0",
+          "name": "sub_1D324E0E0"
+        },
+        {
+          "addr": "0x1d3253180",
+          "name": "sub_1D3253180"
+        }
+      ]
+    },
+    "pathInit": {
+      "addr": "0x1d263e664",
+      "code": "id __cdecl sub_1D263E664(SBCursiveTextPath *self, SEL a2, id a3)\n{\n  return MEMORY[0x1E5E7F810](a1: self, a2: off_1EE4128A0, a3, a4: 40);\n}",
+      "refs": [
+        {
+          "addr": "0x1ee4128a0",
+          "name": "off_1EE4128A0"
+        }
+      ]
+    },
+    "animate": {
+      "addr": "0x1d2bf32b0",
+      "code": "void __cdecl sub_1D2BF32B0(SBDashBoardSetupView *self, SEL a2)\n{\n  double v3; // d8\n  float v4; // s0\n\n  v3 = MEMORY[0x1D39B3388](a1: self, a2) - self->_startTime; /*0x1d2bf32d4*/\n  v4 = v3; /*0x1d2bf32e4*/\n  sub_1D3257920(a1: self->_cursiveTextView, a2: v4); /*0x1d2bf32e8*/\n  if ( (unsigned int)MEMORY[0x1D39B2EA8](a1: v3, a2: self->_customDelayDuration) != 0 ) /*0x1d2bf3300*/\n    sub_1D31B61C0(a1: self); /*0x1d2bf3314*/\n}",
+      "refs": [
+        {
+          "addr": "0x1d3257920",
+          "name": "sub_1D3257920"
+        },
+        {
+          "addr": "0x1d31b61c0",
+          "name": "sub_1D31B61C0"
+        }
+      ]
+    },
+    "onLink": {
+      "addr": "0x1d2bf3294",
+      "code": "void __cdecl sub_1D2BF3294(SBDashBoardSetupView *self, SEL a2, id a3)\n{\n  if ( self->_displayLink == a3 ) /*0x1d2bf32a4*/\n    sub_1D3193DA0(a1: self); /*0x1d2bf32ac*/\n}",
+      "refs": [
+        {
+          "addr": "0x1d3193da0",
+          "name": "sub_1D3193DA0"
+        }
+      ]
+    },
+    "setTitle": {
+      "addr": "0x1d2beef70",
+      "code": "double __cdecl sub_1D2BEEF70(SBDashBoardSetupView *self, SEL a2, id a3, id a4)\n{\n  __int64 v6; // x19\n  __int64 v7; // x20\n  __int64 v8; // x0\n  __int64 v9; // x22\n  __int64 v10; // x0\n  __int64 v11; // x0\n  __int64 v12; // x0\n  SBCursiveTextView *cursiveTextView; // x23\n  int v14; // w0\n  __n128 v15; // q0\n  double v16; // d8\n  __int64 v17; // x0\n  __int64 v18; // x22\n  __int64 v19; // x0\n  __int64 v20; // x0\n  __int64 v21; // x0\n  __int64 v22; // x0\n  __int64 v23; // x0\n  __int64 v24; // x0\n  __n128 v25; // q0\n  __int64 v26; // x0\n  __int64 v27; // x0\n  double v28; // d0\n  __int64 v29; // x0\n\n  v6 = MEMORY[0x1D39B62A4](a1: self, a2, a3); /*0x1d2beef98*/\n  v7 = MEMORY[0x1D39B62C8](); /*0x1d2beefa0*/\n  v8 = sub_1D3219340(a1: v6); /*0x1d2beefa8*/\n  if ( v8 != 0 ) /*0x1d2beefac*/\n  {\n    if ( (unsigned int)MEMORY[0x1D39B5AE8](a1: \"SpringBoard\", a2: \"CursiveHello\") != 0 ) /*0x1d2beefc4*/\n    {\n      sub_1D2DABED8(a1: &self->_currentLanguage, a2: a4); /*0x1d2beefd8*/\n      v9 = MEMORY[0x1E5D425E0]; /*0x1d2beefe0*/\n      MEMORY[0x1D39B6124](a1: self); /*0x1d2beefe8*/\n      v10 = sub_1D31DDAA0(a1: v9); /*0x1d2beeff4*/\n      MEMORY[0x1D39B6070](a1: v10); /*0x1d2beeff8*/\n      v11 = sub_1D3190760(); /*0x1d2bef018*/\n      MEMORY[0x1D39B6070](a1: v11); /*0x1d2bef01c*/\n      v12 = MEMORY[0x1D39B61CC](); /*0x1d2bef024*/\n      cursiveTextView = self->_cursiveTextView; /*0x1d2bef030*/\n      if ( (unsigned int)MEMORY[0x1D39B5A70](a1: v12) != 0 ) /*0x1d2bef038*/\n      {\n        v14 = MEMORY[0x1D39B4600](); /*0x1d2bef03c*/\n        v15.n128_u64[0] = 0x4050000000000000LL; /*0x1d2bef048*/\n        if ( v14 == 2 ) /*0x1d2bef054*/\n          v15.n128_f64[0] = 106.0; /*0x1d2bef054*/\n        sub_1D3219D00(a1: cursiveTextView, a2: v15); /*0x1d2bef060*/\n      }\n      else\n      {\n        v23 = sub_1D31E7680(a1: MEMORY[0x1E5E58CF0]); /*0x1d2bef0f4*/\n        MEMORY[0x1D39B6070](a1: v23); /*0x1d2bef0f8*/\n        v24 = sub_1D326F460(); /*0x1d2bef100*/\n        v25.n128_u64[0] = 0x4050000000000000LL; /*0x1d2bef10c*/\n        if ( v24 == 1 ) /*0x1d2bef118*/\n          v25.n128_f64[0] = 106.0; /*0x1d2bef118*/\n        v26 = sub_1D3219D00(a1: cursiveTextView, a2: v25); /*0x1d2bef124*/\n        MEMORY[0x1D39B61D8](a1: v26); /*0x1d2bef128*/\n      }\n      sub_1D323A360(a1: self->_cursiveTextView); /*0x1d2bef134*/\n      v27 = sub_1D323A380(a1: self->_cursiveTextView); /*0x1d2bef140*/\n      self->_startTime = MEMORY[0x1D39B3388](a1: v27); /*0x1d2bef150*/\n      v28 = sub_1D31F01C0(a1: self->_cursiveTextView) + 1.0; /*0x1d2bef160*/\n      if ( v28 >= 4.0 ) /*0x1d2bef16c*/\n        v16 = v28; /*0x1d2bef16c*/\n      else\n        v16 = 4.0; /*0x1d2bef16c*/\n      self->_customDelayDuration = v16; /*0x1d2bef178*/\n      sub_1D319B580(a1: self); /*0x1d2bef180*/\n      v22 = sub_1D324C4E0(a1: self); /*0x1d2bef188*/\n    }\n    else\n    {\n      v17 = MEMORY[0x1D39B6010](a1: MEMORY[0x1E5D428A0]); /*0x1d2bef078*/\n      v18 = sub_1D3209460(a1: v17); /*0x1d2bef084*/\n      if ( sub_1D3219340(a1: v7) != 0 ) /*0x1d2bef090*/\n      {\n        v19 = sub_1D32634C0(a1: v18); /*0x1d2bef098*/\n        v20 = MEMORY[0x1D39B6070](a1: v19); /*0x1d2bef09c*/\n        sub_1D3219340(a1: v20); /*0x1d2bef0a4*/\n        v21 = sub_1D31D1AE0(a1: v18); /*0x1d2bef0c0*/\n        MEMORY[0x1D39B61CC](a1: v21); /*0x1d2bef0c4*/\n      }\n      sub_1D323CC60(a1: self->_titleLabel); /*0x1d2bef0d8*/\n      v22 = sub_1D324C4E0(a1: self); /*0x1d2bef0e0*/\n      v16 = 0.0; /*0x1d2bef0e4*/\n    }\n    v8 = MEMORY[0x1D39B61C0](a1: v22); /*0x1d2bef18c*/\n  }\n  else\n  {\n    v16 = 0.0; /*0x1d2bef068*/\n  }\n  v29 = MEMORY[0x1D39B61A8](a1: v8); /*0x1d2bef190*/\n  MEMORY[0x1D39B6190](a1: v29); /*0x1d2bef194*/\n  return v16; /*0x1d2bef1b4*/\n}",
+      "refs": [
+        {
+          "addr": "0x1d3219340",
+          "name": "sub_1D3219340"
+        },
+        {
+          "addr": "0x1d2dabed8",
+          "name": "sub_1D2DABED8"
+        },
+        {
+          "addr": "0x1d31ddaa0",
+          "name": "sub_1D31DDAA0"
+        },
+        {
+          "addr": "0x1d3190760",
+          "name": "sub_1D3190760"
+        },
+        {
+          "addr": "0x1d3219d00",
+          "name": "sub_1D3219D00"
+        },
+        {
+          "addr": "0x1d31e7680",
+          "name": "sub_1D31E7680"
+        },
+        {
+          "addr": "0x1d326f460",
+          "name": "sub_1D326F460"
+        },
+        {
+          "addr": "0x1d323a360",
+          "name": "sub_1D323A360"
+        },
+        {
+          "addr": "0x1d323a380",
+          "name": "sub_1D323A380"
+        },
+        {
+          "addr": "0x1d31f01c0",
+          "name": "sub_1D31F01C0"
+        },
+        {
+          "addr": "0x1d319b580",
+          "name": "sub_1D319B580"
+        },
+        {
+          "addr": "0x1d324c4e0",
+          "name": "sub_1D324C4E0"
+        },
+        {
+          "addr": "0x1d3209460",
+          "name": "sub_1D3209460"
+        },
+        {
+          "addr": "0x1d32634c0",
+          "name": "sub_1D32634C0"
+        },
+        {
+          "addr": "0x1d31d1ae0",
+          "name": "sub_1D31D1AE0"
+        },
+        {
+          "addr": "0x1d323cc60",
+          "name": "sub_1D323CC60"
+        },
+        {
+          "addr": "0x1d2ec42b6",
+          "name": "aSpringboard",
+          "string": "SpringBoard"
+        },
+        {
+          "addr": "0x1d2ed371c",
+          "name": "aCursivehello",
+          "string": "CursiveHello"
+        }
+      ]
+    },
+    "pathForFraction": {
+      "addr": "0x1d263f154",
+      "code": "CGPath *__cdecl sub_1D263F154(SBCursiveTextPath *self, SEL a2, double a3, bool a4)\n{\n  _BOOL4 v4; // w20\n  SBCursiveTextPath *v5; // x19\n  double rampTime; // d1\n  double duration; // d2\n  float32x4_t **begin; // x8\n  char v9; // w27\n  char v10; // w28\n  double v11; // d1\n  double v12; // d9\n  double v13; // d0\n  float v14; // s10\n  float v15; // s11\n  double v16; // d8\n  float32x4_t *v23; // x26\n  unsigned __int64 v24; // x23\n  signed __int64 resolution; // x8\n  unsigned __int64 v26; // x25\n  signed __int64 v27; // x21\n  float32x4_t v28; // q0\n  float v29; // s1\n  float32x4_t v30; // q4\n  float32x4_t v31; // q6\n  float32x4_t v32; // q16\n  float32x4_t v33; // q17\n  float32x4_t v34; // q18\n  float32x4_t v35; // q7\n  float32x2_t v36; // d1\n  float32_t v37; // s2\n  float32x2_t v38; // d2\n  float32x2_t v39; // d3\n  float32x2_t v40; // d3\n  float32x4_t v41; // q0\n  float32x4_t v42; // q0\n  double v43; // d0\n  double v44; // d1\n  double v45; // d12\n  float v46; // s0\n  double finalWeight; // d9\n  double initialWeight; // d15\n  float v49; // s0\n  int8x8_t v50; // d12\n  float v51; // s1\n  float v52; // s2\n  float v53; // s15\n  float v54; // s0\n  unsigned __int64 v55; // x9\n  __int64 v56; // x1\n  __int64 v57; // x0\n  __int64 v58; // x8\n  __int64 v59; // x27\n  float v60; // s0\n  __int64 v61; // x22\n  char *v62; // x8\n  int v63; // w22\n  char *v64; // x21\n  char *v65; // x8\n  unsigned __int64 v66; // x21\n  unsigned __int64 v67; // x8\n  __int64 v68; // x1\n  __int64 v69; // x0\n  unsigned __int64 v70; // x21\n  unsigned __int64 v71; // x8\n  __int64 v72; // x1\n  __int64 v73; // x0\n  char *v74; // x8\n  __int64 v75; // x23\n  signed __int64 v76; // x22\n  char *v77; // x8\n  unsigned __int64 v78; // x9\n  char *v79; // x8\n  __int64 v80; // x23\n  signed __int64 v81; // x22\n  char *v82; // x8\n  unsigned __int64 v83; // x9\n  CGPath *v84; // x19\n  char *v85; // x20\n  char *i; // x21\n  float32x2_t *v87; // x23\n  __int64 v88; // x24\n  float32x2_t v89; // d1\n  __int64 v90; // x0\n  unsigned __int64 v91; // x8\n  __int64 v92; // x25\n  unsigned __int64 v93; // x26\n  float32x2_t v94; // d1\n  float v95; // s0\n  __int64 v96; // x0\n  float32x2_t v97; // d2\n  __int64 v98; // x8\n  signed __int64 v99; // x24\n  unsigned __int64 v100; // x25\n  unsigned __int64 v101; // x8\n  float32x2_t v102; // d1\n  float v103; // s0\n  CGPath *result; // x0\n  __int64 v105; // x19\n  SBCursiveTextPath *v106; // x0\n  SEL v107; // x1\n  float32x4_t **end; // [xsp+10h] [xbp-150h]\n  float32x4_t *v109; // [xsp+18h] [xbp-148h]\n  float32x4_t **v110; // [xsp+20h] [xbp-140h]\n  double v111; // [xsp+28h] [xbp-138h]\n  float32x4_t v112; // [xsp+30h] [xbp-130h]\n  float32x4_t v113; // [xsp+40h] [xbp-120h]\n  int8x8_t v114; // [xsp+50h] [xbp-110h]\n  float32x4_t v115; // [xsp+60h] [xbp-100h]\n  __int128 v116; // [xsp+70h] [xbp-F0h] BYREF\n  unsigned __int64 v117; // [xsp+80h] [xbp-E0h] BYREF\n  char *v118; // [xsp+88h] [xbp-D8h] BYREF\n  char *v119; // [xsp+90h] [xbp-D0h]\n  unsigned __int64 v120; // [xsp+98h] [xbp-C8h] BYREF\n  char **v121; // [xsp+A0h] [xbp-C0h] BYREF\n  char *v122; // [xsp+A8h] [xbp-B8h]\n  char *v123; // [xsp+B0h] [xbp-B0h]\n  unsigned __int64 v124; // [xsp+B8h] [xbp-A8h]\n  unsigned __int64 *v125; // [xsp+C0h] [xbp-A0h]\n\n  v4 = a4; /*0x1d263f184*/\n  v5 = self; /*0x1d263f188*/\n  rampTime = self->_rampTime; /*0x1d263f18c*/\n  duration = self->_duration; /*0x1d263f190*/\n  v118 = nullptr; /*0x1d263f194*/\n  v119 = nullptr; /*0x1d263f194*/\n  v120 = 0; /*0x1d263f198*/\n  begin = (float32x4_t **)self->_bezierArrays.__begin_; /*0x1d263f19c*/\n  end = (float32x4_t **)self->_bezierArrays.__end_; /*0x1d263f1a0*/\n  if ( begin != end ) /*0x1d263f1a8*/\n  {\n    v9 = 0; /*0x1d263f1ac*/\n    v10 = 0; /*0x1d263f1b0*/\n    v11 = rampTime / duration; /*0x1d263f1b4*/\n    v12 = 1.0; /*0x1d263f1b8*/\n    v13 = -(v11 - (v11 + 1.0) * a3); /*0x1d263f1c0*/\n    v14 = v13; /*0x1d263f1c4*/\n    v15 = v11; /*0x1d263f1c8*/\n    v111 = v11 + v13; /*0x1d263f1d0*/\n    v16 = 0.0; /*0x1d263f1e4*/\n    v115 = 0u; /*0x1d263f1ec*/\n    __asm /*0x1d263f204*/\n    {\n      FMOV V1.4S, #3.0\n      FMOV V0.4S, #6.0\n    }\n    v112 = _Q0; /*0x1d263f20c*/\n    v113 = _Q1; /*0x1d263f20c*/\n    while ( 1 ) /*0x1d263f210*/\n    {\n      v116 = 0u; /*0x1d263f210*/\n      v117 = 0; /*0x1d263f214*/\n      v23 = *begin; /*0x1d263f218*/\n      v109 = begin[1]; /*0x1d263f21c*/\n      v110 = begin; /*0x1d263f21c*/\n      if ( *begin == v109 ) /*0x1d263f224*/\n      {\nLABEL_31:\n        v62 = v119; /*0x1d263f510*/\n        if ( (unsigned __int64)v119 >= v120 ) /*0x1d263f518*/\n        {\n          v70 = 0xAAAAAAAAAAAAAAABLL * ((v119 - v118) >> 3); /*0x1d263f608*/\n          v71 = v70 + 1; /*0x1d263f60c*/\n          if ( v70 + 1 > 0xAAAAAAAAAAAAAAALL ) /*0x1d263f61c*/\n          {\nLABEL_75:\n            v105 = MEMORY[0x1D39B5B48](a1: self); /*0x1d263f960*/\n            *(_QWORD *)&v116 = &v118; /*0x1d263f9a0*/\n            sub_1D2640128(a1: &v116); /*0x1d263f9a8*/\n            v106 = (SBCursiveTextPath *)MEMORY[0x1D39B59F8](a1: v105); /*0x1d263f9b0*/\n            sub_1D263F9B4(self: v106, a2: v107); /*0x1d263f9b1*/\n            return result; /*0x1d263f9b1*/\n          }\n          if ( 0x5555555555555556LL * ((__int64)(v120 - (_QWORD)v118) >> 3) > v71 ) /*0x1d263f634*/\n            v71 = 0x5555555555555556LL * ((__int64)(v120 - (_QWORD)v118) >> 3); /*0x1d263f634*/\n          if ( 0xAAAAAAAAAAAAAAABLL * ((__int64)(v120 - (_QWORD)v118) >> 3) >= 0x555555555555555LL ) /*0x1d263f644*/\n            v72 = 0xAAAAAAAAAAAAAAALL; /*0x1d263f644*/\n          else\n            v72 = v71; /*0x1d263f644*/\n          v125 = &v120; /*0x1d263f64c*/\n          if ( v72 != 0 ) /*0x1d263f650*/\n            v73 = sub_1D263F9E8(a1: &v120); /*0x1d263f654*/\n          else\n            v73 = 0; /*0x1d263f6cc*/\n          v79 = (char *)(v73 + 24 * v70); /*0x1d263f6d0*/\n          v80 = v73 + 24 * v72; /*0x1d263f6d4*/\n          *(_QWORD *)v79 = 0; /*0x1d263f6d8*/\n          *((_QWORD *)v79 + 1) = 0; /*0x1d263f6d8*/\n          *((_QWORD *)v79 + 2) = 0; /*0x1d263f6dc*/\n          *(_OWORD *)v79 = v116; /*0x1d263f6e4*/\n          *((_QWORD *)v79 + 2) = v117; /*0x1d263f6ec*/\n          v116 = 0u; /*0x1d263f6f0*/\n          v117 = 0; /*0x1d263f6f4*/\n          v64 = v79 + 24; /*0x1d263f6f8*/\n          v81 = (signed __int64)&v79[-(v119 - v118)]; /*0x1d263f704*/\n          sub_1D2DABA88(a1: v81); /*0x1d263f70c*/\n          v82 = v118; /*0x1d263f710*/\n          v83 = v120; /*0x1d263f714*/\n          v118 = (char *)v81; /*0x1d263f718*/\n          v119 = v64; /*0x1d263f718*/\n          v120 = v80; /*0x1d263f71c*/\n          v121 = (char **)v82; /*0x1d263f71c*/\n          v123 = v82; /*0x1d263f720*/\n          v124 = v83; /*0x1d263f720*/\n          v122 = v82; /*0x1d263f724*/\n          sub_1D263FA38(a1: &v121); /*0x1d263f72c*/\n          v63 = 0; /*0x1d263f730*/\n        }\n        else\n        {\n          v63 = 0; /*0x1d263f51c*/\n          *(_QWORD *)v119 = 0; /*0x1d263f520*/\n          *((_QWORD *)v62 + 1) = 0; /*0x1d263f520*/\n          *((_QWORD *)v62 + 2) = 0; /*0x1d263f524*/\n          *(_OWORD *)v62 = v116; /*0x1d263f52c*/\n          *((_QWORD *)v62 + 2) = v117; /*0x1d263f534*/\n          v116 = 0u; /*0x1d263f538*/\n          v117 = 0; /*0x1d263f53c*/\n          v64 = v62 + 24; /*0x1d263f540*/\n        }\n      }\n      else\n      {\n        v24 = 0; /*0x1d263f228*/\n        while ( (vminvq_u32((uint32x4_t)vceqq_f32(*v23, v23[3])) & 0x80000000) == 0 ) /*0x1d263f240*/\n        {\n          resolution = v5->_resolution; /*0x1d263f244*/\n          if ( (resolution & 0x8000000000000000LL) == 0 ) /*0x1d263f248*/\n            goto LABEL_9; /*0x1d263f248*/\nLABEL_30:\n          v23 += 4; /*0x1d263f4fc*/\n          v10 = 1; /*0x1d263f500*/\n          if ( v23 == v109 ) /*0x1d263f50c*/\n            goto LABEL_31; /*0x1d263f50c*/\n        }\n        resolution = 0; /*0x1d263f250*/\nLABEL_9:\n        v26 = 0; /*0x1d263f254*/\n        v27 = resolution + 1; /*0x1d263f258*/\n        while ( 1 ) /*0x1d263f25c*/\n        {\n          v28 = v115; /*0x1d263f25c*/\n          v29 = v12 / (double)v5->_resolution * (double)v26; /*0x1d263f274*/\n          v30 = v23[1]; /*0x1d263f27c*/\n          v31 = vmulq_f32(v30, v113); /*0x1d263f290*/\n          v32 = v23[2]; /*0x1d263f2a0*/\n          v33 = v23[3]; /*0x1d263f2a0*/\n          v34 = vmulq_n_f32(vmulq_n_f32(vmulq_f32(v32, v113), v29), v29); /*0x1d263f2ac*/\n          v35 = vaddq_f32( /*0x1d263f2c8*/\n                  vmulq_n_f32(vmulq_n_f32(vmulq_n_f32(v33, v29), v29), v29),\n                  vaddq_f32(\n                    vmulq_n_f32(v34, 1.0 - v29),\n                    vaddq_f32(\n                      vmulq_n_f32(vmulq_n_f32(vmulq_n_f32(v31, v29), 1.0 - v29), 1.0 - v29),\n                      vmulq_n_f32(vmulq_n_f32(vmulq_n_f32(*v23, 1.0 - v29), 1.0 - v29), 1.0 - v29))));\n          v36 = (float32x2_t)vaddq_f32( /*0x1d263f318*/\n                               vmulq_n_f32(vmulq_n_f32(vmulq_f32(v33, v113), v29), v29),\n                               vsubq_f32(\n                                 vaddq_f32(\n                                   vmulq_n_f32(vmulq_n_f32(vmulq_f32(v32, v112), 1.0 - v29), v29),\n                                   vsubq_f32(\n                                     vsubq_f32(\n                                       vmulq_n_f32(vmulq_n_f32(v31, 1.0 - v29), 1.0 - v29),\n                                       vmulq_n_f32(vmulq_n_f32(vmulq_f32(*v23, v113), 1.0 - v29), 1.0 - v29)),\n                                     vmulq_n_f32(vmulq_n_f32(vmulq_f32(v30, v112), 1.0 - v29), v29))),\n                                 v34)).u64[0];\n          v37 = -v36.f32[0]; /*0x1d263f31c*/\n          v36.i32[0] = vdup_lane_s32((int32x2_t)v36, 1).u32[0]; /*0x1d263f320*/\n          v36.f32[1] = v37; /*0x1d263f324*/\n          v38 = vmul_f32(v36, v36); /*0x1d263f328*/\n          v38.f32[0] = vadd_f32(v38, (float32x2_t)vdup_lane_s32((int32x2_t)v38, 1)).f32[0]; /*0x1d263f330*/\n          v39 = vrsqrte_f32(COERCE_FLOAT32X2_T((double)v38.u32[0])); /*0x1d263f338*/\n          v40 = vmul_f32(v39, vrsqrts_f32(COERCE_FLOAT32X2_T((double)v38.u32[0]), vmul_f32(v39, v39))); /*0x1d263f344*/\n          v114 = (int8x8_t)vmul_n_f32( /*0x1d263f368*/\n                             v36,\n                             vmul_f32(v40, vrsqrts_f32(COERCE_FLOAT32X2_T((double)v38.u32[0]), vmul_f32(v40, v40))).f32[0]);\n          v115 = v35; /*0x1d263f368*/\n          if ( (v9 & 1) != 0 ) /*0x1d263f36c*/\n          {\n            v41 = vsubq_f32(v35, v28); /*0x1d263f370*/\n            v42 = vmulq_f32(v41, v41); /*0x1d263f374*/\n            v43 = sqrtf(v42.f32[2] + vaddv_f32(*(float32x2_t *)v42.f32)); /*0x1d263f388*/\n            v44 = 0.5; /*0x1d263f390*/\n            if ( (v10 & 1) == 0 ) /*0x1d263f394*/\n              v44 = v12; /*0x1d263f394*/\n            v16 = v16 + v43 * v44; /*0x1d263f398*/\n            v10 = 0; /*0x1d263f39c*/\n          }\n          v45 = v16 / v5->_length; /*0x1d263f3a4*/\n          v46 = v45; /*0x1d263f3a8*/\n          initialWeight = v5->_initialWeight; /*0x1d263f3c4*/\n          finalWeight = v5->_finalWeight; /*0x1d263f3c4*/\n          self = (SBCursiveTextPath *)MEMORY[0x1D39B649C]( /*0x1d263f3d4*/\n                                        a1: (float)(1.0 - fminf(fmaxf((float)(v46 - v14) / v15, 0.0), 1.0)) + -1.0,\n                                        a2: 3.0);\n          if ( !v4 && v45 > v111 ) /*0x1d263f3e4*/\n            break; /*0x1d263f3e4*/\n          v50 = vbsl_s8((int8x8_t)vdup_n_s32(0), (int8x8_t)0x3F80000000000000LL, v114); /*0x1d263f3f4*/\n          v51 = initialWeight; /*0x1d263f3f8*/\n          v52 = finalWeight; /*0x1d263f3fc*/\n          v53 = vmuls_lane_f32(v51 + (float)((float)(v49 + 1.0) * (float)(v52 - v51)), v115, 3); /*0x1d263f410*/\n          if ( v24 >= v117 ) /*0x1d263f41c*/\n          {\n            v55 = 0xAAAAAAAAAAAAAAABLL * ((__int64)(v24 - v116) >> 3) + 1; /*0x1d263f44c*/\n            if ( v55 > 0xAAAAAAAAAAAAAAALL ) /*0x1d263f45c*/\n              goto LABEL_75; /*0x1d263f45c*/\n            if ( 0x5555555555555556LL * ((__int64)(v117 - v116) >> 3) > v55 ) /*0x1d263f474*/\n              v55 = 0x5555555555555556LL * ((__int64)(v117 - v116) >> 3); /*0x1d263f474*/\n            if ( 0xAAAAAAAAAAAAAAABLL * ((__int64)(v117 - v116) >> 3) >= 0x555555555555555LL ) /*0x1d263f484*/\n              v56 = 0xAAAAAAAAAAAAAAALL; /*0x1d263f484*/\n            else\n              v56 = v55; /*0x1d263f484*/\n            if ( v56 != 0 ) /*0x1d263f488*/\n              v57 = sub_1D263F9E8(a1: &v117); /*0x1d263f494*/\n            else\n              v57 = 0; /*0x1d263f49c*/\n            v58 = v57 + 8 * ((__int64)(v24 - v116) >> 3); /*0x1d263f4a0*/\n            v59 = v57 + 24 * v56; /*0x1d263f4a4*/\n            v60 = v16; /*0x1d263f4a8*/\n            *(_QWORD *)v58 = v115.i64[0]; /*0x1d263f4b0*/\n            *(int8x8_t *)(v58 + 8) = v50; /*0x1d263f4b0*/\n            *(float *)(v58 + 16) = v53; /*0x1d263f4b4*/\n            *(float *)(v58 + 20) = v60; /*0x1d263f4b4*/\n            v24 = v58 + 24; /*0x1d263f4b8*/\n            v61 = v58 - (*((_QWORD *)&v116 + 1) - v116); /*0x1d263f4c4*/\n            sub_1D2DABA88(a1: v61); /*0x1d263f4cc*/\n            self = (SBCursiveTextPath *)v116; /*0x1d263f4d0*/\n            *(_QWORD *)&v116 = v61; /*0x1d263f4d4*/\n            *((_QWORD *)&v116 + 1) = v24; /*0x1d263f4d4*/\n            v117 = v59; /*0x1d263f4d8*/\n            if ( self != nullptr ) /*0x1d263f4dc*/\n              self = (SBCursiveTextPath *)sub_1D2DAB560(); /*0x1d263f4e0*/\n          }\n          else\n          {\n            v54 = v16; /*0x1d263f420*/\n            *(_QWORD *)v24 = v115.i64[0]; /*0x1d263f424*/\n            *(int8x8_t *)(v24 + 8) = v50; /*0x1d263f424*/\n            *(float *)(v24 + 16) = v53; /*0x1d263f428*/\n            *(float *)(v24 + 20) = v54; /*0x1d263f428*/\n            v24 += 24LL; /*0x1d263f42c*/\n          }\n          v12 = 1.0; /*0x1d263f4e4*/\n          *((_QWORD *)&v116 + 1) = v24; /*0x1d263f4e8*/\n          ++v26; /*0x1d263f4ec*/\n          v9 = 1; /*0x1d263f4f0*/\n          if ( v27 == v26 ) /*0x1d263f4f8*/\n            goto LABEL_30; /*0x1d263f4f8*/\n        }\n        v65 = v119; /*0x1d263f548*/\n        if ( (unsigned __int64)v119 >= v120 ) /*0x1d263f550*/\n        {\n          v66 = 0xAAAAAAAAAAAAAAABLL * ((v119 - v118) >> 3); /*0x1d263f59c*/\n          v67 = v66 + 1; /*0x1d263f5a0*/\n          v12 = 1.0; /*0x1d263f5b0*/\n          if ( v66 + 1 > 0xAAAAAAAAAAAAAAALL ) /*0x1d263f5b4*/\n            goto LABEL_75; /*0x1d263f5b4*/\n          if ( 0x5555555555555556LL * ((__int64)(v120 - (_QWORD)v118) >> 3) > v67 ) /*0x1d263f5cc*/\n            v67 = 0x5555555555555556LL * ((__int64)(v120 - (_QWORD)v118) >> 3); /*0x1d263f5cc*/\n          if ( 0xAAAAAAAAAAAAAAABLL * ((__int64)(v120 - (_QWORD)v118) >> 3) >= 0x555555555555555LL ) /*0x1d263f5dc*/\n            v68 = 0xAAAAAAAAAAAAAAALL; /*0x1d263f5dc*/\n          else\n            v68 = v67; /*0x1d263f5dc*/\n          v125 = &v120; /*0x1d263f5e4*/\n          if ( v68 != 0 ) /*0x1d263f5e8*/\n            v69 = ((__int64 (*)(void))sub_1D263F9E8)(); /*0x1d263f5ec*/\n          else\n            v69 = 0; /*0x1d263f65c*/\n          v74 = (char *)(v69 + 24 * v66); /*0x1d263f660*/\n          v75 = v69 + 24 * v68; /*0x1d263f664*/\n          *(_QWORD *)v74 = 0; /*0x1d263f668*/\n          *((_QWORD *)v74 + 1) = 0; /*0x1d263f668*/\n          *((_QWORD *)v74 + 2) = 0; /*0x1d263f66c*/\n          *(_OWORD *)v74 = v116; /*0x1d263f674*/\n          *((_QWORD *)v74 + 2) = v117; /*0x1d263f67c*/\n          v116 = 0u; /*0x1d263f680*/\n          v117 = 0; /*0x1d263f684*/\n          v64 = v74 + 24; /*0x1d263f688*/\n          v76 = (signed __int64)&v74[-(v119 - v118)]; /*0x1d263f694*/\n          sub_1D2DABA88(a1: v76); /*0x1d263f69c*/\n          v77 = v118; /*0x1d263f6a0*/\n          v78 = v120; /*0x1d263f6a4*/\n          v118 = (char *)v76; /*0x1d263f6a8*/\n          v119 = v64; /*0x1d263f6a8*/\n          v120 = v75; /*0x1d263f6ac*/\n          v121 = (char **)v77; /*0x1d263f6ac*/\n          v123 = v77; /*0x1d263f6b0*/\n          v124 = v78; /*0x1d263f6b0*/\n          v122 = v77; /*0x1d263f6b4*/\n          sub_1D263FA38(a1: &v121); /*0x1d263f6bc*/\n          v63 = 9; /*0x1d263f6c0*/\n          v9 = 1; /*0x1d263f6c4*/\n        }\n        else\n        {\n          *(_QWORD *)v119 = 0; /*0x1d263f554*/\n          *((_QWORD *)v65 + 1) = 0; /*0x1d263f554*/\n          *((_QWORD *)v65 + 2) = 0; /*0x1d263f558*/\n          *(_OWORD *)v65 = v116; /*0x1d263f560*/\n          *((_QWORD *)v65 + 2) = v117; /*0x1d263f568*/\n          v116 = 0u; /*0x1d263f56c*/\n          v117 = 0; /*0x1d263f570*/\n          v64 = v65 + 24; /*0x1d263f574*/\n          v63 = 9; /*0x1d263f578*/\n          v9 = 1; /*0x1d263f57c*/\n          v12 = 1.0; /*0x1d263f580*/\n        }\n      }\n      v119 = v64; /*0x1d263f734*/\n      self = (SBCursiveTextPath *)v116; /*0x1d263f738*/\n      if ( (_QWORD)v116 != 0 ) /*0x1d263f73c*/\n      {\n        *((_QWORD *)&v116 + 1) = v116; /*0x1d263f740*/\n        self = (SBCursiveTextPath *)sub_1D2DAB560(); /*0x1d263f744*/\n      }\n      if ( v63 == 0 ) /*0x1d263f748*/\n      {\n        begin = v110 + 3; /*0x1d263f750*/\n        if ( v110 + 3 != end ) /*0x1d263f75c*/\n          continue; /*0x1d263f75c*/\n      }\n      goto LABEL_62; /*0x1d263f75c*/\n    }\n  }\n  v16 = 0.0; /*0x1d263f770*/\nLABEL_62:\n  if ( v4 ) /*0x1d263f774*/\n    v5->_length = v16; /*0x1d263f778*/\n  v84 = (CGPath *)MEMORY[0x1D39B382C](); /*0x1d263f780*/\n  v85 = v118; /*0x1d263f784*/\n  for ( i = v119; v85 != i; v85 += 24 ) /*0x1d263f78c*/\n  {\n    v87 = *(float32x2_t **)v85; /*0x1d263f7a0*/\n    v88 = *((_QWORD *)v85 + 1); /*0x1d263f7a0*/\n    if ( *(_QWORD *)v85 != v88 ) /*0x1d263f7a8*/\n    {\n      v89 = vmla_n_f32(*v87, v87[1], v87[2].f32[0]); /*0x1d263f7b4*/\n      v90 = MEMORY[0x1D39B3850](a1: v84, a2: 0, a3: v89.f32[0], a4: v89.f32[1]); /*0x1d263f7cc*/\n      v91 = 0xAAAAAAAAAAAAAAABLL * ((__int64)(*((_QWORD *)v85 + 1) - *(_QWORD *)v85) >> 3); /*0x1d263f7dc*/\n      if ( v91 - 1 >= 2 ) /*0x1d263f7e8*/\n      {\n        v92 = 0; /*0x1d263f7ec*/\n        v93 = v91 - 2; /*0x1d263f7f0*/\n        do /*0x1d263f828*/\n        {\n          v94 = vmla_n_f32( /*0x1d263f804*/\n                  *(float32x2_t *)(*(_QWORD *)v85 + v92 + 24),\n                  *(float32x2_t *)(*(_QWORD *)v85 + v92 + 32),\n                  *(float *)(*(_QWORD *)v85 + v92 + 40));\n          v90 = MEMORY[0x1D39B3808](a1: v84, a2: 0, a3: v94.f32[0], a4: v94.f32[1]); /*0x1d263f81c*/\n          v92 += 24; /*0x1d263f820*/\n          --v93; /*0x1d263f824*/\n        }\n        while ( v93 != 0 ); /*0x1d263f828*/\n      }\n      v95 = MEMORY[0x1D39B5B9C](a1: v90, a2: COERCE_FLOAT(HIDWORD(*(_QWORD *)(v88 - 16)))).n128_f32[0]; /*0x1d263f834*/\n      v96 = MEMORY[0x1D39B37F0]( /*0x1d263f864*/\n              a1: v84,\n              a2: 0,\n              a3: 0,\n              a4: COERCE_FLOAT(*(_QWORD *)(v88 - 24)),\n              a5: COERCE_FLOAT(HIDWORD(*(_QWORD *)(v88 - 24))),\n              a6: *(float *)(v88 - 8),\n              a7: v95,\n              a8: v95 + 3.14159265);\n      v98 = *((_QWORD *)v85 + 1) - *(_QWORD *)v85; /*0x1d263f86c*/\n      if ( v98 >= 49 ) /*0x1d263f874*/\n      {\n        v99 = v98 / 0x18uLL - 1; /*0x1d263f880*/\n        v100 = 24 * (v98 / 0x18uLL); /*0x1d263f88c*/\n        do /*0x1d263f8c8*/\n        {\n          v101 = *(_QWORD *)v85 + v100; /*0x1d263f894*/\n          v97.i32[0] = *(_DWORD *)(v101 - 32); /*0x1d263f89c*/\n          v102 = vmls_lane_f32(*(float32x2_t *)(v101 - 48), *(float32x2_t *)(v101 - 40), v97, 0); /*0x1d263f8a0*/\n          v96 = MEMORY[0x1D39B3808](a1: v84, a2: 0, a3: v102.f32[0], a4: v102.f32[1]); /*0x1d263f8b8*/\n          --v99; /*0x1d263f8bc*/\n          v100 -= 24LL; /*0x1d263f8c0*/\n        }\n        while ( v99 > 1 ); /*0x1d263f8c8*/\n      }\n      v103 = MEMORY[0x1D39B5B9C]( /*0x1d263f8dc*/\n               a1: v96,\n               a2: -COERCE_FLOAT(HIDWORD(*(_QWORD *)&v87[1])),\n               a3: -COERCE_FLOAT(*(_QWORD *)&v87[1])).n128_f32[0];\n      MEMORY[0x1D39B37F0]( /*0x1d263f90c*/\n        a1: v84,\n        a2: 0,\n        a3: 0,\n        a4: COERCE_FLOAT(*v87),\n        a5: COERCE_FLOAT(HIDWORD(*(unsigned __int64 *)v87)),\n        a6: v87[2].f32[0],\n        a7: v103,\n        a8: v103 + 3.14159265);\n    }\n  }\n  v121 = &v118; /*0x1d263f920*/\n  sub_1D2640128(a1: &v121); /*0x1d263f928*/\n  return v84; /*0x1d263f95c*/\n}",
+      "refs": [
+        {
+          "addr": "0x1d2640128",
+          "name": "sub_1D2640128"
+        },
+        {
+          "addr": "0x1d263f9b4",
+          "name": "sub_1D263F9B4"
+        },
+        {
+          "addr": "0x1d263f9e8",
+          "name": "sub_1D263F9E8"
+        },
+        {
+          "addr": "0x1d2daba88",
+          "name": "sub_1D2DABA88"
+        },
+        {
+          "addr": "0x1d263fa38",
+          "name": "sub_1D263FA38"
+        },
+        {
+          "addr": "0x1d2dab560",
+          "name": "sub_1D2DAB560"
+        }
+      ]
+    }
+  },
+  "setup": {
+    "posedDeviceStaticHello": {
+      "addr": "0x100061f5c",
+      "code": "id __cdecl -[BuddyPosedDeviceView _localizedHelloCursiveAssetForDeviceType:](\n        BuddyPosedDeviceView *self,\n        SEL a2,\n        signed __int64 a3)\n{\n  NSArray *v3; // x20\n  NSArray *v4; // x19\n  void *v5; // x19\n  id v6; // x0\n  id v7; // x8\n  id v8; // x19\n  id location; // [xsp+8h] [xbp-48h] BYREF\n  id v11; // [xsp+10h] [xbp-40h] BYREF\n  id v12; // [xsp+18h] [xbp-38h] BYREF\n  id v13[4]; // [xsp+20h] [xbp-30h] BYREF\n\n  v13[3] = self; /*0x100061f6c*/\n  v13[2] = (id)a2; /*0x100061f70*/\n  v13[1] = (id)a3; /*0x100061f74*/\n  v3 = objc_retainAutoreleasedReturnValue(+[NSLocale preferredLanguages](&OBJC_CLASS___NSLocale, \"preferredLanguages\")); /*0x100061f9c*/\n  v4 = objc_retainAutoreleasedReturnValue( /*0x100061fbc*/\n         +[NSBundle preferredLocalizationsFromArray:forPreferences:](\n           &OBJC_CLASS___NSBundle,\n           \"preferredLocalizationsFromArray:forPreferences:\",\n           &off_1002C5D38,\n           v3));\n  v13[0] = objc_retainAutoreleasedReturnValue(-[NSArray firstObject](v4, \"firstObject\")); /*0x100061fd0*/\n  objc_release(v4); /*0x100061fd8*/\n  objc_release(v3); /*0x100061fe0*/\n  v12 = objc_retain(&off_1002C5E28); /*0x100061ff0*/\n  v5 = objc_retainAutoreleasedReturnValue(objc_msgSend(v12, \"objectForKey:\", v13[0])); /*0x100062008*/\n  objc_release(v5); /*0x100062010*/\n  if ( v5 != nullptr ) /*0x100062014*/\n  {\n    v6 = objc_retainAutoreleasedReturnValue(objc_msgSend(v12, \"objectForKey:\", v13[0])); /*0x100062028*/\n    v7 = v13[0]; /*0x10006202c*/\n    v13[0] = v6; /*0x100062030*/\n    objc_release(v7); /*0x100062038*/\n  }\n  v11 = objc_retainAutoreleasedReturnValue(+[NSString stringWithFormat:](&OBJC_CLASS___NSString, \"stringWithFormat:\", CFSTR(\"Cursive Hello %@\"), v13[0])); /*0x100062064*/\n  location = objc_retainAutoreleasedReturnValue(+[UIImage imageNamed:](&OBJC_CLASS___UIImage, \"imageNamed:\", v11)); /*0x100062084*/\n  if ( location == nullptr ) /*0x10006208c*/\n  {\n    location = objc_retainAutoreleasedReturnValue(+[UIImage imageNamed:](&OBJC_CLASS___UIImage, \"imageNamed:\", CFSTR(\"Cursive Hello en\"))); /*0x1000620b4*/\n    objc_release(nullptr); /*0x1000620bc*/\n  }\n  v8 = objc_retainAutoreleaseReturnValue(location); /*0x1000620c8*/\n  objc_storeStrong(&location, obj: nullptr); /*0x1000620d4*/\n  objc_storeStrong(location: &v11, obj: nullptr); /*0x1000620e0*/\n  objc_storeStrong(location: &v12, obj: nullptr); /*0x1000620ec*/\n  objc_storeStrong(location: v13, obj: nullptr); /*0x1000620f8*/\n  return v8; /*0x10006210c*/\n}",
+      "refs": [
+        {
+          "addr": "0x1003267b0",
+          "name": "+[NSLocale preferredLanguages]"
+        },
+        {
+          "addr": "0x100325490",
+          "name": "_OBJC_CLASS_$_NSLocale"
+        },
+        {
+          "addr": "0x1003267b8",
+          "name": "+[NSBundle preferredLocalizationsFromArray:forPreferences:]"
+        },
+        {
+          "addr": "0x100325198",
+          "name": "_OBJC_CLASS_$_NSBundle"
+        },
+        {
+          "addr": "0x1002c5d38",
+          "name": "off_1002C5D38"
+        },
+        {
+          "addr": "0x1003267d0",
+          "name": "-[NSArray firstObject]"
+        },
+        {
+          "addr": "0x1002c5e28",
+          "name": "off_1002C5E28"
+        },
+        {
+          "addr": "0x1003267c0",
+          "name": "+[NSString stringWithFormat:]"
+        },
+        {
+          "addr": "0x100325258",
+          "name": "_OBJC_CLASS_$_NSString"
+        },
+        {
+          "addr": "0x1002baad0",
+          "name": "cfstr_CursiveHello"
+        },
+        {
+          "addr": "0x1003267c8",
+          "name": "+[UIImage imageNamed:]"
+        },
+        {
+          "addr": "0x100325d20",
+          "name": "_OBJC_CLASS_$_UIImage"
+        },
+        {
+          "addr": "0x1002baaf0",
+          "name": "cfstr_CursiveHelloEn"
+        },
+        {
+          "addr": "0x1001f2f0c",
+          "name": "_objc_storeStrong"
+        }
+      ]
+    },
+    "configure": {
+      "addr": "0x100081d68",
+      "code": "void __cdecl -[BuddyCursiveTextView configure](BuddyCursiveTextView *self, SEL a2)\n{\n  CAShapeLayer *v2; // x0\n  CAShapeLayer *textLayer; // x10\n  CAShapeLayer *v4; // x19\n  double v5; // d0\n  double v6; // d1\n  double v7; // d2\n  double v8; // d3\n  double v9; // d0\n  void *v10; // x0\n  CAShapeLayer *v11; // x19\n  double v12; // d0\n  double v13; // d1\n  void *v14; // x19\n\n  v2 = (CAShapeLayer *)objc_alloc_init((Class)&OBJC_CLASS___CAShapeLayer); /*0x100081d88*/\n  textLayer = self->_textLayer; /*0x100081d98*/\n  self->_textLayer = v2; /*0x100081d9c*/\n  objc_release(textLayer); /*0x100081da0*/\n  v4 = self->_textLayer; /*0x100081dac*/\n  -[BuddyCursiveTextView bounds](self, \"bounds\"); /*0x100081db0*/\n  -[CAShapeLayer setFrame:](v4, \"setFrame:\", v5, v6, v7, v8); /*0x100081dd8*/\n  -[CAShapeLayer setShadowRadius:](self->_textLayer, \"setShadowRadius:\", 1.0); /*0x100081dec*/\n  LODWORD(v9) = 1036831949; /*0x100081e04*/\n  v10 = -[CAShapeLayer setShadowOpacity:](self->_textLayer, \"setShadowOpacity:\", v9); /*0x100081e08*/\n  v11 = self->_textLayer; /*0x100081e14*/\n  v12 = sub_100081E80(a1: v10); /*0x100081e18*/\n  -[CAShapeLayer setShadowOffset:](v11, \"setShadowOffset:\", v12, v13, *(_QWORD *)&v12, *(_QWORD *)&v13); /*0x100081e30*/\n  v14 = objc_retainAutoreleasedReturnValue(-[BuddyCursiveTextView layer](self, \"layer\")); /*0x100081e44*/\n  objc_msgSend(v14, \"addSublayer:\", self->_textLayer); /*0x100081e64*/\n  objc_release(v14); /*0x100081e6c*/\n}",
+      "refs": [
+        {
+          "addr": "0x100324ed8",
+          "name": "_OBJC_CLASS_$_CAShapeLayer"
+        },
+        {
+          "addr": "0x100326770",
+          "name": "-[BuddyCursiveTextView bounds]"
+        },
+        {
+          "addr": "0x100326790",
+          "name": "-[CAShapeLayer setFrame:]"
+        },
+        {
+          "addr": "0x100326778",
+          "name": "-[CAShapeLayer setShadowRadius:]"
+        },
+        {
+          "addr": "0x100326780",
+          "name": "-[CAShapeLayer setShadowOpacity:]"
+        },
+        {
+          "addr": "0x100081e80",
+          "name": "sub_100081E80"
+        },
+        {
+          "addr": "0x100326798",
+          "name": "-[CAShapeLayer setShadowOffset:]"
+        },
+        {
+          "addr": "0x100326788",
+          "name": "-[BuddyCursiveTextView layer]"
+        }
+      ]
+    },
+    "setTime": {
+      "addr": "0x1000820ac",
+      "code": "void __cdecl -[BuddyCursiveTextView setTime:](BuddyCursiveTextView *self, SEL a2, float a3)\n{\n  const CGPath *CopyByTransformingPath; // [xsp+8h] [xbp-28h]\n  CGPath *path; // [xsp+10h] [xbp-20h]\n\n  path = -[BuddyCursiveTextPath pathForTime:](self->_textPath, \"pathForTime:\", a3); /*0x1000820e8*/\n  CopyByTransformingPath = CGPathCreateCopyByTransformingPath(path, transform: &self->_textTransform); /*0x100082108*/\n  -[CAShapeLayer setPath:](self->_textLayer, \"setPath:\", CopyByTransformingPath); /*0x100082128*/\n  -[CAShapeLayer setShadowPath:](self->_textLayer, \"setShadowPath:\", CopyByTransformingPath); /*0x100082148*/\n  CGPathRelease(path: CopyByTransformingPath); /*0x100082150*/\n  CGPathRelease(path); /*0x100082158*/\n}",
+      "refs": [
+        {
+          "addr": "0x1001a01d4",
+          "name": "-[BuddyCursiveTextPath pathForTime:]"
+        },
+        {
+          "addr": "0x1001f2384",
+          "name": "_CGPathCreateCopyByTransformingPath"
+        },
+        {
+          "addr": "0x1003267a0",
+          "name": "-[CAShapeLayer setPath:]"
+        },
+        {
+          "addr": "0x1003267a8",
+          "name": "-[CAShapeLayer setShadowPath:]"
+        },
+        {
+          "addr": "0x1001f23b4",
+          "name": "_CGPathRelease"
+        }
+      ]
+    },
+    "createDisplayLink": {
+      "addr": "0x100129564",
+      "code": "void __cdecl -[BuddyFinishedCursiveChildWelcomeView _createDisplayLink](\n        BuddyFinishedCursiveChildWelcomeView *self,\n        SEL a2)\n{\n  CADisplayLink *v2; // x19\n  CADisplayLink *v3; // x19\n  CADisplayLink *v4; // x19\n  NSRunLoop *v5; // x20\n  double v6; // d0\n  double v7; // d1\n  double v8; // d2\n  CAFrameRateRange v10; // 0:kr00_12.12\n\n  if ( self->_displayLink != nullptr ) /*0x100129594*/\n    -[BuddyFinishedCursiveChildWelcomeView _removeDisplayLink](self, \"_removeDisplayLink\"); /*0x10012959c*/\n  v2 = objc_retainAutoreleasedReturnValue( /*0x1001295c0*/\n         +[CADisplayLink displayLinkWithTarget:selector:](\n           &OBJC_CLASS___CADisplayLink,\n           \"displayLinkWithTarget:selector:\",\n           self,\n           \"_onDisplayLink:\"));\n  -[BuddyFinishedCursiveChildWelcomeView setDisplayLink:](self, \"setDisplayLink:\", v2); /*0x1001295cc*/\n  objc_release(v2); /*0x1001295d0*/\n  v3 = objc_retainAutoreleasedReturnValue(-[BuddyFinishedCursiveChildWelcomeView displayLink](self, \"displayLink\")); /*0x1001295e4*/\n  v10 = CAFrameRateRangeMake(minimum: 80.0, maximum: 120.0, preferred: 120.0); /*0x1001295fc*/\n  *(float *)&v6 = v10.minimum; /*0xf1c0000000000004*/\n  *(float *)&v7 = v10.maximum; /*0xf1c0000000000008*/\n  *(float *)&v8 = v10.preferred; /*0xf1c000000000000c*/\n  -[CADisplayLink setPreferredFrameRateRange:](v3, \"setPreferredFrameRateRange:\", v6, v7, v8); /*0x10012961c*/\n  objc_release(v3); /*0x100129624*/\n  v4 = objc_retainAutoreleasedReturnValue(-[BuddyFinishedCursiveChildWelcomeView displayLink](self, \"displayLink\")); /*0x100129638*/\n  v5 = objc_retainAutoreleasedReturnValue(+[NSRunLoop mainRunLoop](&OBJC_CLASS___NSRunLoop, \"mainRunLoop\")); /*0x100129654*/\n  -[CADisplayLink addToRunLoop:forMode:](v4, \"addToRunLoop:forMode:\", v5, NSRunLoopCommonModes); /*0x10012966c*/\n  objc_release(v5); /*0x100129674*/\n  objc_release(v4); /*0x10012967c*/\n}",
+      "refs": [
+        {
+          "addr": "0x100129690",
+          "name": "-[BuddyFinishedCursiveChildWelcomeView _removeDisplayLink]"
+        },
+        {
+          "addr": "0x100326750",
+          "name": "+[CADisplayLink displayLinkWithTarget:selector:]"
+        },
+        {
+          "addr": "0x100324eb8",
+          "name": "_OBJC_CLASS_$_CADisplayLink"
+        },
+        {
+          "addr": "0x100245255",
+          "name": "sel__onDisplayLink:",
+          "string": "_onDisplayLink:"
+        },
+        {
+          "addr": "0x100129a40",
+          "name": "-[BuddyFinishedCursiveChildWelcomeView setDisplayLink:]"
+        },
+        {
+          "addr": "0x100129a14",
+          "name": "-[BuddyFinishedCursiveChildWelcomeView displayLink]"
+        },
+        {
+          "addr": "0x1001f2234",
+          "name": "_CAFrameRateRangeMake"
+        },
+        {
+          "addr": "0x100326760",
+          "name": "-[CADisplayLink setPreferredFrameRateRange:]"
+        },
+        {
+          "addr": "0x100326758",
+          "name": "+[NSRunLoop mainRunLoop]"
+        },
+        {
+          "addr": "0x1003254d0",
+          "name": "_OBJC_CLASS_$_NSRunLoop"
+        },
+        {
+          "addr": "0x100326768",
+          "name": "-[CADisplayLink addToRunLoop:forMode:]"
+        },
+        {
+          "addr": "0x100325448",
+          "name": "_NSRunLoopCommonModes"
+        }
+      ]
+    },
+    "animate": {
+      "addr": "0x10012975c",
+      "code": "void __cdecl -[BuddyFinishedCursiveChildWelcomeView _animateCursiveForTimePassed](\n        BuddyFinishedCursiveChildWelcomeView *self,\n        SEL a2)\n{\n  double Current; // d8\n  double v3; // d0\n  BuddyCursiveTextView *v4; // x19\n  double v5; // d0\n  void *v6; // x0\n  double v7; // d0\n  double v8; // [xsp+8h] [xbp-38h]\n\n  Current = CFAbsoluteTimeGetCurrent(); /*0x10012977c*/\n  -[BuddyFinishedCursiveChildWelcomeView startTime](self, \"startTime\"); /*0x100129784*/\n  v8 = Current - v3; /*0x10012978c*/\n  v4 = objc_retainAutoreleasedReturnValue(-[BuddyFinishedCursiveChildWelcomeView cursiveTextView](self, \"cursiveTextView\")); /*0x1001297a0*/\n  HIDWORD(v5) = HIDWORD(v8); /*0x1001297a4*/\n  *(float *)&v5 = v8; /*0x1001297a8*/\n  -[BuddyCursiveTextView setTime:](v4, \"setTime:\", v5); /*0x1001297b0*/\n  objc_release(v4); /*0x1001297b8*/\n  v6 = -[BuddyFinishedCursiveChildWelcomeView customDelayDuration](self, \"customDelayDuration\"); /*0x1001297c4*/\n  if ( (BSFloatGreaterThanFloat(a1: v6, a2: v8, a3: v7) & 1) != 0 ) /*0x1001297d4*/\n    -[BuddyFinishedCursiveChildWelcomeView _removeDisplayLink](self, \"_removeDisplayLink\"); /*0x1001297dc*/\n}",
+      "refs": [
+        {
+          "addr": "0x1001f2258",
+          "name": "_CFAbsoluteTimeGetCurrent"
+        },
+        {
+          "addr": "0x100129954",
+          "name": "-[BuddyFinishedCursiveChildWelcomeView startTime]"
+        },
+        {
+          "addr": "0x1001298e8",
+          "name": "-[BuddyFinishedCursiveChildWelcomeView cursiveTextView]"
+        },
+        {
+          "addr": "0x1000820ac",
+          "name": "-[BuddyCursiveTextView setTime:]"
+        },
+        {
+          "addr": "0x1001299b4",
+          "name": "-[BuddyFinishedCursiveChildWelcomeView customDelayDuration]"
+        },
+        {
+          "addr": "0x100129690",
+          "name": "-[BuddyFinishedCursiveChildWelcomeView _removeDisplayLink]"
+        },
+        {
+          "addr": "0x1001f2168",
+          "name": "_BSFloatGreaterThanFloat"
+        }
+      ]
+    },
+    "pathForTime": {
+      "addr": "0x1001a01d4",
+      "code": "CGPath *__cdecl -[BuddyCursiveTextPath pathForTime:](BuddyCursiveTextPath *self, SEL a2, double a3)\n{\n  return -[BuddyCursiveTextPath pathForFraction:calculateLength:]( /*0x1001a0210*/\n           self,\n           \"pathForFraction:calculateLength:\",\n           0,\n           a3 / self->_duration);\n}",
+      "refs": [
+        {
+          "addr": "0x1001a0214",
+          "name": "-[BuddyCursiveTextPath pathForFraction:calculateLength:]"
+        }
+      ]
+    },
+    "pathInit": {
+      "addr": "0x10019f078",
+      "code": "BuddyCursiveTextPath *__cdecl -[BuddyCursiveTextPath initWithURL:](BuddyCursiveTextPath *self, SEL a2, id a3)\n{\n  id v3; // x0\n  BuddyCursiveTextPath *v4; // x19\n  id location[2]; // [xsp+18h] [xbp-28h] BYREF\n  id v7; // [xsp+28h] [xbp-18h] BYREF\n\n  v7 = self; /*0x10019f088*/\n  location[1] = (id)a2; /*0x10019f08c*/\n  location[0] = nullptr; /*0x10019f090*/\n  objc_storeStrong(location, obj: a3); /*0x10019f09c*/\n  v3 = v7; /*0x10019f0a0*/\n  v7 = nullptr; /*0x10019f0a8*/\n  v7 = objc_msgSend(v3, \"initWithURL:resolution:\", location[0], 40); /*0x10019f0b8*/\n  v4 = (BuddyCursiveTextPath *)objc_retain(v7); /*0x10019f0c0*/\n  objc_storeStrong(location, obj: nullptr); /*0x10019f0cc*/\n  objc_storeStrong(location: &v7, obj: nullptr); /*0x10019f0d8*/\n  return v4; /*0x10019f0ec*/\n}",
+      "refs": [
+        {
+          "addr": "0x1001f2f0c",
+          "name": "_objc_storeStrong"
+        }
+      ]
+    }
+  },
+  "limits": [
+    "SpringBoard repacked image omits dyld stub islands and external selector strings; selector names must be resolved from original local shared cache.",
+    "Inferred noreturn annotations in repacked image are not trusted.",
+    "Setup BuddyFinishedCursiveChildWelcomeView is a separate path, not evidence that it owns startup Hello."
+  ]
+}

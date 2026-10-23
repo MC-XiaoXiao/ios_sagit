@@ -1,0 +1,183 @@
+{
+  "version": 1,
+  "generated_at_utc": "2026-10-20T10:11:59.464490+00:00",
+  "scope": "offline compile, native Apple ABI/import checks, protocol simulation and kernelcache verification",
+  "status": "passed",
+  "hardware_tested": false,
+  "device_installed": false,
+  "native_audio_service_tested": false,
+  "physical_playback_verified": false,
+  "default_audio_device_tree_enabled": false,
+  "checks": [
+    {
+      "command": "make audio-driver",
+      "status": "passed",
+      "log": "build/audio/adsp-driver-build.log",
+      "sha256": "81e3d7991920fb57bca89f10dad20ce7cd2835ebb07cf8966009277fa5ecd87a"
+    },
+    {
+      "command": "make test-audio",
+      "status": "passed",
+      "log": "build/audio/adsp-tests.log",
+      "sha256": "83e16f607d3f64b2d7f150410437acf953f9c62817969522290e7b02763ac94e"
+    },
+    {
+      "command": "make test-audio-sanitized",
+      "status": "passed",
+      "log": "build/audio/adsp-sanitized-tests.log",
+      "sha256": "018e0d8888fa2ae0a296496214caba1da36c577626352a2b81fe56df3eac36f6"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p test_driver_toolchain.py -v",
+      "status": "passed",
+      "log": "build/audio/adsp-toolchain-tests.log",
+      "sha256": "8e442207024d3746233d464944f9fabeac6e56c25648ab2606d11e9642fa27b4"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p test_boot_bridge.py -v",
+      "status": "passed",
+      "log": "build/audio/adsp-bridge-tests.log",
+      "sha256": "95047ff7f17a110b25d11e80d6f51916cde4cf3fcd4b5435e2cfe574350cbe22"
+    },
+    {
+      "command": "make audio",
+      "status": "passed",
+      "log": "build/audio/adsp-collection-build.log",
+      "sha256": "0270e3df98e6ce3be3f61d1afca19569701ba547303eb058ab95d6465093080b"
+    },
+    {
+      "command": "make verify-audio",
+      "status": "passed",
+      "log": "build/audio/adsp-collection-verify.log",
+      "sha256": "e6ce5c2a18a8903bb2e65080e43af7963573a07acc4d4f5bfc369df7833220bb"
+    }
+  ],
+  "test_counts": {
+    "host_cpp_suites": 3,
+    "asan_ubsan_cpp_suites": 3,
+    "audio_python_tests": 8,
+    "toolchain_python_tests": 19,
+    "boot_bridge_python_tests": 49,
+    "linker_ctest_tests": 5
+  },
+  "compiler_vtables": {
+    "QcomAudio": {
+      "virtual_slots": 197,
+      "compiler_log": "build/drivers/obj/QcomAudio/QcomAudio.cpp.vtable.txt",
+      "sha256": "fbb00e0c6890ed01d6fe0fc879721d3440858c0755176d37492ec172fe53654c"
+    },
+    "QcomADSP": {
+      "virtual_slots": 174,
+      "compiler_log": "build/drivers/obj/QcomAudio/QcomADSP.cpp.vtable.txt",
+      "sha256": "3cdaf11daca39db9b3f93fd33930897c9182d0fe3430a9544602558139029f24"
+    }
+  },
+  "collection": {
+    "path": "build/output/kernelcache.sdm835.audio",
+    "sha256": "c9d91e9c29364e14083092581c39e3412fe7ffcb508a7ad36e5a4005724dee14",
+    "bytes": 25739264,
+    "kext_count": 31,
+    "local_kext_count": 9,
+    "required_bundles": [
+      "com.apple.iokit.IOAudio2Family",
+      "org.darwin.driver.QcomAudio",
+      "org.darwin.driver.QcomSMEM"
+    ],
+    "provider_sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+    "kernel_sha256": "6893bd67ee57b3f910fd57050ad68995c304d0c285a51ff5c5866e34a6c3700e",
+    "local_bundle_sha256": {
+      "org.mi6.driver.GenericARMPlatform": "5aac59f281642fd1a0319f06d9dcd2a48b81de1ee20377b8580fc1e8b1607f05",
+      "org.mi6.driver.SDM835": "cbb3609d4b50ea9d5a0597737e50cb2049711fc4844582567565f5d809e3173d",
+      "org.darwin.driver.AppleARMGIC": "02da907b288853a74c59d5ce9a8a373dc427a315df492a6d9bf8d974ea74b1ab",
+      "org.darwin.driver.GenericClockController": "7790e24dc6ae86439711b05021c82c23614b7be47962eae8709aec4162c5d013",
+      "org.darwin.driver.QcomGCC": "f09b16322d060b291e06719df4e40b4f85dc57e199bd26d4c4f6504bf41d7a74",
+      "org.darwin.driver.QcomPowerController": "26bd9a946883fc8167f031c4269d9150d3baee3ca8b2bf307ca3278cd57b0092",
+      "org.darwin.driver.QcomSPMI": "e48987f8c383937085b9c156d59b5ed7d29a18606e88933c043c5239cba263ea",
+      "org.darwin.driver.QcomSMEM": "a9b782b8043a0920804ec771b8bac10af0237cc96cf3e8d8b39af89908b8440f",
+      "org.darwin.driver.QcomAudio": "9d7364e3141899a6e41b3d0296aa7db537d4acde4b580d19c5cc621c63b2bd10"
+    },
+    "manifest": "build/output/kernelcache.sdm835.audio.manifest.json",
+    "manifest_sha256": "9bd7e6f04e38d45f141f517c0b1573e9577a9f2c857fb2f4f44b68cf6db8af9b",
+    "verification": "build/output/kernelcache.sdm835.audio.verification.json",
+    "verification_sha256": "a0b0a2f1960e518ed62d7c53d0f3e398e1bdd43db8dc1826ed621be4e239dd38",
+    "checks": [
+      "Mach-O commands",
+      "segments and sections",
+      "VM protection boundaries",
+      "file/VM mappings and overlap",
+      "symbol/relocation ranges, indices and relocation sites",
+      "Kext metadata, versions and dependency closure",
+      "Kext segment ownership",
+      "structor/GOT pointers and ARM64 import stubs",
+      "kmod records",
+      "kernel entry",
+      "XNU KCGEN Kext header walk and terminal zero padding",
+      "Kext ARMv8-A+CRC+Crypto ISA and regenerated static helpers",
+      "corecrypto final executable-section HMAC",
+      "native kernel segment contents and non-prelink commands preserved",
+      "source SHA256 constant tables preserved: 2"
+    ]
+  },
+  "input_sha256": {
+    "Makefile": "9bb9191b7cc009cb2aa14e4da36cfaa4d7c970cc8f50dc2c5903d2fc55bd4533",
+    "device_trees/msm8998.dtsi": "2bb7d84000a8dc2cea824ff44d3e3a0c1eca9a7ae49aa9b64bf8088a5ed67b71",
+    "device_trees/xiaomi-sagit.dts": "cfd04dc0641eae4ea507ee601290522b191d90c9277bc3fa6259bf745947e898",
+    "docs/audio/native-interface.json": "34a2345c8ff9ac98ca3da3237f81f577a846b55c00d126e2c16cfd505f889ec3",
+    "docs/audio/reference/sources.json": "d3a4d9565023638ef0af54ad34b84bd309956761cbb21429728b8550d0bbe7d2",
+    "docs/audio/transport-contract.json": "65470de4d7d3ee5cedadde5c5189bc7f1a7257e90d81bfdc4ed4950e3f94f174",
+    "scripts/build-bridge.py": "a2cd46d9be5110f7a322ba9f95b52cc8aabf8ad9270a4b46b73bcce0f4228c6e",
+    "scripts/toolchain.py": "db0f0ce3ac00cabb47d444e6aa9685bd036a978c9c7404d2a7193f5f663528e2",
+    "drivers/Build.json": "1cb6158b14283ba238818cc5156224eefc08d654cc35b86e2cd5268725ad264d",
+    "drivers/audio/QcomAudio/ADSPGLINK.h": "8dfc02c02febf8ac9e67ebb2dcf15e072c54cdf4272662803226afc65950f366",
+    "drivers/audio/QcomAudio/ADSPMemory.h": "714cfbb9137423368b7ec9fc63975c4a2f12b8a65dd5c6a1ffffcf24581b0141",
+    "drivers/audio/QcomAudio/ADSPOutput.h": "ee1a1670e2cf4671022922199a04ab03d54d212dd65bdaec8ec01e87119317f7",
+    "drivers/audio/QcomAudio/ADSPProtocol.h": "abb8b87fa9e9a90762675bda8b499f8d7087cf9820727c99459ddeb26cd9fd13",
+    "drivers/audio/QcomAudio/AudioOutputBackend.h": "0616a6cc985d5ad8d1a5331fe3a425b89d8ffb016832130135147bb1acbd66b4",
+    "drivers/audio/QcomAudio/AudioOutputSession.h": "ffbe7da2688c6ab412cfdfd6c0954aa690b104a694b8cc15ef29529a932b4f0b",
+    "drivers/audio/QcomAudio/Info.plist": "fe5328cbb371e52038f727a1201107200c965179f4bc6ef2ef30de89ea35bab3",
+    "drivers/audio/QcomAudio/LICENSE.ADSP": "f6b78c087c3ebdf0f3c13415070dd480a3f35d8fc76f3d02180a407c1c812f79",
+    "drivers/audio/QcomAudio/NOTICE.ADSP.txt": "facf2a0ec209a7456a3a25520987c41c5236264d70670bbd3deab34dd9c97165",
+    "drivers/audio/QcomAudio/QcomADSP.cpp": "54f075e11221bd23350e74eef20ec221b304a0adde9c5d1357acf3eb061bd86c",
+    "drivers/audio/QcomAudio/QcomADSP.h": "b648ecf15ddc59e5f5efffe6400517b029a6f6a682ef502899d43d0231d6e557",
+    "drivers/audio/QcomAudio/QcomAudio.cpp": "28c6780279bc3c703fecda07558de3a3e0cb1696ebd2f25587f1b8a824ee0c17",
+    "drivers/audio/QcomAudio/QcomAudio.h": "6d22e35ee70e7e7baf6a5f414f01c397ae443df3cfef604e42707ff66f14c5de",
+    "drivers/baseband/QcomBaseband/BasebandBoot.h": "3c0152676825ed1bd4305f6b959c376f1e084dc5ce596e2bf555e1d12afac934",
+    "drivers/baseband/QcomBaseband/BasebandChannel.h": "2d5a0d4a59689e4b538cfa8d572caef7215b7ed64e31035c7a02489cc122aee9",
+    "drivers/baseband/QcomBaseband/BasebandFIFO.h": "fa6565e5b87041f2d4bb3215a1beec1818f67b7e9d0deb8c8d1f75a41323b112",
+    "drivers/baseband/QcomBaseband/BasebandFirmware.h": "767a42349ada94d241224bf19aa72fed667507aa8bd9523432e659bdedd3662c",
+    "drivers/baseband/QcomBaseband/BasebandGLINK.h": "b104186d67f3fc5ad7efbf99fc2085f28a37375c63fe2d18fac70fc8a9e7a234",
+    "drivers/baseband/QcomBaseband/BasebandLink.h": "54b0430c10e39e797241d0077b28449d4e6ff3b735387aa3141346abf734021f",
+    "drivers/baseband/QcomBaseband/BasebandQ6.h": "bdfdb831e8aece8c5ddb8b307040ff4c231bb3bfc1d4913f4ffb9c5148b2a230",
+    "drivers/baseband/QcomBaseband/BasebandQMI.h": "90cfcd37655feeb970124cc359f78de2dd9369b7e0300b44c062f6ea1f78620a",
+    "drivers/baseband/QcomBaseband/BasebandQRTR.h": "1fe023e5b0b3980cefa533c4b84d7129742f0218cef0e3e9767ff0d96c99114f",
+    "drivers/baseband/QcomBaseband/BasebandRegisters.h": "1036263da929d55398d93e5c153589261d83670a336440f38cac88c5f580c3bc",
+    "drivers/baseband/QcomBaseband/BasebandSMEM.h": "a3d64ef9153111d3b0bc604327d17c2a536a02037c0592bcb9ffa16913f45bde",
+    "drivers/baseband/QcomBaseband/BasebandSMEMPool.h": "c2974eec01b2791b5bb2045ebde0d6a0620937d138768df848071406d8dd72a1",
+    "drivers/baseband/QcomBaseband/BasebandSecure.h": "a5c65e1df51b7a3f71f7bd7b096d4d74e35c3fa21c732968817d7417106f9d28",
+    "drivers/baseband/QcomBaseband/BasebandSecureIO.h": "09a45c17bbb47c78cbedc3dafc30b2043ea53e3ff695f86985ed78062c90afb8",
+    "drivers/baseband/QcomBaseband/BasebandSignalIO.h": "e377cd506788fc96509f78c4d5693a218fbf30d55b5a0e7b6455264f08fa38a1",
+    "drivers/baseband/QcomBaseband/BasebandSignals.h": "1c242bd77404ddda6b5704c356d65a695694d9dc89260f7e45f538d33f5d80d2",
+    "drivers/platform/QcomSMEM/Info.plist": "4e184327565618c3fb9520a5587796c5da871f401b8bb7d18bf994584ba4c259",
+    "drivers/platform/QcomSMEM/QcomSMEM.cpp": "8aaeaad4ce44f9f4b43ebd5a3f6a6bad48e7b15b4099958157a07488d5e83e69",
+    "drivers/platform/QcomSMEM/QcomSMEM.h": "12248c5a140ea270d5957045b1800d880d04353c3a48b4902b657320fc67e93a",
+    "drivers/abi-22H374/apple-audio2-abi.json": "37136bae85b127104c4ea1afbcc872565ade0cbce936d19a1c23fe5f6b509633",
+    "drivers/include/AudioOutputTypes.h": "7e3e9e7e134258120a3bc2d764f5a8178e1815ebf7ab329a36f52f30cec693a5",
+    "drivers/include/BasebandProtocol.h": "ba14d8f7abbdaed2fd5da4f59b0826114ea8a0c4110fb6ee6cc021dc0b3b00b1",
+    "drivers/include/IOKit/audio/IOAudio2Device.h": "3e6a555d73d8f1d48ec69eb6dcfbcc75cfbec0bf0ca26fd67d3883d431f27708",
+    "drivers/include/SMEMProtocol.h": "459bf8357c4e86d1667ab1709021f52341f9cb00209dc951035046dfdb27581a",
+    "tests/adsp_transport_test.cpp": "ae65129ad7389f42c697a72d1dc43f10715891f86f0da4c51c44ea1ecb7f4a32",
+    "tests/audio_abi_compile.cpp": "7784a354922e6d814dce512d5e73c95c890cece8775d80c0e086ad9bebf6c382",
+    "tests/audio_output_test.cpp": "c029a6266f66f6c2fe53ff88aa63c992fee604474ac194a88fe4aaedcdf9050e",
+    "tests/baseband_smem_pool_test.cpp": "d8fd842a1ffe47ed5d3acd422b29b995d4f4d1137c416a17a855dd577e587055",
+    "tests/test_adsp_integration.py": "ddfdf644fdd36f867dabaf05199d05fc45bc4ef4653ca95f2cbc01e0c8dddd18",
+    "tests/test_audio_integration.py": "c716ec631dc5c87ccb09d8aeec3573eb1fcf0fd463b0bc6169c35d054c88de05"
+  },
+  "limitations": [
+    "ADSP PAS cold firmware load/authentication and resources",
+    "real retained-resource handoff producer",
+    "AFE/MI2S cold initialization and board clock/pinctrl producer",
+    "TFA98xx firmware/calibration producer",
+    "exact AVTimer-to-mach correlation",
+    "native Core Audio/media-service runtime and physical playback validation"
+  ]
+}

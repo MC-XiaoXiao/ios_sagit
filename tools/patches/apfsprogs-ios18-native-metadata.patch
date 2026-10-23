@@ -1,0 +1,282 @@
+diff --git a/apfsck/apfsck.c b/apfsck/apfsck.c
+index d26d255..57ba479 100644
+--- a/apfsck/apfsck.c
++++ b/apfsck/apfsck.c
+@@ -24,7 +24,7 @@ static char *progname;
+  */
+ static void usage(void)
+ {
+-	fprintf(stderr, "usage: %s [-cuvw] [-F tier2] device\n", progname);
++	fprintf(stderr, "usage: %s [-cmuvw] [-F tier2] device\n", progname);
+ 	exit(EXIT_FAILURE);
+ }
+ 
+@@ -126,12 +126,15 @@ int main(int argc, char *argv[])
+ 
+ 	progname = argv[0];
+ 	while (1) {
+-		int opt = getopt(argc, argv, "cuvwF:");
++		int opt = getopt(argc, argv, "cmuvwF:");
+ 
+ 		if (opt == -1)
+ 			break;
+ 
+ 		switch (opt) {
++		case 'm':
++			options |= OPT_METADATA_ONLY;
++			break;
+ 		case 'c':
+ 			options |= OPT_REPORT_CRASH;
+ 			break;
+diff --git a/apfsck/apfsck.h b/apfsck/apfsck.h
+index 271820a..46ea39d 100644
+--- a/apfsck/apfsck.h
++++ b/apfsck/apfsck.h
+@@ -19,6 +19,7 @@ extern bool ongoing_query;		/* Are we currently running a query? */
+ #define	OPT_REPORT_CRASH	1 /* Report on-disk signs of a past crash */
+ #define OPT_REPORT_UNKNOWN	2 /* Report unknown or unsupported features */
+ #define OPT_REPORT_WEIRD	4 /* Report issues that may not be corruption */
++#define OPT_METADATA_ONLY 8 /* Diagnostic mode: skip compressed payload checks */
+ 
+ extern __attribute__((noreturn, format(printf, 2, 3)))
+ 		void report(const char *context, const char *message, ...);
+diff --git a/apfsck/dir.c b/apfsck/dir.c
+index 3eb29f2..1be2a2b 100644
+--- a/apfsck/dir.c
++++ b/apfsck/dir.c
+@@ -126,6 +126,7 @@ void parse_dentry_record(void *key, struct apfs_drec_val *val, int len)
+ 	u16 filetype, dtype, flags;
+ 	u64 sibling_id;
+ 	struct sibling *sibling;
++	bool native_purgeable;
+ 
+ 	if (apfs_is_normalization_insensitive()) {
+ 		struct apfs_drec_hashed_key *hkey = key;
+@@ -187,13 +188,18 @@ void parse_dentry_record(void *key, struct apfs_drec_val *val, int len)
+ 
+ 	flags = le16_to_cpu(val->flags);
+ 	dtype = flags & APFS_DREC_TYPE_MASK;
+-	if (flags & ~(APFS_DREC_TYPE_MASK | APFS_DREC_PURGEABLE))
+-		report("Dentry record", "reserved flags in use.");
+-
+-	if ((bool)(flags & APFS_DREC_PURGEABLE) != (parent_ino == APFS_PURGEABLE_DIR_INO_NUM))
++	/* iOS 18 writes this marker in the synthetic purgeable directory.
++	 * Accept only the exact observed encoding and parent. The ordinary
++	 * inode purgeability, stream size/name, links and extents are still
++	 * cross-checked by free_inode_names/check_inode_internal_flags. */
++	native_purgeable = flags == 0xc004 && parent_ino == APFS_PURGEABLE_DIR_INO_NUM;
++	if (!native_purgeable && flags & ~(APFS_DREC_TYPE_MASK | APFS_DREC_PURGEABLE))
++		report("Dentry record", "reserved flags 0x%x in use (volume role 0x%x, parent 0x%llx, inode 0x%llx, name %s).", flags, apfs_volume_role(), (unsigned long long)parent_ino, (unsigned long long)ino, name);
++
++	if (((bool)(flags & APFS_DREC_PURGEABLE) || native_purgeable) != (parent_ino == APFS_PURGEABLE_DIR_INO_NUM))
+ 		report("Dentry record", "the purgeable dir is for purgeable dentries.");
+ 
+-	if (flags & APFS_DREC_PURGEABLE) {
++	if (flags & APFS_DREC_PURGEABLE || native_purgeable) {
+ 		/* No idea. The inode and other hardlinks have normal modes */
+ 		if (flags & APFS_DREC_PURGEABLE_2 && dtype != 5)
+ 			report("Dentry record", "wrong type for purgeable dentry.");
+@@ -259,7 +265,7 @@ static void free_dirstat(struct htable_entry *entry)
+ 	if (stats->ds_num_children != stats->ds_child_count)
+ 		report("Directory stats", "wrong child count.");
+ 	if (stats->ds_total_size != stats->ds_child_size)
+-		report("Directory stats", "wrong total size.");
++		report("Directory stats", "wrong total size (id 0x%llx, origin 0x%llx, expected %llu, measured %llu, chain 0x%llx).", (unsigned long long)stats->ds_oid, (unsigned long long)stats->ds_origin, (unsigned long long)stats->ds_total_size, (unsigned long long)stats->ds_child_size, (unsigned long long)stats->ds_chained_key);
+ 	if (stats->ds_chained_key)
+ 		report_unknown("Chained key in directory stats");
+ 
+diff --git a/apfsck/inode.c b/apfsck/inode.c
+index 9486bda..d04058f 100644
+--- a/apfsck/inode.c
++++ b/apfsck/inode.c
+@@ -111,8 +111,10 @@ static void check_inode_stats(struct inode *inode)
+ 	    (bool)(inode->i_flags & APFS_INODE_HAS_SECURITY_EA))
+ 		report("Inode record", "wrong flag for access control list.");
+ 
+-	if ((bool)(inode->i_purg_name) != (bool)(inode->i_flags & APFS_INODE_IS_PURGEABLE))
+-		report("Inode record", "wrong purgeability flag.");
++	/* Purgeability is eligibility, not a promise of synthetic-index
++	 * membership. Native iOS also leaves eligible, unindexed files. */
++	if (inode->i_purg_name && !(inode->i_flags & APFS_INODE_IS_PURGEABLE))
++		report("Inode record", "wrong purgeability flag (inode 0x%llx, parent 0x%llx, flags 0x%llx, index %d).", (unsigned long long)inode->i_ino, (unsigned long long)inode->i_first_parent, (unsigned long long)inode->i_flags, !!inode->i_purg_name);
+ 
+ 	check_finder_info(inode);
+ }
+@@ -252,10 +254,12 @@ static void free_inode(struct htable_entry *entry)
+ 	cnid_set_state_flag(cnid, CNID_IN_INODE);
+ 
+ 	if (compress) {
++		if (!(options & OPT_METADATA_ONLY)) {
+ 		apfs_compress_open(compress);
+ 		apfs_compress_check(compress);
+ 		verify_dstream_hashes(compress->rsrc_dstream, compress);
+ 		apfs_compress_close(compress);
++		}
+ 		free(compress->decmpfs);
+ 		free(compress);
+ 		inode->i_compress = NULL;
+@@ -266,37 +270,52 @@ static void free_inode(struct htable_entry *entry)
+ 	free(entry);
+ }
+ 
++static void add_file_dirstat(struct inode *inode, u64 parent)
++{
++	struct dirstat *stat = get_inode(parent)->i_dirstat;
++	if (!stat)
++		return;
++	if (inode->i_dstream)
++		stat->ds_child_size += inode->i_dstream->d_bytes - inode->i_dstream->d_sparse_bytes;
++	if (inode->i_compress && inode->i_compress->rsrc_dstream)
++		stat->ds_child_size += inode->i_compress->rsrc_dstream->d_bytes - inode->i_compress->rsrc_dstream->d_sparse_bytes;
++}
++
+ static void collect_dirstats(struct htable_entry *entry)
+ {
+ 	struct inode *inode = (struct inode *)entry;
+ 	u16 filetype = inode->i_mode & S_IFMT;
+ 	struct dirstat *stat = inode->i_dirstat;
+ 	struct dirstat *parent_stat = NULL;
++	struct sibling *link;
+ 
+-	/* Orphans report a stale parent id, don't take that seriously */
+ 	if (inode->i_first_parent == APFS_PRIV_DIR_INO_NUM)
+ 		return;
+-
+-	if (inode->i_parent_id >= APFS_MIN_USER_INO_NUM) {
++	if (inode->i_parent_id >= APFS_ROOT_DIR_INO_NUM) {
+ 		parent_stat = get_inode(inode->i_parent_id)->i_dirstat;
+ 		if (stat && parent_stat && stat != parent_stat)
+ 			report("Inode record", "dirstat id differs from parent.");
+ 	}
+-
+ 	if (inode->i_flags & APFS_INODE_MAINTAIN_DIR_STATS) {
+ 		assert(stat);
+ 		if (!stat->ds_seen)
+ 			report("Inode record", "missing a dirstats record.");
+ 		if (!(inode->i_flags & APFS_INODE_DIR_STATS_ORIGIN) && !parent_stat)
+ 			report("Directory statistics", "origin missing.");
+-		stat->ds_child_count += inode->i_nchildren;
+-	} else if (parent_stat) {
+-		if (inode->i_flags & APFS_INODE_DIR_STATS_ORIGIN)
+-			report_unknown("Nested dirstat origins.");
+ 		if (filetype == S_IFDIR)
+-			report("Inode record", "should gather dir stats for ancestor.");
+-		else if (inode->i_dstream)
+-			parent_stat->ds_total_size += inode->i_dstream->d_size;
++			stat->ds_child_count += inode->i_nchildren;
++	} else if (parent_stat && filetype == S_IFDIR) {
++		report("Inode record", "should gather dir stats for ancestor.");
++	}
++	if (filetype != S_IFDIR) {
++		/* Each hard link contributes to the directory it appears in,
++		 * including multiple names under one statistics origin. */
++		if (inode->i_siblings) {
++			for (link = inode->i_siblings; link; link = link->s_next)
++				add_file_dirstat(inode, link->s_parent_ino);
++		} else {
++			add_file_dirstat(inode, inode->i_parent_id);
++		}
+ 	}
+ }
+ 
+@@ -507,9 +526,11 @@ static int read_dir_stats_xfield(char *xval, int len, struct inode *inode)
+ 	__le64 *oid = NULL;
+ 	struct dirstat *stats = NULL;
+ 
+-	/* TODO: I'm yet to see a file with stats, this is probably wrong */
+-	if (filetype != S_IFDIR)
+-		report("Dir stats xfield", "inode is not a directory.");
++	/* Native iOS files inherit the directory's statistics key and flag. */
++	if (filetype != S_IFDIR && filetype != S_IFREG)
++		report("Dir stats xfield", "unsupported inode type.");
++	if (filetype != S_IFDIR && inode->i_flags & APFS_INODE_DIR_STATS_ORIGIN)
++		report("Dir stats xfield", "non-directory origin.");
+ 
+ 	if (len < sizeof(*oid))
+ 		report("Dir stats xfield", "doesn't fit in inode record.");
+@@ -720,48 +741,6 @@ static void parse_inode_xfields(struct apfs_xf_blob *xblob, int len,
+ 		report("Inode record", "device file with no device ID.");
+ }
+ 
+-/**
+- * ino_after_cloneinfo_epoch - Is WAS_EVER_CLONED valid for this inode?
+- * @ino: inode number to check
+- */
+-static bool ino_after_cloneinfo_epoch(u64 ino)
+-{
+-	struct apfs_superblock *raw = vsb->v_raw;
+-	u64 id_epoch, xid;
+-
+-	id_epoch = le64_to_cpu(raw->apfs_cloneinfo_id_epoch);
+-	xid = le64_to_cpu(raw->apfs_cloneinfo_xid);
+-
+-	/*
+-	 * The epoch hasn't even started for this filesystem, all flags should
+-	 * be assumed corrupted.
+-	 */
+-	if (!xid)
+-		return false;
+-
+-	/*
+-	 * This filesystem was last mounted by a buggy implementation, so flags
+-	 * for newer inodes may have become corrupted.
+-	 */
+-	if (xid != vsb->v_last_xid)
+-		return false;
+-
+-	/*
+-	 * This filesystem was never even mounted by a buggy implementation:
+-	 * all flags should be correct.
+-	 */
+-	if (!id_epoch)
+-		return true;
+-
+-	/*
+-	 * The reference seems to claim that this should be '>', but I have my
+-	 * doubts beause I've seen fresh images with epoch == MIN_USER_INO_NUM.
+-	 * There is no harm in being more strict here and waiting to see if we
+-	 * trip on something.
+-	 */
+-	return ino >= id_epoch;
+-}
+-
+ /**
+  * check_inode_internal_flags - Check basic consistency of inode flags
+  * @flags:	flags to check
+@@ -797,12 +776,10 @@ static void check_inode_internal_flags(u64 flags, u64 ino)
+ 	if (flags & APFS_INODE_IS_APFS_PRIVATE)
+ 		report_unknown("Private implementation inode");
+ 
+-	if (flags & APFS_INODE_WAS_CLONED && !(flags & APFS_INODE_WAS_EVER_CLONED)) {
+-		if (ino_after_cloneinfo_epoch(ino))
+-			report("Inode record", "inconsistent clone flags.");
+-		else
+-			printf("Warning: bad WAS_EVER_CLONED flag for inode 0x%llx\n", (unsigned long long)ino);
+-	}
++	/* WAS_CLONED records creation from another inode; WAS_EVER_CLONED
++	 * records whether this inode was itself cloned. Neither implies the
++	 * other (Apple File System Reference, j_inode_flags). Actual stream
++	 * and extent reference counts are independently checked below. */
+ }
+ 
+ /**
+@@ -922,8 +899,6 @@ void parse_inode_record(struct apfs_inode_key *key,
+ 
+ 	inode->i_flags = le64_to_cpu(val->internal_flags);
+ 	check_inode_internal_flags(inode->i_flags, inode->i_ino);
+-	if (inode->i_ino != inode->i_private_id && !(inode->i_flags & (APFS_INODE_WAS_CLONED | APFS_INODE_WAS_EVER_CLONED)))
+-		report("Inode record", "not a clone but changed private id.");
+ 
+ 	def_prot_class = le32_to_cpu(val->default_protection_class);
+ 	if (def_prot_class > APFS_PROTECTION_CLASS_F || def_prot_class == 5)
+@@ -975,6 +950,10 @@ void parse_inode_record(struct apfs_inode_key *key,
+ 
+ 	parse_inode_xfields((struct apfs_xf_blob *)val->xfields,
+ 			    len - sizeof(*val), inode);
++	/* private_id identifies a data stream, not necessarily the inode.
++	 * Stream ownership and actual sharing are checked against extent refs. */
++	if (inode->i_ino != inode->i_private_id && !inode->i_dstream && !inode->i_compress)
++		report("Inode record", "private id differs on inode without data.");
+ }
+ 
+ /**

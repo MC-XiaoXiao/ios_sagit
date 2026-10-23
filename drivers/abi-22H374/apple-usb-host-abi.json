@@ -1,0 +1,1592 @@
+{
+  "bundle_identifier": "com.apple.iokit.IOUSBHostFamily",
+  "bundle_version": "1.2",
+  "image_sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+  "architecture": "arm64",
+  "classes": {
+    "AppleUSBHostPort": {
+      "super": "IOService",
+      "instance_size": 920,
+      "vtable_slots": 235
+    },
+    "AppleUSBHostController": {
+      "super": "IOService",
+      "instance_size": 1384,
+      "vtable_slots": 269
+    },
+    "AppleUSBHostDMACommand": {
+      "super": "IODMACommand",
+      "instance_size": 144,
+      "vtable_slots": 33
+    },
+    "AppleUSBHostRequest": {
+      "super": "AppleUSBRequest",
+      "instance_size": 64,
+      "vtable_slots": 53
+    },
+    "AppleUSBIORequest": {
+      "super": "AppleUSBHostRequest",
+      "instance_size": 648,
+      "vtable_slots": 59
+    },
+    "IOUSBHostIOSource": {
+      "super": "OSObject",
+      "instance_size": 96,
+      "vtable_slots": 37
+    },
+    "IOUSBHostPipe": {
+      "super": "IOUSBHostIOSource",
+      "instance_size": 184,
+      "vtable_slots": 67
+    },
+    "IOUSBHostDevice": {
+      "super": "IOUSBDevice",
+      "instance_size": 336,
+      "vtable_slots": 219
+    },
+    "AppleUSBHostRequestCompleter": {
+      "super": "AppleUSBRequestCompleter",
+      "instance_size": 176,
+      "vtable_slots": 40
+    }
+  },
+  "required_symbols": [
+    "__ZN13IOUSBHostPipe10adjustPipeEPKN11StandardUSB18EndpointDescriptorEPKNS0_37SuperSpeedEndpointCompanionDescriptorE",
+    "__ZN13IOUSBHostPipe10clearStallEb",
+    "__ZN13IOUSBHostPipe10gMetaClassE",
+    "__ZN13IOUSBHostPipe12nativeSlot17Ev",
+    "__ZN13IOUSBHostPipe12nativeSlot19Ev",
+    "__ZN13IOUSBHostPipe12nativeSlot21Ev",
+    "__ZN13IOUSBHostPipe12nativeSlot23Ev",
+    "__ZN13IOUSBHostPipe12nativeSlot24Ev",
+    "__ZN13IOUSBHostPipe12nativeSlot29Ev",
+    "__ZN13IOUSBHostPipe12nativeSlot30Ev",
+    "__ZN13IOUSBHostPipe12nativeSlot32Ev",
+    "__ZN13IOUSBHostPipe12nativeSlot33Ev",
+    "__ZN13IOUSBHostPipe12nativeSlot34Ev",
+    "__ZN13IOUSBHostPipe12nativeSlot41Ev",
+    "__ZN13IOUSBHostPipe12nativeSlot42Ev",
+    "__ZN13IOUSBHostPipe12nativeSlot44Ev",
+    "__ZN13IOUSBHostPipe12nativeSlot47Ev",
+    "__ZN13IOUSBHostPipe12nativeSlot48Ev",
+    "__ZN13IOUSBHostPipe12nativeSlot51Ev",
+    "__ZN13IOUSBHostPipe12nativeSlot52Ev",
+    "__ZN13IOUSBHostPipe12nativeSlot53Ev",
+    "__ZN13IOUSBHostPipe12nativeSlot54Ev",
+    "__ZN13IOUSBHostPipe12nativeSlot55Ev",
+    "__ZN13IOUSBHostPipe12nativeSlot56Ev",
+    "__ZN13IOUSBHostPipe12nativeSlot57Ev",
+    "__ZN13IOUSBHostPipe12nativeSlot58Ev",
+    "__ZN13IOUSBHostPipe12nativeSlot59Ev",
+    "__ZN13IOUSBHostPipe12nativeSlot60Ev",
+    "__ZN13IOUSBHostPipe12nativeSlot61Ev",
+    "__ZN13IOUSBHostPipe12nativeSlot62Ev",
+    "__ZN13IOUSBHostPipe12nativeSlot63Ev",
+    "__ZN13IOUSBHostPipe12nativeSlot64Ev",
+    "__ZN13IOUSBHostPipe14getDescriptorsEPNS_22StandardUSBDescriptorsENS_29tGetEndpointDescriptorOptionsE",
+    "__ZN13IOUSBHostPipe15adjustPipeGatedEPKN11StandardUSB18EndpointDescriptorEPKNS0_37SuperSpeedEndpointCompanionDescriptorE",
+    "__ZN13IOUSBHostPipe15clearStallGatedEb",
+    "__ZN13IOUSBHostPipe17adjustPipeGatedV2EPNS_22StandardUSBDescriptorsE",
+    "__ZN13IOUSBHostPipe21getEndpointDescriptorENS_29tGetEndpointDescriptorOptionsE",
+    "__ZN13IOUSBHostPipe28initWithDescriptorsAndOwnersEPKN11StandardUSB18EndpointDescriptorEPKNS0_37SuperSpeedEndpointCompanionDescriptorEP22AppleUSBHostControllerP15IOUSBHostDeviceP18IOUSBHostInterfaceht",
+    "__ZN13IOUSBHostPipe40getSuperSpeedEndpointCompanionDescriptorENS_29tGetEndpointDescriptorOptionsE",
+    "__ZN13IOUSBHostPipe4freeEv",
+    "__ZN13IOUSBHostPipe9metaClassE",
+    "__ZN13IOUSBHostPipeC2EPK11OSMetaClass",
+    "__ZN13IOUSBHostPipeD2Ev",
+    "__ZN15IOUSBHostDevice21internalDeviceRequestEP9IOServiceRN11StandardUSB13DeviceRequestEPvP18IOMemoryDescriptorPjP19IOUSBHostCompletionj",
+    "__ZN16AppleUSBHostPort10gMetaClassE",
+    "__ZN16AppleUSBHostPort10handleOpenEP9IOServicejPv",
+    "__ZN16AppleUSBHostPort11handleCloseEP9IOServicej",
+    "__ZN16AppleUSBHostPort12createDeviceEj",
+    "__ZN16AppleUSBHostPort12didTerminateEP9IOServicejPb",
+    "__ZN16AppleUSBHostPort13getPortStatusEv",
+    "__ZN16AppleUSBHostPort13nativeSlot171Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot175Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot176Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot177Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot178Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot179Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot180Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot181Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot182Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot183Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot184Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot185Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot186Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot187Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot188Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot189Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot190Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot191Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot192Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot193Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot194Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot195Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot196Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot197Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot198Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot199Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot205Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot206Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot207Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot211Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot212Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot213Ev",
+    "__ZN16AppleUSBHostPort14initBusCurrentEv",
+    "__ZN16AppleUSBHostPort13nativeSlot215Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot216Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot217Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot218Ev",
+    "__ZN16AppleUSBHostPort21getCompanionPortGatedEjRPS_",
+    "__ZN16AppleUSBHostPort13nativeSlot220Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot221Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot222Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot223Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot224Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot225Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot226Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot227Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot228Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot229Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot230Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot231Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot232Ev",
+    "__ZN16AppleUSBHostPort13nativeSlot233Ev",
+    "__ZN16AppleUSBHostPort13setPowerStateEmP9IOService",
+    "__ZN16AppleUSBHostPort13setPropertiesEP8OSObject",
+    "__ZN16AppleUSBHostPort13willTerminateEP9IOServicej",
+    "__ZN16AppleUSBHostPort14clearPipeStallEP13IOUSBHostPipe",
+    "__ZN16AppleUSBHostPort15registerServiceEj",
+    "__ZN16AppleUSBHostPort15signalInterruptEj",
+    "__ZN16AppleUSBHostPort18acquireAddressLockEv",
+    "__ZN16AppleUSBHostPort18releaseAddressLockEv",
+    "__ZN16AppleUSBHostPort18systemWillShutdownEj",
+    "__ZN16AppleUSBHostPort21powerStateDidChangeToEmmP9IOService",
+    "__ZN16AppleUSBHostPort22powerStateWillChangeToEmmP9IOService",
+    "__ZN16AppleUSBHostPort31initialPowerStateForDomainStateEm",
+    "__ZN16AppleUSBHostPort4freeEv",
+    "__ZN16AppleUSBHostPort4initEP12OSDictionary",
+    "__ZN16AppleUSBHostPort4initEP15IORegistryEntryPK15IORegistryPlane",
+    "__ZN16AppleUSBHostPort4openEP9IOServicejPv",
+    "__ZN16AppleUSBHostPort4stopEP9IOService",
+    "__ZN16AppleUSBHostPort5closeEP9IOServicej",
+    "__ZN16AppleUSBHostPort5resetEj",
+    "__ZN16AppleUSBHostPort5resetEjj",
+    "__ZN16AppleUSBHostPort5startEP9IOService",
+    "__ZN16AppleUSBHostPort7messageEjP9IOServicePv",
+    "__ZN16AppleUSBHostPortC2EPK11OSMetaClass",
+    "__ZN16AppleUSBHostPortD2Ev",
+    "__ZN17AppleUSBIORequest6updateEv",
+    "__ZN17IOUSBHostIOSource10gMetaClassE",
+    "__ZN17IOUSBHostIOSource12nativeSlot16Ev",
+    "__ZN17IOUSBHostIOSource12nativeSlot17Ev",
+    "__ZN17IOUSBHostIOSource12nativeSlot18Ev",
+    "__ZN17IOUSBHostIOSource12nativeSlot19Ev",
+    "__ZN17IOUSBHostIOSource12nativeSlot20Ev",
+    "__ZN17IOUSBHostIOSource12nativeSlot21Ev",
+    "__ZN17IOUSBHostIOSource12nativeSlot23Ev",
+    "__ZN17IOUSBHostIOSource12nativeSlot24Ev",
+    "__ZN17IOUSBHostIOSource12nativeSlot25Ev",
+    "__ZN17IOUSBHostIOSource12nativeSlot26Ev",
+    "__ZN17IOUSBHostIOSource12nativeSlot28Ev",
+    "__ZN17IOUSBHostIOSource12nativeSlot29Ev",
+    "__ZN17IOUSBHostIOSource12nativeSlot30Ev",
+    "__ZN17IOUSBHostIOSource12nativeSlot31Ev",
+    "__ZN17IOUSBHostIOSource12nativeSlot32Ev",
+    "__ZN17IOUSBHostIOSource12nativeSlot33Ev",
+    "__ZN17IOUSBHostIOSource12nativeSlot34Ev",
+    "__ZN17IOUSBHostIOSource12nativeSlot35Ev",
+    "__ZN17IOUSBHostIOSource12nativeSlot36Ev",
+    "__ZN17IOUSBHostIOSource14initWithOwnersEP22AppleUSBHostControllerP15IOUSBHostDevice",
+    "__ZN17IOUSBHostIOSource4freeEv",
+    "__ZN17IOUSBHostIOSourceC2EPK11OSMetaClass",
+    "__ZN17IOUSBHostIOSourceD2Ev",
+    "__ZN19AppleUSBHostRequest10gMetaClassE",
+    "__ZN19AppleUSBHostRequest14setNextRequestEP15AppleUSBRequest",
+    "__ZN19AppleUSBHostRequest4freeEv",
+    "__ZN19AppleUSBHostRequest6cancelEv",
+    "__ZN19AppleUSBHostRequest8completeEv",
+    "__ZN19AppleUSBHostRequestC2EPK11OSMetaClass",
+    "__ZN19AppleUSBHostRequestD2Ev",
+    "__ZN22AppleUSBHostController10adjustPipeEP13IOUSBHostPipeRNS0_22StandardUSBDescriptorsE",
+    "__ZN22AppleUSBHostController10createPipeERN13IOUSBHostPipe22StandardUSBDescriptorsEP15IOUSBHostDeviceP18IOUSBHostInterface",
+    "__ZN22AppleUSBHostController10gMetaClassE",
+    "__ZN22AppleUSBHostController10handleOpenEP9IOServicejPv",
+    "__ZN22AppleUSBHostController11abortStreamEP15IOUSBHostStreami",
+    "__ZN22AppleUSBHostController11closeStreamEP15IOUSBHostStream",
+    "__ZN22AppleUSBHostController11createPortsEv",
+    "__ZN22AppleUSBHostController11handleCloseEP9IOServicej",
+    "__ZN22AppleUSBHostController11registerHubEP15IOUSBHostDevicePKN11StandardUSB13HubDescriptorE17tRegisterHubFlags",
+    "__ZN22AppleUSBHostController11registerHubEP15IOUSBHostDevicePKN11StandardUSB23SuperSpeedHubDescriptorE",
+    "__ZN22AppleUSBHostController11resumePipesEP15IOUSBHostDevice",
+    "__ZN22AppleUSBHostController12createStreamEP15IOUSBHostDeviceP13IOUSBHostPipej",
+    "__ZN22AppleUSBHostController12didTerminateEP9IOServicejPb",
+    "__ZN22AppleUSBHostController12suspendPipesEP15IOUSBHostDevice",
+    "__ZN22AppleUSBHostController13enableStreamsEP13IOUSBHostPipe",
+    "__ZN22AppleUSBHostController13nativeSlot169Ev",
+    "__ZN22AppleUSBHostController13nativeSlot170Ev",
+    "__ZN22AppleUSBHostController13nativeSlot171Ev",
+    "__ZN22AppleUSBHostController13nativeSlot172Ev",
+    "__ZN22AppleUSBHostController13nativeSlot173Ev",
+    "__ZN22AppleUSBHostController13nativeSlot174Ev",
+    "__ZN22AppleUSBHostController13nativeSlot175Ev",
+    "__ZN22AppleUSBHostController13nativeSlot176Ev",
+    "__ZN22AppleUSBHostController13nativeSlot177Ev",
+    "__ZN22AppleUSBHostController13nativeSlot178Ev",
+    "__ZN22AppleUSBHostController13nativeSlot179Ev",
+    "__ZN22AppleUSBHostController13nativeSlot180Ev",
+    "__ZN22AppleUSBHostController13nativeSlot181Ev",
+    "__ZN22AppleUSBHostController9powerDownEm",
+    "__ZN22AppleUSBHostController7powerUpEm",
+    "__ZN22AppleUSBHostController13nativeSlot184Ev",
+    "__ZN22AppleUSBHostController13nativeSlot185Ev",
+    "__ZN22AppleUSBHostController13nativeSlot186Ev",
+    "__ZN22AppleUSBHostController13nativeSlot187Ev",
+    "__ZN22AppleUSBHostController13nativeSlot188Ev",
+    "__ZN22AppleUSBHostController13nativeSlot189Ev",
+    "__ZN22AppleUSBHostController13nativeSlot194Eht",
+    "__ZN22AppleUSBHostController13nativeSlot214Ev",
+    "__ZN22AppleUSBHostController13nativeSlot215Ev",
+    "__ZN22AppleUSBHostController13nativeSlot216EP19AppleUSBHostRequestij",
+    "__ZN22AppleUSBHostController16getCompanionPortEP16AppleUSBHostPortj",
+    "__ZN22AppleUSBHostController13nativeSlot236Ev",
+    "__ZN22AppleUSBHostController13nativeSlot237Ev",
+    "__ZN22AppleUSBHostController13nativeSlot238Ev",
+    "__ZN22AppleUSBHostController13nativeSlot239Ev",
+    "__ZN22AppleUSBHostController13nativeSlot240Ev",
+    "__ZN22AppleUSBHostController13nativeSlot241Ev",
+    "__ZN22AppleUSBHostController13nativeSlot242Ev",
+    "__ZN22AppleUSBHostController13nativeSlot243Ev",
+    "__ZN22AppleUSBHostController13nativeSlot244Ev",
+    "__ZN22AppleUSBHostController13nativeSlot245Ev",
+    "__ZN22AppleUSBHostController13nativeSlot246Ev",
+    "__ZN22AppleUSBHostController13nativeSlot250Ev",
+    "__ZN22AppleUSBHostController13nativeSlot251Ev",
+    "__ZN22AppleUSBHostController13nativeSlot252Ev",
+    "__ZN22AppleUSBHostController13nativeSlot253Ev",
+    "__ZN22AppleUSBHostController13nativeSlot254Ev",
+    "__ZN22AppleUSBHostController13nativeSlot255Ev",
+    "__ZN22AppleUSBHostController13nativeSlot256Ev",
+    "__ZN22AppleUSBHostController13nativeSlot257Ev",
+    "__ZN22AppleUSBHostController13nativeSlot258Ev",
+    "__ZN22AppleUSBHostController13nativeSlot259Ev",
+    "__ZN22AppleUSBHostController13nativeSlot260Ev",
+    "__ZN22AppleUSBHostController13nativeSlot261Ev",
+    "__ZN22AppleUSBHostController13nativeSlot262Ev",
+    "__ZN22AppleUSBHostController13nativeSlot263Ev",
+    "__ZN22AppleUSBHostController13nativeSlot264Ev",
+    "__ZN22AppleUSBHostController13nativeSlot265Ev",
+    "__ZN22AppleUSBHostController13nativeSlot268Ev",
+    "__ZN22AppleUSBHostController13setPowerStateEmP9IOService",
+    "__ZN22AppleUSBHostController13setPropertiesEP8OSObject",
+    "__ZN22AppleUSBHostController13unregisterHubEP15IOUSBHostDevice",
+    "__ZN22AppleUSBHostController14clearPipeStallEP13IOUSBHostPipe",
+    "__ZN22AppleUSBHostController14createIOBufferEjy",
+    "__ZN22AppleUSBHostController14disableStreamsEP13IOUSBHostPipe",
+    "__ZN22AppleUSBHostController14getFrameNumberEPy",
+    "__ZN22AppleUSBHostController15registerServiceEj",
+    "__ZN22AppleUSBHostController16getFrameRolloverEPy",
+    "__ZN22AppleUSBHostController16registerHubGatedEP15IOUSBHostDevicePKN11StandardUSB13HubDescriptorE17tRegisterHubFlags",
+    "__ZN22AppleUSBHostController16returnDMACommandEP12IODMACommand",
+    "__ZN22AppleUSBHostController17getSystemWakeTimeEv",
+    "__ZN22AppleUSBHostController18acquireAddressLockEv",
+    "__ZN22AppleUSBHostController18matchPropertyTableEP12OSDictionaryPi",
+    "__ZN22AppleUSBHostController18releaseAddressLockEv",
+    "__ZN22AppleUSBHostController18systemWillShutdownEj",
+    "__ZN22AppleUSBHostController18unregisterHubGatedEP15IOUSBHostDevice",
+    "__ZN22AppleUSBHostController21powerStateDidChangeToEmmP9IOService",
+    "__ZN22AppleUSBHostController22powerStateWillChangeToEmmP9IOService",
+    "__ZN22AppleUSBHostController26registerSuperSpeedHubGatedEP15IOUSBHostDevicePKN11StandardUSB23SuperSpeedHubDescriptorE",
+    "__ZN22AppleUSBHostController27maxCapabilityForDomainStateEm",
+    "__ZN22AppleUSBHostController2ioEP19AppleUSBHostRequest",
+    "__ZN22AppleUSBHostController31initialPowerStateForDomainStateEm",
+    "__ZN22AppleUSBHostController4freeEv",
+    "__ZN22AppleUSBHostController4initEP12OSDictionary",
+    "__ZN22AppleUSBHostController4openEP9IOServicejPv",
+    "__ZN22AppleUSBHostController4stopEP9IOService",
+    "__ZN22AppleUSBHostController5closeEP9IOServicej",
+    "__ZN22AppleUSBHostController5startEP9IOService",
+    "__ZN22AppleUSBHostController6PMstopEv",
+    "__ZN22AppleUSBHostController7messageEjP9IOServicePv",
+    "__ZN22AppleUSBHostController9abortPipeEP13IOUSBHostPipeiP9IOService",
+    "__ZN22AppleUSBHostController9closePipeEP13IOUSBHostPipe",
+    "__ZN22AppleUSBHostController9terminateEj",
+    "__ZN22AppleUSBHostControllerC2EPK11OSMetaClass",
+    "__ZN22AppleUSBHostControllerD2Ev",
+    "__ZN22AppleUSBHostDMACommand10gMetaClassE",
+    "__ZN22AppleUSBHostDMACommand12nativeSlot31EPK18IOMemoryDescriptorbj",
+    "__ZN22AppleUSBHostDMACommand12nativeSlot32Ev",
+    "__ZN22AppleUSBHostDMACommand19setMemoryDescriptorEPK18IOMemoryDescriptorb",
+    "__ZN22AppleUSBHostDMACommand21clearMemoryDescriptorEb",
+    "__ZN22AppleUSBHostDMACommand21initWithSpecificationEPFbP12IODMACommandNS0_9Segment64EPvjEhyNS0_14MappingOptionsEyjP8IOMapperS3_",
+    "__ZN22AppleUSBHostDMACommand4freeEv",
+    "__ZN22AppleUSBHostDMACommand7prepareEyybb",
+    "__ZN22AppleUSBHostDMACommand8completeEbb",
+    "__ZN22AppleUSBHostDMACommandC2EPK11OSMetaClass",
+    "__ZN22AppleUSBHostDMACommandD2Ev",
+    "__ZN28AppleUSBHostRequestCompleter14enqueueRequestEP15AppleUSBRequest",
+    "__ZNK13IOUSBHostPipe16getDeviceAddressEv",
+    "__ZNK13IOUSBHostPipe8getSpeedEv",
+    "__ZNK15IOUSBHostDevice16getDeviceAddressEv",
+    "__ZNK15IOUSBHostDevice8getSpeedEv",
+    "__ZNK16AppleUSBHostPort11getWorkLoopEv",
+    "__ZNK16AppleUSBHostPort12handleIsOpenEPK9IOService",
+    "__ZNK17AppleUSBIORequest11getIOLengthEv",
+    "__ZNK17AppleUSBIORequest12getFrameListEv",
+    "__ZNK17AppleUSBIORequest12getNumFramesEv",
+    "__ZNK17AppleUSBIORequest13getStartFrameEv",
+    "__ZNK17AppleUSBIORequest20getCompletionTimeoutEv",
+    "__ZNK17AppleUSBIORequest9getClientEv",
+    "__ZNK17AppleUSBIORequest9isBundledEv",
+    "__ZNK17IOUSBHostIOSource8getStateEPj",
+    "__ZNK17IOUSBHostIOSource9getDeviceEv",
+    "__ZNK19AppleUSBHostRequest11getIOSourceEv",
+    "__ZNK19AppleUSBHostRequest7getPipeEv",
+    "__ZNK19AppleUSBHostRequest9getDeviceEv",
+    "__ZNK22AppleUSBHostController11getWorkLoopEv",
+    "__ZNK22AppleUSBHostController12handleIsOpenEPK9IOService",
+    "__ZNK22AppleUSBHostDMACommand19getMemoryDescriptorEv",
+    "__ZTV13IOUSBHostPipe",
+    "__ZTV16AppleUSBHostPort",
+    "__ZTV22AppleUSBHostController",
+    "__ZTV22AppleUSBHostDMACommand"
+  ],
+  "virtual_symbols": {
+    "__ZN13IOUSBHostPipe10adjustPipeEPKN11StandardUSB18EndpointDescriptorEPKNS0_37SuperSpeedEndpointCompanionDescriptorE": {
+      "class": "IOUSBHostPipe",
+      "slot": 40
+    },
+    "__ZN13IOUSBHostPipe12nativeSlot17Ev": {
+      "class": "IOUSBHostPipe",
+      "slot": 17
+    },
+    "__ZN13IOUSBHostPipe12nativeSlot19Ev": {
+      "class": "IOUSBHostPipe",
+      "slot": 19
+    },
+    "__ZN13IOUSBHostPipe12nativeSlot21Ev": {
+      "class": "IOUSBHostPipe",
+      "slot": 21
+    },
+    "__ZN13IOUSBHostPipe12nativeSlot23Ev": {
+      "class": "IOUSBHostPipe",
+      "slot": 23
+    },
+    "__ZN13IOUSBHostPipe12nativeSlot24Ev": {
+      "class": "IOUSBHostPipe",
+      "slot": 24
+    },
+    "__ZN13IOUSBHostPipe12nativeSlot29Ev": {
+      "class": "IOUSBHostPipe",
+      "slot": 29
+    },
+    "__ZN13IOUSBHostPipe12nativeSlot30Ev": {
+      "class": "IOUSBHostPipe",
+      "slot": 30
+    },
+    "__ZN13IOUSBHostPipe12nativeSlot32Ev": {
+      "class": "IOUSBHostPipe",
+      "slot": 32
+    },
+    "__ZN13IOUSBHostPipe12nativeSlot33Ev": {
+      "class": "IOUSBHostPipe",
+      "slot": 33
+    },
+    "__ZN13IOUSBHostPipe12nativeSlot34Ev": {
+      "class": "IOUSBHostPipe",
+      "slot": 34
+    },
+    "__ZN13IOUSBHostPipe12nativeSlot41Ev": {
+      "class": "IOUSBHostPipe",
+      "slot": 41
+    },
+    "__ZN13IOUSBHostPipe12nativeSlot42Ev": {
+      "class": "IOUSBHostPipe",
+      "slot": 42
+    },
+    "__ZN13IOUSBHostPipe10clearStallEb": {
+      "class": "IOUSBHostPipe",
+      "slot": 43
+    },
+    "__ZN13IOUSBHostPipe12nativeSlot44Ev": {
+      "class": "IOUSBHostPipe",
+      "slot": 44
+    },
+    "__ZN13IOUSBHostPipe12nativeSlot47Ev": {
+      "class": "IOUSBHostPipe",
+      "slot": 47
+    },
+    "__ZN13IOUSBHostPipe12nativeSlot48Ev": {
+      "class": "IOUSBHostPipe",
+      "slot": 48
+    },
+    "__ZN13IOUSBHostPipe15clearStallGatedEb": {
+      "class": "IOUSBHostPipe",
+      "slot": 49
+    },
+    "__ZN13IOUSBHostPipe12nativeSlot51Ev": {
+      "class": "IOUSBHostPipe",
+      "slot": 51
+    },
+    "__ZN13IOUSBHostPipe12nativeSlot52Ev": {
+      "class": "IOUSBHostPipe",
+      "slot": 52
+    },
+    "__ZN13IOUSBHostPipe12nativeSlot53Ev": {
+      "class": "IOUSBHostPipe",
+      "slot": 53
+    },
+    "__ZN13IOUSBHostPipe12nativeSlot54Ev": {
+      "class": "IOUSBHostPipe",
+      "slot": 54
+    },
+    "__ZN13IOUSBHostPipe12nativeSlot55Ev": {
+      "class": "IOUSBHostPipe",
+      "slot": 55
+    },
+    "__ZN13IOUSBHostPipe12nativeSlot56Ev": {
+      "class": "IOUSBHostPipe",
+      "slot": 56
+    },
+    "__ZN13IOUSBHostPipe12nativeSlot57Ev": {
+      "class": "IOUSBHostPipe",
+      "slot": 57
+    },
+    "__ZN13IOUSBHostPipe12nativeSlot58Ev": {
+      "class": "IOUSBHostPipe",
+      "slot": 58
+    },
+    "__ZN13IOUSBHostPipe12nativeSlot59Ev": {
+      "class": "IOUSBHostPipe",
+      "slot": 59
+    },
+    "__ZN13IOUSBHostPipe12nativeSlot60Ev": {
+      "class": "IOUSBHostPipe",
+      "slot": 60
+    },
+    "__ZN13IOUSBHostPipe12nativeSlot61Ev": {
+      "class": "IOUSBHostPipe",
+      "slot": 61
+    },
+    "__ZN13IOUSBHostPipe12nativeSlot62Ev": {
+      "class": "IOUSBHostPipe",
+      "slot": 62
+    },
+    "__ZN13IOUSBHostPipe12nativeSlot63Ev": {
+      "class": "IOUSBHostPipe",
+      "slot": 63
+    },
+    "__ZN13IOUSBHostPipe12nativeSlot64Ev": {
+      "class": "IOUSBHostPipe",
+      "slot": 64
+    },
+    "__ZN13IOUSBHostPipe14getDescriptorsEPNS_22StandardUSBDescriptorsENS_29tGetEndpointDescriptorOptionsE": {
+      "class": "IOUSBHostPipe",
+      "slot": 45
+    },
+    "__ZN13IOUSBHostPipe15adjustPipeGatedEPKN11StandardUSB18EndpointDescriptorEPKNS0_37SuperSpeedEndpointCompanionDescriptorE": {
+      "class": "IOUSBHostPipe",
+      "slot": 46
+    },
+    "__ZN13IOUSBHostPipe17adjustPipeGatedV2EPNS_22StandardUSBDescriptorsE": {
+      "class": "IOUSBHostPipe",
+      "slot": 50
+    },
+    "__ZN13IOUSBHostPipe21getEndpointDescriptorENS_29tGetEndpointDescriptorOptionsE": {
+      "class": "IOUSBHostPipe",
+      "slot": 38
+    },
+    "__ZN13IOUSBHostPipe28initWithDescriptorsAndOwnersEPKN11StandardUSB18EndpointDescriptorEPKNS0_37SuperSpeedEndpointCompanionDescriptorEP22AppleUSBHostControllerP15IOUSBHostDeviceP18IOUSBHostInterfaceht": {
+      "class": "IOUSBHostPipe",
+      "slot": 37
+    },
+    "__ZN13IOUSBHostPipe40getSuperSpeedEndpointCompanionDescriptorENS_29tGetEndpointDescriptorOptionsE": {
+      "class": "IOUSBHostPipe",
+      "slot": 39
+    },
+    "__ZN13IOUSBHostPipe4freeEv": {
+      "class": "IOUSBHostPipe",
+      "slot": 14
+    },
+    "__ZN16AppleUSBHostPort10handleOpenEP9IOServicejPv": {
+      "class": "AppleUSBHostPort",
+      "slot": 91
+    },
+    "__ZN16AppleUSBHostPort11handleCloseEP9IOServicej": {
+      "class": "AppleUSBHostPort",
+      "slot": 92
+    },
+    "__ZN16AppleUSBHostPort12createDeviceEj": {
+      "class": "AppleUSBHostPort",
+      "slot": 210
+    },
+    "__ZN16AppleUSBHostPort12didTerminateEP9IOServicejPb": {
+      "class": "AppleUSBHostPort",
+      "slot": 77
+    },
+    "__ZN16AppleUSBHostPort13getPortStatusEv": {
+      "class": "AppleUSBHostPort",
+      "slot": 173
+    },
+    "__ZN16AppleUSBHostPort14clearPipeStallEP13IOUSBHostPipe": {
+      "class": "AppleUSBHostPort",
+      "slot": 170
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot171Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 171
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot175Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 175
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot176Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 176
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot177Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 177
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot178Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 178
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot179Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 179
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot180Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 180
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot181Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 181
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot182Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 182
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot183Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 183
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot184Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 184
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot185Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 185
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot186Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 186
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot187Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 187
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot188Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 188
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot189Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 189
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot190Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 190
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot191Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 191
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot192Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 192
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot193Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 193
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot194Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 194
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot195Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 195
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot196Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 196
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot197Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 197
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot198Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 198
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot199Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 199
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot205Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 205
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot206Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 206
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot207Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 207
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot211Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 211
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot212Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 212
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot213Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 213
+    },
+    "__ZN16AppleUSBHostPort14initBusCurrentEv": {
+      "class": "AppleUSBHostPort",
+      "slot": 214
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot215Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 215
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot216Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 216
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot217Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 217
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot218Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 218
+    },
+    "__ZN16AppleUSBHostPort21getCompanionPortGatedEjRPS_": {
+      "class": "AppleUSBHostPort",
+      "slot": 219
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot220Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 220
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot221Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 221
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot222Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 222
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot223Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 223
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot224Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 224
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot225Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 225
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot226Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 226
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot227Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 227
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot228Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 228
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot229Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 229
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot230Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 230
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot231Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 231
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot232Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 232
+    },
+    "__ZN16AppleUSBHostPort13nativeSlot233Ev": {
+      "class": "AppleUSBHostPort",
+      "slot": 233
+    },
+    "__ZN16AppleUSBHostPort13setPowerStateEmP9IOService": {
+      "class": "AppleUSBHostPort",
+      "slot": 155
+    },
+    "__ZN16AppleUSBHostPort13setPropertiesEP8OSObject": {
+      "class": "AppleUSBHostPort",
+      "slot": 44
+    },
+    "__ZN16AppleUSBHostPort13willTerminateEP9IOServicej": {
+      "class": "AppleUSBHostPort",
+      "slot": 76
+    },
+    "__ZN16AppleUSBHostPort15registerServiceEj": {
+      "class": "AppleUSBHostPort",
+      "slot": 84
+    },
+    "__ZN16AppleUSBHostPort15signalInterruptEj": {
+      "class": "AppleUSBHostPort",
+      "slot": 172
+    },
+    "__ZN16AppleUSBHostPort18acquireAddressLockEv": {
+      "class": "AppleUSBHostPort",
+      "slot": 208
+    },
+    "__ZN16AppleUSBHostPort18releaseAddressLockEv": {
+      "class": "AppleUSBHostPort",
+      "slot": 209
+    },
+    "__ZN16AppleUSBHostPort18systemWillShutdownEj": {
+      "class": "AppleUSBHostPort",
+      "slot": 79
+    },
+    "__ZN16AppleUSBHostPort21powerStateDidChangeToEmmP9IOService": {
+      "class": "AppleUSBHostPort",
+      "slot": 160
+    },
+    "__ZN16AppleUSBHostPort22powerStateWillChangeToEmmP9IOService": {
+      "class": "AppleUSBHostPort",
+      "slot": 159
+    },
+    "__ZN16AppleUSBHostPort31initialPowerStateForDomainStateEm": {
+      "class": "AppleUSBHostPort",
+      "slot": 157
+    },
+    "__ZN16AppleUSBHostPort4freeEv": {
+      "class": "AppleUSBHostPort",
+      "slot": 14
+    },
+    "__ZN16AppleUSBHostPort4initEP12OSDictionary": {
+      "class": "AppleUSBHostPort",
+      "slot": 21
+    },
+    "__ZN16AppleUSBHostPort4initEP15IORegistryEntryPK15IORegistryPlane": {
+      "class": "AppleUSBHostPort",
+      "slot": 74
+    },
+    "__ZN16AppleUSBHostPort4openEP9IOServicejPv": {
+      "class": "AppleUSBHostPort",
+      "slot": 88
+    },
+    "__ZN16AppleUSBHostPort4stopEP9IOService": {
+      "class": "AppleUSBHostPort",
+      "slot": 87
+    },
+    "__ZN16AppleUSBHostPort5closeEP9IOServicej": {
+      "class": "AppleUSBHostPort",
+      "slot": 89
+    },
+    "__ZN16AppleUSBHostPort5resetEj": {
+      "class": "AppleUSBHostPort",
+      "slot": 168
+    },
+    "__ZN16AppleUSBHostPort5resetEjj": {
+      "class": "AppleUSBHostPort",
+      "slot": 169
+    },
+    "__ZN16AppleUSBHostPort5startEP9IOService": {
+      "class": "AppleUSBHostPort",
+      "slot": 86
+    },
+    "__ZN16AppleUSBHostPort7messageEjP9IOServicePv": {
+      "class": "AppleUSBHostPort",
+      "slot": 132
+    },
+    "__ZN17AppleUSBIORequest6updateEv": {
+      "class": "AppleUSBIORequest",
+      "slot": 19
+    },
+    "__ZN17IOUSBHostIOSource12nativeSlot16Ev": {
+      "class": "IOUSBHostIOSource",
+      "slot": 16
+    },
+    "__ZN17IOUSBHostIOSource12nativeSlot17Ev": {
+      "class": "IOUSBHostIOSource",
+      "slot": 17
+    },
+    "__ZN17IOUSBHostIOSource12nativeSlot18Ev": {
+      "class": "IOUSBHostIOSource",
+      "slot": 18
+    },
+    "__ZN17IOUSBHostIOSource12nativeSlot19Ev": {
+      "class": "IOUSBHostIOSource",
+      "slot": 19
+    },
+    "__ZN17IOUSBHostIOSource12nativeSlot20Ev": {
+      "class": "IOUSBHostIOSource",
+      "slot": 20
+    },
+    "__ZN17IOUSBHostIOSource12nativeSlot21Ev": {
+      "class": "IOUSBHostIOSource",
+      "slot": 21
+    },
+    "__ZN17IOUSBHostIOSource12nativeSlot23Ev": {
+      "class": "IOUSBHostIOSource",
+      "slot": 23
+    },
+    "__ZN17IOUSBHostIOSource12nativeSlot24Ev": {
+      "class": "IOUSBHostIOSource",
+      "slot": 24
+    },
+    "__ZN17IOUSBHostIOSource12nativeSlot25Ev": {
+      "class": "IOUSBHostIOSource",
+      "slot": 25
+    },
+    "__ZN17IOUSBHostIOSource12nativeSlot26Ev": {
+      "class": "IOUSBHostIOSource",
+      "slot": 26
+    },
+    "__ZN17IOUSBHostIOSource12nativeSlot28Ev": {
+      "class": "IOUSBHostIOSource",
+      "slot": 28
+    },
+    "__ZN17IOUSBHostIOSource12nativeSlot29Ev": {
+      "class": "IOUSBHostIOSource",
+      "slot": 29
+    },
+    "__ZN17IOUSBHostIOSource12nativeSlot30Ev": {
+      "class": "IOUSBHostIOSource",
+      "slot": 30
+    },
+    "__ZN17IOUSBHostIOSource12nativeSlot31Ev": {
+      "class": "IOUSBHostIOSource",
+      "slot": 31
+    },
+    "__ZN17IOUSBHostIOSource12nativeSlot32Ev": {
+      "class": "IOUSBHostIOSource",
+      "slot": 32
+    },
+    "__ZN17IOUSBHostIOSource12nativeSlot33Ev": {
+      "class": "IOUSBHostIOSource",
+      "slot": 33
+    },
+    "__ZN17IOUSBHostIOSource12nativeSlot34Ev": {
+      "class": "IOUSBHostIOSource",
+      "slot": 34
+    },
+    "__ZN17IOUSBHostIOSource12nativeSlot35Ev": {
+      "class": "IOUSBHostIOSource",
+      "slot": 35
+    },
+    "__ZN17IOUSBHostIOSource12nativeSlot36Ev": {
+      "class": "IOUSBHostIOSource",
+      "slot": 36
+    },
+    "__ZN17IOUSBHostIOSource14initWithOwnersEP22AppleUSBHostControllerP15IOUSBHostDevice": {
+      "class": "IOUSBHostIOSource",
+      "slot": 15
+    },
+    "__ZN17IOUSBHostIOSource4freeEv": {
+      "class": "IOUSBHostIOSource",
+      "slot": 14
+    },
+    "__ZN19AppleUSBHostRequest14setNextRequestEP15AppleUSBRequest": {
+      "class": "AppleUSBHostRequest",
+      "slot": 16
+    },
+    "__ZN19AppleUSBHostRequest4freeEv": {
+      "class": "AppleUSBHostRequest",
+      "slot": 14
+    },
+    "__ZN19AppleUSBHostRequest6cancelEv": {
+      "class": "AppleUSBHostRequest",
+      "slot": 22
+    },
+    "__ZN19AppleUSBHostRequest8completeEv": {
+      "class": "AppleUSBHostRequest",
+      "slot": 21
+    },
+    "__ZN22AppleUSBHostController10adjustPipeEP13IOUSBHostPipeRNS0_22StandardUSBDescriptorsE": {
+      "class": "AppleUSBHostController",
+      "slot": 207
+    },
+    "__ZN22AppleUSBHostController10createPipeERN13IOUSBHostPipe22StandardUSBDescriptorsEP15IOUSBHostDeviceP18IOUSBHostInterface": {
+      "class": "AppleUSBHostController",
+      "slot": 201
+    },
+    "__ZN22AppleUSBHostController10handleOpenEP9IOServicejPv": {
+      "class": "AppleUSBHostController",
+      "slot": 91
+    },
+    "__ZN22AppleUSBHostController11abortStreamEP15IOUSBHostStreami": {
+      "class": "AppleUSBHostController",
+      "slot": 212
+    },
+    "__ZN22AppleUSBHostController11closeStreamEP15IOUSBHostStream": {
+      "class": "AppleUSBHostController",
+      "slot": 213
+    },
+    "__ZN22AppleUSBHostController11createPortsEv": {
+      "class": "AppleUSBHostController",
+      "slot": 247
+    },
+    "__ZN22AppleUSBHostController11handleCloseEP9IOServicej": {
+      "class": "AppleUSBHostController",
+      "slot": 92
+    },
+    "__ZN22AppleUSBHostController11registerHubEP15IOUSBHostDevicePKN11StandardUSB13HubDescriptorE17tRegisterHubFlags": {
+      "class": "AppleUSBHostController",
+      "slot": 195
+    },
+    "__ZN22AppleUSBHostController11registerHubEP15IOUSBHostDevicePKN11StandardUSB23SuperSpeedHubDescriptorE": {
+      "class": "AppleUSBHostController",
+      "slot": 196
+    },
+    "__ZN22AppleUSBHostController11resumePipesEP15IOUSBHostDevice": {
+      "class": "AppleUSBHostController",
+      "slot": 206
+    },
+    "__ZN22AppleUSBHostController12createStreamEP15IOUSBHostDeviceP13IOUSBHostPipej": {
+      "class": "AppleUSBHostController",
+      "slot": 211
+    },
+    "__ZN22AppleUSBHostController12didTerminateEP9IOServicejPb": {
+      "class": "AppleUSBHostController",
+      "slot": 77
+    },
+    "__ZN22AppleUSBHostController12suspendPipesEP15IOUSBHostDevice": {
+      "class": "AppleUSBHostController",
+      "slot": 205
+    },
+    "__ZN22AppleUSBHostController13enableStreamsEP13IOUSBHostPipe": {
+      "class": "AppleUSBHostController",
+      "slot": 209
+    },
+    "__ZN22AppleUSBHostController13nativeSlot169Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 169
+    },
+    "__ZN22AppleUSBHostController13nativeSlot170Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 170
+    },
+    "__ZN22AppleUSBHostController13nativeSlot171Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 171
+    },
+    "__ZN22AppleUSBHostController13nativeSlot172Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 172
+    },
+    "__ZN22AppleUSBHostController13nativeSlot173Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 173
+    },
+    "__ZN22AppleUSBHostController13nativeSlot174Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 174
+    },
+    "__ZN22AppleUSBHostController13nativeSlot175Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 175
+    },
+    "__ZN22AppleUSBHostController13nativeSlot176Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 176
+    },
+    "__ZN22AppleUSBHostController13nativeSlot177Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 177
+    },
+    "__ZN22AppleUSBHostController13nativeSlot178Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 178
+    },
+    "__ZN22AppleUSBHostController13nativeSlot179Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 179
+    },
+    "__ZN22AppleUSBHostController13nativeSlot180Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 180
+    },
+    "__ZN22AppleUSBHostController13nativeSlot181Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 181
+    },
+    "__ZN22AppleUSBHostController13nativeSlot184Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 184
+    },
+    "__ZN22AppleUSBHostController13nativeSlot185Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 185
+    },
+    "__ZN22AppleUSBHostController13nativeSlot186Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 186
+    },
+    "__ZN22AppleUSBHostController13nativeSlot187Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 187
+    },
+    "__ZN22AppleUSBHostController13nativeSlot188Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 188
+    },
+    "__ZN22AppleUSBHostController13nativeSlot189Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 189
+    },
+    "__ZN22AppleUSBHostController13nativeSlot194Eht": {
+      "class": "AppleUSBHostController",
+      "slot": 194
+    },
+    "__ZN22AppleUSBHostController13nativeSlot214Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 214
+    },
+    "__ZN22AppleUSBHostController13nativeSlot215Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 215
+    },
+    "__ZN22AppleUSBHostController13nativeSlot216EP19AppleUSBHostRequestij": {
+      "class": "AppleUSBHostController",
+      "slot": 216
+    },
+    "__ZN22AppleUSBHostController16getCompanionPortEP16AppleUSBHostPortj": {
+      "class": "AppleUSBHostController",
+      "slot": 235
+    },
+    "__ZN22AppleUSBHostController13nativeSlot236Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 236
+    },
+    "__ZN22AppleUSBHostController13nativeSlot237Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 237
+    },
+    "__ZN22AppleUSBHostController13nativeSlot238Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 238
+    },
+    "__ZN22AppleUSBHostController13nativeSlot239Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 239
+    },
+    "__ZN22AppleUSBHostController13nativeSlot240Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 240
+    },
+    "__ZN22AppleUSBHostController13nativeSlot241Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 241
+    },
+    "__ZN22AppleUSBHostController13nativeSlot242Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 242
+    },
+    "__ZN22AppleUSBHostController13nativeSlot243Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 243
+    },
+    "__ZN22AppleUSBHostController13nativeSlot244Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 244
+    },
+    "__ZN22AppleUSBHostController13nativeSlot245Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 245
+    },
+    "__ZN22AppleUSBHostController13nativeSlot246Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 246
+    },
+    "__ZN22AppleUSBHostController13nativeSlot250Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 250
+    },
+    "__ZN22AppleUSBHostController13nativeSlot251Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 251
+    },
+    "__ZN22AppleUSBHostController13nativeSlot252Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 252
+    },
+    "__ZN22AppleUSBHostController13nativeSlot253Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 253
+    },
+    "__ZN22AppleUSBHostController13nativeSlot254Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 254
+    },
+    "__ZN22AppleUSBHostController13nativeSlot255Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 255
+    },
+    "__ZN22AppleUSBHostController13nativeSlot256Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 256
+    },
+    "__ZN22AppleUSBHostController13nativeSlot257Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 257
+    },
+    "__ZN22AppleUSBHostController13nativeSlot258Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 258
+    },
+    "__ZN22AppleUSBHostController13nativeSlot259Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 259
+    },
+    "__ZN22AppleUSBHostController13nativeSlot260Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 260
+    },
+    "__ZN22AppleUSBHostController13nativeSlot261Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 261
+    },
+    "__ZN22AppleUSBHostController13nativeSlot262Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 262
+    },
+    "__ZN22AppleUSBHostController13nativeSlot263Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 263
+    },
+    "__ZN22AppleUSBHostController13nativeSlot264Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 264
+    },
+    "__ZN22AppleUSBHostController13nativeSlot265Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 265
+    },
+    "__ZN22AppleUSBHostController13nativeSlot268Ev": {
+      "class": "AppleUSBHostController",
+      "slot": 268
+    },
+    "__ZN22AppleUSBHostController13setPowerStateEmP9IOService": {
+      "class": "AppleUSBHostController",
+      "slot": 155
+    },
+    "__ZN22AppleUSBHostController13setPropertiesEP8OSObject": {
+      "class": "AppleUSBHostController",
+      "slot": 44
+    },
+    "__ZN22AppleUSBHostController13unregisterHubEP15IOUSBHostDevice": {
+      "class": "AppleUSBHostController",
+      "slot": 197
+    },
+    "__ZN22AppleUSBHostController14clearPipeStallEP13IOUSBHostPipe": {
+      "class": "AppleUSBHostController",
+      "slot": 204
+    },
+    "__ZN22AppleUSBHostController14createIOBufferEjy": {
+      "class": "AppleUSBHostController",
+      "slot": 230
+    },
+    "__ZN22AppleUSBHostController14disableStreamsEP13IOUSBHostPipe": {
+      "class": "AppleUSBHostController",
+      "slot": 210
+    },
+    "__ZN22AppleUSBHostController14getFrameNumberEPy": {
+      "class": "AppleUSBHostController",
+      "slot": 233
+    },
+    "__ZN22AppleUSBHostController15registerServiceEj": {
+      "class": "AppleUSBHostController",
+      "slot": 84
+    },
+    "__ZN22AppleUSBHostController16getFrameRolloverEPy": {
+      "class": "AppleUSBHostController",
+      "slot": 234
+    },
+    "__ZN22AppleUSBHostController16registerHubGatedEP15IOUSBHostDevicePKN11StandardUSB13HubDescriptorE17tRegisterHubFlags": {
+      "class": "AppleUSBHostController",
+      "slot": 198
+    },
+    "__ZN22AppleUSBHostController16returnDMACommandEP12IODMACommand": {
+      "class": "AppleUSBHostController",
+      "slot": 232
+    },
+    "__ZN22AppleUSBHostController17getSystemWakeTimeEv": {
+      "class": "AppleUSBHostController",
+      "slot": 168
+    },
+    "__ZN22AppleUSBHostController18acquireAddressLockEv": {
+      "class": "AppleUSBHostController",
+      "slot": 190
+    },
+    "__ZN22AppleUSBHostController18matchPropertyTableEP12OSDictionaryPi": {
+      "class": "AppleUSBHostController",
+      "slot": 101
+    },
+    "__ZN22AppleUSBHostController18releaseAddressLockEv": {
+      "class": "AppleUSBHostController",
+      "slot": 191
+    },
+    "__ZN22AppleUSBHostController18systemWillShutdownEj": {
+      "class": "AppleUSBHostController",
+      "slot": 79
+    },
+    "__ZN22AppleUSBHostController18unregisterHubGatedEP15IOUSBHostDevice": {
+      "class": "AppleUSBHostController",
+      "slot": 200
+    },
+    "__ZN22AppleUSBHostController21powerStateDidChangeToEmmP9IOService": {
+      "class": "AppleUSBHostController",
+      "slot": 160
+    },
+    "__ZN22AppleUSBHostController22powerStateWillChangeToEmmP9IOService": {
+      "class": "AppleUSBHostController",
+      "slot": 159
+    },
+    "__ZN22AppleUSBHostController26registerSuperSpeedHubGatedEP15IOUSBHostDevicePKN11StandardUSB23SuperSpeedHubDescriptorE": {
+      "class": "AppleUSBHostController",
+      "slot": 199
+    },
+    "__ZN22AppleUSBHostController27maxCapabilityForDomainStateEm": {
+      "class": "AppleUSBHostController",
+      "slot": 156
+    },
+    "__ZN22AppleUSBHostController2ioEP19AppleUSBHostRequest": {
+      "class": "AppleUSBHostController",
+      "slot": 202
+    },
+    "__ZN22AppleUSBHostController31initialPowerStateForDomainStateEm": {
+      "class": "AppleUSBHostController",
+      "slot": 157
+    },
+    "__ZN22AppleUSBHostController4freeEv": {
+      "class": "AppleUSBHostController",
+      "slot": 14
+    },
+    "__ZN22AppleUSBHostController4initEP12OSDictionary": {
+      "class": "AppleUSBHostController",
+      "slot": 21
+    },
+    "__ZN22AppleUSBHostController4openEP9IOServicejPv": {
+      "class": "AppleUSBHostController",
+      "slot": 88
+    },
+    "__ZN22AppleUSBHostController4stopEP9IOService": {
+      "class": "AppleUSBHostController",
+      "slot": 87
+    },
+    "__ZN22AppleUSBHostController5closeEP9IOServicej": {
+      "class": "AppleUSBHostController",
+      "slot": 89
+    },
+    "__ZN22AppleUSBHostController5startEP9IOService": {
+      "class": "AppleUSBHostController",
+      "slot": 86
+    },
+    "__ZN22AppleUSBHostController6PMstopEv": {
+      "class": "AppleUSBHostController",
+      "slot": 145
+    },
+    "__ZN22AppleUSBHostController7messageEjP9IOServicePv": {
+      "class": "AppleUSBHostController",
+      "slot": 132
+    },
+    "__ZN22AppleUSBHostController9abortPipeEP13IOUSBHostPipeiP9IOService": {
+      "class": "AppleUSBHostController",
+      "slot": 203
+    },
+    "__ZN22AppleUSBHostController9closePipeEP13IOUSBHostPipe": {
+      "class": "AppleUSBHostController",
+      "slot": 208
+    },
+    "__ZN22AppleUSBHostController9terminateEj": {
+      "class": "AppleUSBHostController",
+      "slot": 94
+    },
+    "__ZN22AppleUSBHostDMACommand12nativeSlot31EPK18IOMemoryDescriptorbj": {
+      "class": "AppleUSBHostDMACommand",
+      "slot": 31
+    },
+    "__ZN22AppleUSBHostDMACommand12nativeSlot32Ev": {
+      "class": "AppleUSBHostDMACommand",
+      "slot": 32
+    },
+    "__ZN22AppleUSBHostDMACommand19setMemoryDescriptorEPK18IOMemoryDescriptorb": {
+      "class": "AppleUSBHostDMACommand",
+      "slot": 17
+    },
+    "__ZN22AppleUSBHostDMACommand21clearMemoryDescriptorEb": {
+      "class": "AppleUSBHostDMACommand",
+      "slot": 18
+    },
+    "__ZN22AppleUSBHostDMACommand21initWithSpecificationEPFbP12IODMACommandNS0_9Segment64EPvjEhyNS0_14MappingOptionsEyjP8IOMapperS3_": {
+      "class": "AppleUSBHostDMACommand",
+      "slot": 16
+    },
+    "__ZN22AppleUSBHostDMACommand4freeEv": {
+      "class": "AppleUSBHostDMACommand",
+      "slot": 14
+    },
+    "__ZN22AppleUSBHostDMACommand7prepareEyybb": {
+      "class": "AppleUSBHostDMACommand",
+      "slot": 20
+    },
+    "__ZN22AppleUSBHostDMACommand8completeEbb": {
+      "class": "AppleUSBHostDMACommand",
+      "slot": 21
+    },
+    "__ZNK13IOUSBHostPipe16getDeviceAddressEv": {
+      "class": "IOUSBHostPipe",
+      "slot": 66
+    },
+    "__ZNK13IOUSBHostPipe8getSpeedEv": {
+      "class": "IOUSBHostPipe",
+      "slot": 65
+    },
+    "__ZNK15IOUSBHostDevice16getDeviceAddressEv": {
+      "class": "IOUSBHostDevice",
+      "slot": 212
+    },
+    "__ZNK15IOUSBHostDevice8getSpeedEv": {
+      "class": "IOUSBHostDevice",
+      "slot": 213
+    },
+    "__ZNK16AppleUSBHostPort11getWorkLoopEv": {
+      "class": "AppleUSBHostPort",
+      "slot": 111
+    },
+    "__ZNK16AppleUSBHostPort12handleIsOpenEPK9IOService": {
+      "class": "AppleUSBHostPort",
+      "slot": 93
+    },
+    "__ZNK17AppleUSBIORequest11getIOLengthEv": {
+      "class": "AppleUSBIORequest",
+      "slot": 26
+    },
+    "__ZNK17AppleUSBIORequest20getCompletionTimeoutEv": {
+      "class": "AppleUSBIORequest",
+      "slot": 25
+    },
+    "__ZNK17AppleUSBIORequest9getClientEv": {
+      "class": "AppleUSBIORequest",
+      "slot": 27
+    },
+    "__ZNK17AppleUSBIORequest9isBundledEv": {
+      "class": "AppleUSBIORequest",
+      "slot": 40
+    },
+    "__ZNK17IOUSBHostIOSource8getStateEPj": {
+      "class": "IOUSBHostIOSource",
+      "slot": 27
+    },
+    "__ZNK17IOUSBHostIOSource9getDeviceEv": {
+      "class": "IOUSBHostIOSource",
+      "slot": 22
+    },
+    "__ZNK19AppleUSBHostRequest11getIOSourceEv": {
+      "class": "AppleUSBHostRequest",
+      "slot": 52
+    },
+    "__ZNK19AppleUSBHostRequest7getPipeEv": {
+      "class": "AppleUSBHostRequest",
+      "slot": 51
+    },
+    "__ZNK19AppleUSBHostRequest9getDeviceEv": {
+      "class": "AppleUSBHostRequest",
+      "slot": 50
+    },
+    "__ZNK22AppleUSBHostController11getWorkLoopEv": {
+      "class": "AppleUSBHostController",
+      "slot": 111
+    },
+    "__ZNK22AppleUSBHostController12handleIsOpenEPK9IOService": {
+      "class": "AppleUSBHostController",
+      "slot": 93
+    },
+    "__ZNK22AppleUSBHostDMACommand19getMemoryDescriptorEv": {
+      "class": "AppleUSBHostDMACommand",
+      "slot": 19
+    },
+    "__ZN15IOUSBHostDevice21internalDeviceRequestEP9IOServiceRN11StandardUSB13DeviceRequestEPvP18IOMemoryDescriptorPjP19IOUSBHostCompletionj": {
+      "class": "IOUSBHostDevice",
+      "slot": 207
+    },
+    "__ZN28AppleUSBHostRequestCompleter14enqueueRequestEP15AppleUSBRequest": {
+      "class": "AppleUSBHostRequestCompleter",
+      "slot": 29
+    },
+    "__ZN22AppleUSBHostController9powerDownEm": {
+      "class": "AppleUSBHostController",
+      "slot": 182
+    },
+    "__ZN22AppleUSBHostController7powerUpEm": {
+      "class": "AppleUSBHostController",
+      "slot": 183
+    }
+  },
+  "note": "Pinned native Host controller, port, pipe and IO-source dispatch projections. Typed hooks are audited against the iOS18 image. Unknown slots are reservations only. QcomUSBHost hardware/DMA startup remains abstract until enumeration, pipe and request integration are complete.",
+  "function_bindings": {
+    "__ZN22AppleUSBHostController11registerHubEP15IOUSBHostDevicePKN11StandardUSB13HubDescriptorE17tRegisterHubFlags": {
+      "address": "0xfffffff00600f40c",
+      "bytes": "210200b4e80302aae20100b4090540393fa5007181010054e20301aa095440f90a0040f9411943f9e403032a2a0140f9467540f9e00309aae30308aa050080d2c0001fd6405880520000bc72c0035fd6"
+    },
+    "__ZN22AppleUSBHostController11registerHubEP15IOUSBHostDevicePKN11StandardUSB23SuperSpeedHubDescriptorE": {
+      "address": "0xfffffff00600f464",
+      "bytes": "010200b4e30302aac20100b4680440391fa9007161010054e20301aa085440f9090040f9211d43f9090140f9267540f9e00308aa040080d2050080d2c0001fd6405880520000bc72"
+    },
+    "__ZN22AppleUSBHostController13unregisterHubEP15IOUSBHostDevice": {
+      "address": "0xfffffff00600f4bc",
+      "bytes": "810100b4e20301aa085440f9090040f9212143f9090140f9267540f9e00308aa030080d2040080d2050080d2c0001fd6405880520000bc72c0035fd6"
+    },
+    "__ZN16AppleUSBHostPort5resetEj": {
+      "address": "0xfffffff00601d018",
+      "bytes": "e20301aa08a040b909bc40b90121091b080040f903a542f960001fd6ff0301d1"
+    },
+    "__ZN16AppleUSBHostPort5resetEjj": {
+      "address": "0xfffffff00601d034",
+      "bytes": "ff0301d1fd7b03a9fdc3009108a040b91f01016b0981811a084c41f98a7000b0"
+    },
+    "__ZN16AppleUSBHostPort15signalInterruptEj": {
+      "address": "0xfffffff00601f610",
+      "bytes": "085041f9880600b4f44fbea9fd7b01a9fd430091f40301aaf30300aae1020034"
+    },
+    "__ZN16AppleUSBHostPort18acquireAddressLockEv": {
+      "address": "0xfffffff00601dbe8",
+      "bytes": "ff8301d1f65703a9f44f04a9fd7b05a9fd430191f30300aa200700b474b240b9"
+    },
+    "__ZN16AppleUSBHostPort18releaseAddressLockEv": {
+      "address": "0xfffffff00601dd5c",
+      "bytes": "ff4301d1f65702a9f44f03a9fd7b04a9fd030191f30300aa200700b474b240b9"
+    },
+    "__ZN16AppleUSBHostPort12createDeviceEj": {
+      "address": "0xfffffff00601de78",
+      "bytes": "ffc301d1f85f03a9f65704a9f44f05a9fd7b06a9fd830191f50301aaf30300aa"
+    },
+    "__ZN22AppleUSBHostController13nativeSlot194Eht": {
+      "address": "0xfffffff00600f404",
+      "bytes": "211c00127c6d0014210200b4e80302aae20100b4090540393fa5007181010054"
+    },
+    "__ZN13IOUSBHostPipe14getDescriptorsEPNS_22StandardUSBDescriptorsENS_29tGetEndpointDescriptorOptionsE": {
+      "address": "0xfffffff006045b1c",
+      "bytes": "e80300aa405880520000bc72e10200b4093d40f9690000b40a62805206000014"
+    },
+    "__ZN13IOUSBHostPipe28initWithDescriptorsAndOwnersEPKN11StandardUSB18EndpointDescriptorEPKNS0_37SuperSpeedEndpointCompanionDescriptorEP22AppleUSBHostControllerP15IOUSBHostDeviceP18IOUSBHostInterfaceht": {
+      "address": "0xfffffff006042e00",
+      "bytes": "ff0302d1fc6f02a9fa6703a9f85f04a9f65705a9f44f06a9fd7b07a9fdc30191"
+    },
+    "__ZNK13IOUSBHostPipe16getDeviceAddressEv": {
+      "address": "0xfffffff006045a4c",
+      "bytes": "000c40f9800000b4080040f9015143f920001fd6c0035fd6f44fbea9fd7b01a9"
+    },
+    "__ZNK13IOUSBHostPipe8getSpeedEv": {
+      "address": "0xfffffff006045a44",
+      "bytes": "00704139c0035fd6000c40f9800000b4080040f9015143f920001fd6c0035fd6"
+    },
+    "__ZNK15IOUSBHostDevice16getDeviceAddressEv": {
+      "address": "0xfffffff00603b340",
+      "bytes": "00104279c0035fd600604439c0035fd6004c40f9080040f902a543f940001fd6"
+    },
+    "__ZNK15IOUSBHostDevice8getSpeedEv": {
+      "address": "0xfffffff00603b348",
+      "bytes": "00604439c0035fd6004c40f9080040f902a543f940001fd6ff8301d1f85f02a9"
+    },
+    "__ZNK17AppleUSBIORequest20getCompletionTimeoutEv": {
+      "address": "0xfffffff00604ec80",
+      "bytes": "000042b9c0035fd6"
+    },
+    "__ZNK17AppleUSBIORequest11getIOLengthEv": {
+      "address": "0xfffffff00604ec88",
+      "bytes": "000441f9c0035fd6"
+    },
+    "__ZNK17AppleUSBIORequest9getClientEv": {
+      "address": "0xfffffff00604ec50",
+      "bytes": "002040f9c0035fd6"
+    },
+    "__ZN22AppleUSBHostController13nativeSlot216EP19AppleUSBHostRequestij": {
+      "address": "0xfffffff006014570",
+      "bytes": "f44fbea9fd7b01a9fd430091f30301aaf40300aa630000340860805207000014680240f9088140f9e00313aae10302aa00013fd6085f80528802088b020140f9"
+    },
+    "__ZNK17AppleUSBIORequest9isBundledEv": {
+      "address": "0xfffffff00604c464",
+      "bytes": "085042b91f0d0071e0179f1ac0035fd6"
+    },
+    "__ZN22AppleUSBHostController14getFrameNumberEPy": {
+      "address": "0xfffffff006010148",
+      "bytes": "ff0302d1f85f04a9f65705a9f44f06a9fd7b07a9fdc30191f30301aaf50300aa"
+    },
+    "__ZN22AppleUSBHostController16getFrameRolloverEPy": {
+      "address": "0xfffffff00601034c",
+      "bytes": "ffc301d1fa6702a9f85f03a9f65704a9f44f05a9fd7b06a9fd830191f40301aa"
+    },
+    "__ZNK17AppleUSBIORequest13getStartFrameEv": {
+      "address": "0xfffffff00604ec90",
+      "bytes": "000c41f9c0035fd6"
+    },
+    "__ZNK17AppleUSBIORequest12getFrameListEv": {
+      "address": "0xfffffff00604ec98",
+      "bytes": "001441f9c0035fd6"
+    },
+    "__ZNK17AppleUSBIORequest12getNumFramesEv": {
+      "address": "0xfffffff00604eca0",
+      "bytes": "002042b9c0035fd6"
+    },
+    "__ZN17AppleUSBIORequest6updateEv": {
+      "address": "0xfffffff00604d1c0",
+      "bytes": "081841f9080200b4091441f90a3842b94be97bd36b090acb2c010b8b890d40b94b050a8b080d0b8b090900b9890940f9090900f9890140b9090100b948050011083802b900008052c0035fd6"
+    },
+    "__ZN13IOUSBHostPipe10clearStallEb": {
+      "address": "0xfffffff006044148",
+      "bytes": "081440f9090040f929c540f9e203012a0a0140f9467540f9e00308aae10309aa030080d2040080d2050080d2c0001fd6"
+    },
+    "__ZN13IOUSBHostPipe15clearStallGatedEb": {
+      "address": "0xfffffff006044178",
+      "bytes": "ffc300d1f44f01a9fd7b02a9fd830091f40301aaf30300aa080040f9089940f92100805200013fd657fcfe971f040071610000540000805220000014680e40f9880300b4005140f9080040f908a942f9e10313aa00013fd61f000071840a407ac002005448208052e80b00b96002029148fcfe97e01b0079ff1f0079ff0700b9600e40f9080040f9083d43f9e2230091e5130091e10300aa030080d2040080d2060080d20771825200013fd603000014405c80520000bc72fd7b42a9f44f41a9ffc30091c0035fd6ffc301d1fa6702a9f85f03a9f65704a9f44f05a9fd7b06a9fd830191f40305aaf80304aaf50302aaf60301aaf70300aac30100b4a10e4079"
+    },
+    "__ZN16AppleUSBHostPort14clearPipeStallEP13IOUSBHostPipe": {
+      "address": "0xfffffff00601afa4",
+      "bytes": "f44fbea9fd7b01a9fd430091f30301aaf40300aaac0a0194c0000037880240f9084d41f9e00314aa00013fd6c0000837005b80520000bc72fd7b41a9f44fc2a8c0035fd6808241f9080040f9"
+    },
+    "__ZN15IOUSBHostDevice21internalDeviceRequestEP9IOServiceRN11StandardUSB13DeviceRequestEPvP18IOMemoryDescriptorPjP19IOUSBHostCompletionj": {
+      "address": "0xfffffff00603aed4",
+      "bytes": "ff4301d1fd7b04a9fd030191e8f301b2e62303a9e18b00a9e39301a9e51700f9e73b00b9085c40f9090040f9214143f9090140f9297540f9e2230091e00308aa030080d2040080d2050080d220013fd6fd7b44a9ff430191c0035fd6"
+    },
+    "__ZN28AppleUSBHostRequestCompleter14enqueueRequestEP15AppleUSBRequest": {
+      "address": "0xfffffff00604fe20",
+      "bytes": "ffc301d1f85f03a9f65704a9f44f05a9fd7b06a9fd830191f40301aaf30300aa486f00b008211891010140f9e00314aa3d360094200600b4f50300aa080040f908cd40f900013fd6800500b4a80240f908cd40f9e00315aa00013fd6080040f9089940f92100805200013fd61ccdfe9740040035a87a42b9c95a80520900bc721f01096b695d80520900bc720411497a0419407a20030054b75780521700bc72a80240f908cd40f9e00315aa00013fd6e10300aa0000009000003e913a370094f60300aa800300b4a80240f908cd40f9e00315aa00013fd6080040f9081140f900013fd6e00316aae10316aa373700941f04007180010054e86e00f008a544f9"
+    },
+    "__ZN22AppleUSBHostController9powerDownEm": {
+      "address": "0xfffffff006010a84",
+      "bytes": "f44fbea9fd7b01a9fd430091f30300aac10100b43f0400f1c00000543f0800f1"
+    },
+    "__ZN22AppleUSBHostController7powerUpEm": {
+      "address": "0xfffffff006010b18",
+      "bytes": "3f0400f1a00200543f0800f1c00000543f0c00f1485880520800bc72e003881a"
+    }
+  }
+}

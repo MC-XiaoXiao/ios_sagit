@@ -1,0 +1,209 @@
+{
+  "01-crypto": {
+    "roots": [
+      "com.apple.kec.corecrypto"
+    ],
+    "dependency_order": [
+      "com.apple.kpi.bsd",
+      "com.apple.kpi.iokit",
+      "com.apple.kpi.libkern",
+      "com.apple.kpi.mach",
+      "com.apple.kpi.private",
+      "com.apple.kpi.unsupported",
+      "com.apple.kec.corecrypto"
+    ],
+    "missing": [],
+    "status": "candidate-not-boot-validated"
+  },
+  "02-platform": {
+    "roots": [
+      "com.apple.kec.corecrypto",
+      "com.apple.driver.AppleARMPlatform"
+    ],
+    "dependency_order": [
+      "com.apple.kpi.bsd",
+      "com.apple.kpi.iokit",
+      "com.apple.kpi.libkern",
+      "com.apple.kpi.mach",
+      "com.apple.kpi.private",
+      "com.apple.kpi.unsupported",
+      "com.apple.kec.corecrypto",
+      "com.apple.iokit.IOReportFamily",
+      "com.apple.iokit.IOSlowAdaptiveClockingFamily",
+      "com.apple.iokit.IOStorageFamily",
+      "com.apple.driver.AppleARMPlatform"
+    ],
+    "missing": [],
+    "status": "candidate-not-boot-validated"
+  },
+  "03-ramdisk-hfs": {
+    "roots": [
+      "com.apple.kec.corecrypto",
+      "com.apple.driver.AppleARMPlatform",
+      "com.apple.driver.DiskImages.RAMBackingStore",
+      "com.apple.filesystems.hfs.kext",
+      "com.apple.driver.AppleBSDKextStarter"
+    ],
+    "dependency_order": [
+      "com.apple.kpi.bsd",
+      "com.apple.kpi.iokit",
+      "com.apple.kpi.libkern",
+      "com.apple.kpi.mach",
+      "com.apple.kpi.private",
+      "com.apple.kpi.unsupported",
+      "com.apple.kec.corecrypto",
+      "com.apple.iokit.IOReportFamily",
+      "com.apple.iokit.IOSlowAdaptiveClockingFamily",
+      "com.apple.iokit.IOStorageFamily",
+      "com.apple.driver.AppleARMPlatform",
+      "com.apple.driver.DiskImages",
+      "com.apple.driver.DiskImages.KernelBacked",
+      "com.apple.driver.DiskImages.RAMBackingStore",
+      "com.apple.filesystems.hfs.kext",
+      "com.apple.driver.AppleBSDKextStarter"
+    ],
+    "missing": [],
+    "status": "candidate-not-boot-validated"
+  },
+  "04-apfs-security": {
+    "roots": [
+      "com.apple.filesystems.apfs",
+      "com.apple.driver.AppleMobileFileIntegrity",
+      "com.apple.security.sandbox"
+    ],
+    "dependency_order": [
+      "com.apple.kpi.iokit",
+      "com.apple.kpi.libkern",
+      "com.apple.kpi.mach",
+      "com.apple.kpi.private",
+      "com.apple.iokit.IOReportFamily",
+      "com.apple.kpi.bsd",
+      "com.apple.kpi.unsupported",
+      "com.apple.iokit.IOSlowAdaptiveClockingFamily",
+      "com.apple.iokit.IOStorageFamily",
+      "com.apple.driver.AppleARMPlatform",
+      "com.apple.driver.AppleARMWatchdogTimer",
+      "com.apple.driver.AppleEffaceableStorage",
+      "com.apple.iokit.CoreAnalyticsFamily",
+      "com.apple.kec.corecrypto",
+      "com.apple.kpi.dsep",
+      "com.apple.iokit.IOCryptoAcceleratorFamily",
+      "com.apple.kext.CoreTrust",
+      "com.apple.security.AppleImage4",
+      "com.apple.filesystems.apfs",
+      "com.apple.driver.ApplePMGR",
+      "com.apple.driver.AppleMobileFileIntegrity",
+      "com.apple.kext.AppleMatch",
+      "com.apple.security.sandbox"
+    ],
+    "missing": [],
+    "status": "candidate-not-boot-validated"
+  },
+  "05-input": {
+    "roots": [
+      "com.apple.iokit.IOHIDFamily",
+      "com.apple.iokit.IOHIDEventDriver"
+    ],
+    "dependency_order": [
+      "com.apple.kpi.iokit",
+      "com.apple.kpi.libkern",
+      "com.apple.kpi.mach",
+      "com.apple.kpi.private",
+      "com.apple.iokit.IOReportFamily",
+      "com.apple.kpi.bsd",
+      "com.apple.kpi.unsupported",
+      "com.apple.iokit.IOSlowAdaptiveClockingFamily",
+      "com.apple.iokit.IOStorageFamily",
+      "com.apple.driver.AppleARMPlatform",
+      "com.apple.driver.ApplePMGR",
+      "com.apple.iokit.CoreAnalyticsFamily",
+      "com.apple.kec.corecrypto",
+      "com.apple.kext.CoreTrust",
+      "com.apple.kpi.dsep",
+      "com.apple.iokit.IOCryptoAcceleratorFamily",
+      "com.apple.security.AppleImage4",
+      "com.apple.driver.AppleMobileFileIntegrity",
+      "com.apple.iokit.IOHIDFamily",
+      "com.apple.iokit.IOHIDEventDriver"
+    ],
+    "missing": [],
+    "status": "candidate-not-boot-validated"
+  },
+  "06-usb-host": {
+    "roots": [
+      "com.apple.iokit.IOUSBHostFamily"
+    ],
+    "dependency_order": [
+      "com.apple.kpi.iokit",
+      "com.apple.kpi.libkern",
+      "com.apple.kpi.mach",
+      "com.apple.kpi.private",
+      "com.apple.iokit.IOReportFamily",
+      "com.apple.kpi.bsd",
+      "com.apple.kpi.unsupported",
+      "com.apple.iokit.IOSlowAdaptiveClockingFamily",
+      "com.apple.iokit.IOStorageFamily",
+      "com.apple.driver.AppleARMPlatform",
+      "com.apple.driver.ApplePMGR",
+      "com.apple.iokit.CoreAnalyticsFamily",
+      "com.apple.kec.corecrypto",
+      "com.apple.kext.CoreTrust",
+      "com.apple.kpi.dsep",
+      "com.apple.iokit.IOCryptoAcceleratorFamily",
+      "com.apple.security.AppleImage4",
+      "com.apple.driver.AppleMobileFileIntegrity",
+      "com.apple.iokit.IOPCIFamily",
+      "com.apple.driver.AppleSMC",
+      "com.apple.driver.usb.AppleUSBCommon",
+      "com.apple.driver.AppleUSBHostMergeProperties",
+      "com.apple.driver.usb.AppleUSBHostPlatformProperties",
+      "com.apple.iokit.IOUSBHostFamily"
+    ],
+    "missing": [
+      "com.apple.driver.watchdog",
+      "com.apple.iokit.IOACPIFamily"
+    ],
+    "status": "blocked-missing-dependencies"
+  },
+  "07-graphics": {
+    "roots": [
+      "com.apple.iokit.IOSurface",
+      "com.apple.iokit.IOMobileGraphicsFamily",
+      "com.apple.iokit.IOHIDFamily"
+    ],
+    "dependency_order": [
+      "com.apple.kpi.bsd",
+      "com.apple.kpi.iokit",
+      "com.apple.kpi.libkern",
+      "com.apple.kpi.mach",
+      "com.apple.kpi.private",
+      "com.apple.kpi.unsupported",
+      "com.apple.iokit.IOSurface",
+      "com.apple.iokit.IOReportFamily",
+      "com.apple.iokit.IOSlowAdaptiveClockingFamily",
+      "com.apple.iokit.IOStorageFamily",
+      "com.apple.driver.AppleARMPlatform",
+      "com.apple.driver.IODARTFamily",
+      "com.apple.iokit.CoreAnalyticsFamily",
+      "com.apple.driver.AppleM2ScalerCSCDriver",
+      "com.apple.driver.ApplePMGR",
+      "com.apple.kec.corecrypto",
+      "com.apple.kext.CoreTrust",
+      "com.apple.kpi.dsep",
+      "com.apple.iokit.IOCryptoAcceleratorFamily",
+      "com.apple.security.AppleImage4",
+      "com.apple.driver.AppleMobileFileIntegrity",
+      "com.apple.driver.AppleAudioClockLibs",
+      "com.apple.driver.AppleIISController",
+      "com.apple.iokit.IOAudio2Family",
+      "com.apple.iokit.IOCECFamily",
+      "com.apple.iokit.IOHDCPFamily",
+      "com.apple.kec.Libm",
+      "com.apple.iokit.IOAVFamily",
+      "com.apple.iokit.IOMobileGraphicsFamily",
+      "com.apple.iokit.IOHIDFamily"
+    ],
+    "missing": [],
+    "status": "candidate-not-boot-validated"
+  }
+}

@@ -1,0 +1,74 @@
+--- a/osfmk/kern/kalloc.h
++++ b/osfmk/kern/kalloc.h
+@@ -778,8 +778,12 @@
+  *
+  * @param type          The type to analyze
+  */
++#if !__has_builtin(__builtin_xnu_type_summary)
++#define KT_SUMMARY_GRANULES(type) KT_SUMMARY_MASK_ALL_GRANULES
++#else
+ #define KT_SUMMARY_GRANULES(type) \
+ 	(__builtin_xnu_type_summary(type) & KT_SUMMARY_MASK_TYPE_BITS)
++#endif
+ 
+ /*!
+  * @macro KALLOC_TYPE_SIG_CHECK
+@@ -801,8 +805,12 @@
+  *
+  * @param type          The type to analyze
+  */
++#if !__has_builtin(__builtin_xnu_type_summary)
++#define KALLOC_TYPE_IS_DATA_ONLY(type) 1 /* compile-time assertion unavailable */
++#else
+ #define KALLOC_TYPE_IS_DATA_ONLY(type) \
+ 	KALLOC_TYPE_SIG_CHECK(KT_SUMMARY_MASK_DATA, type)
++#endif
+ 
+ /*!
+  * @macro KALLOC_TYPE_HAS_OVERLAPS
+@@ -840,10 +848,14 @@
+  * @param ptr           the pointer whose type needs to be checked.
+  * @param type          the type which the pointer will be checked against.
+  */
++#if !__has_builtin(__builtin_xnu_type_summary)
++#define KALLOC_TYPE_IS_COMPATIBLE_PTR(ptr, type) 1
++#else
+ #define KALLOC_TYPE_IS_COMPATIBLE_PTR(ptr, type)                         \
+ 	(__builtin_xnu_types_compatible(os_get_pointee_type(ptr), type) ||   \
+ 	    __builtin_xnu_types_compatible(os_get_pointee_type(ptr), void))  \
+ 
++#endif
+ #define KALLOC_TYPE_ASSERT_COMPATIBLE_POINTER(ptr, type) \
+ 	_Static_assert(KALLOC_TYPE_IS_COMPATIBLE_PTR(ptr, type), \
+ 	    "Pointer type is not compatible with specified type")
+@@ -1552,20 +1564,30 @@
+  * args can be used to provide other types in the allocation, to make the
+  * decision of whether to emit the signature.
+  */
++#if !__has_builtin(__builtin_xnu_type_summary)
++#define KALLOC_TYPE_EMIT_SIG(sig_type, ...) ""
++#else
+ #define KALLOC_TYPE_EMIT_SIG(sig_type, ...)                              \
+ 	(KALLOC_TYPE_CHECK(KT_SUMMARY_MASK_DATA, sig_type, ##__VA_ARGS__) || \
+ 	KALLOC_TYPE_VM_SIZE_CHECK(sig_type, ##__VA_ARGS__))?                 \
+ 	"" : __builtin_xnu_type_signature(sig_type)
++#endif
+ 
+ /*
+  * Kalloc type flags are adjusted to indicate if the type is "data-only" or
+  * will use the VM or is a pointer array.
+  */
++#if !__has_builtin(__builtin_xnu_type_summary)
++#define KALLOC_TYPE_ADJUST_FLAGS(flags, ...) \
++	KALLOC_TYPE_CAST_FLAGS((flags | KT_CHANGED | KT_CHANGED2 | \
++	(KALLOC_TYPE_VM_SIZE_CHECK(__VA_ARGS__)? KT_VM : 0)))
++#else
+ #define KALLOC_TYPE_ADJUST_FLAGS(flags, ...)                                 \
+ 	KALLOC_TYPE_CAST_FLAGS((flags | KT_CHANGED | KT_CHANGED2 |               \
+ 	(KALLOC_TYPE_CHECK(KT_SUMMARY_MASK_DATA, __VA_ARGS__)? KT_DATA_ONLY: 0) |\
+ 	(KALLOC_TYPE_CHECK(KT_SUMMARY_MASK_PTR, __VA_ARGS__)? KT_PTR_ARRAY: 0) | \
+ 	(KALLOC_TYPE_VM_SIZE_CHECK(__VA_ARGS__)? KT_VM : 0)))
++#endif
+ 
+ #define _KALLOC_TYPE_DEFINE(var, type, flags)                       \
+ 	__kalloc_no_kasan                                               \

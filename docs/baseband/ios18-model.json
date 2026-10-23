@@ -1,0 +1,2321 @@
+{
+  "schema": 1,
+  "firmware": [
+    {
+      "path": "firmware/iPad_10.2_18.7.10_22H374_Restore.ipsw",
+      "role": "primary",
+      "manifest_sha256": "7cba83bf20f45fe280420311225040e29d65ded8a081b2422ea1959065d06504",
+      "ProductVersion": "18.7.10",
+      "ProductBuildVersion": "22H374",
+      "SupportedProductTypes": [
+        "iPad7,11",
+        "iPad7,12"
+      ],
+      "baseband_archives": [
+        "Firmware/ICE18-7.03.02.Release.bbfw"
+      ]
+    },
+    {
+      "path": "firmware/iPhone14,6_18.6.2_22G100_Restore.ipsw",
+      "role": "comparison",
+      "manifest_sha256": "21b4401c288d5e4ef15c84555213a3b6fd20e7705ec5fd7b206ba85a3eb51c83",
+      "ProductVersion": "18.6.2",
+      "ProductBuildVersion": "22G100",
+      "SupportedProductTypes": [
+        "iPhone14,6"
+      ],
+      "baseband_archives": [
+        "Firmware/Mav30-4.70.01.Release.bbfw"
+      ]
+    }
+  ],
+  "kernel": {
+    "file": "kernelcache.release.ipad7c.macho",
+    "sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+    "size": 48562176,
+    "cputype": "0x100000c",
+    "cpusubtype": "0x0",
+    "filetype": 2,
+    "segments": [
+      {
+        "name": "__TEXT",
+        "vmaddr": "0xfffffff007004000",
+        "vmsize": 835584,
+        "fileoff": 0,
+        "filesize": 835584
+      },
+      {
+        "name": "__DATA_CONST",
+        "vmaddr": "0xfffffff0070d0000",
+        "vmsize": 1048576,
+        "fileoff": 835584,
+        "filesize": 1048576
+      },
+      {
+        "name": "__TEXT_EXEC",
+        "vmaddr": "0xfffffff0071d0000",
+        "vmsize": 7897088,
+        "fileoff": 1884160,
+        "filesize": 7897088
+      },
+      {
+        "name": "__KLD",
+        "vmaddr": "0xfffffff007958000",
+        "vmsize": 16384,
+        "fileoff": 9781248,
+        "filesize": 16384
+      },
+      {
+        "name": "__LASTDATA_CONST",
+        "vmaddr": "0xfffffff00795c000",
+        "vmsize": 16384,
+        "fileoff": 9797632,
+        "filesize": 16384
+      },
+      {
+        "name": "__LAST",
+        "vmaddr": "0xfffffff007960000",
+        "vmsize": 16384,
+        "fileoff": 9814016,
+        "filesize": 16384
+      },
+      {
+        "name": "__KLDDATA",
+        "vmaddr": "0xfffffff007964000",
+        "vmsize": 16384,
+        "fileoff": 9830400,
+        "filesize": 16384
+      },
+      {
+        "name": "__DATA",
+        "vmaddr": "0xfffffff007968000",
+        "vmsize": 737280,
+        "fileoff": 9846784,
+        "filesize": 147456
+      },
+      {
+        "name": "__BOOTDATA",
+        "vmaddr": "0xfffffff007a1c000",
+        "vmsize": 540672,
+        "fileoff": 10010624,
+        "filesize": 540672
+      },
+      {
+        "name": "__PRELINK_TEXT",
+        "vmaddr": "0xfffffff005130000",
+        "vmsize": 8028160,
+        "fileoff": 11501568,
+        "filesize": 8028160
+      },
+      {
+        "name": "__PRELINK_INFO",
+        "vmaddr": "0xfffffff007ce0000",
+        "vmsize": 3325952,
+        "fileoff": 45236224,
+        "filesize": 3325952
+      },
+      {
+        "name": "__PLK_TEXT_EXEC",
+        "vmaddr": "0xfffffff0058d8000",
+        "vmsize": 20709376,
+        "fileoff": 19529728,
+        "filesize": 20709376
+      },
+      {
+        "name": "__PRELINK_DATA",
+        "vmaddr": "0xfffffff007b88000",
+        "vmsize": 1409024,
+        "fileoff": 43827200,
+        "filesize": 1409024
+      },
+      {
+        "name": "__PLK_DATA_CONST",
+        "vmaddr": "0xfffffff006c98000",
+        "vmsize": 3588096,
+        "fileoff": 40239104,
+        "filesize": 3588096
+      },
+      {
+        "name": "__PLK_LLVM_COV",
+        "vmaddr": "0xfffffff007ce0000",
+        "vmsize": 0,
+        "fileoff": 45236224,
+        "filesize": 0
+      },
+      {
+        "name": "__PLK_LINKEDIT",
+        "vmaddr": "0xfffffff007ce0000",
+        "vmsize": 0,
+        "fileoff": 45236224,
+        "filesize": 0
+      },
+      {
+        "name": "__LINKINFO",
+        "vmaddr": "0xfffffff007aa0000",
+        "vmsize": 294912,
+        "fileoff": 10551296,
+        "filesize": 294912
+      },
+      {
+        "name": "__LINKEDIT",
+        "vmaddr": "0xfffffff007ae8000",
+        "vmsize": 655360,
+        "fileoff": 10846208,
+        "filesize": 641616
+      }
+    ],
+    "darwin_version": "Darwin Kernel Version 24.6.0: Tue Jul 21 20:48:55 PDT 2026; root:xnu-11417.140.69.706.66~1/RELEASE_ARM64_T8010"
+  },
+  "kernel_kexts": [
+    {
+      "DTSDKName": "iphoneos18.7.internal",
+      "CFBundleVersion": "1",
+      "CFBundleIdentifier": "com.apple.driver.AppleBasebandPCI",
+      "IOKitPersonalities": {
+        "AppleBasebandPCI": {
+          "IOClass": "AppleBasebandPCI",
+          "IOMatchCategory": "AppleBasebandPCI",
+          "IONameMatch": "baseband-pcie",
+          "IOProviderClass": "IOPCIDevice",
+          "CFBundleIdentifier": "com.apple.driver.AppleBasebandPCI"
+        }
+      },
+      "OSBundleLibraries": {
+        "com.apple.kpi.bsd": "9.0.0",
+        "com.apple.kpi.libkern": "9.0.0",
+        "com.apple.kpi.mach": "9.0.0",
+        "com.apple.iokit.IOPCIFamily": "2.7.3",
+        "com.apple.kpi.iokit": "9.0.0",
+        "com.apple.iokit.IOSkywalkFamily": "1.0",
+        "com.apple.driver.AppleIPAppender": "1.0",
+        "com.apple.kpi.unsupported": "9.0.0",
+        "com.apple.kpi.private": "10.0.0d1",
+        "com.apple.iokit.IONetworkingFamily": "1.4.3"
+      },
+      "DTPlatformBuild": "22H368"
+    },
+    {
+      "DTSDKName": "iphoneos18.7.internal",
+      "CFBundleVersion": "1",
+      "CFBundleIdentifier": "com.apple.driver.AppleBasebandPCIICEControl",
+      "IOKitPersonalities": {
+        "AppleBasebandPCIICEControl": {
+          "CFBundleIdentifier": "com.apple.driver.AppleBasebandPCIICEControl",
+          "IOMatchCategory": "AppleBasebandPCIICEControl",
+          "IOClass": "AppleBasebandPCIICEControl",
+          "IOProviderClass": "AppleBaseband",
+          "deviceDescriptorMap": {
+            "RTIDeviceWithMedia": {
+              "di_msi": 0,
+              "mr_msi": 0,
+              "num_pipes": 32,
+              "msi_range": [
+                {
+                  "low": 0,
+                  "high": 31
+                }
+              ],
+              "RTIPipe": [
+                {
+                  "msi": 0,
+                  "execstage": 4276993775,
+                  "oc": 1,
+                  "protocol": "boot",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 128,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 0,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 0
+                },
+                {
+                  "msi": 0,
+                  "execstage": 4276993775,
+                  "oc": 1,
+                  "protocol": "boot",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 128,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 0,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 1
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "media0",
+                  "reliable": 0,
+                  "sync": 0,
+                  "lazy_completion": 1,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 32,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 0,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 0
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "media0",
+                  "reliable": 0,
+                  "sync": 0,
+                  "lazy_completion": 1,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 32,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 0,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 1
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "media1",
+                  "reliable": 0,
+                  "sync": 0,
+                  "lazy_completion": 1,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 32,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 0,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 2
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "media1",
+                  "reliable": 0,
+                  "sync": 0,
+                  "lazy_completion": 1,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 32,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 0,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 3
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "data",
+                  "reliable": 0,
+                  "sync": 0,
+                  "lazy_completion": 1,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 512,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 2000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 4
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "data",
+                  "reliable": 0,
+                  "sync": 1,
+                  "lazy_completion": 1,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 1024,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 4500,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 5
+                },
+                {
+                  "log_binary": 16,
+                  "execstage": 1611526157,
+                  "msi": 0,
+                  "oc": 1,
+                  "protocol": "ari",
+                  "reliable": 1,
+                  "sync": 0,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 32,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 6
+                },
+                {
+                  "log_binary": 16,
+                  "execstage": 1611526157,
+                  "msi": 0,
+                  "oc": 1,
+                  "protocol": "ari",
+                  "reliable": 1,
+                  "sync": 0,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 32,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 7
+                },
+                {
+                  "log_binary": 16,
+                  "execstage": 1611526157,
+                  "msi": 0,
+                  "oc": 1,
+                  "protocol": "mediactl",
+                  "reliable": 1,
+                  "sync": 0,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 32,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 0,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 8
+                },
+                {
+                  "log_binary": 16,
+                  "execstage": 1611526157,
+                  "msi": 0,
+                  "oc": 1,
+                  "protocol": "mediactl",
+                  "reliable": 1,
+                  "sync": 0,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 32,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 0,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 9
+                },
+                {
+                  "log_binary": 4,
+                  "execstage": 1611526157,
+                  "msi": 0,
+                  "oc": 1,
+                  "protocol": "trace",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 64,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 10
+                },
+                {
+                  "log_binary": 4,
+                  "execstage": 1611526157,
+                  "msi": 0,
+                  "oc": 1,
+                  "protocol": "trace",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 64,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 11
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "vcom",
+                  "reliable": 1,
+                  "sync": 0,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 32,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 12
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "vcom",
+                  "reliable": 1,
+                  "sync": 0,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 32,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 13
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "at",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 32,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 14
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "at",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 32,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 15
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "loopback",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 128,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 16
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "loopback",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 128,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 17
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "test",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 128,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 18
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "test",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 128,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 19
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "gnss",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 128,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 20
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "gnss",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 128,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 21
+                }
+              ],
+              "dev_slp_handshake": true,
+              "num_msi": 1,
+              "pipe_map": 0,
+              "message_ring": {
+                "count": 128,
+                "setting": {
+                  "doorbell": {
+                    "time": 0,
+                    "threshold": 80
+                  }
+                }
+              },
+              "memory_pool": [
+                512,
+                4096,
+                16384
+              ]
+            },
+            "RTIDeviceLegacyMedia": {
+              "di_msi": 0,
+              "mr_msi": 0,
+              "num_pipes": 32,
+              "msi_range": [
+                {
+                  "low": 0,
+                  "high": 31
+                }
+              ],
+              "RTIPipe": [
+                {
+                  "msi": 0,
+                  "execstage": 4276993775,
+                  "oc": 1,
+                  "protocol": "boot",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 128,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 0,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 0
+                },
+                {
+                  "msi": 0,
+                  "execstage": 4276993775,
+                  "oc": 1,
+                  "protocol": "boot",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 128,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 0,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 1
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "data",
+                  "reliable": 0,
+                  "sync": 0,
+                  "lazy_completion": 1,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 512,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 2000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 0
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "data",
+                  "reliable": 0,
+                  "sync": 1,
+                  "lazy_completion": 1,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 1024,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 4500,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 1
+                },
+                {
+                  "log_binary": 16,
+                  "execstage": 1611526157,
+                  "msi": 0,
+                  "oc": 1,
+                  "protocol": "ari",
+                  "reliable": 1,
+                  "sync": 0,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 32,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 2
+                },
+                {
+                  "log_binary": 16,
+                  "execstage": 1611526157,
+                  "msi": 0,
+                  "oc": 1,
+                  "protocol": "ari",
+                  "reliable": 1,
+                  "sync": 0,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 32,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 3
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "vcom",
+                  "reliable": 1,
+                  "sync": 0,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 32,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 4
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "vcom",
+                  "reliable": 1,
+                  "sync": 0,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 32,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 5
+                },
+                {
+                  "log_binary": 4,
+                  "execstage": 1611526157,
+                  "msi": 0,
+                  "oc": 1,
+                  "protocol": "trace",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 64,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 6
+                },
+                {
+                  "log_binary": 4,
+                  "execstage": 1611526157,
+                  "msi": 0,
+                  "oc": 1,
+                  "protocol": "trace",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 64,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 7
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "at",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 32,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 8
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "at",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 32,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 9
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "loopback",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 128,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 10
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "loopback",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 128,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 11
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "test",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 128,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 12
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "test",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 128,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 13
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "gnss",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 128,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 14
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "gnss",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 128,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 15
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "mediactl",
+                  "reliable": 1,
+                  "sync": 0,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 128,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 0,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 16
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "mediactl",
+                  "reliable": 1,
+                  "sync": 0,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 128,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 0,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 17
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "media0",
+                  "reliable": 0,
+                  "sync": 0,
+                  "lazy_completion": 1,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 128,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 0,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 18
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "media0",
+                  "reliable": 0,
+                  "sync": 0,
+                  "lazy_completion": 1,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 128,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 0,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 19
+                }
+              ],
+              "dev_slp_handshake": true,
+              "num_msi": 1,
+              "pipe_map": 18364755026040590505,
+              "message_ring": {
+                "count": 128,
+                "setting": {
+                  "doorbell": {
+                    "time": 0,
+                    "threshold": 80
+                  }
+                }
+              },
+              "memory_pool": [
+                512,
+                4096,
+                16384
+              ]
+            },
+            "RTIDeviceLegacy": {
+              "di_msi": 0,
+              "mr_msi": 0,
+              "num_pipes": 32,
+              "msi_range": [
+                {
+                  "low": 0,
+                  "high": 31
+                }
+              ],
+              "RTIPipe": [
+                {
+                  "msi": 0,
+                  "execstage": 4276993775,
+                  "oc": 1,
+                  "protocol": "boot",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 128,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 0,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 0
+                },
+                {
+                  "msi": 0,
+                  "execstage": 4276993775,
+                  "oc": 1,
+                  "protocol": "boot",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 128,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 0,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 1
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "data",
+                  "reliable": 0,
+                  "sync": 0,
+                  "lazy_completion": 1,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 512,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 2000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 0
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "data",
+                  "reliable": 0,
+                  "sync": 1,
+                  "lazy_completion": 1,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 1024,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 4500,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 1
+                },
+                {
+                  "log_binary": 16,
+                  "execstage": 1611526157,
+                  "msi": 0,
+                  "oc": 1,
+                  "protocol": "ari",
+                  "reliable": 1,
+                  "sync": 0,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 32,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 2
+                },
+                {
+                  "log_binary": 16,
+                  "execstage": 1611526157,
+                  "msi": 0,
+                  "oc": 1,
+                  "protocol": "ari",
+                  "reliable": 1,
+                  "sync": 0,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 32,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 3
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "vcom",
+                  "reliable": 1,
+                  "sync": 0,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 32,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 4
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "vcom",
+                  "reliable": 1,
+                  "sync": 0,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 32,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 5
+                },
+                {
+                  "log_binary": 4,
+                  "execstage": 1611526157,
+                  "msi": 0,
+                  "oc": 1,
+                  "protocol": "trace",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 64,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 6
+                },
+                {
+                  "log_binary": 4,
+                  "execstage": 1611526157,
+                  "msi": 0,
+                  "oc": 1,
+                  "protocol": "trace",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 64,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 7
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "at",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 32,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 8
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "at",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 32,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 9
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "loopback",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 128,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 10
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "loopback",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 128,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 11
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "test",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 128,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 12
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "test",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 128,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 13
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "gnss",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 1,
+                  "td_ring": {
+                    "count": 128,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 14
+                },
+                {
+                  "msi": 0,
+                  "execstage": 1611526157,
+                  "oc": 1,
+                  "protocol": "gnss",
+                  "reliable": 0,
+                  "sync": 0,
+                  "direction": 2,
+                  "td_ring": {
+                    "count": 128,
+                    "setting": {
+                      "int_mod": 0,
+                      "doorbell": {
+                        "time": 1000,
+                        "threshold": 80
+                      }
+                    }
+                  },
+                  "index": 15
+                }
+              ],
+              "dev_slp_handshake": true,
+              "num_msi": 1,
+              "pipe_map": 0,
+              "message_ring": {
+                "count": 128,
+                "setting": {
+                  "doorbell": {
+                    "time": 0,
+                    "threshold": 80
+                  }
+                }
+              },
+              "memory_pool": [
+                512,
+                4096,
+                16384
+              ]
+            }
+          },
+          "logSnapshotBufferSize": 65536,
+          "dart_limits": {
+            "ice18": 33554432,
+            "default": 33554432,
+            "ice17": 33554432,
+            "ibis18": 16777216,
+            "ice16": 16777216
+          },
+          "IOUserClientClass": "AppleBasebandPCIControlUserClient",
+          "chipsetDeviceMap": {
+            "default": "RTIDeviceLegacy",
+            "ibis18": "RTIDeviceWithMedia"
+          },
+          "memory_alloc_limit": 10485760,
+          "valid_providers": [
+            "AppleBasebandD101",
+            "AppleBasebandSim"
+          ]
+        }
+      },
+      "OSBundleLibraries": {
+        "com.apple.kpi.mach": "9.0.0",
+        "com.apple.driver.AppleBasebandPCI": "1.0.0",
+        "com.apple.kpi.iokit": "9.0.0",
+        "com.apple.kpi.libkern": "9.0.0",
+        "com.apple.kpi.bsd": "9.0.0"
+      },
+      "DTPlatformBuild": "22H368"
+    },
+    {
+      "DTSDKName": "iphoneos18.7.internal",
+      "CFBundleVersion": "1",
+      "CFBundleIdentifier": "com.apple.driver.AppleBasebandPCIICEPDP",
+      "IOKitPersonalities": {
+        "AppleBasebandPCIPDPManager": {
+          "IOClass": "AppleBasebandPCIICEPDPManager",
+          "IOMatchCategory": "AppleBasebandPCIPDPManager",
+          "IOProviderClass": "AppleBaseband",
+          "constants": {
+            "fallback": "ice18",
+            "ice18": {
+              "max_packet_size": 2048,
+              "media_interface_count": 0,
+              "rx_pool_capacity": 3408,
+              "rx_slot_count": 1024,
+              "max_rx_tput": 1000000000,
+              "rx_slot_size": 2048,
+              "tx_slot_size": 2048,
+              "tx_slot_count": 512,
+              "interface_count": 8,
+              "min_packet_size": 64,
+              "ifnet_eflags": {
+                "IFEF_3CA": true
+              },
+              "muxed_rx_slot_count": 1136
+            },
+            "ice17": {
+              "max_packet_size": 2048,
+              "media_interface_count": 0,
+              "rx_pool_capacity": 3264,
+              "rx_slot_count": 16,
+              "max_rx_tput": 600000000,
+              "rx_slot_size": 2048,
+              "tx_slot_size": 2048,
+              "tx_slot_count": 16,
+              "min_packet_size": 64,
+              "ifnet_eflags": {
+                "IFEF_3CA": true
+              },
+              "software_bytes": "",
+              "muxed_rx_slot_count": 1088,
+              "interface_override": {
+                "pdp_ip0": {
+                  "rx_slot_count": 1024,
+                  "tx_slot_count": 512
+                }
+              }
+            },
+            "ibis18": {
+              "max_packet_size": 2048,
+              "media_interface_count": 2,
+              "rx_pool_capacity": 336,
+              "rx_slot_count": 16,
+              "max_rx_tput": 600000000,
+              "media_interface_start": 4,
+              "rx_slot_size": 2048,
+              "tx_slot_size": 2048,
+              "tx_slot_count": 16,
+              "interface_count": 6,
+              "min_packet_size": 64,
+              "ifnet_eflags": {
+                "IFEF_3CA": false
+              },
+              "muxed_rx_slot_count": 112,
+              "interface_override": {
+                "pdp_ip0": {
+                  "rx_slot_count": 32,
+                  "tx_slot_count": 32
+                }
+              },
+              "media_interface_constants": {
+                "max_pending_write_bytes": 112500
+              }
+            },
+            "ice16": {
+              "max_packet_size": 2048,
+              "media_interface_count": 0,
+              "rx_pool_capacity": 1728,
+              "rx_slot_count": 16,
+              "max_rx_tput": 450000000,
+              "rx_slot_size": 2048,
+              "tx_slot_size": 2048,
+              "tx_slot_count": 16,
+              "min_packet_size": 64,
+              "ifnet_eflags": {
+                "IFEF_3CA": true
+              },
+              "muxed_rx_slot_count": 576,
+              "interface_override": {
+                "pdp_ip0": {
+                  "rx_slot_count": 512,
+                  "tx_slot_count": 256
+                }
+              }
+            }
+          },
+          "CFBundleIdentifier": "com.apple.driver.AppleBasebandPCIICEPDP",
+          "valid_providers": [
+            "AppleBasebandD101",
+            "AppleBasebandSim"
+          ]
+        },
+        "AppleBasebandPCIPDPADAMSkywalk": {
+          "IOProbeScore": 10000,
+          "CFBundleIdentifier": "com.apple.driver.AppleBasebandPCIICEPDP",
+          "IOMatchCategory": "AppleBasebandPCIADAM",
+          "IOClass": "AppleBasebandPCIPDPADAMSkywalk",
+          "IOProviderClass": "AppleBasebandPCIRTIInterface",
+          "ABPInterfaceProtocol": "data",
+          "constants": {
+            "fallback": "ice18",
+            "ice18": {
+              "telescoper": {
+                "guarantee_interval_us": 4000,
+                "limits": [
+                  768
+                ]
+              },
+              "interface_override": {
+                "pdp_ip0": {
+                  "soft_flow_control_disable_write_bytes": 45000,
+                  "soft_flow_control_enable_write_bytes": 112500
+                }
+              },
+              "soft_flow_control_disable_write_bytes": 45000,
+              "soft_flow_control_enable_write_bytes": 112500
+            },
+            "ice17": {
+              "telescoper": {
+                "guarantee_interval_us": 4000,
+                "limits": [
+                  482
+                ]
+              },
+              "interface_override": {
+                "pdp_ip0": {
+                  "soft_flow_control_disable_write_bytes": 45000,
+                  "soft_flow_control_enable_write_bytes": 112500
+                }
+              },
+              "soft_flow_control_disable_write_bytes": 45000,
+              "soft_flow_control_enable_write_bytes": 112500
+            },
+            "ibis18": {
+              "telescoper": {
+                "guarantee_interval_us": 4000,
+                "limits": [
+                  482
+                ]
+              },
+              "interface_override": {
+                "pdp_ip0": {
+                  "soft_flow_control_disable_write_bytes": 45000,
+                  "soft_flow_control_enable_write_bytes": 112500
+                }
+              },
+              "soft_flow_control_disable_write_bytes": 45000,
+              "soft_flow_control_enable_write_bytes": 112500
+            },
+            "ice16": {
+              "telescoper": {
+                "guarantee_interval_us": 4000,
+                "limits": [
+                  339
+                ]
+              },
+              "interface_override": {
+                "pdp_ip0": {
+                  "soft_flow_control_disable_write_bytes": 15000,
+                  "soft_flow_control_enable_write_bytes": 37500
+                }
+              },
+              "soft_flow_control_disable_write_bytes": 15000,
+              "soft_flow_control_enable_write_bytes": 37500
+            }
+          }
+        }
+      },
+      "OSBundleLibraries": {
+        "com.apple.kpi.bsd": "9.0.0",
+        "com.apple.kpi.libkern": "9.0.0",
+        "com.apple.driver.AppleBasebandPCI": "1.0.0",
+        "com.apple.driver.AppleBasebandPCIICEControl": "1.0.0",
+        "com.apple.kpi.iokit": "9.0.0",
+        "com.apple.iokit.IOSkywalkFamily": "1.0",
+        "com.apple.driver.AppleIPAppender": "1.0",
+        "com.apple.kpi.mach": "9.0.0",
+        "com.apple.kpi.private": "10.0.0d1",
+        "com.apple.iokit.IONetworkingFamily": "1.4.3"
+      },
+      "DTPlatformBuild": "22H368"
+    },
+    {
+      "DTSDKName": "iphoneos18.7.internal",
+      "CFBundleVersion": "1.0.0d1",
+      "CFBundleIdentifier": "com.apple.driver.AppleBasebandD101",
+      "IOKitPersonalities": {
+        "AppleBasebandD101": {
+          "IOClass": "AppleBasebandD101",
+          "IOMatchCategory": "AppleBaseband",
+          "IONameMatch": "baseband,d101",
+          "IOProviderClass": "IOPlatformDevice",
+          "CFBundleIdentifier": "com.apple.driver.AppleBasebandD101",
+          "IOUserClientClass": "AppleBasebandUserClient"
+        }
+      },
+      "OSBundleLibraries": {
+        "com.apple.kpi.bsd": "8.0",
+        "com.apple.kpi.libkern": "8.0",
+        "com.apple.kpi.mach": "8.0",
+        "com.apple.kpi.iokit": "8.0",
+        "com.apple.driver.AppleOnboardSerial": "1.0",
+        "com.apple.driver.AppleEmbeddedPCIE": "1.0.0",
+        "com.apple.driver.AppleARMPlatform": "1.0.0",
+        "com.apple.kpi.private": "8.0",
+        "com.apple.iokit.CoreAnalyticsFamily": "1.0",
+        "com.apple.kpi.unsupported": "8.0"
+      },
+      "DTPlatformBuild": "22H368"
+    }
+  ],
+  "user_space": {
+    "build": "22H374",
+    "source_rootfs": "build/apfs/firmware/094-32804-038.dmg",
+    "CommCenter": {
+      "cpu": "0x100000c",
+      "subtype": "0x0",
+      "filetype": 2,
+      "dependencies": [
+        "/usr/appleinternal/lib/liblinkguard.dylib",
+        "/System/Library/PrivateFrameworks/CoreWiFi.framework/CoreWiFi",
+        "/System/Library/PrivateFrameworks/CorePhoneNumbers.framework/CorePhoneNumbers",
+        "/System/Library/PrivateFrameworks/LockdownMode.framework/LockdownMode",
+        "/System/Library/PrivateFrameworks/RTTUtilities.framework/RTTUtilities",
+        "/usr/lib/libTelephonyCapabilities.dylib",
+        "/System/Library/Frameworks/Accounts.framework/Accounts",
+        "/System/Library/PrivateFrameworks/AppleAccount.framework/AppleAccount",
+        "/System/Library/PrivateFrameworks/ABMHelper.framework/ABMHelper",
+        "/System/Library/PrivateFrameworks/AppConduit.framework/AppConduit",
+        "/System/Library/PrivateFrameworks/AVConference.framework/AVConference",
+        "/System/Library/PrivateFrameworks/BiomeLibrary.framework/BiomeLibrary",
+        "/System/Library/PrivateFrameworks/CloudSubscriptionFeatures.framework/CloudSubscriptionFeatures",
+        "/System/Library/Frameworks/CloudKit.framework/CloudKit",
+        "/System/Library/PrivateFrameworks/CommunicationsFilter.framework/CommunicationsFilter",
+        "/System/Library/PrivateFrameworks/CoreFollowUp.framework/CoreFollowUp",
+        "/System/Library/PrivateFrameworks/CryptoKitPrivate.framework/CryptoKitPrivate",
+        "/System/Library/PrivateFrameworks/DataMigration.framework/DataMigration",
+        "/System/Library/PrivateFrameworks/DeviceIdentity.framework/DeviceIdentity",
+        "/System/Library/PrivateFrameworks/EmergencyAlerts.framework/EmergencyAlerts",
+        "/usr/lib/libHSFilerDynamic.dylib",
+        "/System/Library/PrivateFrameworks/FrontBoardServices.framework/FrontBoardServices",
+        "/System/Library/PrivateFrameworks/ManagedConfiguration.framework/ManagedConfiguration",
+        "/System/Library/PrivateFrameworks/MobileInstallation.framework/MobileInstallation",
+        "/System/Library/PrivateFrameworks/MobileKeyBag.framework/MobileKeyBag",
+        "/System/Library/PrivateFrameworks/NanoPreferencesSync.framework/NanoPreferencesSync",
+        "/System/Library/PrivateFrameworks/NearField.framework/NearField",
+        "/System/Library/PrivateFrameworks/NetworkServiceProxy.framework/NetworkServiceProxy",
+        "/System/Library/PrivateFrameworks/RegulatoryDomain.framework/RegulatoryDomain",
+        "/usr/lib/libRemoteTelephonyTransport.dylib",
+        "/System/Library/PrivateFrameworks/RunningBoardServices.framework/RunningBoardServices",
+        "/System/Library/PrivateFrameworks/SetupAssistant.framework/SetupAssistant",
+        "/System/Library/PrivateFrameworks/SpringBoardServices.framework/SpringBoardServices",
+        "/System/Library/PrivateFrameworks/SymptomDiagnosticReporter.framework/SymptomDiagnosticReporter",
+        "/usr/lib/libSystemHealth.dylib",
+        "/System/Library/PrivateFrameworks/TelephonyXPCClient.framework/TelephonyXPCClient",
+        "/System/Library/PrivateFrameworks/WatchdogClient.framework/WatchdogClient",
+        "/System/Library/PrivateFrameworks/WirelessInsights.framework/WirelessInsights",
+        "/System/Library/Frameworks/CoreBluetooth.framework/CoreBluetooth",
+        "/System/Library/PrivateFrameworks/AppProtection.framework/AppProtection",
+        "/System/Library/PrivateFrameworks/CBORLibrary.framework/CBORLibrary",
+        "/System/Library/PrivateFrameworks/TelephonyUtilities.framework/TelephonyUtilities",
+        "/System/Library/PrivateFrameworks/TelephonyKit.framework/TelephonyKit",
+        "/System/Library/PrivateFrameworks/PairedUnlock.framework/PairedUnlock",
+        "/System/Library/PrivateFrameworks/MobileAsset.framework/MobileAsset",
+        "/System/Library/Frameworks/DeviceCheck.framework/DeviceCheck",
+        "/System/Library/PrivateFrameworks/IPConfiguration.framework/IPConfiguration",
+        "/System/Library/PrivateFrameworks/CTBlastDoorSupport.framework/CTBlastDoorSupport",
+        "/System/Library/Frameworks/CoreTelephony.framework/Support/libCellularDecoders.dylib",
+        "/System/Library/Frameworks/CoreTelephony.framework/Support/CTParser.framework/CTParser",
+        "/usr/lib/libTelephonyDebugDynamic.dylib",
+        "/System/Library/Frameworks/Security.framework/Security",
+        "/System/Library/PrivateFrameworks/CoreUtils.framework/CoreUtils",
+        "/System/Library/Frameworks/UserNotifications.framework/UserNotifications",
+        "/System/Library/Frameworks/CoreTelephony.framework/Support/libSystemDetermination.dylib",
+        "/usr/lib/libnetwork.dylib",
+        "/usr/lib/libARI.dylib",
+        "/System/Library/PrivateFrameworks/CoreAnalytics.framework/CoreAnalytics",
+        "/usr/lib/libCTGreenTeaLogger.dylib",
+        "/System/Library/Frameworks/LocalAuthentication.framework/LocalAuthentication",
+        "/System/Library/PrivateFrameworks/CTCarrierSpace.framework/CTCarrierSpace",
+        "/System/Library/Frameworks/CoreData.framework/CoreData",
+        "/System/Library/PrivateFrameworks/CommonUtilities.framework/CommonUtilities",
+        "/System/Library/Frameworks/CoreTelephony.framework/Support/libCommCenterMCommandDrivers.dylib",
+        "/System/Library/PrivateFrameworks/Trial.framework/Trial",
+        "/usr/lib/liblockdown.dylib",
+        "/System/Library/PrivateFrameworks/NanoRegistry.framework/NanoRegistry",
+        "/usr/lib/libETLDynamic.dylib",
+        "/System/Library/Frameworks/CoreTelephony.framework/CoreTelephony",
+        "/System/Library/PrivateFrameworks/IDS.framework/IDS",
+        "/System/Library/PrivateFrameworks/MobileWiFi.framework/MobileWiFi",
+        "/System/Library/PrivateFrameworks/PersistentConnection.framework/PersistentConnection",
+        "/System/Library/Frameworks/Network.framework/Network",
+        "/usr/lib/libBBUpdaterDynamic.dylib",
+        "/System/Library/PrivateFrameworks/IPTelephony.framework/Support/libIPTelephony.dylib",
+        "/System/Library/PrivateFrameworks/MobileActivation.framework/MobileActivation",
+        "/System/Library/Frameworks/NetworkExtension.framework/NetworkExtension",
+        "/System/Library/PrivateFrameworks/CellularPlanManager.framework/CellularPlanManager",
+        "/System/Library/Frameworks/CoreMotion.framework/CoreMotion",
+        "/System/Library/Frameworks/CoreTelephony.framework/Support/libCommCenterCommandDrivers.dylib",
+        "/usr/lib/CarrierBundleUtilities.dylib",
+        "/System/Library/PrivateFrameworks/Symptoms.framework/Frameworks/SymptomAnalytics.framework/SymptomAnalytics",
+        "/usr/lib/libTelephonyBasebandDynamic.dylib",
+        "/System/Library/Frameworks/CoreServices.framework/CoreServices",
+        "/usr/lib/libTelephonyUtilDynamic.dylib",
+        "/System/Library/PrivateFrameworks/ApplePushService.framework/ApplePushService",
+        "/System/Library/PrivateFrameworks/AppleBasebandManager.framework/AppleBasebandManager",
+        "/System/Library/PrivateFrameworks/AppSupport.framework/AppSupport",
+        "/usr/lib/libQMIParserDynamic.dylib",
+        "/System/Library/Frameworks/CoreTelephony.framework/Support/libCommCenterBase.dylib",
+        "/usr/lib/libTelephonyIOKitDynamic.dylib",
+        "/System/Library/PrivateFrameworks/NetworkStatistics.framework/NetworkStatistics",
+        "/System/Library/Frameworks/CallKit.framework/CallKit",
+        "/usr/lib/libprotobuf.dylib",
+        "/usr/lib/libsqlite3.dylib",
+        "/System/Library/Frameworks/SystemConfiguration.framework/SystemConfiguration",
+        "/System/Library/Frameworks/CFNetwork.framework/CFNetwork",
+        "/usr/lib/libATCommandStudioDynamic.dylib",
+        "/System/Library/Frameworks/CoreLocation.framework/CoreLocation",
+        "/System/Library/Frameworks/Foundation.framework/Foundation",
+        "/usr/lib/libz.1.dylib",
+        "/usr/lib/libSystem.B.dylib",
+        "/System/Library/PrivateFrameworks/Bom.framework/Bom",
+        "/System/Library/PrivateFrameworks/CoreTime.framework/CoreTime",
+        "/System/Library/PrivateFrameworks/ApplePDPHelper.framework/ApplePDPHelper",
+        "/System/Library/Frameworks/CoreTelephony.framework/Support/libCommCenterAWDMetrics.dylib",
+        "/System/Library/Frameworks/AudioToolbox.framework/AudioToolbox",
+        "/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation",
+        "/System/Library/PrivateFrameworks/MobileStoreDemoKit.framework/MobileStoreDemoKit",
+        "/System/Library/Frameworks/IOKit.framework/Versions/A/IOKit",
+        "/usr/lib/libMobileGestalt.dylib",
+        "/System/Library/PrivateFrameworks/AppleBasebandServices.framework/AppleBasebandServices",
+        "/System/Library/PrivateFrameworks/ProtocolBuffer.framework/ProtocolBuffer",
+        "/System/Library/PrivateFrameworks/IMFoundation.framework/IMFoundation",
+        "/usr/lib/libc++.1.dylib",
+        "/System/Library/PrivateFrameworks/BaseBoard.framework/BaseBoard",
+        "/System/Library/PrivateFrameworks/InternalSwiftProtobuf.framework/InternalSwiftProtobuf",
+        "/System/Library/PrivateFrameworks/SoftLinking.framework/SoftLinking",
+        "/usr/lib/libobjc.A.dylib",
+        "/usr/lib/libprotobuf-lite.dylib",
+        "/usr/lib/swift/libswiftCore.dylib",
+        "/usr/lib/swift/libswiftCoreFoundation.dylib",
+        "/usr/lib/swift/libswiftCoreLocation.dylib",
+        "/usr/lib/swift/libswiftDarwin.dylib",
+        "/usr/lib/swift/libswiftDispatch.dylib",
+        "/usr/lib/swift/libswiftObjectiveC.dylib",
+        "/usr/lib/swift/libswiftXPC.dylib",
+        "/usr/lib/swift/libswift_Builtin_float.dylib",
+        "/usr/lib/swift/libswift_Concurrency.dylib",
+        "/usr/lib/swift/libswift_errno.dylib",
+        "/usr/lib/swift/libswift_math.dylib",
+        "/usr/lib/swift/libswift_signal.dylib",
+        "/usr/lib/swift/libswift_stdio.dylib",
+        "/usr/lib/swift/libswift_time.dylib",
+        "/usr/lib/swift/libswiftos.dylib",
+        "/usr/lib/swift/libswiftsys_time.dylib",
+        "/usr/lib/swift/libswiftunistd.dylib"
+      ],
+      "telephony_imports": [
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientV10ExportableMp",
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientV10ExportableP10didReceive4data10Foundation4DataVSgAJ_tYaFTq",
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientV10ExportablePAC8RoutableTb",
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientV10ImportableMp",
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientV10ImportableP22didReceiveNotification4datay10Foundation4DataV_tYaFTq",
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientV10ImportablePAC8RoutableTb",
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientV16sendNotification4datay10Foundation4DataV_tYaF",
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientV16sendNotification4datay10Foundation4DataV_tYaFTu",
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientV18stateUpdateHandleryAC5StateOYbcSgvs",
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientV4codeSSvg",
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientV4send4data10Foundation4DataVSgAH_tYaF",
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientV4send4data10Foundation4DataVSgAH_tYaFTu",
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientV4stopyyF",
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientV5ActorC6sharedAEvgZ",
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientV5ActorCMa",
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientV5ActorCScAAAMc",
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientV5StateO5readyyA2EmFWC",
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientV5StateO6failedyAeC6ReasonO_tcAEmFWC",
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientV5StateO7securedyA2EmFWC",
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientV5StateOMa",
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientV5StateOMn",
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientV5startyyF",
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientV6ReasonO20passocdeWasIncorrectyA2EmFWC",
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientV6ReasonOMa",
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientV7connect4codeySS_tF",
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientV8RoutableMp",
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientV8RoutableP4pathSSvgTq",
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientV8RoutableP6methodSSvgTq",
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientV8exporterA2C10Exportable_p_tcfC",
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientV8importerA2C10Importable_p_tcfC",
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientVMa",
+        "_$s12TelephonyKit31CrossPlatformCellularPlanClientVMn",
+        "_AXTTYPreferredTransportMethodChangedNotification",
+        "_CTTelephonyCenterSetDefaultDispatchQueuePermanently",
+        "_IOServiceAddInterestNotification",
+        "_IOServiceClose",
+        "_IOServiceGetMatchingService",
+        "_IOServiceMatching",
+        "_IOServiceOpen",
+        "_InitializeIPTelephony",
+        "_MAEUpdateBasebandTicketWithError",
+        "_OBJC_CLASS_$_BYTelephonyStateNotifier",
+        "_OBJC_CLASS_$_CTIMSRegistrationTransportInfo",
+        "_OBJC_CLASS_$_CTStewieTransportMessage",
+        "_OBJC_CLASS_$_CTTransportKey",
+        "_OBJC_CLASS_$_CTTransportKeysUpdate",
+        "_OBJC_CLASS_$_RTTTelephonyUtilities",
+        "_TelephonyBasebandAddFreqList",
+        "_TelephonyBasebandClearFreqList",
+        "_TelephonyBasebandCreateController",
+        "_TelephonyBasebandRemoveFreqList",
+        "_TelephonyBasebandSupportsRadio",
+        "_TelephonyBasebandWatchdogStartWithStackshot",
+        "_TelephonyBasebandWatchdogStop",
+        "_TelephonyRadiosGetRadioVendor",
+        "_TelephonyUtilHexToBin",
+        "__Z15read_rest_valueR40TransportMasterRatRecommendationOverrideRKN3xpc6objectE",
+        "__Z16write_rest_valueRK40TransportMasterRatRecommendationOverride",
+        "__Z22isBasebandBootedInMode13OperatingMode",
+        "__Z30sCreateSupportedIndicationDictRKNSt3__13setI21EnhancedLQMIndicationNS_4lessIS1_EENS_9allocatorIS1_EEEE",
+        "__Z8asString12BasebandMode",
+        "__Z8asString19ImsStateForBaseband",
+        "__Z8asString20VoNRStateForBaseband",
+        "__Z8asString21EnhancedLQMIndication",
+        "__Z8asString31BasebandServiceProvisionedState",
+        "__ZN12TelephonyXPC15kClientHostNameE",
+        "__ZN12TelephonyXPC15kServerHostNameE",
+        "__ZN12TelephonyXPC15kServiceXPCNameE",
+        "__ZN12TelephonyXPC24kServiceNotificationNameE",
+        "__ZN12TelephonyXPC6Client28performWithBlockingSyncReplyERKNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEERNS_6ResultEN3xpc4dictERSD_",
+        "__ZN12TelephonyXPC6Client6createEN3xpc4dictENSt3__110shared_ptrIN3ctu9LogServerEEE",
+        "__ZN12capabilities2ct23getAWDBasebandComponentEv",
+        "__ZN12capabilities2ct23getBasebandBootStrategyEv",
+        "__ZN12capabilities2ct25supportsDataQMIExtensionsEv",
+        "__ZN12capabilities2ct30supportsEmergencyQMIExtensionsEv",
+        "__ZN12capabilities2ct32supportsBasebandPLMNPriorityListEv",
+        "__ZN12capabilities2ct34vinylOperationRequiresBasebandBootEv",
+        "__ZN12capabilities2ct40supportsNVRAMUpdateWithoutBasebandRebootEv",
+        "__ZN12capabilities2ct41supportsReportingTetheringStateToBasebandEv",
+        "__ZN12capabilities2ct44supportsBasebandVoiceLinkQualityNotificationEv",
+        "__ZN13QMIClientPool13requestClientEN3qmi11ServiceTypeENSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEEP24QMIVirtualClientCallbackN3xpc10connectionE",
+        "__ZN13QMIServiceMsg6createERKN3qmi18MutableMessageBaseE",
+        "__ZN13SendFileProxy18filePathToBasebandERKNSt3__112basic_stringIcNS0_11char_traitsIcEENS0_9allocatorIcEEEE",
+        "__ZN16QMIVirtualClient10disconnectEv",
+        "__ZN16QMIVirtualClient34disableNasServingSystemIndicationsEPKN3ctu11OsLogLoggerE",
+        "__ZN18BasebandModeAction10hysteresisEv",
+        "__ZN18BasebandModeActionD2Ev",
+        "__ZN19CSISMSCommandDriver20createBasebandDriverERKNSt3__110shared_ptrIK8RegistryEEN8dispatch5queueE",
+        "__ZN19QMIServerConnectionC1Ev",
+        "__ZN20EnhancedLQMInterface15sendTrafficInfoEtN3ctu2cf11CFSharedRefIK8__CFDataEEN3xpc10auto_replyE",
+        "__ZN20EnhancedLQMInterface24registerForNotificationsEbbbbbbbb",
+        "__ZN20EnhancedLQMInterface5queryE16EnhancedLQMQueryN3xpc10auto_replyE",
+        "__ZN20EnhancedLQMInterfaceD2Ev",
+        "__ZN21BasebandModeEvaluator12DelegateBaseD2Ev",
+        "__ZN21BasebandModeEvaluator25notifyBasebandModeChangedE12BasebandMode",
+        "__ZN21BasebandModeEvaluator26notifyDelegateChanged_syncERKN8dispatch5queueE",
+        "__ZN21BasebandModeEvaluatorD2Ev",
+        "__ZN22BasebandSettingsDriver26handleFileTransferCompleteEv",
+        "__ZN22BasebandSettingsDriver26prepareFilePushTransactionEN10subscriber7SimSlotENS0_15HardwareSimSlotENSt3__18functionIFvS1_25FilePushTransactionResultEEE",
+        "__ZN22BasebandSettingsDriver8sendFileEv",
+        "__ZN24QMIVirtualClientCallback13exitPowerModeENSt3__110shared_ptrI16QMIVirtualClientEE",
+        "__ZN24QMIVirtualClientCallback14enterPowerModeENSt3__110shared_ptrI16QMIVirtualClientEEP16dispatch_group_sN3qmi12PowerProfileE",
+        "__ZN24TransportMasterInterfaceC2Ev",
+        "__ZN24TransportMasterInterfaceD2Ev",
+        "__ZN25BasebandSettingsInterfaceD2Ev",
+        "__ZN26TelephonyOndemandInterfaceD2Ev",
+        "__ZN27BasebandControllerInterfaceD2Ev",
+        "__ZN27TelephonyAnalyticsInterfaceD2Ev",
+        "__ZN30BasebandSettingsModelInterfaceD2Ev",
+        "__ZN30TelephonyCapabilitiesInterfaceD2Ev",
+        "__ZN31QMICDMASettingsFactoryInterfaceD2Ev",
+        "__ZN32BasebandSettingsFactoryInterfaceD2Ev",
+        "__ZN32TelephonyAnalyticsCacheInterfaceD2Ev",
+        "__ZN33TelephonyOndemandFactoryInterfaceD2Ev",
+        "__ZN34BasebandControllerFactoryInterfaceD2Ev",
+        "__ZN35AppleBasebandManagerClientInterfaceD2Ev",
+        "__ZN36BasebandSettingsDeviceStateInterfaceD2Ev",
+        "__ZN3abm14kTraceBasebandE",
+        "__ZN3abm18kKeyBasebandCertIDE",
+        "__ZN3abm18kKeyBasebandChipIDE",
+        "__ZN3abm18kKeyBasebandPKHashE",
+        "__ZN3abm19kKeyBasebandBoardIdE",
+        "__ZN3abm19kKeyBasebandUidModeE",
+        "__ZN3abm19kKeyBasebandVersionE",
+        "__ZN3abm20kBasebandNVDataEraseE",
+        "__ZN3abm20kKeyBasebandRFFEDataE",
+        "__ZN3abm20kKeyBasebandSKeyHashE",
+        "__ZN3abm20kKeyBasebandScrtPubKE",
+        "__ZN3abm21kCommandResetBasebandE",
+        "__ZN3abm21kKeyBasebandBootStateE",
+        "__ZN3abm21kKeyBasebandResetTypeE",
+        "__ZN3abm22kBasebandBootStateDeadE",
+        "__ZN3abm22kBasebandResetTypeHardE",
+        "__ZN3abm22kBasebandResetTypeSoftE",
+        "__ZN3abm22kCommandBasebandNVDataE",
+        "__ZN3abm22kCommandBasebandSyncFSE",
+        "__ZN3abm22kEventBasebandPowerOffE",
+        "__ZN3abm22kKeyBasebandAKeyStatusE",
+        "__ZN3abm22kKeyBasebandSKeyStatusE",
+        "__ZN3abm23kKeyBasebandCrashReasonE",
+        "__ZN3abm23kKeyBasebandResetIsMTBFE",
+        "__ZN3abm23kKeyBasebandResetReasonE",
+        "__ZN3abm24kBasebandBootStateBootedE",
+        "__ZN3abm24kKeyBasebandNVDataActionE",
+        "__ZN3abm24kKeyBasebandResetSubTypeE",
+        "__ZN3abm24kKeyBasebandRootManifestE",
+        "__ZN3abm24kKeyBasebandSecurityModeE",
+        "__ZN3abm24kKeyBasebandSerialNumberE",
+        "__ZN3abm25kBasebandBootStateIsReadyE",
+        "__ZN3abm25kKeyBasebandOperatingModeE",
+        "__ZN3abm26kBasebandBootStateDidResetE",
+        "__ZN3abm26kKeyBasebandProductionModeE",
+        "__ZN3abm26kKeyBasebandSecurityDomainE",
+        "__ZN3abm27kBasebandBootStateWillResetE",
+        "__ZN3abm27kCommandBasebandAllowFSSyncE",
+        "__ZN3abm28kCommandGetBasebandBootStateE",
+        "__ZN3abm29kBasebandBootStateHasShutdownE",
+        "__ZN3abm29kCommandBasebandPreventFSSyncE",
+        "__ZN3abm29kEventBasebandBootStateChangeE",
+        "__ZN3abm30kBasebandBootStateWillShutdownE",
+        "__ZN3abm30kCommandGetBasebandManagerInfoE",
+        "__ZN3abm30kKeyBasebandActivationManifestE",
+        "__ZN3abm30kKeyBasebandRootManifestStatusE",
+        "__ZN3abm31kCommandGetBasebandRFFEScanDataE",
+        "__ZN3abm32kBasebandResetSubTypeOtherErrorsE",
+        "__ZN3abm32kCommandGetBasebandOperatingModeE",
+        "__ZN3abm32kCommandSetBasebandOperatingModeE",
+        "__ZN3abm32kKeyBasebandProvisioningManifestE",
+        "__ZN3abm33kEventBasebandOperatingModeChangeE",
+        "__ZN3abm35kKeyCommandGetBasebandFirmwareNonceE",
+        "__ZN3abm36kKeyBasebandActivationManifestStatusE",
+        "__ZN3abm37kBasebandNVDataRestoreCarrierDefaultsE",
+        "__ZN3abm38kKeyBasebandProvisioningManifestStatusE",
+        "__ZN3abm6client14PerformCommandENSt3__110shared_ptrINS0_7ManagerEEERKNS1_12basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEEU13block_pointerFvN12TelephonyXPC6ResultEPvESF_",
+        "__ZN3awd7metrics22CommCenterBasebandBootC1Ev",
+        "__ZN3awd7metrics26CommCenterBasebandFilePushC1Ev",
+        "__ZN3awd7metrics29CommCenterBasebandBoot_InputsC1Ev",
+        "__ZN3awd7metrics47CommCenterCellularPlanInternetTransport_IsValidEi",
+        "__ZN3sms12MTSmsDetailsC1EN10subscriber7SimSlotENS_5Model13TransportTypeENS_15CTMessageFormatERKNSt3__16vectorIhNS6_9allocatorIhEEEEbb",
+        "__ZN43BasebandSettingsDriverEventHandlerInterfaceD2Ev",
+        "__ZNK13QMIServiceMsg11getNewErrorEv",
+        "__ZNK13QMIServiceMsg9serializeEv",
+        "__ZNK25BasebandSettingsInterface27copySupportedAndActiveBandsEN3xpc10auto_replyE",
+        "__ZNK3qmi6Client13setIndHandlerEtU13block_pointerFvRK13QMIServiceMsgE",
+        "__ZNK3sms5Model16getTransportTypeEv",
+        "__ZNK8Registry24getTelephonyCapabilitiesEv",
+        "__ZTI13QMIClientPool",
+        "__ZTI18BasebandModeAction",
+        "__ZTI20EnhancedLQMInterface",
+        "__ZTI21BasebandModeEvaluator",
+        "__ZTI24QMIVirtualClientCallback",
+        "__ZTI24TransportMasterInterface",
+        "__ZTI25BasebandSettingsInterface",
+        "__ZTI26TelephonyOndemandInterface",
+        "__ZTI27BasebandControllerInterface",
+        "__ZTI27TelephonyAnalyticsInterface",
+        "__ZTI30BasebandSettingsModelInterface",
+        "__ZTI30TelephonyCapabilitiesInterface",
+        "__ZTI31QMICDMASettingsFactoryInterface",
+        "__ZTI32BasebandSettingsFactoryInterface",
+        "__ZTI32TelephonyAnalyticsCacheInterface",
+        "__ZTI33TelephonyOndemandFactoryInterface",
+        "__ZTI34BasebandControllerFactoryInterface",
+        "__ZTI35AppleBasebandManagerClientInterface",
+        "__ZTI36BasebandSettingsDeviceStateInterface",
+        "__ZTI43BasebandSettingsDriverEventHandlerInterface",
+        "__ZTIN21BasebandModeEvaluator12DelegateBaseE",
+        "__ZTV20EnhancedLQMInterface",
+        "__ZTV21BasebandModeEvaluator",
+        "__ZTV25BasebandSettingsInterface",
+        "__ZTV27BasebandControllerInterface",
+        "__ZTV27BasebandModeActionDoNothing",
+        "__ZTV30BasebandSettingsModelInterface",
+        "__ZTV32TelephonyAnalyticsCacheInterface",
+        "__ZTV35AppleBasebandManagerClientInterface",
+        "__ZTV36BasebandSettingsDeviceStateInterface",
+        "_kCTIMSTransportType",
+        "_kCTIMSTransportTypeCellular",
+        "_kCTIMSTransportTypeWiFi",
+        "_kCTPostponementInfoBasebandChipID",
+        "_kCTPostponementInfoBasebandFactoryKeyHash",
+        "_kCTPostponementInfoBasebandKeyHash",
+        "_kCTPostponementInfoBasebandSerialNumber",
+        "_kCTRegistrationIMSTransportTypeCellular",
+        "_kCTRegistrationIMSTransportTypeWiFi",
+        "_kCTStewieTransportMessageAckContextKey",
+        "_kCTStewieTransportMessageClientMetadataKey",
+        "_kCTStewieTransportMessageTransportTypeKey",
+        "_kDefaultBasebandServiceProvisionedStates",
+        "_kIMSCallDisconnectionReasonBasebandCrash",
+        "_kTelephonyProfileAppID",
+        "_kTelephonyProfileEnableTelephonyLoggingKey"
+      ],
+      "path": "/System/Library/Frameworks/CoreTelephony.framework/Support/CommCenter",
+      "sha256": "de38a5116c7b755ddabfce360691970566eaa5fc127cd413fb42607249fb0369"
+    },
+    "launchd": {
+      "EnablePressuredExit": false,
+      "EnableTransactions": true,
+      "ExitTimeOut": 14,
+      "KeepAlive": true,
+      "Label": "com.apple.CommCenter",
+      "MachServices": {
+        "com.apple.CellularPlanDaemon.xpc": true,
+        "com.apple.aps.CommCenter": true,
+        "com.apple.basebandd.xpc": true,
+        "com.apple.commcenter.ari.rt.xpc": true,
+        "com.apple.commcenter.atcs.xpc": true,
+        "com.apple.commcenter.carrierspace.xpc": true,
+        "com.apple.commcenter.coretelephony.xpc": true,
+        "com.apple.commcenter.cupolicy.xpc": true,
+        "com.apple.commcenter.mobile-helper-cbupdateservice": true,
+        "com.apple.commcenter.oswatchdog": true,
+        "com.apple.commcenter.xpc": true,
+        "com.apple.usernotifications.delegate.com.apple.SIMSetupUIService": true,
+        "com.apple.usernotifications.delegate.com.apple.SOSBuddy": true,
+        "com.apple.usernotifications.delegate.com.apple.telephony.BasebandServicesNotification": true
+      },
+      "POSIXSpawnType": "Interactive",
+      "ProgramArguments": [
+        "/System/Library/Frameworks/CoreTelephony.framework/Support/CommCenter"
+      ],
+      "UserName": "_wireless",
+      "_LimitLoadToDeviceTree": "baseband"
+    },
+    "launchd_sha256": "682c123fbf9edd2a15be7fc863ae8fd575cec7d13fa95f8ad6261115effbd2b3"
+  },
+  "sdk": {
+    "version": "18.6",
+    "stubs": {
+      "libTelephonyBasebandDynamic": {
+        "path": "tools/sdk/iPhoneOS18.6.sdk/usr/lib/libTelephonyBasebandDynamic.tbd",
+        "sha256": "57ccf727c102b051d859abf468287997d66e3c16a7afe4dddc3e1638c9a83ccc",
+        "kind": "SDK export declaration; runtime ABI not established"
+      },
+      "libTelephonyUtilDynamic": {
+        "path": "tools/sdk/iPhoneOS18.6.sdk/usr/lib/libTelephonyUtilDynamic.tbd",
+        "sha256": "98cfc8d27ff32b820d295fbeb7483bc84a3c59fbd8430e925249915bbb8dcb22",
+        "kind": "SDK export declaration; runtime ABI not established"
+      },
+      "libBasebandCommandDriversQMI": {
+        "path": "tools/sdk/iPhoneOS18.6.sdk/usr/lib/libBasebandCommandDriversQMI.tbd",
+        "sha256": "0478743931ef23c4758097f8c8a866e8ddcf23e2bc6221b0aa1ced6170b5315a",
+        "kind": "SDK export declaration; runtime ABI not established"
+      },
+      "libBasebandManager": {
+        "path": "tools/sdk/iPhoneOS18.6.sdk/usr/lib/libBasebandManager.tbd",
+        "sha256": "a9092e7024ea098469c6133e4dacb2be0d64c337e062b6911e57d206de191b89",
+        "kind": "SDK export declaration; runtime ABI not established"
+      },
+      "libQMIParserDynamic": {
+        "path": "tools/sdk/iPhoneOS18.6.sdk/usr/lib/libQMIParserDynamic.tbd",
+        "sha256": "8c49a61d3f8bed5df443417a76bad0dd591e284eefeebf8827dacddccb031327",
+        "kind": "SDK export declaration; runtime ABI not established"
+      }
+    }
+  },
+  "findings": [
+    "Primary iPad kernel uses AppleBasebandD101 and ICE PCIe transport, not MSM8998.",
+    "CommCenter has a baseband DT gate; that property alone cannot implement its dependencies.",
+    "QMI SDK exports do not prove that this CommCenter selects a Qualcomm command driver.",
+    "MSM8998 needs integrated Q6/PBL/MBA, SMEM/SMP2P and GLINK; GPU PAS13 is inapplicable.",
+    "Apple private control ABI, cellular data plane and telephony integration remain required."
+  ],
+  "hardware_tested": false,
+  "installed": false,
+  "runtime_evidence": {
+    "ipad-runtime-libraries.json": {
+      "path": "docs/baseband/ipad-runtime-libraries.json",
+      "sha256": "27ea32301d6326d4385948e003c7f3fa471cbe1f20093183b05bc9d36d818113",
+      "build": "22H374"
+    },
+    "ipad-apple-control.json": {
+      "path": "docs/baseband/ipad-apple-control.json",
+      "sha256": "0bbfd50df402afbde33ea3f724538703c4f890c5255d409164321be1a7df4ce4",
+      "build": "22H374"
+    }
+  }
+}

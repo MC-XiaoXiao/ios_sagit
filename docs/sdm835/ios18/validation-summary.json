@@ -1,0 +1,23 @@
+{
+  "status": "passed",
+  "output": "build/output/kernelcache.sdm835.platform",
+  "bytes": 21565440,
+  "sha256": "c2922b33bb2e9a048ceef8d87a718c2eb7d11bc280564169502d8bc2f0457166",
+  "kext_count": 11,
+  "cpp_tests": 5,
+  "python_tests": 6,
+  "real_cache_negative_tests": 6,
+  "independent_parsers": [
+    "ipsw 3.1.710",
+    "LLVM readobj"
+  ],
+  "asan_ubsan_generation": "passed; leak detection disabled; memory/UB errors halt generation",
+  "repeat_and_sanitized_output_identical": true,
+  "structure_errors": 0,
+  "structure_warnings": 0,
+  "known_abi_differences": [
+    "OSKext: CONFIG_DTRACE adds two virtual functions",
+    "IOMemoryMap: IOTRACKING adds 280 instance bytes"
+  ],
+  "runtime_boot": "not tested"
+}

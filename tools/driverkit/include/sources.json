@@ -1,0 +1,392 @@
+{
+  "DriverKit/DriverKit.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/DriverKit.h",
+    "sha256": "3bbf8daea4527c9f7105ea9f43cf267a1f46321c6bc591de0309465f450319aa",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/DriverKit.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/DriverKit.iig",
+    "sha256": "7c4902c386c61e96629251d9ad8de89ff2166d358cd57ff02ab1a21d177bde56",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/IOBufferMemoryDescriptor.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/IOBufferMemoryDescriptor.h",
+    "sha256": "ad653f2fe99f82ebb0fb51bf76e5b3fab9b1a6813b7d289027c65104c02fffbc",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/IOBufferMemoryDescriptor.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/IOBufferMemoryDescriptor.iig",
+    "sha256": "2b5426359e152e842c0a25fdd936490f8ed7aff77bc8eb105f2c848cbcd61369",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/IODMACommand.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/IODMACommand.h",
+    "sha256": "b9165bb70a0c7843c64d7b37454dbc4e958e393c61602f3ce02c16d061bb8b1c",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/IODMACommand.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/IODMACommand.iig",
+    "sha256": "401d62d1beef881f09276f5f72782bfdee2e126cccfee9cc451b70ae6b17bd98",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/IODataQueueDispatchSource.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/IODataQueueDispatchSource.h",
+    "sha256": "40c9f1a19e4dc92c45b1cb70d80c9f48169bdd4512a69ac3947f8f523fa73386",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/IODataQueueDispatchSource.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/IODataQueueDispatchSource.iig",
+    "sha256": "969118dbf76bdd2df964b03ddfee9527e80935c70ddd9786ce84ffdd418a7795",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/IODispatchQueue.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/IODispatchQueue.h",
+    "sha256": "c1503e165f7dbb8389042c0c372ded43455dc98d20df61d57808ae6146bca543",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/IODispatchQueue.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/IODispatchQueue.iig",
+    "sha256": "4ebfa8699b591371998edc6411ea2f9408c511fef4d1305151788aa50b27565a",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/IODispatchSource.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/IODispatchSource.h",
+    "sha256": "340d0d77945d24de9c0fe1aa95eca1d176d3effe21a478d2d54b6c06b6331f2e",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/IODispatchSource.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/IODispatchSource.iig",
+    "sha256": "b8e7c08fc4817e4e124bcf85cfd0fe6c53486037850582cdd385462a9fda31f0",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/IOInterruptDispatchSource.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/IOInterruptDispatchSource.h",
+    "sha256": "a5cf36ecd507d267fa7863e57e1da98f49a856fbcf8965f166c42e006dd2a16c",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/IOInterruptDispatchSource.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/IOInterruptDispatchSource.iig",
+    "sha256": "1f5ea1d1472c1cdcc19657fea6f1f02d218f7dfebcd318c48f884ba51cac5eea",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/IOKitKeys.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/IOKitKeys.h",
+    "sha256": "21014db5e606646ad9596fbafcb961a88d244cde5da1e84bc1d058903e651f9a",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/IOLib.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/IOLib.h",
+    "sha256": "8ad9d966b627f46a28d071b68505ec27054eaad86ed5f4c3b16de63c5e0f759e",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/IOMemoryDescriptor.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/IOMemoryDescriptor.h",
+    "sha256": "37f40c742f911ceeb296b35e2b8c99686566b7bbc4966ae216ea2749945a5feb",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/IOMemoryDescriptor.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/IOMemoryDescriptor.iig",
+    "sha256": "b1d01c3b5c86de562443c5d12c4c27eb8becf55ac4177b300824a2dbb5ce1935",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/IOMemoryMap.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/IOMemoryMap.h",
+    "sha256": "05265becb0792fbd4ec2518aca78105315fdeec537b10120221c9acff83805dd",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/IOMemoryMap.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/IOMemoryMap.iig",
+    "sha256": "aaa0135d8863867efa2afd1c8911f05ccf19f368a22cecc1207aa38093802a9a",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/IORPC.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/IORPC.h",
+    "sha256": "68ac09ed9958f9b3eee63b0327271b95e5d451600eee012e05fea6c8e2e171d2",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/IOReturn.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/IOReturn.h",
+    "sha256": "70b59c947f003b354b0756d7423a1a43785842d48675c55648184f259228aec2",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/IOService.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/IOService.h",
+    "sha256": "93a1811e5bb772b633da1006b34f851dd0091f0486523d64b771eb503ad89bfb",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/IOService.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/IOService.iig",
+    "sha256": "d1f38ce4348b123a3ddca6c8654a7ef5206bbfae7e3b52ebe5002099ba1e4e24",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/IOServiceNotificationDispatchSource.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/IOServiceNotificationDispatchSource.h",
+    "sha256": "6b41cb122ad1f8dfd20e229a0ac3ceccff75016216e7b40b9a9fd7d688e5f406",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/IOServiceNotificationDispatchSource.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/IOServiceNotificationDispatchSource.iig",
+    "sha256": "d4d443fb1b75a26c2e2d6da92d875d5317dff5759d94e18dac065a2a84eae643",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/IOTimerDispatchSource.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/IOTimerDispatchSource.h",
+    "sha256": "ebf3525f9be8c3c26bf005a9b788cc34e10269df162a061efcfc29e17a23cc9a",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/IOTimerDispatchSource.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/IOTimerDispatchSource.iig",
+    "sha256": "26743d0d0d24dbb98364ed04d480d11c56cf8e70f2aa49473a6a5d4da7f140cf",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/IOTypes.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/IOTypes.h",
+    "sha256": "ac18c1b163cd93d2bd510a7fa475ca9d44df1b71ceba08c29a5f6f5fe8bc8cbe",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/IOUserClient.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/IOUserClient.h",
+    "sha256": "96b9692cfa04664a95dcc55e3eb0c1f67029a8fefd238a07029cdc05d1c8d4d4",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/IOUserClient.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/IOUserClient.iig",
+    "sha256": "54e28c04d7c27144ada10760d992ca05a337f3c98ee615a9e11cd567d25e3c28",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/IOUserServer.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/IOUserServer.h",
+    "sha256": "b0d7051945821c84e46db378826ed4db9c7b74f64e955c288902fb4f62315722",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/IOUserServer.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/IOUserServer.iig",
+    "sha256": "3fd903f117b9d216b9b22b54d3746ebe92bab9e6d9574c2614de06ecb1538d5a",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/OSAction.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/OSAction.h",
+    "sha256": "6379bd89903117e34aedc0f117351563f4714a8af4c8b121deac0fa13b54cb00",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/OSAction.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/OSAction.iig",
+    "sha256": "807ec018e846ad198205452f06a2eea3ce1f5a602dd3babb53690cce6aa53664",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/OSArray.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/OSArray.h",
+    "sha256": "900cf3ccba9dc73e09e14fb4dd95a71c117588ce9482a6462f823166ebbb6735",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/OSArray.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/OSArray.iig",
+    "sha256": "af72bbc22a70f2eca2880fc3f4e008705070f63d67f7eb5c437d160fd358f592",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/OSBoolean.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/OSBoolean.h",
+    "sha256": "6e079abd2e9fbc0bcf8e340fe13b754bd425a6c5fea81d813cd034124e7b172c",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/OSBoolean.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/OSBoolean.iig",
+    "sha256": "300bd14d9c01a19121e7a3c3e108dfb3374f1d7ab691da0a696ab4bee5e7725c",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/OSCollection.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/OSCollection.h",
+    "sha256": "a3886b9d3085228c34838dd1e2d6a601e35f431c7ab916d77e60661081d964f2",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/OSCollection.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/OSCollection.iig",
+    "sha256": "5bfa39437af3a536ccec9a960ef5707fa890225b48c2a5f0fb36d12629c34256",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/OSCollections.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/OSCollections.h",
+    "sha256": "7b9ae4779ed59b95668e92f78f9af1a4fb1d63428ec2e6790ef18a2bed4e0898",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/OSContainer.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/OSContainer.h",
+    "sha256": "4bed6a18b270ca731f1049a68bc98a567edd6ce640d97bdc060b23cdaf73aaa3",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/OSContainer.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/OSContainer.iig",
+    "sha256": "c110d1bf1a62f0525c62db53c828d7d4f74869cca8e46d89474a6eaf7661e63a",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/OSData.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/OSData.h",
+    "sha256": "ee2bf095a6e4d449cd856693d41898c4166686af84b17fc73f53352cfb6fee15",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/OSData.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/OSData.iig",
+    "sha256": "11f0e455456504dddf98df8673106de9cf972c1e7a52283ba46020882fb4fb29",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/OSDictionary.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/OSDictionary.h",
+    "sha256": "59238635faffd5a7cab6739d194611a1047b10d7829787fecd1321167512b52a",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/OSDictionary.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/OSDictionary.iig",
+    "sha256": "765f8b1f57142ae1a0ae63e6e6eb78ca8319078e3f67612be81b6e8b1f4ce8a8",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/OSMetaClass.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/OSMetaClass.h",
+    "sha256": "57501d22883822920b12449a0e66732bb8221f47da2106b440472d1226e928cc",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/OSNumber.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/OSNumber.h",
+    "sha256": "322f27e920ee8624b3a5eb10353d7883340bc790ce8fcccb68eb27f82f3068aa",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/OSNumber.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/OSNumber.iig",
+    "sha256": "5d62582dda51bd6bb983a58d5d44050fee20edb728582556c255f0c669393396",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/OSObject.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/OSObject.h",
+    "sha256": "a719c175386602f2d5d92d08f59f5e685eaabc53533ce44e986f844c86206c4d",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/OSObject.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/OSObject.iig",
+    "sha256": "1af601396f4216870123efc02c28bcefe2d7831a17e6598e94e7c9a8248baa70",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/OSSerialization.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/OSSerialization.h",
+    "sha256": "8cc7f18671cb2078939635c966c3c0bec604d4f8ff06538740f55529da6d229f",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/OSSerialization.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/OSSerialization.iig",
+    "sha256": "de2b60a64b7f24832274269464a5b8d8091ee8f0a50ef452fe29ad04355ccf7f",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/OSString.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/OSString.h",
+    "sha256": "c7d9f98ba26d50e74b19ef8c069113a484bef980c1c1e4a9151fab84db00ac14",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/OSString.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/OSString.iig",
+    "sha256": "e5d0baad11efe3a3c80172904f828a13ba47567503f2a66385fed603f27df435",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/stageFramework.sh": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/stageFramework.sh",
+    "sha256": "a513a7765b03a2c3302e95529fd04f84d546446872d71f0e6fa4e6485cb3f4dd",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "DriverKit/stageFrameworks.sh": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/DriverKit.framework/Versions/A/Headers/stageFrameworks.sh",
+    "sha256": "a724eff4115084d909eff7db5995e5c9f9f8db316e67af9f3e44262919baaabc",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "NetworkingDriverKit/IOUserNetworkEthernet.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/NetworkingDriverKit.framework/Versions/A/Headers/IOUserNetworkEthernet.h",
+    "sha256": "362a74dee3dd33bd91415c490235a7eb47bb192f3e120b88b8d20688ce107ebe",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "NetworkingDriverKit/IOUserNetworkEthernet.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/NetworkingDriverKit.framework/Versions/A/Headers/IOUserNetworkEthernet.iig",
+    "sha256": "1cb659110c4abad6ea4d125932054fbb0c715aa43635afd91a5070d3a1a6004c",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "NetworkingDriverKit/IOUserNetworkEthernetNicProxy.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/NetworkingDriverKit.framework/Versions/A/Headers/IOUserNetworkEthernetNicProxy.h",
+    "sha256": "c049ad176aeb27709bd28993eeefe0274609dd0465dc120e2fa2f9a4011d4a53",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "NetworkingDriverKit/IOUserNetworkPacket.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/NetworkingDriverKit.framework/Versions/A/Headers/IOUserNetworkPacket.h",
+    "sha256": "2d4d9eec6bf4ea814f3c5fb0bffe88b1e96eb4fd60dddc4adf608e315f2a39ce",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "NetworkingDriverKit/IOUserNetworkPacket.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/NetworkingDriverKit.framework/Versions/A/Headers/IOUserNetworkPacket.iig",
+    "sha256": "9fff0d16a17c65f79b75cadcd7096a31c27d4445bfab9d91c2740448529dae2c",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "NetworkingDriverKit/IOUserNetworkPacketBufferPool.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/NetworkingDriverKit.framework/Versions/A/Headers/IOUserNetworkPacketBufferPool.h",
+    "sha256": "b890b77958fa7f929e5705dd926cd44a9c6c0e27acbe6f0e2af1158d166bfcc4",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "NetworkingDriverKit/IOUserNetworkPacketBufferPool.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/NetworkingDriverKit.framework/Versions/A/Headers/IOUserNetworkPacketBufferPool.iig",
+    "sha256": "9e5d8e8e932c2b0adda2ce268a192c3db3379a7b05d1c1f90c37549b1c77858f",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "NetworkingDriverKit/IOUserNetworkPacketQueue.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/NetworkingDriverKit.framework/Versions/A/Headers/IOUserNetworkPacketQueue.h",
+    "sha256": "9bbf4f5dc7e6a94ebe3a977910706578c51383957bfc455c8b06e3b4198a75bd",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "NetworkingDriverKit/IOUserNetworkPacketQueue.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/NetworkingDriverKit.framework/Versions/A/Headers/IOUserNetworkPacketQueue.iig",
+    "sha256": "8307461bc6f864d9ccbf325c028bca1226f7b2cd707f8df889bbac320dccc01b",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "NetworkingDriverKit/IOUserNetworkRxCompletionQueue.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/NetworkingDriverKit.framework/Versions/A/Headers/IOUserNetworkRxCompletionQueue.h",
+    "sha256": "84d0cab965bca082317e2db7a2caf056effa486d1ae0b2070ef391d7af73927c",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "NetworkingDriverKit/IOUserNetworkRxCompletionQueue.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/NetworkingDriverKit.framework/Versions/A/Headers/IOUserNetworkRxCompletionQueue.iig",
+    "sha256": "fc12baea444810d1f52e7d83b08ed5fa8cf46fb1b152caa19c7726df437dc9af",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "NetworkingDriverKit/IOUserNetworkRxSubmissionQueue.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/NetworkingDriverKit.framework/Versions/A/Headers/IOUserNetworkRxSubmissionQueue.h",
+    "sha256": "11be43d1c6faa2b9fc649a23fdd2b34c69136094914f5d80c8d247eabfe49b6c",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "NetworkingDriverKit/IOUserNetworkRxSubmissionQueue.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/NetworkingDriverKit.framework/Versions/A/Headers/IOUserNetworkRxSubmissionQueue.iig",
+    "sha256": "c80bd22d63f92559dc547c93b2ee11c63954c19ccaa470fa95389b0b619fb322",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "NetworkingDriverKit/IOUserNetworkTxCompletionQueue.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/NetworkingDriverKit.framework/Versions/A/Headers/IOUserNetworkTxCompletionQueue.h",
+    "sha256": "e8989e120f181a0bb47497053182cd3ea9ccfcd85422146bf6a14b1d99b12cba",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "NetworkingDriverKit/IOUserNetworkTxCompletionQueue.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/NetworkingDriverKit.framework/Versions/A/Headers/IOUserNetworkTxCompletionQueue.iig",
+    "sha256": "2a3f7ad153031f42ccd7cac40b19c9873b5d74a1c0fe951b27054cea32c687b4",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "NetworkingDriverKit/IOUserNetworkTxSubmissionQueue.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/NetworkingDriverKit.framework/Versions/A/Headers/IOUserNetworkTxSubmissionQueue.h",
+    "sha256": "a64b29b4c9468e8c28b3549757d187259dd46f398498323969f6c06077e56011",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "NetworkingDriverKit/IOUserNetworkTxSubmissionQueue.iig": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/NetworkingDriverKit.framework/Versions/A/Headers/IOUserNetworkTxSubmissionQueue.iig",
+    "sha256": "e504e6cbc2f89e6ad0e8fdf5fc5f2a7807096692b3d4a455d982c4f6fb6278c7",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "NetworkingDriverKit/IOUserNetworkTypes.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/NetworkingDriverKit.framework/Versions/A/Headers/IOUserNetworkTypes.h",
+    "sha256": "37653522d78a88a758fb6035309dcb26a5cd33fa6f6071234b1bd3894597b52f",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  },
+  "NetworkingDriverKit/NetworkingDriverKit.h": {
+    "url": "https://raw.githubusercontent.com/phracker/MacOSX-SDKs/041600eda65c6a668f66cb7d56b7d1da3e8bcc93/MacOSX11.3.sdk/System/Library/Frameworks/NetworkingDriverKit.framework/Versions/A/Headers/NetworkingDriverKit.h",
+    "sha256": "bf9053036a71ffd27736795dcafb1a6d7ad173e00be7fbd3cdd1280706790c69",
+    "source_revision": "MacOSX11.3.sdk public DriverKit headers; runtime ABI compatibility must be checked"
+  }
+}

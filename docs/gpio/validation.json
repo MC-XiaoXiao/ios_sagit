@@ -1,0 +1,71 @@
+{
+  "scope": "SDM835 TLMM GPIO, three PMIC side buttons, FPC/Goodix fingerprint Home input; offline verification only",
+  "hardware_tested": false,
+  "collection": {
+    "path": "build/output/kernelcache.input",
+    "status": "passed",
+    "sha256": "cbc831d99d6a8031c4cd20d8694288797275d1d4bb944eab0d45943ad5c10b40",
+    "kext_count": 33,
+    "errors": [],
+    "warnings": [],
+    "checks": [
+      "Mach-O commands",
+      "segments and sections",
+      "file/VM mappings and overlap",
+      "symbol/relocation ranges, indices and relocation sites",
+      "Kext metadata, versions and dependency closure",
+      "Kext segment ownership",
+      "structor/GOT pointers and ARM64 import stubs",
+      "kmod records",
+      "kernel entry",
+      "XNU KCGEN Kext header walk and terminal zero padding",
+      "Kext ARMv8-A+CRC+Crypto ISA and regenerated static helpers",
+      "corecrypto final executable-section HMAC",
+      "native kernel segment contents and non-prelink commands preserved",
+      "source SHA256 constant tables preserved: 2"
+    ],
+    "source_update_pending_rebuild": "Home workloop unification and measured Milan A/HV protocol support"
+  },
+  "tests": {
+    "portable_hardware_models": [
+      "gpio",
+      "pmic-input",
+      "buttons",
+      "fingerprint-home"
+    ],
+    "python_input_integration": 5,
+    "python_input_firmware": 3,
+    "boot_bridge": 17,
+    "driver_toolchain": 10,
+    "kernelcache_python": 26,
+    "kernelcache_cpp": 5
+  },
+  "bridge": {
+    "status": "passed",
+    "hardware_tested": false,
+    "kernel_sha256": "cbc831d99d6a8031c4cd20d8694288797275d1d4bb944eab0d45943ad5c10b40",
+    "device_tree_bytes": 2448156,
+    "device_tree_sha256": "bdf8115f9f0edc91d2e3495286e9defed34756376d8d7ac41ed913ab19b1b366",
+    "firmware_sha256": {
+      "fpc-firmware": "8a069a1f53d4e8323da69cd42249276e2b86461c63e16a6f299f1e9eac4db42e",
+      "goodix-firmware": "16a5d18b44551c5c9cd55c10476fcc665bc15b2291416d34d2f6da28d2304749"
+    },
+    "checks": [
+      "collection hash bound to bridge payload",
+      "complete trusted application packets preserved",
+      "GPIO phandle/polarity and cascade interrupt cells converted to Apple LE32",
+      "only fingerprint pins and SPI clock resources enabled",
+      "device tree within 4 MiB bridge bound"
+    ]
+  },
+  "native_hid_contract": "drivers/abi-22H374/apple-hid-abi.json",
+  "source_manifest": "docs/gpio/reference/sources.json",
+  "fingerprint_protocol": "docs/gpio/fingerprint-protocol.json",
+  "runtime_limits": [
+    "No fingerprint authentication",
+    "Goodix profiles limited to measured Milan F/A/HV; Oswego M rejected",
+    "QSEE storage/keymaster listener callbacks unavailable; session quarantines safely",
+    "Deep sleep wake not implemented",
+    "Physical sensor identity and Apple runtime event behavior require later hardware testing"
+  ]
+}

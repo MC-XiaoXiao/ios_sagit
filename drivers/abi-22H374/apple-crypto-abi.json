@@ -1,0 +1,93 @@
+{
+  "bundle_identifier": "com.apple.iokit.IOCryptoAcceleratorFamily",
+  "bundle_version": "1.0.1",
+  "image_sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+  "architecture": "arm64",
+  "classes": {
+    "IOCryptoAccelerator": {
+      "super": "IOService",
+      "instance_size": 136,
+      "vtable_slots": 169
+    },
+    "IOAESAccelerator": {
+      "super": "IOCryptoAccelerator",
+      "instance_size": 288,
+      "vtable_slots": 181
+    }
+  },
+  "required_symbols": [
+    "__ZN19IOCryptoAccelerator10gMetaClassE",
+    "__ZN19IOCryptoAcceleratorC2EPK11OSMetaClass",
+    "__ZN19IOCryptoAcceleratorD2Ev",
+    "__ZN19IOCryptoAccelerator16getAlgorithmNameEv",
+    "__ZN16IOAESAccelerator10gMetaClassE",
+    "__ZN16IOAESAcceleratorC2EPK11OSMetaClass",
+    "__ZN16IOAESAcceleratorD2Ev",
+    "__ZN16IOAESAccelerator16getAlgorithmNameEv",
+    "__ZN16IOAESAccelerator13nativeSlot169Ev",
+    "__ZN16IOAESAccelerator13nativeSlot171Ev",
+    "__ZN16IOAESAccelerator13nativeSlot172Ev",
+    "__ZN16IOAESAccelerator13nativeSlot173Ev",
+    "__ZN16IOAESAccelerator13nativeSlot174Ev",
+    "__ZN16IOAESAccelerator13nativeSlot175Ev",
+    "__ZN16IOAESAccelerator13nativeSlot176Ev",
+    "__ZN16IOAESAccelerator13nativeSlot177Ev",
+    "__ZN16IOAESAccelerator13nativeSlot178Ev",
+    "__ZN16IOAESAccelerator13nativeSlot179Ev",
+    "__ZN16IOAESAccelerator13nativeSlot180Ev"
+  ],
+  "virtual_symbols": {
+    "__ZN19IOCryptoAccelerator16getAlgorithmNameEv": {
+      "class": "IOCryptoAccelerator",
+      "slot": 168
+    },
+    "__ZN16IOAESAccelerator16getAlgorithmNameEv": {
+      "class": "IOAESAccelerator",
+      "slot": 168
+    },
+    "__ZN16IOAESAccelerator13nativeSlot169Ev": {
+      "class": "IOAESAccelerator",
+      "slot": 169
+    },
+    "__ZN16IOAESAccelerator13nativeSlot171Ev": {
+      "class": "IOAESAccelerator",
+      "slot": 171
+    },
+    "__ZN16IOAESAccelerator13nativeSlot172Ev": {
+      "class": "IOAESAccelerator",
+      "slot": 172
+    },
+    "__ZN16IOAESAccelerator13nativeSlot173Ev": {
+      "class": "IOAESAccelerator",
+      "slot": 173
+    },
+    "__ZN16IOAESAccelerator13nativeSlot174Ev": {
+      "class": "IOAESAccelerator",
+      "slot": 174
+    },
+    "__ZN16IOAESAccelerator13nativeSlot175Ev": {
+      "class": "IOAESAccelerator",
+      "slot": 175
+    },
+    "__ZN16IOAESAccelerator13nativeSlot176Ev": {
+      "class": "IOAESAccelerator",
+      "slot": 176
+    },
+    "__ZN16IOAESAccelerator13nativeSlot177Ev": {
+      "class": "IOAESAccelerator",
+      "slot": 177
+    },
+    "__ZN16IOAESAccelerator13nativeSlot178Ev": {
+      "class": "IOAESAccelerator",
+      "slot": 178
+    },
+    "__ZN16IOAESAccelerator13nativeSlot179Ev": {
+      "class": "IOAESAccelerator",
+      "slot": 179
+    },
+    "__ZN16IOAESAccelerator13nativeSlot180Ev": {
+      "class": "IOAESAccelerator",
+      "slot": 180
+    }
+  }
+}

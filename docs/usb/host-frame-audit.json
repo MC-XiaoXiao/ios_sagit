@@ -1,0 +1,156 @@
+{
+  "status": "Native-frame-hooks-and-IRQ-rollover-observer-compiled-models-passed-runtime-unverified",
+  "runtime_source": "drivers/usb/QcomUSB/QcomUSBHost.cpp",
+  "provider_source": "drivers/usb/QcomUSB/QcomUSB.cpp",
+  "memory_access_source": "drivers/usb/QcomUSB/USBMMIO.h",
+  "frame_backend": "drivers/usb/QcomUSB/XHCIFrames.h",
+  "event_backend": "drivers/usb/QcomUSB/XHCIEvents.h",
+  "tests": [
+    "tests/xhci_event_test.cpp",
+    "tests/usb_host_abi_compile.cpp",
+    "tests/usb_kernel_compile.cpp"
+  ],
+  "native_evidence": {
+    "file": "build/usb/host-frame-native-evidence.json",
+    "image_sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+    "sha256": "1db4e22aaeedbce680a9b0d2a824fe841253d8004ed086cd7d9edcb5b7a33c58"
+  },
+  "native_base_instance_size": 1384,
+  "subclass_instance_size": 1456,
+  "native_vtable_slots": 269,
+  "native_frame_interface": {
+    "getFrameNumber": {
+      "slot": 233,
+      "implementation": "0xfffffff006010148",
+      "return_type": "UInt64",
+      "argument": "optional UInt64* AbsoluteTime",
+      "Native_implementation_preserved": true,
+      "HCD_wrapper_observes_before_Native_snapshot": true
+    },
+    "getFrameRollover": {
+      "slot": 234,
+      "implementation": "0xfffffff00601034c",
+      "return_type": "UInt64",
+      "argument": "optional UInt64* AbsoluteTime",
+      "Native_implementation_preserved": true,
+      "HCD_wrapper_observes_before_Native_snapshot": true
+    },
+    "getRawMicroFrameCount": {
+      "slot": 266,
+      "implemented": true,
+      "raw_bits": 14
+    },
+    "makeFrameNumber": {
+      "slot": 267,
+      "implemented": true,
+      "formula": "(rollovers << 11) + ((raw & 0x3fff) >> 3)"
+    },
+    "rollover_fields": {
+      "timestamp": 1168,
+      "begin": 1176,
+      "end": 1184
+    },
+    "Native_HCD_updates_rollover_fields_directly": true,
+    "Native_reader_seqlock_preserved": true,
+    "local_interrupts_disabled_across_rollover_publication": true,
+    "Frame_time_is_milliseconds": true,
+    "raw_microframe_is_125000_nanoseconds": true,
+    "raw_getter_does_not_extend_again": true,
+    "Native_getter_return_is_not_IOReturn": true
+  },
+  "snapshot_lease": {
+    "arm_requires_current_Host_client_epoch_and_role_gate": true,
+    "arm_validates_runtime_offset_against_RTSOFF": true,
+    "raw_read_only_takes_IRQ_safe_provider_lock": true,
+    "no_sleeping_workloop_gate_in_raw_getter": true,
+    "no_mutable_State_access_in_raw_getter_or_primary_filter": true,
+    "provider_retained_until_Host_free": true,
+    "revoke_before_HCD_halt_and_parent_halt_unmap": true,
+    "close_revokes_counter": true,
+    "constant_MMIO_snapshot_does_not_race_sticky_access_failed_field": true,
+    "unavailable_snapshot_returns_last_raw_sample": true,
+    "inaccessible_counter_latches_fault": true
+  },
+  "wrap_events": {
+    "USBCMD_EWE_bit": 10,
+    "event_type": 39,
+    "clock_observer_budget": 256,
+    "normal_action_budget": 128,
+    "filter_scans_actual_coherent_event_segment": true,
+    "observer_has_independent_cursor_and_cycle": true,
+    "observer_does_not_write_ring_consumer_or_ERDP": true,
+    "observer_uses_no_Native_callbacks_allocation_releases_or_sleeping_gates": true,
+    "observer_and_teardown_use_same_IRQ_safe_lock": true,
+    "observer_closed_before_DMA_release": true,
+    "old_epoch_and_reinitialize_rejected": true,
+    "Native_clock_published_before_delayed_action_thread": true,
+    "action_does_not_publish_same_rollover_again": true,
+    "new_wrap_between_initial_scan_and_peek_is_observed": true,
+    "rescan_before_ERDP_release_prevents_cursor_overrun": true,
+    "malformed_wrap_not_consumed": true,
+    "failed_sample_does_not_advance_observer": true,
+    "HALT_clears_EWE": true,
+    "frame_queries_rescan_while_level_source_masked": true
+  },
+  "offline_models": [
+    "14-bit MFINDEX and millisecond conversion",
+    "multiple pending rollover events and per-batch accounting",
+    "rollover timestamp underflow and raw bounds",
+    "invalid wrap parameters/status/flags and inaccessible MFINDEX",
+    "filter observation before real event consumption",
+    "repeated scans publish once",
+    "partial action batches and observer ahead of consumer",
+    "ring cycle toggle and recycled slot zero",
+    "epoch mismatch, revoked sample, closed observer, and reinitialization",
+    "hardware posts after initial scan; observer advances before ERDP acknowledgement"
+  ],
+  "hardware_tested": false,
+  "kernel_runtime_tested": false,
+  "matching_personality_enabled": false,
+  "remaining": [
+    "Retained-context controller PM and USB remote system wake are unimplemented; the selected system policy is cold suspend.",
+    "Complete Native feature/registration policy, current budgets, bundled buffers, Device extensions and trusted boot resources."
+  ],
+  "primary_specification": {
+    "title": "Intel xHCI Requirements Specification, revision 1.2, May 2019",
+    "url": "https://www.intel.com/content/dam/www/public/us/en/documents/technical-specifications/extensible-host-controler-interface-usb-xhci.pdf",
+    "file": "build/usb/xhci-specification.pdf",
+    "sha256": "9257ca24f34bff08e6020623f707c788ca0f0df657aa713309ff489a68b1731e",
+    "sections": [
+      "4.10.1.1",
+      "4.11.2",
+      "4.11.5.2",
+      "4.11.7.1",
+      "6.4.1",
+      "6.4.2.1"
+    ],
+    "uses_common_xhci_1_0_1_1_event_data_and_transfer_formats": true,
+    "controller_specific_1_2_features_not_enabled": true,
+    "frame_event_section": "6.4.2.8",
+    "frame_event_figure": "6-21",
+    "frame_event_tables": [
+      "6-56",
+      "6-57"
+    ],
+    "page": 487,
+    "completion_code_and_RsvdZ_fields_visually_checked": true
+  },
+  "ISO_backend_audit": "docs/usb/host-isochronous-audit.json",
+  "Native_ISO_IST_window_and_coherent_snapshot_integrated": true,
+  "Native_ISO_PM_resynchronization_complete": false,
+  "Native_ISO_nonCFC_first_Frame_ID_and_SIA_flow_integrated": true,
+  "ISO_flow_evidence": {
+    "file": "build/usb/host-isochronous-flow-evidence.json",
+    "sha256": "e0a65f8b34f54737a77052dc98c21259e1d3ea45ba71ddfbaadaf10b2c02f978"
+  },
+  "device_pipe_power_audit": "docs/usb/host-power-audit.json",
+  "Native_device_suspend_resume_hooks_integrated": true,
+  "hub_runtime_audit": "docs/usb/host-hub-audit.json",
+  "Native_registered_hub_and_routed_TT_slot_hooks_integrated": true,
+  "tt_recovery_audit": "docs/usb/host-tt-recovery-audit.json",
+  "Native_control_bulk_TT_error_recovery_integrated": true,
+  "failed_Address_Device_default_TT_recovery_integrated": true,
+  "controller_lifecycle_audit": "docs/usb/controller-lifecycle-audit.json",
+  "Native_PM_scalar_frame_updates_serialized_with_observer": true,
+  "cold_PM_frame_epoch_recreated_with_new_Native_HCD": true
+}

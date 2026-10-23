@@ -1,0 +1,114 @@
+{
+  "msm8998.dtsi": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/adc218676eef25575469234709c2d87185ca223a/arch/arm64/boot/dts/qcom/msm8998.dtsi",
+    "sha256": "a939e05d08e3f239877d300801fbc7afce6617fc24347f94683238fe65793392"
+  },
+  "a5xx_gpu.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/adc218676eef25575469234709c2d87185ca223a/drivers/gpu/drm/msm/adreno/a5xx_gpu.c",
+    "sha256": "de1963851ba66ec013519a5bde67f483e2026773056c4b2f285a9c026c5928db"
+  },
+  "a5xx.xml": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/adc218676eef25575469234709c2d87185ca223a/drivers/gpu/drm/msm/registers/adreno/a5xx.xml",
+    "sha256": "5d77e21ffdb5a82e8f26b37f00f26404b67be2a70c7f333fd7748c15416f0466"
+  },
+  "adreno_device.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/adc218676eef25575469234709c2d87185ca223a/drivers/gpu/drm/msm/adreno/adreno_device.c",
+    "sha256": "4fb2087954685f4c5fab7e44cce5a3348bba0cfdd4cbe44ea76f3bf938b3c814"
+  },
+  "a5xx_catalog.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/adc218676eef25575469234709c2d87185ca223a/drivers/gpu/drm/msm/adreno/a5xx_catalog.c",
+    "sha256": "d4ad6376f7fc706166f59f4181429964c14839986faf60a501f8bc753ce9e18b"
+  },
+  "adreno_gpu.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/adc218676eef25575469234709c2d87185ca223a/drivers/gpu/drm/msm/adreno/adreno_gpu.c",
+    "sha256": "e6b5203fb56358d22542197bd251c1513dc2b2f1ae8aaf3f9d9fca129f6f00b7"
+  },
+  "a5xx_power.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/adc218676eef25575469234709c2d87185ca223a/drivers/gpu/drm/msm/adreno/a5xx_power.c",
+    "sha256": "b6458b82756848e4abc8443bda03e90d2d99d57ef92487929945b3888304357a"
+  },
+  "adreno_pm4.xml": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/adc218676eef25575469234709c2d87185ca223a/drivers/gpu/drm/msm/registers/adreno/adreno_pm4.xml",
+    "sha256": "ab27047cc9cde4bc5996d6eb528fbb2dbdfdd9dc4515f75bbbada43a23809536"
+  },
+  "adreno_common.xml": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/adc218676eef25575469234709c2d87185ca223a/drivers/gpu/drm/msm/registers/adreno/adreno_common.xml",
+    "sha256": "c733db8294d0bedc6191044b7a6acfc81495ba1f294c3108746999c596cf5e58"
+  },
+  "arm-smmu.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/adc218676eef25575469234709c2d87185ca223a/drivers/iommu/arm/arm-smmu/arm-smmu.h",
+    "sha256": "ed85998794695d1a824dc1b86f680c8d124546688fd2665e00e3cbcfa9546b53"
+  },
+  "arm-smmu.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/adc218676eef25575469234709c2d87185ca223a/drivers/iommu/arm/arm-smmu/arm-smmu.c",
+    "sha256": "d5a22b62915e52d2f01744fc68507a8bdf626b68fe090bef6a66a633ecb4fb4a"
+  },
+  "arm-smmu-qcom.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/adc218676eef25575469234709c2d87185ca223a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c",
+    "sha256": "75760784bbf68942a4055acdc0886c3559c4993fd49e39e0a3abc20f5f52be44"
+  },
+  "adreno_gpu.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/adc218676eef25575469234709c2d87185ca223a/drivers/gpu/drm/msm/adreno/adreno_gpu.h",
+    "sha256": "7bdabea1ae7310697e0e2a4e0353cff2a7cf0ac2af746e5418e249d4584c86df"
+  },
+  "msm_gpu.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/adc218676eef25575469234709c2d87185ca223a/drivers/gpu/drm/msm/msm_gpu.h",
+    "sha256": "6c461e0bd0fd37e10dc5c25990c31e342273e936862826d5ae42cbf707d999e0"
+  },
+  "adreno_ringbuffer.c": {
+    "url": "https://raw.githubusercontent.com/LineageOS/android_kernel_qcom_msm8998/d152ec623891d141ad5231ef5033c068e82ba1b1/drivers/gpu/msm/adreno_ringbuffer.c",
+    "sha256": "12e81a379e1a3b7e4c20c455c19ea9c3c1ad0892dee9d21c091b729b685fce9b"
+  },
+  "adreno_a5xx.c": {
+    "url": "https://raw.githubusercontent.com/LineageOS/android_kernel_qcom_msm8998/d152ec623891d141ad5231ef5033c068e82ba1b1/drivers/gpu/msm/adreno_a5xx.c",
+    "sha256": "10fad4b91bd3140ad2c7c958a06324248aed0b11b77fd147cc1660e6ccd7e486"
+  },
+  "adreno_a5xx_snapshot.c": {
+    "url": "https://raw.githubusercontent.com/LineageOS/android_kernel_qcom_msm8998/d152ec623891d141ad5231ef5033c068e82ba1b1/drivers/gpu/msm/adreno_a5xx_snapshot.c",
+    "sha256": "e87f0c11fac2b9c87632950f6fb6ab36a4cfd1bdcae9035766161d8864b7d754"
+  },
+  "a5xx_reg.h": {
+    "url": "https://raw.githubusercontent.com/LineageOS/android_kernel_qcom_msm8998/d152ec623891d141ad5231ef5033c068e82ba1b1/drivers/gpu/msm/a5xx_reg.h",
+    "sha256": "d611774eef5f1a470317e08cf0ab91a31d8a4d6771eb078242382c21a11ab689"
+  },
+  "freedreno_copyright.xml": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/adc218676eef25575469234709c2d87185ca223a/drivers/gpu/drm/msm/registers/freedreno_copyright.xml",
+    "sha256": "16e6fda4963d01a6d2fa6c938a26082d6f0afd0988db7f953c9e4dea38739f2f"
+  },
+  "msm_bus_bimc_adhoc.c": {
+    "url": "https://raw.githubusercontent.com/MiCode/Xiaomi_Kernel_OpenSource/3fb35ef1f0fe1f714be3df39724cbc8eb217181e/drivers/soc/qcom/msm_bus/msm_bus_bimc_adhoc.c",
+    "sha256": "ceab4933b20b846b4a689bc2d19cbda41b24ea52681c0144647fe229b2bce01f"
+  },
+  "qcom_scm.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/firmware/qcom/qcom_scm.c",
+    "sha256": "8f1fbf64363590ea3c55b5bf4267a301792948473df9d837f4efa0206b9a5001"
+  },
+  "qcom_scm.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/firmware/qcom/qcom_scm.h",
+    "sha256": "d9cc584a5ff50cf8701a7775ad0f2e94f1b46683d0549e8871847c9122394881"
+  },
+  "qcom_scm-smc.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/firmware/qcom/qcom_scm-smc.c",
+    "sha256": "e9121b279b3813b8ca3e0ac27fdcbe367b1e12cbfcbf39d75c754d3bc88f8c45"
+  },
+  "smccc-call.S": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/arch/arm64/kernel/smccc-call.S",
+    "sha256": "3b4068804287a6f675cc6d85795e3f2f03bf0ae8075b34e44624b36c51bf7421"
+  },
+  "mdt_loader.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/soc/qcom/mdt_loader.c",
+    "sha256": "ea79424add96b68c81ab9dfbde64ffac3ea5089a17259ba980c896f5d5e441ed"
+  },
+  "mdt_loader.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/include/linux/soc/qcom/mdt_loader.h",
+    "sha256": "12d1c1c8b4e420ec28af0cd8255c9d0d37d56df7bf04714a61cee99479b3a8be"
+  },
+  "arm-smmu-msm8998.c": {
+    "url": "https://raw.githubusercontent.com/LineageOS/android_kernel_qcom_msm8998/d152ec623891d141ad5231ef5033c068e82ba1b1/drivers/iommu/arm-smmu.c",
+    "sha256": "cb88c1414d11ab34d344aca0b67636f591f6a0202ec3f5a5060495fd639f6db6"
+  },
+  "adreno_iommu.c": {
+    "url": "https://raw.githubusercontent.com/LineageOS/android_kernel_qcom_msm8998/d152ec623891d141ad5231ef5033c068e82ba1b1/drivers/gpu/msm/adreno_iommu.c",
+    "sha256": "0d5393dd6e1da8a3adc924ed78ef85884e753eb0d306a53b4d254f401aaf2510"
+  }
+}

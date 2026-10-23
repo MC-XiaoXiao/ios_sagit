@@ -1,0 +1,2 @@
+# Mi 6 userdata UFS LUN only; GPT identity survives the APFS split.
+SUBSYSTEM=="block", ENV{DEVTYPE}=="disk", ENV{ID_BUS}=="usb", ENV{ID_PART_TABLE_UUID}=="98101b32-bbe2-4bf2-a06e-2bb33d000c20", OWNER="xxiao", MODE="0600"

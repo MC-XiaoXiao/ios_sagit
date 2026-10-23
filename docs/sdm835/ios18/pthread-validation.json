@@ -1,0 +1,109 @@
+{
+  "date": "2026-10-15T03:54:44.835295-07:00",
+  "status": "pthread-added-hardware-validated",
+  "added_bundle": "com.apple.kec.pthread",
+  "native_version": "1",
+  "native_AppleKernelExternalComponent_preserved": true,
+  "startup_path": "KLDBootstrap::loadKernelComponentKexts -> native pthread module start -> pthread_kext_register -> bsd_init pthread_init",
+  "kernel_startup_order_changed": false,
+  "callbacks_faked": false,
+  "security_checks_bypassed": false,
+  "kernelcache": {
+    "path": "build/output/kernelcache.sdm835.platform",
+    "sha256": "89d36b13451fad883ac97ed434f62e381b4f24ef11bb541e0b3a7205e0a5b106",
+    "bytes": 25395200,
+    "kext_count": 28,
+    "local_kernel_sha256": "aebc0007df19f384e2a9ffdc6714c3a9b63cb52d2b4d3fd17c834943b1657a80",
+    "integrity": {
+      "modules": [
+        {
+          "bundle": "com.apple.kec.corecrypto",
+          "algorithm": "HMAC-SHA256",
+          "hashed_bytes": 335056,
+          "hmac_offset": 20587968,
+          "hmac": "b8f03f8cad3edb531e3faf5908c6384514a19fed6c337343531816ba65dc27b3"
+        }
+      ]
+    },
+    "verification": "docs/sdm835/ios18/pthread-kernelcache-verification.json"
+  },
+  "bridge": {
+    "path": "build/pthread-diagnosis/bridge/XnuBridge.efi",
+    "sha256": "e22d0f3b75d2e3b4f73ef404462a53764e4a1cb807096aaca1e5f6d5a23735a0",
+    "requested_watchdog_seconds": 31,
+    "device_tree_source": "/home/xxiao/Projects/MI6_iOS/device_trees/xiaomi-sagit.dts",
+    "dual_console": true
+  },
+  "checks": {
+    "kernel_entry": true,
+    "rtc_ready": true,
+    "calendar_initialized": true,
+    "bsd_buffers_initialized": true,
+    "network_threads_initialized": true,
+    "loopback_initialized": true,
+    "pthread_panic_absent": true,
+    "all_panic_strings_absent": true,
+    "root_media_wait_reached": true,
+    "watchdog_recovered": true
+  },
+  "host_checks": {
+    "patcher_ctest": 5,
+    "kernelcache_python_tests": 23,
+    "platform_driver_tests": [
+      "arm-platform-config",
+      "gicv3",
+      "gcc",
+      "rtc"
+    ],
+    "collection_verification": "passed"
+  },
+  "hardware_report": "build/pthread-diagnosis/hardware-1/report.json",
+  "hardware_log": "docs/sdm835/ios18/pthread-hardware-uart.txt",
+  "evidence": [
+    {
+      "line": 151,
+      "text": "[XNU RTC] waiting for IORTC"
+    },
+    {
+      "line": 182,
+      "text": "QcomSPMI: PM8998 RTC boot seconds=94969"
+    },
+    {
+      "line": 196,
+      "text": "[XNU RTC] IORTC ready"
+    },
+    {
+      "line": 197,
+      "text": "[XNU RTC] calendar initialized"
+    },
+    {
+      "line": 199,
+      "text": "mbinit: done [64 MB total pool size, (64/0) split]"
+    },
+    {
+      "line": 200,
+      "text": "dlil_init: Waiting for all the create dlil kernel threads to get scheduled at least once."
+    },
+    {
+      "line": 201,
+      "text": "dlil_init: All the created dlil kernel threads have been scheduled at least once. Proceeding."
+    },
+    {
+      "line": 202,
+      "text": "ifnet_attach: All kernel threads created for interface lo0 have been scheduled at least once. Proceeding."
+    },
+    {
+      "line": 214,
+      "text": "Waiting on <dict ID=\"0\"><key>IOProviderClass</key><string ID=\"1\">IOMedia</string><key>Content</key><string ID=\"2\">Apple_HFS</string></dict>"
+    }
+  ],
+  "current_blocker": "Waiting for an IOMedia root device with Content=Apple_HFS. RTC/calendar, pthread and network/lo0 initialization passed. No panic observed in the final test. No mountable root filesystem has been handed off; full userspace boot is not complete.",
+  "full_boot_completed": false,
+  "partitions_written": false,
+  "device_reset_required": true,
+  "fastboot_product_probe_passed": false,
+  "fastboot_product_probe_log": "build/pthread-diagnosis/final-fastboot-probe.log",
+  "rtc_validation": "docs/sdm835/ios18/rtc-validation.json",
+  "cleanup_uart_log": "build/pthread-diagnosis/cleanup-uart.txt",
+  "device_recovery": "Firmware reboot captured; USB transport not responding after cleanup."
+}

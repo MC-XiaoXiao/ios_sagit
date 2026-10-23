@@ -1,0 +1,308 @@
+{
+  "status": "Native-ISO-flow-and-device-suspend-integrated-models-validated-system-PM-and-full-driver-incomplete",
+  "native_header": "drivers/include/IOKit/usb/IOUSBHostIsochronous.h",
+  "schedule_backend": "drivers/usb/QcomUSB/XHCIIsochronous.h",
+  "request_backend": "drivers/usb/QcomUSB/XHCIRequests.h",
+  "range_copy_backend": "drivers/usb/QcomUSB/USBHostDMA.h",
+  "core_backend": "drivers/usb/QcomUSB/XHCICore.h",
+  "tests": "tests/xhci_isochronous_test.cpp",
+  "native_evidence": {
+    "file": "build/usb/host-isochronous-native-evidence.json",
+    "image_sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+    "sha256": "a92419db1e063348192b63e46c3849ab8b8bb5ace56e785592a725450589ba9a"
+  },
+  "native_layout": {
+    "legacy_frame_bytes": 24,
+    "transaction_bytes": 28,
+    "transaction_fields": {
+      "status": 0,
+      "requestCount": 4,
+      "offset": 8,
+      "completeCount": 12,
+      "timeStamp": 16,
+      "options": 24
+    },
+    "request_getters": {
+      "startFrame": {
+        "slot": 29,
+        "width_bits": 64,
+        "offset": 536
+      },
+      "frameList": {
+        "slot": 30,
+        "width_bits": 64,
+        "offset": 552
+      },
+      "numFrames": {
+        "slot": 31,
+        "width_bits": 32,
+        "offset": 544
+      }
+    },
+    "Wrap_option_bit": 0,
+    "Native_IOLength_is_memory_coverage_not_sum": true,
+    "Native_prepare_rejects_uint32_offset_count_overflow": true,
+    "legacy_conversion_is_Native_owned": true
+  },
+  "timing": {
+    "IST_read_from_HCSPARAMS2": true,
+    "IST_converted_to_microframes": true,
+    "CFC_read_from_HCCPARAMS1_bit": 11,
+    "Native_firstFrame_units": "1ms",
+    "microframe_units_ns": 125000,
+    "start_window": "currentFrame + ceil(IST_microframes / 8) + 1",
+    "end_window": "currentFrame + 895",
+    "explicit_firstFrame_must_align_to_ESIT": true,
+    "low_millisecond_bits_checked_against_MFINDEX": true,
+    "full_64bit_frame_number_preserved": true,
+    "future_outside_window_returns": "Pending",
+    "past_window_returns": "Timeout",
+    "explicit_frame_requires_CFC": false,
+    "ASAP_uses_SIA": true,
+    "ESIT_less_than_1ms_repeats_Frame_ID": true,
+    "ESIT_at_least_1ms_uses_aligned_Frame_ID": true,
+    "recheck_before_publication_required": true,
+    "caller_must_preserve_ESIT_order_and_start_empty_flow_at_first_ESIT": true,
+    "query_wrapper_observes_wraps_before_Native_seqlock_snapshot": true,
+    "fresh_coherent_frame_and_raw_sample_before_each_publication": true,
+    "snapshot_retries": 3,
+    "future_window_and_capacity_retry_timer_ms": 1,
+    "empty_or_unsynchronized_explicit_flow_restarts_at_first_ESIT_of_frame": true,
+    "Ring_Overrun_Underrun_clear_software_continuation": true,
+    "per_frame_past_window_status": "kIOReturnIsoTooOld",
+    "per_frame_timestamp": "mach_absolute_time at terminal-event processing or software completion",
+    "PM_resynchronization_implemented": false,
+    "CFC_means_contiguous_Frame_ID_checking_not_first_Frame_ID_support": true,
+    "Frame_ID_window_applies_only_to_Frame_ID_TDs": true,
+    "known_contiguous_SIA_may_exceed_895ms_end_window": true,
+    "flow_end_requires_actual_Ring_Overrun_Underrun_or_fresh_endpoint_context": true,
+    "software_empty_queue_does_not_prove_flow_end": true,
+    "nonCFC_gap_waits_for_actual_empty_event": true,
+    "first_TD_after_flow_end_starts_first_ESIT_of_frame": true
+  },
+  "dma": {
+    "Family_prepared_MD_retained_without_prepare_or_complete": true,
+    "CPU_copy_uses_Native_offset": true,
+    "wrap_can_cross_MD_end_more_than_once": true,
+    "private_DMA_payload_is_compact_and_64K_aligned": true,
+    "IN_only_actual_bytes_copied": true,
+    "gaps_and_uncompleted_tail_preserved": true,
+    "OUT_does_not_modify_Native_MD": true,
+    "one_payload_retires_while_other_payload_is_DMA_owned": true,
+    "unmap_precedes_IN_copy": true,
+    "failed_unmap_keeps_hardware_and_Native_MD": true,
+    "retry_preserves_copy_arguments_and_copies_once": true
+  },
+  "transfer": {
+    "actual_TransferQueue_and_CommandQueue_used": true,
+    "multiple_ISO_payloads_can_be_pending_on_same_endpoint": true,
+    "Link_prefix_uses_non_IOC_No_op_TDs": true,
+    "queue_capacity_retry_recomputes_padding_for_current_cursor": true,
+    "queue_owner_epoch_identity_and_terminal_record_proofs_preserved": true,
+    "endpoint_Stop_SetDequeue_or_controller_isolation_required_for_cancelled_DMA": true
+  },
+  "native_ioGated_ISO_admission_enabled": true,
+  "Native_multiframe_request_worker_integrated": true,
+  "Native_per_frame_completion_and_legacy_lifecycle_audited": true,
+  "Native_iso_request_error_and_missed_service_handling_complete": true,
+  "Native_stream_restart_and_PM_clock_resynchronization_complete": false,
+  "kernel_arm64_ISO_prepare_body_instantiated": true,
+  "kernel_runtime_tested": false,
+  "hardware_tested": false,
+  "matching_personality_enabled": false,
+  "remaining": [
+    "Complete controller/system PM and frame-clock reset/resynchronization; device pipe suspend/resume is integrated.",
+    "Implement Native bundled request buffers and remaining stream capability hooks.",
+    "Complete Host TT error-buffer/current budgeting and Device/platform/OTG lifecycle before enabling controller matching.",
+    "Complete kernelcache integration and driver work before kernel/runtime or hardware tests."
+  ],
+  "primary_specification": {
+    "title": "Intel xHCI Requirements Specification, revision 1.2, May 2019",
+    "url": "https://www.intel.com/content/dam/www/public/us/en/documents/technical-specifications/extensible-host-controler-interface-usb-xhci.pdf",
+    "file": "build/usb/xhci-specification.pdf",
+    "sha256": "9257ca24f34bff08e6020623f707c788ca0f0df657aa713309ff489a68b1731e",
+    "sections": [
+      "4.10.1.1",
+      "4.11.2",
+      "4.11.5.2",
+      "4.11.7.1",
+      "6.4.1",
+      "6.4.2.1",
+      "4.10.2",
+      "4.10.3.2",
+      "4.14.2.1.1",
+      "4.14.2.1.3",
+      "6.4.5",
+      "4.6.6",
+      "4.6.8"
+    ],
+    "uses_common_xhci_1_0_1_1_event_data_and_transfer_formats": true,
+    "controller_specific_1_2_features_not_enabled": true,
+    "ISO_sections": [
+      "4.11.2.5",
+      "4.11.2.5.1",
+      "4.14.2.1.4"
+    ],
+    "capability_fields": [
+      "HCSPARAMS2.IST",
+      "HCCPARAMS1.CFC"
+    ]
+  },
+  "completion_analysis": {
+    "file": "build/usb/host-isochronous-completion-analysis.json",
+    "sha256": "ab773a7c3eea18f4fb0c1cc599750188629cf68bd7c0cdbefa9d7f077443d0bb",
+    "complete": true
+  },
+  "supported_scheduling": "Explicit first Frame ID with or without CFC; non-CFC contiguous SIA; CFC per-TD Frame ID; anchored SIA for long ESIT; ASAP/SIA",
+  "runtime_source": "drivers/usb/QcomUSB/QcomUSBHost.cpp",
+  "window": {
+    "payloads_per_pipe": 128,
+    "payloads_per_controller": 256,
+    "TransferQueue_records_per_pipe": 128,
+    "ring_data_capacity_TRBs": 254,
+    "all_Native_frames_not_copied_or_allocated_at_admission": true,
+    "lookahead_crosses_Native_request_boundaries": true,
+    "Native_request_round_robin_preparation": true,
+    "endpoint_submission_FIFO": true,
+    "CPU_publication_FIFO_across_Native_requests": true,
+    "one_shared_serial_request_worker": true,
+    "worker_operation_budget": 128,
+    "unprepared_cancel_publication_batch": 64,
+    "EP0_and_final_Native_handoffs_interleaved": true,
+    "Native_request_limits": {
+      "per_pipe": 64,
+      "per_controller": 256
+    }
+  },
+  "completion": {
+    "update_slot": 19,
+    "update_return": "IOReturn",
+    "Common_forwarder_bytes_pinned": true,
+    "concrete_Native_update_76_bytes_pinned": true,
+    "private_DMA_unmap_and_IN_copy_before_modern_result": true,
+    "modern_status_published_after_count_and_timestamp_release_fence": true,
+    "Native_update_called_once_per_frame_in_order": true,
+    "legacy_conversion_owned_by_Native": true,
+    "all_frame_payloads_and_queue_retains_retired_before_final_enqueue": true,
+    "original_Native_pointer_detached_before_enqueue": true,
+    "Native_completer_enqueue_once_outside_HCD_gates": true,
+    "Native_complete21_owns_stage1_filter_MD_complete_and_client_callback": true,
+    "HCD_duplicate_stage1_call_removed": true,
+    "aggregate_byte_count_accumulated_in_uint64": true,
+    "Native_uint32_aggregate_byte_count_saturates": true,
+    "failed_unmap_pins_request_without_publication_or_callback": true,
+    "HCD_stage0_reports_admission_and_rejection": true
+  },
+  "events": {
+    "Missed_Service_code": 23,
+    "MSE_pointer_must_reference_live_ISO_payload_not_No_op_or_ED": true,
+    "MSE_may_retire_ordered_skipped_prefix_after_Event_Ring_full": true,
+    "MSE_discards_payload_and_reports_IsoTooOld": true,
+    "MSE_does_not_stop_endpoint": true,
+    "Ring_Underrun_Overrun_codes": [
+      14,
+      15
+    ],
+    "empty_events_never_release_DMA": true,
+    "nonhalting_per_TD_USB_error_codes": [
+      2,
+      3,
+      4,
+      31
+    ],
+    "per_TRB_residue_includes_only_prior_executed_payload_fragments": true,
+    "valid_error_prefix_copied_before_publishing_completeCount": true,
+    "later_TDs_remain_owned_and_continue": true,
+    "malformed_order_pointer_or_residue_faults_controller": true,
+    "unexpected_stall_or_TRB_error_faults_controller": true,
+    "retired_ED_cookie_ignored_only_if_no_active_request_owns_it": true,
+    "codes_accepted_while_endpoint_recovery_owns_DMA": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      13,
+      23,
+      26,
+      27,
+      28,
+      31
+    ],
+    "nonCFC_or_SIA_MSE_starts_resynchronization": true,
+    "only_already_published_ambiguous_TDs_quarantined": true,
+    "unpublished_Native_frames_preserved": true,
+    "Ring_empty_after_final_Native_handoff_is_valid": true,
+    "unexpected_empty_with_published_TDs_starts_resynchronization": true,
+    "Stop_gap_Link_events_require_actual_fresh_retained_Stop_command": true,
+    "Stop_gap_Link_events_never_retire_DMA": true
+  },
+  "cancellation": {
+    "endpoint_wide_for_ISO": true,
+    "all_submitted_payloads_quarantined": true,
+    "actual_retained_Stop_or_Reset_and_SetDequeue_records_required": true,
+    "controller_isolation_alternative": true,
+    "every_affected_Native_request_and_frame_accounted": true,
+    "already_hardware_completed_frames_win_over_late_cancel": true,
+    "unprepared_frames_completed_without_DMA_allocation": true,
+    "Native_completion_waits_for_all_frame_cleanup": true,
+    "recovery_priority_precedes_CPU_copy_cleanup": true,
+    "ISO_recovery_requires_fresh_Drop_Add_before_new_hardware_work": true,
+    "fresh_context_checks_actual_output_endpoint_Running_and_dequeue_DCS": true,
+    "unpublished_ready_payloads_rebind_only_dequeue_and_cycle": true,
+    "device_lease_for_restart_is_never_waited_on_by_request_worker": true,
+    "cancelled_or_invalid_ready_frames_drain_while_context_restart_pending": true,
+    "device_suspend_uses_SP_Stop_and_new_Set_Dequeue": true,
+    "empty_ISO_also_requires_fresh_context_after_pause": true
+  },
+  "offline_models": {
+    "cross_request_pipeline_frames": 120,
+    "Native_request_owners_in_pipeline": 3,
+    "maximum_IST_56_microframes_used_in_pipeline_schedule": true,
+    "three_cursor_order_and_64bit_aggregate_checked": true,
+    "partial_completion_then_endpoint_cancel_and_unprepared_frame_checked": true,
+    "collapsed_MSE_prefix_and_No_op_ED_residue_rejection_checked": true,
+    "USB_errors_preserve_valid_prefix_and_following_owned_TD": true,
+    "fragmented_payload_residue_checked": true,
+    "ASan_UBSan": true,
+    "Native_worker_arm64_compiled": true,
+    "Native_worker_executed_in_kernel": false,
+    "CFC_and_nonCFC_flow_frames_each": 24,
+    "software_empty_vs_actual_empty_gap_proof": true,
+    "ASAP_anchor_transition_and_64bit_counter": true,
+    "long_ESIT_continuation_beyond_Frame_ID_window": true,
+    "pending_Stop_event_authentication_and_no_DMA_retirement": true,
+    "ready_payload_policy_checked_rebind_and_retiming": true,
+    "Link_padding_retiming_survives_busy_retry": true,
+    "ISO_device_suspend_aborts_with_real_SP_Stop_and_Set_Dequeue": "tests/xhci_power_test.cpp"
+  },
+  "lifecycle_evidence": {
+    "file": "build/usb/host-isochronous-lifecycle-evidence.json",
+    "sha256": "c7598e56d56165cc1f4c40b3e55c4ef6cfa0466bb0d8517c1c8cd9964845be6e"
+  },
+  "packet_filter_evidence": {
+    "file": "build/usb/host-packet-filter-evidence.json",
+    "sha256": "306e1e5fc80b276665852d2618b7889ad849901751663d455ae60f1ecbe4b5c4"
+  },
+  "flow_evidence": {
+    "file": "build/usb/host-isochronous-flow-evidence.json",
+    "sha256": "e0a65f8b34f54737a77052dc98c21259e1d3ea45ba71ddfbaadaf10b2c02f978"
+  },
+  "flow": {
+    "class": "XHCI::IsochronousFlow",
+    "state_per_pipe": true,
+    "pending_descriptor_retimed_immediately_before_publication": true,
+    "published_descriptor_never_retimed": true,
+    "first_Frame_ID_supported_without_CFC": true,
+    "nonCFC_later_TDs_use_SIA": true,
+    "ASAP_can_preserve_known_anchor": true,
+    "unknown_ASAP_to_nonCFC_explicit_waits_for_gap": true,
+    "overlapping_explicit_targets_report_IsoTooOld": true,
+    "long_ESIT_anchored_SIA_supported": true
+  },
+  "device_pipe_power_audit": "docs/usb/host-power-audit.json",
+  "Native_device_suspend_resume_hooks_integrated": true,
+  "hub_runtime_audit": "docs/usb/host-hub-audit.json",
+  "Native_registered_hub_and_routed_TT_slot_hooks_integrated": true
+}

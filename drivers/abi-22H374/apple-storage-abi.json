@@ -1,0 +1,137 @@
+{
+  "bundle_identifier": "com.apple.iokit.IOStorageFamily",
+  "bundle_version": "2.1",
+  "image_sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+  "architecture": "arm64",
+  "classes": {
+    "IOService": {
+      "instance_size": 136,
+      "vtable_slots": 168
+    },
+    "IOBlockStorageDevice": {
+      "super": "IOService",
+      "instance_size": 144,
+      "vtable_slots": 190
+    },
+    "IOStorage": {
+      "super": "IOService",
+      "instance_size": 144,
+      "vtable_slots": 180
+    },
+    "IOMedia": {
+      "super": "IOStorage",
+      "instance_size": 208,
+      "vtable_slots": 191
+    }
+  },
+  "required_symbols": [
+    "__ZN20IOBlockStorageDevice10gMetaClassE",
+    "__ZN20IOBlockStorageDevice11requestIdleEv",
+    "__ZN20IOBlockStorageDevice13doSetPriorityEP26IOBlockStorageDeviceExtentjh",
+    "__ZN20IOBlockStorageDevice13setPropertiesEP8OSObject",
+    "__ZN20IOBlockStorageDevice18doSynchronizeCacheEv",
+    "__ZN20IOBlockStorageDevice18getWriteCacheStateEPb",
+    "__ZN20IOBlockStorageDevice18setWriteCacheStateEb",
+    "__ZN20IOBlockStorageDevice20doGetProvisionStatusEyyPjP35IOBlockStorageProvisionDeviceExtenty",
+    "__ZN20IOBlockStorageDevice4initEP12OSDictionary",
+    "__ZN20IOBlockStorageDevice7doUnmapEP26IOBlockStorageDeviceExtentjj",
+    "__ZN20IOBlockStorageDeviceC2EPK11OSMetaClass",
+    "__ZN20IOBlockStorageDeviceD2Ev",
+    "__ZNK20IOBlockStorageDevice11getPropertyEPK8OSSymbol",
+    "__ZTV20IOBlockStorageDevice",
+    "__ZN7IOMedia9metaClassE"
+  ],
+  "virtual_symbols": {
+    "__ZN20IOBlockStorageDevice4initEP12OSDictionary": {
+      "class": "IOBlockStorageDevice",
+      "slot": 21
+    },
+    "__ZNK20IOBlockStorageDevice11getPropertyEPK8OSSymbol": {
+      "class": "IOBlockStorageDevice",
+      "slot": 33
+    },
+    "__ZN20IOBlockStorageDevice13setPropertiesEP8OSObject": {
+      "class": "IOBlockStorageDevice",
+      "slot": 44
+    },
+    "__ZN20IOBlockStorageDevice18doSynchronizeCacheEv": {
+      "class": "IOBlockStorageDevice",
+      "slot": 171
+    },
+    "__ZN20IOBlockStorageDevice18getWriteCacheStateEPb": {
+      "class": "IOBlockStorageDevice",
+      "slot": 182
+    },
+    "__ZN20IOBlockStorageDevice18setWriteCacheStateEb": {
+      "class": "IOBlockStorageDevice",
+      "slot": 183
+    },
+    "__ZN20IOBlockStorageDevice11requestIdleEv": {
+      "class": "IOBlockStorageDevice",
+      "slot": 185
+    },
+    "__ZN20IOBlockStorageDevice7doUnmapEP26IOBlockStorageDeviceExtentjj": {
+      "class": "IOBlockStorageDevice",
+      "slot": 186
+    },
+    "__ZN20IOBlockStorageDevice13doSetPriorityEP26IOBlockStorageDeviceExtentjh": {
+      "class": "IOBlockStorageDevice",
+      "slot": 187
+    },
+    "__ZN20IOBlockStorageDevice20doGetProvisionStatusEyyPjP35IOBlockStorageProvisionDeviceExtenty": {
+      "class": "IOBlockStorageDevice",
+      "slot": 189
+    },
+    "__ZNK7IOMedia21getPreferredBlockSizeEv": {
+      "class": "IOMedia",
+      "slot": 180
+    },
+    "__ZNK7IOMedia7getSizeEv": {
+      "class": "IOMedia",
+      "slot": 181
+    },
+    "__ZNK7IOMedia7getBaseEv": {
+      "class": "IOMedia",
+      "slot": 182
+    },
+    "__ZNK7IOMedia11isFormattedEv": {
+      "class": "IOMedia",
+      "slot": 184
+    },
+    "__ZNK7IOMedia7isWholeEv": {
+      "class": "IOMedia",
+      "slot": 185
+    },
+    "__ZNK7IOMedia10isWritableEv": {
+      "class": "IOMedia",
+      "slot": 186
+    }
+  },
+  "note": "iPad iOS 18 provider class/virtual layout. IOBlockStorageDevice subclass slots and the IOMedia slots used by RMTFS have compiler checks. IOMedia getter bodies are pinned to actual image bytes; these checks do not certify the entire storage API or any device I/O.",
+  "function_bindings": {
+    "__ZNK7IOMedia21getPreferredBlockSizeEv": {
+      "address": "0xfffffff00592e5c0",
+      "bytes": "006440f9c0035fd6"
+    },
+    "__ZNK7IOMedia7getSizeEv": {
+      "address": "0xfffffff00592e5c8",
+      "bytes": "005440f9c0035fd6"
+    },
+    "__ZNK7IOMedia7getBaseEv": {
+      "address": "0xfffffff00592e5d0",
+      "bytes": "005040f9c0035fd6"
+    },
+    "__ZNK7IOMedia11isFormattedEv": {
+      "address": "0xfffffff00592e5e4",
+      "bytes": "085440f9a80000b4086440f91f0100f1e0079f1ac0035fd600008052c0035fd6"
+    },
+    "__ZNK7IOMedia7isWholeEv": {
+      "address": "0xfffffff00592e60c",
+      "bytes": "00704239c0035fd6"
+    },
+    "__ZNK7IOMedia10isWritableEv": {
+      "address": "0xfffffff00592e604",
+      "bytes": "00744239c0035fd6"
+    }
+  }
+}

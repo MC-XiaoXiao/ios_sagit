@@ -1,0 +1,48 @@
+// SPDX-License-Identifier: BSD-2-Clause
+/dts-v1/;
+/include/ "sm8150.dtsi"
+/ {
+    model = "SM8150 Bring-up";
+    compatible = "qcom,sm8150";
+    target-type = "SM8150";
+    platform-name = "SM8150";
+    product {
+        product-name = "SM8150 Bring-up";
+        product-soc-name = "Qualcomm Snapdragon 855";
+    };
+    options {};
+    // Zero placeholders only. EFI must allocate RAM and preserve every
+    // firmware carveout; raw boot requires the actual board's usable map.
+    memory@0 { device_type = "memory"; reg = <0 0 0 0>; };
+    pram@0 { reg = <0 0 0 0>; };
+    chosen {
+        // No UART phandle or stdout-path is published by default.
+        xnu,allow-no-uart = <1>;
+        // Start on the boot CPU; expand with --cpus only after PSCI/GIC tests.
+        bootargs = "-v debug=0x14a keepsyms=1 cpus=1";
+        debug-enabled = <1>;
+        embedded-panic-log-size = <0x100000>;
+        nvram-bank-size = <0x4000>;
+        nvram-bank-count = <1>;
+        nvram-current-bank = <0>;
+        crypto-hash-method = "sha2-384";
+        amfi-only-platform-code = <1>;
+        dram-base = /bits/ 64 <0>;
+        dram-size = /bits/ 64 <0>;
+        firmware-version = "SM8150 XNU bridge";
+        // Identity is deliberately absent. Zero identity placeholders invoke
+        // the bridge's MSM8998 ChipInfo firmware ABI, not verified on SM8150.
+        // A board must supply real values or a verified firmware identity path.
+        random-seed = [00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                       00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                       00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+                       00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00];
+        manifest-properties {};
+        memory-map {
+            Kernel = /bits/ 64 <0 0>;
+            DeviceTree = /bits/ 64 <0 0>;
+            BootArgs = /bits/ 64 <0 0>;
+            PanicLog = /bits/ 64 <0 0>;
+        };
+    };
+};

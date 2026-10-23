@@ -1,0 +1,15 @@
+diff --git a/pkg/apfswrite/file.go b/pkg/apfswrite/file.go
+index 814fdba..4d8fb81 100644
+--- a/pkg/apfswrite/file.go
++++ b/pkg/apfswrite/file.go
+@@ -451,8 +451,8 @@ func fsTreeRecordLess(a, b fsTreeRecord) bool {
+ 	}
+ 	switch a.typ {
+ 	case typeDirRec:
+-		if a.hash != b.hash {
+-			return a.hash < b.hash
++		if a.hash&^0x3ff != b.hash&^0x3ff {
++			return a.hash&^0x3ff < b.hash&^0x3ff
+ 		}
+ 		return a.name < b.name
+ 	case typeXattr:

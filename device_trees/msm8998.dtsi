@@ -1,0 +1,248 @@
+// SPDX-License-Identifier: BSD-2-Clause
+/ {
+    #address-cells = <2>;
+    #size-cells = <2>;
+    interrupt-parent = <&gic>;
+    cpus {
+        #address-cells = <1>;
+        #size-cells = <0>;
+        cpu@0 { device_type = "cpu"; compatible = "qcom,kryo280"; reg = <0>; enable-method = "psci"; l2-cache-id = <0>; cluster-type = <0x45>; cluster-core-id = <0>; die-cluster-id = <0>; state = "running"; timebase-frequency = <19200000>; clock-frequency = <1900000000>; bus-frequency = <100000000>; };
+        cpu@1 { device_type = "cpu"; compatible = "qcom,kryo280"; reg = <1>; enable-method = "psci"; l2-cache-id = <0>; cluster-type = <0x45>; cluster-core-id = <1>; die-cluster-id = <0>; state = "waiting"; timebase-frequency = <19200000>; };
+        cpu@2 { device_type = "cpu"; compatible = "qcom,kryo280"; reg = <2>; enable-method = "psci"; l2-cache-id = <0>; cluster-type = <0x45>; cluster-core-id = <2>; die-cluster-id = <0>; state = "waiting"; timebase-frequency = <19200000>; };
+        cpu@3 { device_type = "cpu"; compatible = "qcom,kryo280"; reg = <3>; enable-method = "psci"; l2-cache-id = <0>; cluster-type = <0x45>; cluster-core-id = <3>; die-cluster-id = <0>; state = "waiting"; timebase-frequency = <19200000>; };
+        cpu@100 { device_type = "cpu"; compatible = "qcom,kryo280"; reg = <0x100>; enable-method = "psci"; l2-cache-id = <1>; cluster-type = <0x50>; cluster-core-id = <0>; die-cluster-id = <1>; state = "waiting"; timebase-frequency = <19200000>; };
+        cpu@101 { device_type = "cpu"; compatible = "qcom,kryo280"; reg = <0x101>; enable-method = "psci"; l2-cache-id = <1>; cluster-type = <0x50>; cluster-core-id = <1>; die-cluster-id = <1>; state = "waiting"; timebase-frequency = <19200000>; };
+        cpu@102 { device_type = "cpu"; compatible = "qcom,kryo280"; reg = <0x102>; enable-method = "psci"; l2-cache-id = <1>; cluster-type = <0x50>; cluster-core-id = <2>; die-cluster-id = <1>; state = "waiting"; timebase-frequency = <19200000>; };
+        cpu@103 { device_type = "cpu"; compatible = "qcom,kryo280"; reg = <0x103>; enable-method = "psci"; l2-cache-id = <1>; cluster-type = <0x50>; cluster-core-id = <3>; die-cluster-id = <1>; state = "waiting"; timebase-frequency = <19200000>; };
+    };
+    psci { compatible = "arm,psci-1.0", "arm,psci-0.2"; method = "smc"; };
+    // XNU's IODT mapper requires the controller on each interrupt-bearing node.
+    timer { compatible = "arm,armv8-timer"; interrupt-parent = <&gic>; interrupts = <1 1 8>, <1 2 8>, <1 3 8>, <1 0 8>; clock-frequency = <19200000>; };
+    soc: soc@0 {
+        compatible = "simple-bus";
+        #address-cells = <2>;
+        #size-cells = <2>;
+        ranges = <0 0 0 0 1 0>;
+        secure-firmware {
+            compatible = "qcom,scm-msm8998";
+            method = "smc";
+            status = "okay";
+        };
+        gcc: clock-controller@100000 {
+            compatible = "qcom,gcc-msm8998";
+            reg = <0 0x00100000 0 0x94000>;
+            #clock-cells = <1>;
+            #reset-cells = <1>;
+            #power-domain-cells = <1>;
+            // Read-only until the loader supplies a verified ownership and
+            // rail/parent retention contract. No machine-specific gate IDs.
+            status = "okay";
+        };
+        rpm: power-controller@778000 {
+            compatible = "qcom,glink-rpm";
+            reg = <0 0x00778000 0 0x7000>, <0 0x17911000 0 0x1000>;
+            // Transport owns HLOS cursors. Board rail limits are supplied as
+            // qcom,regulator-limits; no unverified PMIC voltage table here.
+            status = "okay";
+        };
+        smem: shared-memory@86000000 {
+            compatible = "qcom,msm8998-smem";
+            reg = <0 0x86000000 0 0x200000>, <0 0x01f40000 0 0x20000>;
+            // The bridge must exclude the SMEM RAM from XNU and publish
+            // /chosen/memory-map/QcomSMEM before enabling this AP owner.
+            // Modem and ADSP metadata access uses this single service.
+            status = "disabled";
+        };
+        adsp_audio: audio-transport@17911000 {
+            compatible = "qcom,msm8998-adsp-transport";
+            reg = <0 0x17911000 0 0x1000>;
+            interrupt-parent = <&gic>;
+            interrupts = <0 157 1>;
+            // Retained ADSP only. Requires a real qcom,adsp-handoff,
+            // QcomSMEM service, preallocated queues, and reserved firmware.
+            // Output also requires a second reserved PCM window and an
+            // already configured MI2S / calibrated amplifier / ADM route.
+            status = "disabled";
+        };
+        spmi: power-controller@800f000 {
+            compatible = "qcom,spmi-pmic-arb";
+            reg = <0 0x0800f000 0 0x1000>, <0 0x08400000 0 0x1000000>,
+                  <0 0x09400000 0 0x1000000>, <0 0x0a400000 0 0x220000>,
+                  <0 0x0800a000 0 0x3000>;
+            interrupt-parent = <&gic>;
+            interrupts = <0 326 4>;
+            interrupt-controller;
+            #interrupt-cells = <4>;
+            phandle = <0x101>;
+            // qcom,pm8005-regulators declares board routing and safe limits.
+            status = "okay";
+        };
+        tlmm: gpio-controller@3400000 {
+            compatible = "qcom,msm8998-pinctrl";
+            reg = <0 0x03400000 0 0xc00000>;
+            gpio-controller;
+            #gpio-cells = <2>;
+            interrupt-parent = <&gic>;
+            interrupts = <0 208 4>;
+            interrupt-controller;
+            #interrupt-cells = <2>;
+            phandle = <0x100>;
+            // Mutations and IRQ registration require qcom,owned-gpios.
+            // UART/display/storage pinmux remains owned by firmware.
+            status = "okay";
+        };
+        mmcc: clock-controller@c8c0000 {
+            compatible = "qcom,mmcc-msm8998";
+            reg = <0 0x0c8c0000 0 0x40000>, <0 0x00100000 0 0x94000>;
+            #clock-cells = <1>;
+            #reset-cells = <1>;
+            #power-domain-cells = <1>;
+            // Control requires owned-* and validated qcom,supply-points.
+            status = "okay";
+        };
+        gpucc: clock-controller@5065000 {
+            compatible = "qcom,msm8998-gpucc";
+            reg = <0 0x05065000 0 0x9000>, <0 0x00100000 0 0x94000>;
+            #clock-cells = <1>;
+            #reset-cells = <1>;
+            #power-domain-cells = <1>;
+            status = "okay";
+        };
+        osm: performance-controller@179c0000 {
+            compatible = "qcom,cpu-clock-osm-msm8998-v2";
+            reg = <0 0x179c0000 0 0x4000>;
+            // --cpu-osm-handoff reserves a record committed by the EFI bridge
+            // after per-chip CPRh calibration and HLOS OSM/ACD initialization.
+            // The native driver admits writes only after live LUT validation.
+            status = "okay";
+        };
+        gic: interrupt-controller@17a00000 {
+            compatible = "arm,gic-v3";
+            reg = <0 0x17a00000 0 0x10000>, <0 0x17b00000 0 0x100000>;
+            interrupt-controller;
+            #interrupt-cells = <3>;
+            #address-cells = <0>;
+            redistributor-stride = /bits/ 64 <0x20000>;
+        };
+        watchdog@17817000 {
+            compatible = "qcom,msm-watchdog";
+            reg = <0 0x17817000 0 0x1000>;
+            clock-frequency = <32765>;
+            status = "okay"; // QcomWatchdog takes over the bridge recovery timer.
+        };
+        uart8: serial@c1b0000 {
+            compatible = "qcom,msm-uartdm-v1.4", "qcom,msm-uartdm";
+            device_type = "serial";
+            reg = <0 0x0c1b0000 0 0x1000>;
+            interrupt-parent = <&gic>;
+            interrupts = <0 114 4>;
+            current-speed = <115200>;
+            status = "okay";
+            // Firmware owns GCC clocks, TLMM GPIO4/5 and CSR divisor.
+        };
+        bluetooth: bluetooth@c171000 {
+            // Apple platform nub aggregates the dedicated BLSP1 UART3 and
+            // its WCN3990 endpoint. Linux serdev is not the Apple bus model.
+            compatible = "qcom,wcn3990-bt";
+            reg = <0 0x0c171000 0 0x1000>;
+            interrupt-parent = <&gic>;
+            interrupts = <0 109 4>;
+            current-speed = <115200>;
+            max-speed = <3200000>;
+            // RPM rails, GCC clock references, RTS/CTS pin routing, real ROM
+            // patch and board NVM must be supplied before hardware admission.
+            status = "disabled";
+        };
+        modem: modem@4080000 {
+            compatible = "qcom,msm8998-mss-pil";
+            // Q6 STRAP_ACC at +0x110 lies outside upstream's 0x100 extent.
+            // Describe the full hardware pages explicitly for IOKit.
+            reg = <0 0x04080000 0 0x1000>, <0 0x04180000 0 0x1000>,
+                  <0 0x17911000 0 0x1000>, <0 0x01f60000 0 0x20000>;
+            reg-names = "qdsp6", "rmb", "apcs", "halt";
+            interrupt-parent = <&gic>;
+            // Direct GIC inputs. SMP2P virtual bits are decoded in software.
+            interrupts = <0 448 1>, <0 451 1>, <0 452 1>;
+            interrupt-names = "wdog", "smp2p", "glink";
+            qcom,remote-pid = <1>;
+            // Needs reserved MBA/MPSS/metadata, secure memory ownership,
+            // clocks/reset and SMEM admission before any Q6 MMIO access.
+            // Native Apple telephony binding is not yet implemented.
+            status = "disabled";
+        };
+        wifi: wifi@18800000 {
+            compatible = "qcom,wcn3990-wifi";
+            reg = <0 0x18800000 0 0x800000>;
+            reg-names = "membase";
+            interrupt-parent = <&gic>;
+            interrupts = <0 413 4>, <0 414 4>, <0 415 4>, <0 416 4>,
+                         <0 417 4>, <0 418 4>, <0 420 4>, <0 421 4>,
+                         <0 422 4>, <0 423 4>, <0 424 4>, <0 425 4>;
+            qcom,snoc-host-cap-8bit-quirk;
+            qcom,no-msa-ready-indicator;
+            // The board/loader must reserve MSA, bind the actual ANOC2
+            // SMMU streams 0x1900/0x1901, and hand off rails/XO/calibration.
+            // Initial transport publishes diagnostics only when enabled.
+            status = "disabled";
+        };
+        gpu: gpu@5000000 {
+            compatible = "qcom,adreno-540.1", "qcom,adreno";
+            reg = <0 0x05000000 0 0x40000>;
+            interrupt-parent = <&gic>;
+            interrupts = <0 300 4>;
+            // Enabling this node alone only publishes the diagnostic service.
+            // Hardware submission needs a retained-CP handoff and device IOMapper.
+            status = "disabled";
+        };
+        display: display-controller@c901000 {
+            compatible = "qcom,msm8998-dpu";
+            // iOS 18 IOMobileFramebuffer counts physical display subsystems
+            // in IODeviceTree:/arm-io before matching framebuffer services.
+            device_type = "display-subsystem";
+            reg = <0 0x0c901000 0 0x8f000>;
+            interrupt-parent = <&gic>;
+            interrupts = <0 83 4>;
+            // Enable only after the loader emits the versioned display
+            // handoff and reserves the complete scanout carveout. GOP alone
+            // does not prove clocks/PHY ownership or the active MDP topology.
+            status = "disabled";
+        };
+        dsi0: dsi@c994000 {
+            compatible = "qcom,msm8998-dsi-ctrl";
+            reg = <0 0x0c994000 0 0x400>;
+            #address-cells = <1>;
+            #size-cells = <0>;
+            status = "disabled";
+            panel0: panel@0 {
+                compatible = "qcom,dsi-panel";
+                reg = <0>;
+                status = "disabled";
+            };
+        };
+        dsi1: dsi@c996000 {
+            compatible = "qcom,msm8998-dsi-ctrl";
+            reg = <0 0x0c996000 0 0x400>;
+            #address-cells = <1>;
+            #size-cells = <0>;
+            status = "disabled";
+        };
+        ufs: storage@1da4000 {
+            compatible = "qcom,msm8998-ufshc", "qcom,ufshc", "jedec,ufs-2.0";
+            reg = <0 0x01da4000 0 0x2500>;
+            interrupt-parent = <&gic>;
+            interrupts = <0 265 4>;
+            phys = <&ufsphy>;
+            phy-names = "ufsphy";
+            // Supply the actual lane routing and prepare clocks, rails,
+            // RESET_N, NoC and the DMA domain in the platform handoff.
+            // This Linux/FDT source is not the Apple flattened DT ABI.
+            status = "disabled";
+        };
+        ufsphy: phy@1da7000 {
+            compatible = "qcom,msm8998-qmp-ufs-phy";
+            reg = <0 0x01da7000 0 0x1000>;
+            #phy-cells = <0>;
+            status = "disabled";
+        };
+    };
+};

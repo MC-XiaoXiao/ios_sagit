@@ -1,0 +1,187 @@
+{
+  "status": "Native-error-abort-timeout-close-and-default-address-TT-recovery-integrated-offline-validated-driver-incomplete",
+  "runtime_source": "drivers/usb/QcomUSB/QcomUSBHost.cpp",
+  "runtime_header": "drivers/usb/QcomUSB/QcomUSBHost.h",
+  "wire_backend": "drivers/usb/QcomUSB/XHCITTClear.h",
+  "queue_backend": "drivers/usb/QcomUSB/XHCITransfers.h",
+  "request_backend": "drivers/usb/QcomUSB/XHCIRequests.h",
+  "Native_projection_headers": [
+    "drivers/include/IOKit/usb/IOUSBHostDevice.h",
+    "drivers/include/IOKit/usb/IOUSBHostPipe.h",
+    "drivers/include/IOKit/usb/AppleUSBHostPort.h",
+    "drivers/include/IOKit/usb/StandardUSB.h"
+  ],
+  "Native_contract": "drivers/abi-22H374/apple-usb-host-abi.json",
+  "native_evidence": {
+    "file": "build/usb/host-tt-recovery-native-evidence.json",
+    "sha256": "0d4712d1048633217572b435442429863215c2fd8eef197be8abee08517921e7"
+  },
+  "native_complete_raw_disassembly": {
+    "file": "build/usb/host-tt-native-complete-disassembly.json",
+    "sha256": "7116970b83fbdb1272abf6ce32d4d2128e13347aafb9333a362ce9a34acca249"
+  },
+  "primary_specification": {
+    "file": "build/usb/xhci-specification.pdf",
+    "sha256": "9257ca24f34bff08e6020623f707c788ca0f0df657aa713309ff489a68b1731e",
+    "sections": [
+      "4.6.5 Address Device",
+      "4.6.8 Reset Endpoint",
+      "4.10.2 Transfer Events"
+    ]
+  },
+  "Native_interface": {
+    "pipe_clearStall_wrapper_and_gated_slots": [
+      43,
+      49
+    ],
+    "upstream_port_clearPipeStall_slot": 170,
+    "controller_clear_wrapper_and_gated_slots": [
+      204,
+      220
+    ],
+    "internal_device_request_direct_binding_slot": 207,
+    "HostRequestCompleter_enqueue_slot": 29,
+    "Native_internal_request_arguments": [
+      "IOService* client",
+      "8-byte StandardUSB::DeviceRequest&",
+      "void* raw buffer",
+      "IOMemoryDescriptor*",
+      "UInt32* bytes",
+      "IOUSBHostCompletion*",
+      "UInt32 timeoutMS"
+    ],
+    "Native_internal_HS_hub_self_client_requires_existing_open_session": true,
+    "original_Family_device_pipe_and_completer_objects_used": true,
+    "original_control_error_completer_calls_clearStall_false_before_Common_enqueue": true,
+    "Native_auto_clear_excludes_success_timeout_and_aborted": true,
+    "Native_HubPort_attempts_TT_before_HCD_and_CLEAR_FEATURE_is_after_HCD": true,
+    "Native_HubPort_logs_TT_failure_and_still_calls_HCD": true,
+    "Native_Hub194_uses_hub_own_address_in_this_exact_image": {
+      "confirmed_in_raw_ARM64": true,
+      "hub_receiver_register": "X19",
+      "original_pipe_register": "X20",
+      "hub_Native_device_load": "0xfffffff0065b06a4",
+      "device_address_virtual_byte_offset": "0x6a0",
+      "insert_address_bits": "0xfffffff0065b06b4"
+    },
+    "new_executable_fingerprint_bindings": 5,
+    "Host_contract_counts": {
+      "classes": 9,
+      "imports": 300,
+      "virtual_bindings": 274,
+      "fingerprints": 34
+    },
+    "EHCI_only_used_to_audit_Native_abort_toggle_policy": true
+  },
+  "implementation": {
+    "known_ordinary_error_completion_codes": [
+      2,
+      3,
+      4,
+      6,
+      36
+    ],
+    "error_latch_survives_actual_Stop_Reset_Set_Dequeue_and_reconfiguration": true,
+    "only_Native_clear220_reopens_ordinary_publication": true,
+    "TT_control_or_bulk_only_LS_FS_behind_actual_HS_ancestor": true,
+    "wire_wValue_uses_actual_child_USB_address_not_parent_address_or_slot": true,
+    "single_TT_index_1_and_multi_TT_branch_port": true,
+    "control_both_directions_bulk_original_direction": true,
+    "recovery_order": [
+      "Real Stop/Reset or continuously paused Stop proof",
+      "Independent worker sends standard TT requests through Native HS hub EP0",
+      "Real Set Dequeue and exact retained CommandQueue proof",
+      "Retire and unmap child private DMA",
+      "Hand original error request to Native completer",
+      "Native clear220 drains requests and restores empty host context",
+      "Native Pipe49 optionally sends CLEAR_FEATURE after HCD success"
+    ],
+    "Stop_record_retained_across_HS_hub_EP0_io": true,
+    "failed_TT_attempt_keeps_dirty_latch_and_prohibits_restart": true,
+    "Set_Dequeue_after_failed_TT_attempt_may_retire_DMA_but_never_reopen_pipe": true,
+    "recovery_Request_held_across_TT_io_isolation_and_final_maintenance_release": true,
+    "control_error_handoff_waits_for_maintenance_release_before_Native_auto_clear": true,
+    "Native_clear_with_active_TT_recovery_returns_NotReady_without_waiting_under_HubPort_gates": true,
+    "failed_maintenance_can_retry_asynchronously_after_Native_clear_returns": true,
+    "successful_control_retry_reenters_original_Native_clearStall_false_outside_gates": true,
+    "bulk_interrupt_Native_clear_aborts_outstanding_io_control_preserves_unpublished_client_FIFO": true,
+    "private_bounce_DMA_retirement_still_requires_real_commands_or_provider_isolation": true,
+    "no_sleeping_Native_USB_request_under_HCD_or_role_gate": true,
+    "Native_parent_EP0_is_serviced_by_independent_request_worker": true,
+    "child_and_HS_hub_maintenance_leases_block_free_and_PM_reconfiguration": true,
+    "quiesce_counts_queued_and_running_TT_work_and_joins_thread_call": true,
+    "maximum_deferred_TT_Stop_records": 16,
+    "command_pool_entries": 64,
+    "ordinary_request_entries": 255,
+    "total_request_entries_including_TT": 256,
+    "ordinary_EP0_entries": 63,
+    "EP0_entries_including_TT": 64,
+    "ordinary_TT_wire_failures_retry_without_external_Native_clear": true,
+    "TT_cleanup_can_finish_after_leaf_or_intermediate_FS_hub_retirement": true,
+    "ordinary_abort_timeout_and_close_do_not_require_Native_error_latch": true,
+    "TTBufferCleanup_is_shared_with_models": true,
+    "closing_pipe_kept_until_requests_and_TT_jobs_drain": true,
+    "independent_close_worker_avoids_Native_gate_wait": true,
+    "closing_Hub_EP0_ends_child_admission_and_prevents_old_TT_domain_reuse": true
+  },
+  "offline_tests": [
+    "All 2/3/4/6/36 errors on Control/Bulk/Interrupt with physical and ED events; no early retirement or Native reopen.",
+    "Reset and Set Dequeue clear DMA fault but retain Native halt across reconfiguration, retained completion records and admission revocation.",
+    "Native clear while transfer active closes publication until fresh actual Stop and Set Dequeue records; isolation does not reopen inactive queue.",
+    "Control short DATA then failed STATUS and prepared next FIFO request preserve original Native MD ownership and exact queue retirement.",
+    "Actual shared CommandQueue, FS child transfer and separate HS hub EP0 ring; zero-length TT requests complete while child remains quarantined until its later Set Dequeue.",
+    "Child address38 versus TT slot/parent address; single/multi TT, both control directions, bulk IN/OUT and invalid speed/address/port/endpoint inputs.",
+    "arm64 compile probes check packed setup offsets, Native method widths and original provider imports plus port170/pipe43/49 vtable positions.",
+    "LS/FS default-address recovery with both32/64-byte contexts and single/multi TT: actual hub Configure, Enable Slot5 and retained Address Device error4; no Native child or pipe.",
+    "Exact command scope rejects pending, stale, acknowledged, foreign-queue, wrong slot/owner/input, BSR, wrong command and other completion codes.",
+    "Default zero-address setup, both directions, 500ms retry fence, single/multi TT branch admission and independent Disable Slot/unmap proof.",
+    "TT owner remains live when intermediate FS hub retires; unregistering translated HS hub prevents same-lifetime reregistration.",
+    "Ordinary abort, timeout and asynchronous close behind a real TT, without Native error state; exact Stop/CLEAR/Set Dequeue ownership.",
+    "Failed close TT retry retains the pipe and DMA; active jobs, live TT owners and isolation gate final release; direct/HS/interrupt endpoints do not send TT cleanup."
+  ],
+  "verification": {
+    "command": "make test-usb",
+    "log": "build/usb/tests.log",
+    "log_sha256": "13472b3c3992b5f517c419d143c08a897e20d5cf3e7674161afa31f12d05b537",
+    "sanitizer_command": "make test-usb-sanitize",
+    "sanitizer_log": "build/usb/sanitized.log",
+    "sanitizer_log_sha256": "d344bb23b828a1702209e574b12854d5d99446576aeba077514f6cc366c3e9ee",
+    "arm64_object": "build/drivers/obj/QcomUSB/QcomUSBHost.cpp.o",
+    "arm64_object_sha256": "5316a1e6a98f921bf6380802605571ee3fe32f97c9b09cce3fee5b07ec3490f9",
+    "compiler_vtable": "build/tests/kernel/usb/2-usb_host_abi_compile.cpp.vtable.txt",
+    "compiler_vtable_sha256": "9abdcf2b0aea95edf912c892e5b39bb5d6d453647495d53cccb86134c2c1bf79",
+    "Native_workers_arm64_compiled": true,
+    "Native_workers_executed_by_offline_models": false,
+    "new_build_or_test_scripts_added": false
+  },
+  "kernel_runtime_tested": false,
+  "hardware_tested": false,
+  "controller_matching_enabled": false,
+  "full_Native_TT_error_policy_complete": false,
+  "remaining": [
+    "Complete Native hub/port registration policy, current/source budgets and bundled-buffer handling.",
+    "Complete Device extensions, authoritative boot DMA/board handoff and kernelcache closure before controller matching.",
+    "Native workers and actual hardware paths remain unexecuted; hardware testing follows driver completion."
+  ],
+  "default_address_enumeration": {
+    "backend": "drivers/usb/QcomUSB/XHCITTClear.h",
+    "actual_TTEnumerationRecovery_is_Device_state": true,
+    "armed_before_Address_Device_on_exact_queue_epoch_owner_slot_input_and_command_floor": true,
+    "only_actual_retained_completed_Address_Device_USB_Transaction_Error_4_latches_cleanup": true,
+    "BSR_no_SetAddress_commands_foreign_queue_stale_acknowledged_and_wrong_owner_records_rejected": true,
+    "original_Address_record_inspected_before_acknowledge": true,
+    "Native_child_and_pipe_are_not_created_or_fabricated": true,
+    "wire_default_address_zero_control_both_directions": true,
+    "factory_returns_failure_before_asynchronous_Native_HS_hub_request": true,
+    "single_TT_blocks_all_branches_multi_TT_blocks_only_real_branch": true,
+    "new_Address_Device_and_control_bulk_publication_in_domain_blocked_until_clear": true,
+    "failed_wire_retry_minimum_microseconds": 500000,
+    "retry_timer_poll_milliseconds": 100,
+    "failed_target_and_parent_lease_preserved_until_clear_or_owner_lifetime_closes": true,
+    "full_speed_hub_removal_below_HS_TT_owner_does_not_end_domain_or_block_direct_cleanup": true,
+    "TT_owner_unregister_with_translated_descendants_requires_new_USB_device_slot_lifetime": true,
+    "TT_clear_alone_never_retires_slot_DMA": true,
+    "failed_Disable_Slot_or_unmap_keeps_allocation_and_parent_lease": true,
+    "ordinary_TT_wire_failure_also_retries_without_early_pipe_or_device_free": true
+  }
+}

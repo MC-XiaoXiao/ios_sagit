@@ -1,0 +1,1739 @@
+{
+  "date": "2026-10-18 America/Los_Angeles",
+  "scope": "static only, no new device tests or driver edits",
+  "historical_runtime": "round115 / GPU1.109.0 / Metal0.85.0 / Display1.0.13",
+  "source_candidate": "GPU1.110.0 / diagnostic ABI5; wrapper/resource timings present; no performance claim",
+  "files": {
+    "drivers/gpu/QcomGPU/AdrenoPipeline.h": {
+      "sha256": "d905fd283319b151d4ac72c825389006affd839f86abfe6f0b43f14ee5f5f29a",
+      "bytes": 61333
+    },
+    "drivers/gpu/QcomGPU/QcomGPUNative.cpp": {
+      "sha256": "b9df01769ca99a66ee9eab62dc6df19bd15f06ca272b3a7e0d9e2ada8c6ac00a",
+      "bytes": 95538
+    },
+    "drivers/gpu/QcomGPU/QcomGPUMapper.cpp": {
+      "sha256": "932cc2d0bb026139b9f6c6b8d3e4816a26190e0a7f9401ae2b51bfcdd009541f",
+      "bytes": 33232
+    },
+    "drivers/gpu/QcomGPU/QcomGPUHardware.cpp": {
+      "sha256": "b0cc1b16ace32c27cff8a43e0b36569ad7a8e22c9d776ae93f25cbf029e29c3d",
+      "bytes": 66848
+    },
+    "drivers/include/GPUNativeCompletion.h": {
+      "sha256": "629feb48ba6336708f934f67f3f2d82ae2cac0bc847e9a365e69f994893c6b55",
+      "bytes": 2363
+    },
+    "drivers/include/GPUDiagnostics.h": {
+      "sha256": "111d04ea70ea3596e77ac3b96a3698832c9c41a116d96fcc54d77e166fd6c32b",
+      "bytes": 8228
+    },
+    "drivers/gpu/QcomMTL/QcomMTL.mm": {
+      "sha256": "88ada612ad76ae119724f70c603d77efaae79d22794fbd9ecb0e141299e5608e",
+      "bytes": 317466
+    },
+    "drivers/display/QcomDisplay/QcomDisplay.cpp": {
+      "sha256": "88ef51e87501b72522d3e3e9c7a764f37ca7fd2b317f093265707c3c23200373",
+      "bytes": 67529
+    },
+    "tools/displayctl/displayctl.mm": {
+      "sha256": "6a2248cce2b18594c32a80e368ab196628cccfd0a178884fd025d2a84d5032fc",
+      "bytes": 111118
+    },
+    "docs/gpu/ui-render-handoff.json": {
+      "sha256": "da43e8299f691e06e65487931239b8d93d3e247d549466094947c5205fab6630",
+      "bytes": 45431
+    },
+    "build/gpu-runtime/ui-admission-stages/performance.json": {
+      "sha256": "7407235d15ca4a32d462f7c70ca3820944039a5647560f8726fee5ffe4f0cbe7",
+      "bytes": 14330
+    },
+    "build/gpu-runtime/round-115-ui-acceleration-evidence.json": {
+      "sha256": "b171cdd7225706bd547dca3423ba52f233aebfa34348b37d18e5c26c3c3e7d0d",
+      "bytes": 1973
+    }
+  },
+  "historical_performance": {
+    "main_report": "round-115/report.json",
+    "metrics_report": "round-115-metrics/report.json",
+    "GPU": "1.109.0",
+    "diagnostics_ABI": 4,
+    "boot_uuid": "8532BE4D-7A1E-47B4-96DF-57CCD499045C",
+    "main_four_cpus": true,
+    "runtime_panic": false,
+    "welcome": {
+      "samples": 499,
+      "span_s": 81.63256598958333,
+      "fps": 6.100506506968641,
+      "p50_ms": 99.94338541666667,
+      "p95_ms": 299.89625,
+      "max_ms": 9117.981770833334,
+      "no_new_frame_gap_caution": "Intervals include9.12s nonewframegap; aggregateisnotcontinuousmotionfps. Compareactualtimings/distributions, do notattributeallcrossbootFPSdifferences tochange."
+    },
+    "cpu_timing": {
+      "preflight": {
+        "samples": 2160,
+        "total_ticks": 68389656,
+        "mean_ms": 1.6490561342592593
+      },
+      "ib_acquire": {
+        "samples": 2160,
+        "total_ticks": 722593,
+        "mean_ms": 0.017423635223765433
+      },
+      "encoding": {
+        "samples": 2160,
+        "total_ticks": 54266009,
+        "mean_ms": 1.308497516396605
+      },
+      "cache_prepare": {
+        "samples": 2160,
+        "total_ticks": 2167437,
+        "mean_ms": 0.05226265914351852
+      },
+      "address_space": {
+        "samples": 2160,
+        "total_ticks": 217579248,
+        "mean_ms": 5.246413194444444
+      },
+      "fence_prepare": {
+        "samples": 2160,
+        "total_ticks": 289696,
+        "mean_ms": 0.00698533950617284
+      },
+      "admission_dispatch": {
+        "samples": 2160,
+        "total_ticks": 54396009,
+        "mean_ms": 1.3116321614583335
+      },
+      "admission_total": {
+        "samples": 2160,
+        "total_ticks": 397863693,
+        "mean_ms": 9.593549696180556
+      },
+      "queue_wait": {
+        "samples": 2160,
+        "total_ticks": 126189388,
+        "mean_ms": 3.0427610918209878
+      },
+      "kick": {
+        "samples": 2160,
+        "total_ticks": 27754575,
+        "mean_ms": 0.6692364728009259
+      },
+      "poll_validation": {
+        "samples": 3828,
+        "total_ticks": 115421549,
+        "mean_ms": 1.5704124896595262
+      },
+      "run_observed": {
+        "samples": 2160,
+        "total_ticks": 590282818,
+        "mean_ms": 14.233285542052469
+      },
+      "retire_cleanup": {
+        "samples": 2160,
+        "total_ticks": 67501979,
+        "mean_ms": 1.6276518856095679
+      },
+      "native_publish": {
+        "samples": 2160,
+        "total_ticks": 2595891,
+        "mean_ms": 0.06259382233796296
+      },
+      "retire_address_space": {
+        "samples": 2160,
+        "total_ticks": 59908808,
+        "mean_ms": 1.4445603780864198
+      },
+      "retire_coherence": {
+        "samples": 2160,
+        "total_ticks": 2335360,
+        "mean_ms": 0.05631172839506173
+      },
+      "retire_surface_publish": {
+        "samples": 2160,
+        "total_ticks": 218302,
+        "mean_ms": 0.005263840663580247
+      },
+      "retire_resources": {
+        "samples": 2160,
+        "total_ticks": 592157,
+        "mean_ms": 0.014278477044753088
+      },
+      "retire_pools": {
+        "samples": 2160,
+        "total_ticks": 4342568,
+        "mean_ms": 0.10471084104938272
+      },
+      "snapshot_map": {
+        "samples": 2160,
+        "total_ticks": 54695,
+        "mean_ms": 0.0013188416280864197
+      },
+      "snapshot_copy": {
+        "samples": 2160,
+        "total_ticks": 3161921,
+        "mean_ms": 0.0762423080632716
+      },
+      "snapshot_validate": {
+        "samples": 2160,
+        "total_ticks": 82032,
+        "mean_ms": 0.0019780092592592592
+      },
+      "preflight_retire": {
+        "samples": 2160,
+        "total_ticks": 63461996,
+        "mean_ms": 1.530237172067901
+      },
+      "preflight_ticket": {
+        "samples": 2160,
+        "total_ticks": 411248,
+        "mean_ms": 0.00991628086419753
+      },
+      "index_acquire": {
+        "samples": 1402,
+        "total_ticks": 5355334,
+        "mean_ms": 0.19894696564431763
+      },
+      "index_snapshot": {
+        "samples": 5629,
+        "total_ticks": 1311991,
+        "mean_ms": 0.012139432329602653
+      },
+      "retire_indices": {
+        "samples": 2160,
+        "total_ticks": 2978698,
+        "mean_ms": 0.07182431520061729
+      },
+      "retire_commands": {
+        "samples": 2160,
+        "total_ticks": 754606,
+        "mean_ms": 0.01819555362654321
+      }
+    },
+    "gpu_execution": {
+      "samples": 2160,
+      "total_alwayson_ticks": 468949600,
+      "mean_ms": 11.307619598765433,
+      "actual_CP_hz": 595989679.334
+    },
+    "removed_exact_kernel_rows": [
+      "QcomGPU: cpu-inherited-clock cluster=0 ticks=4845923291 stable=1 rcgr-cmd=2 rcgr-cfg=301 pll-mode=7 pll-l=51 pll-word8=0 pll-user=9 pll-status=10000 decoded-hz=0 measured=0\r\n",
+      "QcomGPU: cpu-inherited-clock cluster=1 ticks=4845923291 stable=1 rcgr-cmd=2 rcgr-cfg=403 pll-mode=7 pll-l=20 pll-word8=0 pll-user=9 pll-status=10000 decoded-hz=0 measured=0\r\n",
+      "QcomGPU: clock-observation sample=30 ticks=4845923291 gpu-status=0 gpu-config-hz=596000097 cpu-lut-valid=0 pwr-desired-hz=0 perf-desired-hz=0 pwr-enable=0 pwr-index=0 pwr-counter-control=14 pwr-counter=0 perf-enable=0 perf-index=0 perf-counter-control=14 perf-counter=0 irq=2119 compositor-completed=2160\r\n",
+      "QcomGPU: execution-observation ticks=4847195734 alwayson=3042019956 stable=1 counter-hz=19200000 native-samples=2160 native-total=468949600 compositor-samples=2160 compositor-total=468949600 compositor-max=2457908 invalid=0\r\n",
+      "QcomGPU: core-clock-observation scope=compositor samples=2160 alwayson-ticks=468949600 core-cycles=14556725090 min-hz=583934693 max-hz=595999292 invalid=0 counter-writes=0\r\n",
+      "QcomGPU: rbbm-busy-observation scope=compositor samples=2160 alwayson-ticks=468949600 busy-cycles=14554618923 invalid=0 selector=6 counter-writes=0\r\n",
+      "QcomGPU: gpucc-clock-tuple stable=1 pll-mode=d0000005 pll-l=3e pll-user=7 pll-alpha=1556 rcgr-cmd=0 rcgr-cfg=101 gfx-gate=4621 crc-sid=800000 crc-mnd=15010 throttle=90000 throttle-force=0 sp-clock=8ff1 writes=0\r\n",
+      "QcomGPU: render-work-observation ticks=4848709649 native-copy-bytes=11748183552 native-primitives=2488 compositor-copy-bytes=11748183552 compositor-primitives=2488\r\n"
+    ],
+    "goal_achieved": false,
+    "controlled_animation": {
+      "samples": 601,
+      "baseline_frame_count": 499,
+      "fps": 29.97034730715519,
+      "span_s": 20.01978802083333,
+      "p50_ms": 33.33541666666666,
+      "p95_ms": 33.45875,
+      "max_ms": 50.13291666666667,
+      "CPU_delta": {
+        "preflight": {
+          "samples": 841,
+          "total_ticks": 26396184,
+          "mean_ms": 1.6347220570749108
+        },
+        "ib_acquire": {
+          "samples": 841,
+          "total_ticks": 139684,
+          "mean_ms": 0.008650663892191835
+        },
+        "encoding": {
+          "samples": 841,
+          "total_ticks": 6415617,
+          "mean_ms": 0.3973207119500594
+        },
+        "cache_prepare": {
+          "samples": 841,
+          "total_ticks": 961380,
+          "mean_ms": 0.05953849583828775
+        },
+        "address_space": {
+          "samples": 841,
+          "total_ticks": 71476574,
+          "mean_ms": 4.426561509116132
+        },
+        "fence_prepare": {
+          "samples": 841,
+          "total_ticks": 111324,
+          "mean_ms": 0.006894322235434007
+        },
+        "admission_dispatch": {
+          "samples": 841,
+          "total_ticks": 22865174,
+          "mean_ms": 1.416045754062624
+        },
+        "admission_total": {
+          "samples": 841,
+          "total_ticks": 128385374,
+          "mean_ms": 7.950937252279033
+        },
+        "queue_wait": {
+          "samples": 841,
+          "total_ticks": 1984811,
+          "mean_ms": 0.12291982510899721
+        },
+        "kick": {
+          "samples": 841,
+          "total_ticks": 10551823,
+          "mean_ms": 0.6534769495640111
+        },
+        "poll_validation": {
+          "samples": 862,
+          "total_ticks": 24561292,
+          "mean_ms": 1.4840301140757928
+        },
+        "run_observed": {
+          "samples": 840,
+          "total_ticks": 36194293,
+          "mean_ms": 2.2441897941468256
+        },
+        "retire_cleanup": {
+          "samples": 840,
+          "total_ticks": 25295274,
+          "mean_ms": 1.5684073660714286
+        },
+        "native_publish": {
+          "samples": 840,
+          "total_ticks": 1129051,
+          "mean_ms": 0.0700056423611111
+        },
+        "retire_address_space": {
+          "samples": 840,
+          "total_ticks": 23239086,
+          "mean_ms": 1.440915550595238
+        },
+        "retire_coherence": {
+          "samples": 840,
+          "total_ticks": 1017631,
+          "mean_ms": 0.06309716021825397
+        },
+        "retire_surface_publish": {
+          "samples": 840,
+          "total_ticks": 98686,
+          "mean_ms": 0.0061189236111111114
+        },
+        "retire_resources": {
+          "samples": 840,
+          "total_ticks": 252005,
+          "mean_ms": 0.01562531001984127
+        },
+        "retire_pools": {
+          "samples": 840,
+          "total_ticks": 651525,
+          "mean_ms": 0.04039713541666667
+        },
+        "snapshot_map": {
+          "samples": 841,
+          "total_ticks": 19752,
+          "mean_ms": 0.0012232461355529132
+        },
+        "snapshot_copy": {
+          "samples": 841,
+          "total_ticks": 1186722,
+          "mean_ms": 0.07349398038049941
+        },
+        "snapshot_validate": {
+          "samples": 841,
+          "total_ticks": 27687,
+          "mean_ms": 0.0017146626040428063
+        },
+        "preflight_retire": {
+          "samples": 841,
+          "total_ticks": 24546673,
+          "mean_ms": 1.520181393678161
+        },
+        "preflight_ticket": {
+          "samples": 841,
+          "total_ticks": 136299,
+          "mean_ms": 0.008441030023781214
+        },
+        "index_acquire": {
+          "samples": 821,
+          "total_ticks": 944182,
+          "mean_ms": 0.05989786337799431
+        },
+        "index_snapshot": {
+          "samples": 1662,
+          "total_ticks": 531261,
+          "mean_ms": 0.016648522111913356
+        },
+        "retire_indices": {
+          "samples": 840,
+          "total_ticks": 296711,
+          "mean_ms": 0.018397259424603175
+        },
+        "retire_commands": {
+          "samples": 840,
+          "total_ticks": 310581,
+          "mean_ms": 0.019257254464285712
+        }
+      },
+      "GPU_execution_delta": {
+        "samples": 840,
+        "alwayson_ticks": 7869436,
+        "mean_ms": 0.48793625992063494
+      },
+      "valid_20s_control": true,
+      "final_frame_age_ms": 18.109,
+      "removed_exact_kernel_rows": [
+        "QcomGPU: cpu-inherited-clock cluster=0 ticks=5442735793 stable=1 rcgr-cmd=2 rcgr-cfg=301 pll-mode=7 pll-l=51 pll-word8=0 pll-user=9 pll-status=10000 decoded-hz=0 measured=0\r\n",
+        "QcomGPU: cpu-inherited-clock cluster=1 ticks=5442735793 stable=1 rcgr-cmd=2 rcgr-cfg=403 pll-mode=7 pll-l=20 pll-word8=0 pll-user=9 pll-status=10000 decoded-hz=0 measured=0\r\n",
+        "QcomGPU: clock-observation sample=36 ticks=5442735793 gpu-status=0 gpu-config-hz=596000097 cpu-lut-valid=0 pwr-desired-hz=0 perf-desired-hz=0 pwr-enable=0 pwr-index=0 pwr-counter-control=14 pwr-counter=0 perf-enable=0 perf-index=0 perf-counter-control=14 perf-counter=0 irq=2140 compositor-completed=2183\r\n",
+        "QcomGPU: execution-observation ticks=5443944021 alwayson=3638768252 stable=1 counter-hz=19200000 native-samples=2183 native-total=474061908 compositor-samples=2183 compositor-total=474061908 compositor-max=2457908 invalid=0\r\n",
+        "QcomGPU: core-clock-observation scope=compositor samples=2183 alwayson-ticks=474061908 core-cycles=14715416986 min-hz=583934693 max-hz=595999292 invalid=0 counter-writes=0\r\n",
+        "QcomGPU: rbbm-busy-observation scope=compositor samples=2183 alwayson-ticks=474061908 busy-cycles=14713287866 invalid=0 selector=6 counter-writes=0\r\n",
+        "QcomGPU: gpucc-clock-tuple stable=1 pll-mode=d0000005 pll-l=3e pll-user=7 pll-alpha=1556 rcgr-cmd=0 rcgr-cfg=101 gfx-gate=4621 crc-sid=800000 crc-mnd=15010 throttle=90000 throttle-force=0 sp-clock=8ff1 writes=0\r\n",
+        "QcomGPU: render-work-observation ticks=5445345507 native-copy-bytes=11815726848 native-primitives=2500 compositor-copy-bytes=11815726848 compositor-primitives=2500\r\n",
+        "QcomGPU: index-cache enabled=1 requests=1536 hits=1457 allocations=79 evictions=75 cached-bytes=36864 live-bytes=0\r\n",
+        "QcomGPU: scratch-cache requests=1792 hits=1786 allocations=6 evictions=2 cached-bytes=8806400 clear-samples=1786 clear-ticks=16427819 allocate-samples=6 allocate-ticks=441177\r\n",
+        "QcomGPU: index-cache enabled=1 requests=1792 hits=1713 allocations=79 evictions=75 cached-bytes=36864 live-bytes=0\r\n",
+        "QcomGPU: scratch-cache requests=2048 hits=2042 allocations=6 evictions=2 cached-bytes=8806400 clear-samples=2042 clear-ticks=16435147 allocate-samples=6 allocate-ticks=441177\r\n",
+        "QcomGPU: index-cache enabled=1 requests=2048 hits=1969 allocations=79 evictions=75 cached-bytes=36864 live-bytes=0\r\n",
+        "QcomGPU: scratch-cache requests=2304 hits=2298 allocations=6 evictions=2 cached-bytes=8806400 clear-samples=2298 clear-ticks=16442516 allocate-samples=6 allocate-ticks=441177\r\n",
+        "QcomGPU: cpu-inherited-clock cluster=0 ticks=5963153089 stable=1 rcgr-cmd=2 rcgr-cfg=301 pll-mode=7 pll-l=51 pll-word8=0 pll-user=9 pll-status=10000 decoded-hz=0 measured=0\r\n",
+        "QcomGPU: cpu-inherited-clock cluster=1 ticks=5963153089 stable=1 rcgr-cmd=2 rcgr-cfg=403 pll-mode=7 pll-l=20 pll-word8=0 pll-user=9 pll-status=10000 decoded-hz=0 measured=0\r\n",
+        "QcomGPU: clock-observation sample=37 ticks=5963153089 gpu-status=0 gpu-config-hz=596000097 cpu-lut-valid=0 pwr-desired-hz=0 perf-desired-hz=0 pwr-enable=0 pwr-index=0 pwr-counter-control=14 pwr-counter=0 perf-enable=0 perf-index=0 perf-counter-control=14 perf-counter=0 irq=2955 compositor-completed=3000\r\n",
+        "QcomGPU: execution-observation ticks=5964375938 alwayson=4159200160 stable=1 counter-hz=19200000 native-samples=3000 native-total=476819036 compositor-samples=3000 compositor-total=476819036 compositor-max=2457908 invalid=0\r\n",
+        "QcomGPU: core-clock-observation scope=compositor samples=3000 alwayson-ticks=476819036 core-cycles=14800907037 min-hz=583934693 max-hz=595999292 invalid=0 counter-writes=0\r\n",
+        "QcomGPU: rbbm-busy-observation scope=compositor samples=3000 alwayson-ticks=476819036 busy-cycles=14797971404 invalid=0 selector=6 counter-writes=0\r\n",
+        "QcomGPU: gpucc-clock-tuple stable=1 pll-mode=d0000005 pll-l=3e pll-user=7 pll-alpha=1556 rcgr-cmd=0 rcgr-cfg=101 gfx-gate=4621 crc-sid=800000 crc-mnd=15010 throttle=90000 throttle-force=0 sp-clock=8ff1 writes=0\r\n",
+        "QcomGPU: render-work-observation ticks=5965810509 native-copy-bytes=11832856320 native-primitives=2504 compositor-copy-bytes=11832856320 compositor-primitives=2504\r\n"
+      ]
+    }
+  },
+  "historical_acceleration": {
+    "boot_report": "round-115/report.json",
+    "boot_uuid": "8532BE4D-7A1E-47B4-96DF-57CCD499045C",
+    "startup_Welcome_only_before_any_diagnostic_animation": {
+      "report": "round-115-metrics/report.json",
+      "compositor_accepted": 2160,
+      "compositor_render_completed": 1627,
+      "compositor_compute_completed": 484,
+      "compositor_failed": 0,
+      "actual_CP_hz": 595989679.334,
+      "counts_overlap_do_not_sum_kinds": true
+    },
+    "live_processes": {
+      "report": "round-115-ui-acceleration/report.json",
+      "backboardd_pid": 65,
+      "SpringBoard_pid": 32,
+      "both_native_GPU_connections": "ActualSandboxconnectionlogs in round-115/uart.txt (allowancealoneisnotexecutionproof)"
+    },
+    "runtime_readonly_UI_query": "round-115-native-ui-delta/report.json",
+    "native_display_on_trigger_no_diagnostic_layer": {
+      "report": "round-115-native-ui-wake/report.json",
+      "actual_CP_sample_delta": 18,
+      "actual_CP_cycles_delta": 29134847,
+      "compositor_render_completed_delta": 9,
+      "rejected": 0,
+      "scope": "OriginalUI renderwork afterCADisplayStateControl on request. No metalctl/gpuctl render-test/layer-animation inthiscapture. NewdisplayedframewasNOTyetobservedattheframe-statssnapshot; donotclaimopticalpresentationfromthisdelta."
+    },
+    "ownership_definition": "QcomGPU::nativeCompositorTask tests actualowningtask signedcom.apple.backboardd entitlement, nottaskname/UID/clientproperty. fCompositorCompletedafterrealCPtimestamp/privateASretire/coherence/nativefencepublication.",
+    "answer_scope": "FinalsystemUIGPUcompositionproved, includingnativeWelcome. SpringBoard connectionproved and CA/UI contentflows tobackboardd; per-operation directSpringBoardGPUexecution vsCPUglyph/layout notmeasuredseparately. GPUconnected doesnotmeanallUIworkonGPU.",
+    "display_path": "FrozenDisplay1.0.13 directIOSurfacescanout; separatefromGPUrasterization. OriginalnativeWelcomealreadydisplayed499samples beforediagnosticanimation.",
+    "goal_60fps_achieved": false
+  },
+  "hello_asset": {
+    "firmware_path": "/System/Library/PrivateFrameworks/SpringBoard.framework/en.lproj/CursiveHello.plist",
+    "sha256": "e1fa4802b8bc2543aa0ee73296cb3907a6c2d9e7367f7b6391cf28dcedfbe7ed",
+    "strokes": 2,
+    "bezier_segments_per_stroke": [
+      5,
+      29
+    ],
+    "total_bezier_segments": 34,
+    "resolution40_max_samples": 1394,
+    "maximum_is_not_actual_per_frame_work_or_triangle_count": true
+  },
+  "calculated": {
+    "fullheight_BGRA_pitch4352_payload_per_primitive_bytes": 8355840,
+    "welcome_to_control_mean_GPU_interval_ratio": 23.174378556339857,
+    "warning": "all means are per native job, stages overlap and are not additive per-frame wall time; startup and control windows differ"
+  },
+  "supplemental_existing_round116": {
+    "round-116-metrics": {
+      "source_uart_sha256": "e2c875482fabe70a15534d86cc15f2586291e29291b62d7b91da0408f981ef9b",
+      "source_report_sha256": "2099b06ae67ba6bef156ee915484e34e3dee3075f3cbe250beb82d003e1912b4",
+      "frame_count": 316,
+      "fps": 6.602316229426546,
+      "p50_ms": 100.02953125,
+      "last_frame_age_ms": 42873.256,
+      "timing": {
+        "preflight": {
+          "count": 1367,
+          "ticks": 43394871,
+          "mean_ms": 1.6533646900146306
+        },
+        "ib_acquire": {
+          "count": 1367,
+          "ticks": 318358,
+          "mean_ms": 0.012129587295781518
+        },
+        "encoding": {
+          "count": 1367,
+          "ticks": 35596633,
+          "mean_ms": 1.3562482092782249
+        },
+        "cache_prepare": {
+          "count": 1367,
+          "ticks": 1390219,
+          "mean_ms": 0.05296798799073397
+        },
+        "address_space": {
+          "count": 1367,
+          "ticks": 136801188,
+          "mean_ms": 5.212188643013899
+        },
+        "fence_prepare": {
+          "count": 1367,
+          "ticks": 182331,
+          "mean_ms": 0.006946895574250183
+        },
+        "admission_dispatch": {
+          "count": 1367,
+          "ticks": 34392421,
+          "mean_ms": 1.310367174164838
+        },
+        "admission_total": {
+          "count": 1367,
+          "ticks": 252102319,
+          "mean_ms": 9.605215153316264
+        },
+        "queue_wait": {
+          "count": 1367,
+          "ticks": 68373584,
+          "mean_ms": 2.605065227993172
+        },
+        "kick": {
+          "count": 1367,
+          "ticks": 17653090,
+          "mean_ms": 0.6725909077054377
+        },
+        "poll_validation": {
+          "count": 2414,
+          "ticks": 73041232,
+          "mean_ms": 1.5759034106600387
+        },
+        "run_observed": {
+          "count": 1367,
+          "ticks": 374957757,
+          "mean_ms": 14.286064260241403
+        },
+        "retire_cleanup": {
+          "count": 1367,
+          "ticks": 42485029,
+          "mean_ms": 1.6186992882833455
+        },
+        "native_publish": {
+          "count": 1367,
+          "ticks": 1669216,
+          "mean_ms": 0.06359790295049987
+        },
+        "retire_address_space": {
+          "count": 1367,
+          "ticks": 37903270,
+          "mean_ms": 1.4441321476469153
+        },
+        "retire_coherence": {
+          "count": 1367,
+          "ticks": 1487845,
+          "mean_ms": 0.056687583821019266
+        },
+        "retire_surface_publish": {
+          "count": 1367,
+          "ticks": 139240,
+          "mean_ms": 0.005305108510119483
+        },
+        "retire_resources": {
+          "count": 1367,
+          "ticks": 365882,
+          "mean_ms": 0.013940273713728357
+        },
+        "retire_pools": {
+          "count": 1367,
+          "ticks": 2525520,
+          "mean_ms": 0.09622348207754206
+        },
+        "snapshot_map": {
+          "count": 1367,
+          "ticks": 35005,
+          "mean_ms": 0.0013337067178736894
+        },
+        "snapshot_copy": {
+          "count": 1367,
+          "ticks": 2019462,
+          "mean_ms": 0.0769424378200439
+        },
+        "snapshot_validate": {
+          "count": 1367,
+          "ticks": 51020,
+          "mean_ms": 0.0019438856376493537
+        },
+        "preflight_retire": {
+          "count": 1367,
+          "ticks": 40249450,
+          "mean_ms": 1.5335226926359427
+        },
+        "preflight_ticket": {
+          "count": 1367,
+          "ticks": 266803,
+          "mean_ms": 0.01016531791026579
+        },
+        "index_acquire": {
+          "count": 876,
+          "ticks": 3685060,
+          "mean_ms": 0.2190984113394216
+        },
+        "index_snapshot": {
+          "count": 3534,
+          "ticks": 765553,
+          "mean_ms": 0.011282555767779664
+        },
+        "retire_indices": {
+          "count": 1367,
+          "ticks": 1520496,
+          "mean_ms": 0.057931602048280906
+        },
+        "retire_commands": {
+          "count": 1367,
+          "ticks": 633058,
+          "mean_ms": 0.024119803096805656
+        },
+        "wrapper_submit": {
+          "count": 1367,
+          "ticks": 303588438,
+          "mean_ms": 11.566860140819312
+        },
+        "wrapper_resource_create": {
+          "count": 660,
+          "ticks": 64196917,
+          "mean_ms": 5.066044586489899
+        },
+        "wrapper_resource_delete": {
+          "count": 658,
+          "ticks": 27671909,
+          "mean_ms": 2.190342341058764
+        },
+        "wrapper_shmem_create": {
+          "count": 28,
+          "ticks": 84025,
+          "mean_ms": 0.15629650297619047
+        },
+        "wrapper_program": {
+          "count": 26,
+          "ticks": 101984,
+          "mean_ms": 0.2042948717948718
+        },
+        "native_resource_free": {
+          "count": 658,
+          "ticks": 27413674,
+          "mean_ms": 2.1699020073454913
+        }
+      },
+      "existing_analysis": {
+        "report": "build/gpu-runtime/round-116-metrics/report.json",
+        "compositor_timing": [
+          {
+            "preflight": {
+              "samples": 1367,
+              "total_ticks": 43394871,
+              "mean_ms": 1.6533646900146306
+            },
+            "ib_acquire": {
+              "samples": 1367,
+              "total_ticks": 318358,
+              "mean_ms": 0.012129587295781518
+            },
+            "encoding": {
+              "samples": 1367,
+              "total_ticks": 35596633,
+              "mean_ms": 1.3562482092782249
+            },
+            "cache_prepare": {
+              "samples": 1367,
+              "total_ticks": 1390219,
+              "mean_ms": 0.05296798799073397
+            },
+            "address_space": {
+              "samples": 1367,
+              "total_ticks": 136801188,
+              "mean_ms": 5.212188643013899
+            },
+            "fence_prepare": {
+              "samples": 1367,
+              "total_ticks": 182331,
+              "mean_ms": 0.006946895574250183
+            },
+            "admission_dispatch": {
+              "samples": 1367,
+              "total_ticks": 34392421,
+              "mean_ms": 1.310367174164838
+            },
+            "admission_total": {
+              "samples": 1367,
+              "total_ticks": 252102319,
+              "mean_ms": 9.605215153316264
+            },
+            "queue_wait": {
+              "samples": 1367,
+              "total_ticks": 68373584,
+              "mean_ms": 2.605065227993172
+            },
+            "kick": {
+              "samples": 1367,
+              "total_ticks": 17653090,
+              "mean_ms": 0.6725909077054377
+            },
+            "poll_validation": {
+              "samples": 2414,
+              "total_ticks": 73041232,
+              "mean_ms": 1.5759034106600387
+            },
+            "run_observed": {
+              "samples": 1367,
+              "total_ticks": 374957757,
+              "mean_ms": 14.286064260241403
+            },
+            "retire_cleanup": {
+              "samples": 1367,
+              "total_ticks": 42485029,
+              "mean_ms": 1.6186992882833455
+            },
+            "native_publish": {
+              "samples": 1367,
+              "total_ticks": 1669216,
+              "mean_ms": 0.06359790295049987
+            },
+            "retire_address_space": {
+              "samples": 1367,
+              "total_ticks": 37903270,
+              "mean_ms": 1.4441321476469153
+            },
+            "retire_coherence": {
+              "samples": 1367,
+              "total_ticks": 1487845,
+              "mean_ms": 0.056687583821019266
+            },
+            "retire_surface_publish": {
+              "samples": 1367,
+              "total_ticks": 139240,
+              "mean_ms": 0.005305108510119483
+            },
+            "retire_resources": {
+              "samples": 1367,
+              "total_ticks": 365882,
+              "mean_ms": 0.013940273713728357
+            },
+            "retire_pools": {
+              "samples": 1367,
+              "total_ticks": 2525520,
+              "mean_ms": 0.09622348207754206
+            },
+            "snapshot_map": {
+              "samples": 1367,
+              "total_ticks": 35005,
+              "mean_ms": 0.0013337067178736894
+            },
+            "snapshot_copy": {
+              "samples": 1367,
+              "total_ticks": 2019462,
+              "mean_ms": 0.0769424378200439
+            },
+            "snapshot_validate": {
+              "samples": 1367,
+              "total_ticks": 51020,
+              "mean_ms": 0.0019438856376493537
+            },
+            "preflight_retire": {
+              "samples": 1367,
+              "total_ticks": 40249450,
+              "mean_ms": 1.5335226926359427
+            },
+            "preflight_ticket": {
+              "samples": 1367,
+              "total_ticks": 266803,
+              "mean_ms": 0.01016531791026579
+            },
+            "index_acquire": {
+              "samples": 876,
+              "total_ticks": 3685060,
+              "mean_ms": 0.2190984113394216
+            },
+            "index_snapshot": {
+              "samples": 3534,
+              "total_ticks": 765553,
+              "mean_ms": 0.011282555767779664
+            },
+            "retire_indices": {
+              "samples": 1367,
+              "total_ticks": 1520496,
+              "mean_ms": 0.057931602048280906
+            },
+            "retire_commands": {
+              "samples": 1367,
+              "total_ticks": 633058,
+              "mean_ms": 0.024119803096805656
+            },
+            "wrapper_submit": {
+              "samples": 1367,
+              "total_ticks": 303588438,
+              "mean_ms": 11.566860140819312
+            },
+            "wrapper_resource_create": {
+              "samples": 660,
+              "total_ticks": 64196917,
+              "mean_ms": 5.066044586489899
+            },
+            "wrapper_resource_delete": {
+              "samples": 658,
+              "total_ticks": 27671909,
+              "mean_ms": 2.190342341058764
+            },
+            "wrapper_shmem_create": {
+              "samples": 28,
+              "total_ticks": 84025,
+              "mean_ms": 0.15629650297619047
+            },
+            "wrapper_program": {
+              "samples": 26,
+              "total_ticks": 101984,
+              "mean_ms": 0.2042948717948718
+            },
+            "native_resource_free": {
+              "samples": 658,
+              "total_ticks": 27413674,
+              "mean_ms": 2.1699020073454913
+            }
+          }
+        ],
+        "frame_headers": [
+          {
+            "version": "1",
+            "displayed": "316",
+            "failed": "0",
+            "samples": "316",
+            "span_ms": "47710.529",
+            "rate": "6.602",
+            "p50_us": "100029.531",
+            "p95_us": "316679.269",
+            "p99_us": "700047.860",
+            "max_us": "1570767.490",
+            "over20ms": "315",
+            "over33ms": "315",
+            "age_ms": "42873.256",
+            "timebase_ticks": "1000000",
+            "timebase_ns": "52083333"
+          }
+        ],
+        "removed_exact_known_kernel_rows": [
+          "QcomGPU: cpu-inherited-clock cluster=0 ticks=10053398986 stable=1 rcgr-cmd=2 rcgr-cfg=301 pll-mode=7 pll-l=51 pll-word8=0 pll-user=9 pll-status=10000 decoded-hz=0 measured=0\r\n",
+          "QcomGPU: cpu-inherited-clock cluster=1 ticks=10053398986 stable=1 rcgr-cmd=2 rcgr-cfg=403 pll-mode=7 pll-l=20 pll-word8=0 pll-user=9 pll-status=10000 decoded-hz=0 measured=0\r\n",
+          "QcomGPU: clock-observation sample=31 ticks=10053398986 gpu-status=0 gpu-config-hz=596000097 cpu-lut-valid=0 pwr-desired-hz=0 perf-desired-hz=0 pwr-enable=0 pwr-index=0 pwr-counter-control=14 pwr-counter=0 perf-enable=0 perf-index=0 perf-counter-control=14 perf-counter=0 irq=1344 compositor-completed=1367\r\n",
+          "QcomGPU: execution-observation ticks=10054683646 alwayson=3141571386 stable=1 counter-hz=19200000 native-samples=1367 native-total=290253804 compositor-samples=1367 compositor-total=290253804 compositor-max=2452150 invalid=0\r\n",
+          "QcomGPU: core-clock-observation scope=compositor samples=1367 alwayson-ticks=290253804 core-cycles=9009801893 min-hz=548850000 max-hz=595999335 invalid=0 counter-writes=0\r\n",
+          "QcomGPU: rbbm-busy-observation scope=compositor samples=1367 alwayson-ticks=290253804 busy-cycles=9008475732 invalid=0 selector=6 counter-writes=0\r\n",
+          "QcomGPU: gpucc-clock-tuple stable=1 pll-mode=d0000005 pll-l=3e pll-user=7 pll-alpha=1556 rcgr-cmd=0 rcgr-cfg=101 gfx-gate=4621 crc-sid=800000 crc-mnd=15010 throttle=90000 throttle-force=0 sp-clock=8ff1 writes=0\r\n",
+          "QcomGPU: render-work-observation ticks=10056179310 native-copy-bytes=7369951488 native-primitives=1556 compositor-copy-bytes=7369951488 compositor-primitives=1556\r\n"
+        ],
+        "removed_ansi_control_sequences": [
+          "\u001b[?2004l",
+          "\u001b[?2004h",
+          "\u001b[?2004l",
+          "\u001b[?2004h",
+          "\u001b[?2004l",
+          "\u001b[?2004h",
+          "\u001b[?2004l",
+          "\u001b[?2004h",
+          "\u001b[?2004l",
+          "\u001b[?2004h"
+        ],
+        "overlap_caution": "Nested elapsed stages overlap; do not sum them as independent CPU busy time.",
+        "displayed_frames": {
+          "samples": 316,
+          "span_s": 47.710529010416664,
+          "fps": 6.602316229426546,
+          "p50_ms": 100.02953125,
+          "p95_ms": 316.6792708333333,
+          "max_ms": 1570.7675,
+          "baseline_displayed": 0,
+          "final_frame_age_ms": 42873.256
+        },
+        "core_intervals": [
+          {
+            "scope": "compositor",
+            "samples": "1367",
+            "alwayson_ticks": "290253804",
+            "core_cycles": "9009801893",
+            "mean_hz": "595989420.161",
+            "min_hz": "548850000",
+            "max_hz": "595999335",
+            "invalid": "0",
+            "reference_hz": "19200000",
+            "counter_writes": "0"
+          }
+        ]
+      }
+    },
+    "round-116-animation": {
+      "source_uart_sha256": "af15459a7266ea6ee8000d656d96783df7931bb2cadb0ce381a8802fd258daab",
+      "source_report_sha256": "1e97e47ec54339dba9bdfb85e8684f686cc45c28f9ae6b6e421de94448dc4678",
+      "frame_count": 602,
+      "fps": 29.751089640232642,
+      "p50_ms": 33.34,
+      "last_frame_age_ms": 7.05,
+      "timing": {
+        "preflight": {
+          "count": 715,
+          "ticks": 21941263,
+          "mean_ms": 1.598285474941725
+        },
+        "ib_acquire": {
+          "count": 715,
+          "ticks": 364410,
+          "mean_ms": 0.026545017482517485
+        },
+        "encoding": {
+          "count": 715,
+          "ticks": 7555030,
+          "mean_ms": 0.5503372668997669
+        },
+        "cache_prepare": {
+          "count": 715,
+          "ticks": 834147,
+          "mean_ms": 0.06076245629370629
+        },
+        "address_space": {
+          "count": 715,
+          "ticks": 63022831,
+          "mean_ms": 4.590823936480186
+        },
+        "fence_prepare": {
+          "count": 715,
+          "ticks": 93008,
+          "mean_ms": 0.006775058275058274
+        },
+        "admission_dispatch": {
+          "count": 715,
+          "ticks": 18732610,
+          "mean_ms": 1.3645549242424242
+        },
+        "admission_total": {
+          "count": 715,
+          "ticks": 112556826,
+          "mean_ms": 8.199069493006993
+        },
+        "queue_wait": {
+          "count": 715,
+          "ticks": 10028702,
+          "mean_ms": 0.7305289918414919
+        },
+        "kick": {
+          "count": 715,
+          "ticks": 8889152,
+          "mean_ms": 0.6475198135198136
+        },
+        "poll_validation": {
+          "count": 791,
+          "ticks": 22528246,
+          "mean_ms": 1.4833706015592079
+        },
+        "run_observed": {
+          "count": 716,
+          "ticks": 44374577,
+          "mean_ms": 3.2278992813081935
+        },
+        "retire_cleanup": {
+          "count": 716,
+          "ticks": 21674513,
+          "mean_ms": 1.5766492813081936
+        },
+        "native_publish": {
+          "count": 716,
+          "ticks": 960485,
+          "mean_ms": 0.0698676821461825
+        },
+        "retire_address_space": {
+          "count": 716,
+          "ticks": 19713423,
+          "mean_ms": 1.4339955045391062
+        },
+        "retire_coherence": {
+          "count": 716,
+          "ticks": 882313,
+          "mean_ms": 0.06418128782588454
+        },
+        "retire_surface_publish": {
+          "count": 716,
+          "ticks": 86699,
+          "mean_ms": 0.0063066660847299815
+        },
+        "retire_resources": {
+          "count": 716,
+          "ticks": 209909,
+          "mean_ms": 0.01526921845903166
+        },
+        "retire_pools": {
+          "count": 716,
+          "ticks": 751680,
+          "mean_ms": 0.05467877094972067
+        },
+        "snapshot_map": {
+          "count": 715,
+          "ticks": 15662,
+          "mean_ms": 0.0011408799533799534
+        },
+        "snapshot_copy": {
+          "count": 715,
+          "ticks": 957048,
+          "mean_ms": 0.06971503496503496
+        },
+        "snapshot_validate": {
+          "count": 715,
+          "ticks": 23122,
+          "mean_ms": 0.001684294871794872
+        },
+        "preflight_retire": {
+          "count": 715,
+          "ticks": 20410654,
+          "mean_ms": 1.4867900641025642
+        },
+        "preflight_ticket": {
+          "count": 715,
+          "ticks": 126480,
+          "mean_ms": 0.009213286713286714
+        },
+        "index_acquire": {
+          "count": 674,
+          "ticks": 830631,
+          "mean_ms": 0.0641869899851632
+        },
+        "index_snapshot": {
+          "count": 1487,
+          "ticks": 456649,
+          "mean_ms": 0.0159944869423896
+        },
+        "retire_indices": {
+          "count": 716,
+          "ticks": 183138,
+          "mean_ms": 0.013321840083798884
+        },
+        "retire_commands": {
+          "count": 716,
+          "ticks": 278059,
+          "mean_ms": 0.020226591596834265
+        },
+        "wrapper_submit": {
+          "count": 715,
+          "ticks": 139206841,
+          "mean_ms": 10.140358464452214
+        },
+        "wrapper_resource_create": {
+          "count": 46,
+          "ticks": 4702039,
+          "mean_ms": 5.323866621376811
+        },
+        "wrapper_resource_delete": {
+          "count": 75,
+          "ticks": 3266983,
+          "mean_ms": 2.2687381944444445
+        },
+        "wrapper_shmem_create": {
+          "count": 0,
+          "ticks": 0,
+          "mean_ms": null
+        },
+        "wrapper_program": {
+          "count": 0,
+          "ticks": 0,
+          "mean_ms": null
+        },
+        "native_resource_free": {
+          "count": 75,
+          "ticks": 3236327,
+          "mean_ms": 2.2474493055555556
+        }
+      },
+      "existing_analysis": {
+        "report": "build/gpu-runtime/round-116-animation/report.json",
+        "compositor_timing": [
+          {
+            "preflight": {
+              "samples": 1549,
+              "total_ticks": 49118363,
+              "mean_ms": 1.651548142618894
+            },
+            "ib_acquire": {
+              "samples": 1549,
+              "total_ticks": 349727,
+              "mean_ms": 0.011759165859694427
+            },
+            "encoding": {
+              "samples": 1549,
+              "total_ticks": 39398763,
+              "mean_ms": 1.3247378348934795
+            },
+            "cache_prepare": {
+              "samples": 1549,
+              "total_ticks": 1558332,
+              "mean_ms": 0.05239711103938024
+            },
+            "address_space": {
+              "samples": 1549,
+              "total_ticks": 154025753,
+              "mean_ms": 5.178937789165053
+            },
+            "fence_prepare": {
+              "samples": 1549,
+              "total_ticks": 206420,
+              "mean_ms": 0.006940633742199269
+            },
+            "admission_dispatch": {
+              "samples": 1549,
+              "total_ticks": 38843874,
+              "mean_ms": 1.3060803340865075
+            },
+            "admission_total": {
+              "samples": 1549,
+              "total_ticks": 283531088,
+              "mean_ms": 9.533404884871961
+            },
+            "queue_wait": {
+              "samples": 1549,
+              "total_ticks": 79395094,
+              "mean_ms": 2.6695682026038305
+            },
+            "kick": {
+              "samples": 1549,
+              "total_ticks": 19953303,
+              "mean_ms": 0.670906734183344
+            },
+            "poll_validation": {
+              "samples": 2744,
+              "total_ticks": 82858811,
+              "mean_ms": 1.5727270673894558
+            },
+            "run_observed": {
+              "samples": 1548,
+              "total_ticks": 425256079,
+              "mean_ms": 14.307980694175281
+            },
+            "retire_cleanup": {
+              "samples": 1548,
+              "total_ticks": 48551130,
+              "mean_ms": 1.633530159883721
+            },
+            "native_publish": {
+              "samples": 1548,
+              "total_ticks": 1878728,
+              "mean_ms": 0.06321086347975882
+            },
+            "retire_address_space": {
+              "samples": 1548,
+              "total_ticks": 42861409,
+              "mean_ms": 1.4420962868755385
+            },
+            "retire_coherence": {
+              "samples": 1548,
+              "total_ticks": 1667285,
+              "mean_ms": 0.056096744455211026
+            },
+            "retire_surface_publish": {
+              "samples": 1548,
+              "total_ticks": 157272,
+              "mean_ms": 0.005291505167958657
+            },
+            "retire_resources": {
+              "samples": 1548,
+              "total_ticks": 414015,
+              "mean_ms": 0.013929768249354005
+            },
+            "retire_pools": {
+              "samples": 1548,
+              "total_ticks": 3379529,
+              "mean_ms": 0.11370615982988802
+            },
+            "snapshot_map": {
+              "samples": 1549,
+              "total_ticks": 39130,
+              "mean_ms": 0.001315700989885948
+            },
+            "snapshot_copy": {
+              "samples": 1549,
+              "total_ticks": 2277630,
+              "mean_ms": 0.07658267430600388
+            },
+            "snapshot_validate": {
+              "samples": 1549,
+              "total_ticks": 57582,
+              "mean_ms": 0.0019361281471917365
+            },
+            "preflight_retire": {
+              "samples": 1549,
+              "total_ticks": 45570796,
+              "mean_ms": 1.532265305573488
+            },
+            "preflight_ticket": {
+              "samples": 1549,
+              "total_ticks": 298492,
+              "mean_ms": 0.010036448246180331
+            },
+            "index_acquire": {
+              "samples": 992,
+              "total_ticks": 4307200,
+              "mean_ms": 0.2261424731182796
+            },
+            "index_snapshot": {
+              "samples": 3984,
+              "total_ticks": 858850,
+              "mean_ms": 0.011227854124832664
+            },
+            "retire_indices": {
+              "samples": 1548,
+              "total_ticks": 2265762,
+              "mean_ms": 0.0762328407622739
+            },
+            "retire_commands": {
+              "samples": 1548,
+              "total_ticks": 683951,
+              "mean_ms": 0.023011917258828594
+            },
+            "wrapper_submit": {
+              "samples": 1549,
+              "total_ticks": 341706685,
+              "mean_ms": 11.489492044598666
+            },
+            "wrapper_resource_create": {
+              "samples": 767,
+              "total_ticks": 74425026,
+              "mean_ms": 5.0538506355932205
+            },
+            "wrapper_resource_delete": {
+              "samples": 736,
+              "total_ticks": 31023826,
+              "mean_ms": 2.195413411458333
+            },
+            "wrapper_shmem_create": {
+              "samples": 30,
+              "total_ticks": 90130,
+              "mean_ms": 0.15647569444444445
+            },
+            "wrapper_program": {
+              "samples": 28,
+              "total_ticks": 108536,
+              "mean_ms": 0.20188988095238097
+            },
+            "native_resource_free": {
+              "samples": 736,
+              "total_ticks": 30731270,
+              "mean_ms": 2.1747105695199274
+            }
+          },
+          {
+            "preflight": {
+              "samples": 2264,
+              "total_ticks": 71059626,
+              "mean_ms": 1.6347271146201414
+            },
+            "ib_acquire": {
+              "samples": 2264,
+              "total_ticks": 714137,
+              "mean_ms": 0.016428725890753827
+            },
+            "encoding": {
+              "samples": 2264,
+              "total_ticks": 46953793,
+              "mean_ms": 1.0801722844891049
+            },
+            "cache_prepare": {
+              "samples": 2264,
+              "total_ticks": 2392479,
+              "mean_ms": 0.05503899348498233
+            },
+            "address_space": {
+              "samples": 2264,
+              "total_ticks": 217048584,
+              "mean_ms": 4.993203953180212
+            },
+            "fence_prepare": {
+              "samples": 2264,
+              "total_ticks": 299428,
+              "mean_ms": 0.006888342903415784
+            },
+            "admission_dispatch": {
+              "samples": 2264,
+              "total_ticks": 57576484,
+              "mean_ms": 1.3245473535041226
+            },
+            "admission_total": {
+              "samples": 2264,
+              "total_ticks": 396087914,
+              "mean_ms": 9.112004794243227
+            },
+            "queue_wait": {
+              "samples": 2264,
+              "total_ticks": 89423796,
+              "mean_ms": 2.057194953621908
+            },
+            "kick": {
+              "samples": 2264,
+              "total_ticks": 28842455,
+              "mean_ms": 0.6635208471363369
+            },
+            "poll_validation": {
+              "samples": 3535,
+              "total_ticks": 105387057,
+              "mean_ms": 1.5527324522630834
+            },
+            "run_observed": {
+              "samples": 2264,
+              "total_ticks": 469630656,
+              "mean_ms": 10.803856007067138
+            },
+            "retire_cleanup": {
+              "samples": 2264,
+              "total_ticks": 70225643,
+              "mean_ms": 1.6155413307935806
+            },
+            "native_publish": {
+              "samples": 2264,
+              "total_ticks": 2839213,
+              "mean_ms": 0.06531611178592461
+            },
+            "retire_address_space": {
+              "samples": 2264,
+              "total_ticks": 62574832,
+              "mean_ms": 1.439534378680801
+            },
+            "retire_coherence": {
+              "samples": 2264,
+              "total_ticks": 2549598,
+              "mean_ms": 0.05865351700530035
+            },
+            "retire_surface_publish": {
+              "samples": 2264,
+              "total_ticks": 243971,
+              "mean_ms": 0.005612554291813899
+            },
+            "retire_resources": {
+              "samples": 2264,
+              "total_ticks": 623924,
+              "mean_ms": 0.014353375294464074
+            },
+            "retire_pools": {
+              "samples": 2264,
+              "total_ticks": 4131209,
+              "mean_ms": 0.09503848737485276
+            },
+            "snapshot_map": {
+              "samples": 2264,
+              "total_ticks": 54792,
+              "mean_ms": 0.0012604902826855123
+            },
+            "snapshot_copy": {
+              "samples": 2264,
+              "total_ticks": 3234678,
+              "mean_ms": 0.07441378643992932
+            },
+            "snapshot_validate": {
+              "samples": 2264,
+              "total_ticks": 80704,
+              "mean_ms": 0.0018565959952885748
+            },
+            "preflight_retire": {
+              "samples": 2264,
+              "total_ticks": 65981450,
+              "mean_ms": 1.5179036458333333
+            },
+            "preflight_ticket": {
+              "samples": 2264,
+              "total_ticks": 424972,
+              "mean_ms": 0.009776483362779741
+            },
+            "index_acquire": {
+              "samples": 1666,
+              "total_ticks": 5137831,
+              "mean_ms": 0.16062146733693478
+            },
+            "index_snapshot": {
+              "samples": 5471,
+              "total_ticks": 1315499,
+              "mean_ms": 0.012523409416316335
+            },
+            "retire_indices": {
+              "samples": 2264,
+              "total_ticks": 2448900,
+              "mean_ms": 0.05633695892226148
+            },
+            "retire_commands": {
+              "samples": 2264,
+              "total_ticks": 962010,
+              "mean_ms": 0.022131045715547703
+            },
+            "wrapper_submit": {
+              "samples": 2264,
+              "total_ticks": 480913526,
+              "mean_ms": 11.063418497865136
+            },
+            "wrapper_resource_create": {
+              "samples": 813,
+              "total_ticks": 79127065,
+              "mean_ms": 5.069128292845429
+            },
+            "wrapper_resource_delete": {
+              "samples": 811,
+              "total_ticks": 34290809,
+              "mean_ms": 2.2021943716605015
+            },
+            "wrapper_shmem_create": {
+              "samples": 30,
+              "total_ticks": 90130,
+              "mean_ms": 0.15647569444444445
+            },
+            "wrapper_program": {
+              "samples": 28,
+              "total_ticks": 108536,
+              "mean_ms": 0.20188988095238097
+            },
+            "native_resource_free": {
+              "samples": 811,
+              "total_ticks": 33967597,
+              "mean_ms": 2.181437333025072
+            }
+          }
+        ],
+        "frame_headers": [
+          {
+            "version": "1",
+            "displayed": "376",
+            "failed": "0",
+            "samples": "376",
+            "span_ms": "103071.216",
+            "rate": "3.638",
+            "p50_us": "100045.520",
+            "p95_us": "316679.269",
+            "p99_us": "900271.713",
+            "max_us": "47240737.458",
+            "over20ms": "375",
+            "over33ms": "375",
+            "age_ms": "93.558",
+            "timebase_ticks": "1000000",
+            "timebase_ns": "52083333"
+          },
+          {
+            "version": "1",
+            "displayed": "978",
+            "failed": "0",
+            "samples": "978",
+            "span_ms": "123505.172",
+            "rate": "7.911",
+            "p50_us": "33421.875",
+            "p95_us": "200428.020",
+            "p99_us": "449911.403",
+            "max_us": "47240737.458",
+            "over20ms": "977",
+            "over33ms": "681",
+            "age_ms": "7.050",
+            "timebase_ticks": "1000000",
+            "timebase_ns": "52083333"
+          }
+        ],
+        "removed_exact_known_kernel_rows": [
+          "QcomGPU: index-cache enabled=1 requests=1024 hits=966 allocations=58 evictions=54 cached-bytes=49152 live-bytes=0\r\n",
+          "QcomGPU: scratch-cache requests=1280 hits=1273 allocations=7 evictions=3 cached-bytes=8806400 clear-samples=1273 clear-ticks=12380038 allocate-samples=7 allocate-ticks=494425\r\n",
+          "QcomGPU: index-cache enabled=1 requests=1280 hits=1218 allocations=62 evictions=58 cached-bytes=49152 live-bytes=0\r\n",
+          "QcomGPU: scratch-cache requests=1536 hits=1529 allocations=7 evictions=3 cached-bytes=8806400 clear-samples=1529 clear-ticks=12385927 allocate-samples=7 allocate-ticks=494425\r\n",
+          "QcomGPU: index-cache enabled=1 requests=1536 hits=1474 allocations=62 evictions=58 cached-bytes=49152 live-bytes=0\r\n",
+          "QcomGPU: scratch-cache requests=1792 hits=1785 allocations=7 evictions=3 cached-bytes=8806400 clear-samples=1785 clear-ticks=12392110 allocate-samples=7 allocate-ticks=494425\r\n",
+          "QcomGPU: cpu-inherited-clock cluster=0 ticks=10744380009 stable=1 rcgr-cmd=2 rcgr-cfg=301 pll-mode=7 pll-l=51 pll-word8=0 pll-user=9 pll-status=10000 decoded-hz=0 measured=0\r\n",
+          "QcomGPU: cpu-inherited-clock cluster=1 ticks=10744380009 stable=1 rcgr-cmd=2 rcgr-cfg=403 pll-mode=7 pll-l=20 pll-word8=0 pll-user=9 pll-status=10000 decoded-hz=0 measured=0\r\n",
+          "QcomGPU: clock-observation sample=34 ticks=10744380009 gpu-status=0 gpu-config-hz=596000097 cpu-lut-valid=0 pwr-desired-hz=0 perf-desired-hz=0 pwr-enable=0 pwr-index=0 pwr-counter-control=14 pwr-counter=0 perf-enable=0 perf-index=0 perf-counter-control=14 perf-counter=0 irq=2236 compositor-completed=2264\r\n",
+          "QcomGPU: execution-observation ticks=10745674812 alwayson=3832562552 stable=1 counter-hz=19200000 native-samples=2264 native-total=352053361 compositor-samples=2264 compositor-total=352053361 compositor-max=2457072 invalid=0\r\n",
+          "QcomGPU: core-clock-observation scope=compositor samples=2264 alwayson-ticks=352053361 core-cycles=10928057300 min-hz=548850000 max-hz=595999335 invalid=0 counter-writes=0\r\n",
+          "QcomGPU: rbbm-busy-observation scope=compositor samples=2264 alwayson-ticks=352053361 busy-cycles=10925841151 invalid=0 selector=6 counter-writes=0\r\n",
+          "QcomGPU: gpucc-clock-tuple stable=1 pll-mode=d0000005 pll-l=3e pll-user=7 pll-alpha=1556 rcgr-cmd=0 rcgr-cfg=101 gfx-gate=4621 crc-sid=800000 crc-mnd=15010 throttle=90000 throttle-force=0 sp-clock=8ff1 writes=0\r\n",
+          "QcomGPU: render-work-observation ticks=10747158062 native-copy-bytes=8908775680 native-primitives=1874 compositor-copy-bytes=8908775680 compositor-primitives=1874\r\n",
+          "QcomGPU: cpu-inherited-clock cluster=0 ticks=10844206348 stable=1 rcgr-cmd=2 rcgr-cfg=301 pll-mode=7 pll-l=51 pll-word8=0 pll-user=9 pll-status=10000 decoded-hz=0 measured=0\r\n",
+          "QcomGPU: cpu-inherited-clock cluster=1 ticks=10844206348 stable=1 rcgr-cmd=2 rcgr-cfg=403 pll-mode=7 pll-l=20 pll-word8=0 pll-user=9 pll-status=10000 decoded-hz=0 measured=0\r\n",
+          "QcomGPU: clock-observation sample=35 ticks=10844206348 gpu-status=0 gpu-config-hz=596000097 cpu-lut-valid=0 pwr-desired-hz=0 perf-desired-hz=0 pwr-enable=0 pwr-index=0 pwr-counter-control=14 pwr-counter=0 perf-enable=0 perf-index=0 perf-counter-control=14 perf-counter=0 irq=2236 compositor-completed=2264\r\n",
+          "QcomGPU: execution-observation ticks=10845477983 alwayson=3932365724 stable=1 counter-hz=19200000 native-samples=2264 native-total=352053361 compositor-samples=2264 compositor-total=352053361 compositor-max=2457072 invalid=0\r\n",
+          "QcomGPU: core-clock-observation scope=compositor samples=2264 alwayson-ticks=352053361 core-cycles=10928057300 min-hz=548850000 max-hz=595999335 invalid=0 counter-writes=0\r\n",
+          "QcomGPU: rbbm-busy-observation scope=compositor samples=2264 alwayson-ticks=352053361 busy-cycles=10925841151 invalid=0 selector=6 counter-writes=0\r\n",
+          "QcomGPU: gpucc-clock-tuple stable=1 pll-mode=d0000005 pll-l=3e pll-user=7 pll-alpha=1556 rcgr-cmd=0 rcgr-cfg=101 gfx-gate=4621 crc-sid=800000 crc-mnd=15010 throttle=90000 throttle-force=0 sp-clock=8ff1 writes=0\r\n",
+          "QcomGPU: render-work-observation ticks=10846996644 native-copy-bytes=8908775680 native-primitives=1874 compositor-copy-bytes=8908775680 compositor-primitives=1874\r\n"
+        ],
+        "removed_ansi_control_sequences": [
+          "\u001b[?2004l",
+          "\u001b[?2004h",
+          "\u001b[?2004l",
+          "\u001b[?2004h",
+          "\u001b[?2004l",
+          "\u001b[?2004h",
+          "\u001b[?2004l",
+          "\u001b[?2004h",
+          "\u001b[?2004l"
+        ],
+        "overlap_caution": "Nested elapsed stages overlap; do not sum them as independent CPU busy time.",
+        "displayed_frames": {
+          "samples": 602,
+          "span_s": 20.20094078125,
+          "fps": 29.751089640232642,
+          "p50_ms": 33.34,
+          "p95_ms": 33.46984375,
+          "max_ms": 200.00828125,
+          "baseline_displayed": 376,
+          "final_frame_age_ms": 7.05
+        },
+        "compositor_timing_delta": {
+          "preflight": {
+            "samples": 715,
+            "total_ticks": 21941263,
+            "mean_ms": 1.598285474941725,
+            "elapsed_ms_per_displayed_frame": 1.898295871400886
+          },
+          "ib_acquire": {
+            "samples": 715,
+            "total_ticks": 364410,
+            "mean_ms": 0.026545017482517485,
+            "elapsed_ms_per_displayed_frame": 0.031527720099667776
+          },
+          "encoding": {
+            "samples": 715,
+            "total_ticks": 7555030,
+            "mean_ms": 0.5503372668997669,
+            "elapsed_ms_per_displayed_frame": 0.653639777131783
+          },
+          "cache_prepare": {
+            "samples": 715,
+            "total_ticks": 834147,
+            "mean_ms": 0.06076245629370629,
+            "elapsed_ms_per_displayed_frame": 0.07216803363787375
+          },
+          "address_space": {
+            "samples": 715,
+            "total_ticks": 63022831,
+            "mean_ms": 4.590823936480186,
+            "elapsed_ms_per_displayed_frame": 5.452556668743078
+          },
+          "fence_prepare": {
+            "samples": 715,
+            "total_ticks": 93008,
+            "mean_ms": 0.006775058275058274,
+            "elapsed_ms_per_displayed_frame": 0.008046788482834993
+          },
+          "admission_dispatch": {
+            "samples": 715,
+            "total_ticks": 18732610,
+            "mean_ms": 1.3645549242424242,
+            "elapsed_ms_per_displayed_frame": 1.6206923103543742
+          },
+          "admission_total": {
+            "samples": 715,
+            "total_ticks": 112556826,
+            "mean_ms": 8.199069493006993,
+            "elapsed_ms_per_displayed_frame": 9.738097487541527
+          },
+          "queue_wait": {
+            "samples": 715,
+            "total_ticks": 10028702,
+            "mean_ms": 0.7305289918414919,
+            "elapsed_ms_per_displayed_frame": 0.86765486572536
+          },
+          "kick": {
+            "samples": 715,
+            "total_ticks": 8889152,
+            "mean_ms": 0.6475198135198136,
+            "elapsed_ms_per_displayed_frame": 0.7690642303433002
+          },
+          "poll_validation": {
+            "samples": 791,
+            "total_ticks": 22528246,
+            "mean_ms": 1.4833706015592079,
+            "elapsed_ms_per_displayed_frame": 1.9490799764673312
+          },
+          "run_observed": {
+            "samples": 716,
+            "total_ticks": 44374577,
+            "mean_ms": 3.2278992813081935,
+            "elapsed_ms_per_displayed_frame": 3.839162600359911
+          },
+          "retire_cleanup": {
+            "samples": 716,
+            "total_ticks": 21674513,
+            "mean_ms": 1.5766492813081936,
+            "elapsed_ms_per_displayed_frame": 1.8752174176356589
+          },
+          "native_publish": {
+            "samples": 716,
+            "total_ticks": 960485,
+            "mean_ms": 0.0698676821461825,
+            "elapsed_ms_per_displayed_frame": 0.08309843923034331
+          },
+          "retire_address_space": {
+            "samples": 716,
+            "total_ticks": 19713423,
+            "mean_ms": 1.4339955045391062,
+            "elapsed_ms_per_displayed_frame": 1.7055494705149503
+          },
+          "retire_coherence": {
+            "samples": 716,
+            "total_ticks": 882313,
+            "mean_ms": 0.06418128782588454,
+            "elapsed_ms_per_displayed_frame": 0.07633521940753046
+          },
+          "retire_surface_publish": {
+            "samples": 716,
+            "total_ticks": 86699,
+            "mean_ms": 0.0063066660847299815,
+            "elapsed_ms_per_displayed_frame": 0.007500951688815061
+          },
+          "retire_resources": {
+            "samples": 716,
+            "total_ticks": 209909,
+            "mean_ms": 0.01526921845903166,
+            "elapsed_ms_per_displayed_frame": 0.01816073158914729
+          },
+          "retire_pools": {
+            "samples": 716,
+            "total_ticks": 751680,
+            "mean_ms": 0.05467877094972067,
+            "elapsed_ms_per_displayed_frame": 0.06503322259136213
+          },
+          "snapshot_map": {
+            "samples": 715,
+            "total_ticks": 15662,
+            "mean_ms": 0.0011408799533799534,
+            "elapsed_ms_per_displayed_frame": 0.001355031838316722
+          },
+          "snapshot_copy": {
+            "samples": 715,
+            "total_ticks": 957048,
+            "mean_ms": 0.06971503496503496,
+            "elapsed_ms_per_displayed_frame": 0.08280107973421927
+          },
+          "snapshot_validate": {
+            "samples": 715,
+            "total_ticks": 23122,
+            "mean_ms": 0.001684294871794872,
+            "elapsed_ms_per_displayed_frame": 0.002000449889258029
+          },
+          "preflight_retire": {
+            "samples": 715,
+            "total_ticks": 20410654,
+            "mean_ms": 1.4867900641025642,
+            "elapsed_ms_per_displayed_frame": 1.765871919988926
+          },
+          "preflight_ticket": {
+            "samples": 715,
+            "total_ticks": 126480,
+            "mean_ms": 0.009213286713286714,
+            "elapsed_ms_per_displayed_frame": 0.010942691029900333
+          },
+          "index_acquire": {
+            "samples": 674,
+            "total_ticks": 830631,
+            "mean_ms": 0.0641869899851632,
+            "elapsed_ms_per_displayed_frame": 0.07186383928571428
+          },
+          "index_snapshot": {
+            "samples": 1487,
+            "total_ticks": 456649,
+            "mean_ms": 0.0159944869423896,
+            "elapsed_ms_per_displayed_frame": 0.03950797688261351
+          },
+          "retire_indices": {
+            "samples": 716,
+            "total_ticks": 183138,
+            "mean_ms": 0.013321840083798884,
+            "elapsed_ms_per_displayed_frame": 0.015844580564784053
+          },
+          "retire_commands": {
+            "samples": 716,
+            "total_ticks": 278059,
+            "mean_ms": 0.020226591596834265,
+            "elapsed_ms_per_displayed_frame": 0.02405687638427464
+          },
+          "wrapper_submit": {
+            "samples": 715,
+            "total_ticks": 139206841,
+            "mean_ms": 10.140358464452214,
+            "elapsed_ms_per_displayed_frame": 12.043781232696567
+          },
+          "wrapper_resource_create": {
+            "samples": 46,
+            "total_ticks": 4702039,
+            "mean_ms": 5.323866621376811,
+            "elapsed_ms_per_displayed_frame": 0.40680708402547067
+          },
+          "wrapper_resource_delete": {
+            "samples": 75,
+            "total_ticks": 3266983,
+            "mean_ms": 2.2687381944444445,
+            "elapsed_ms_per_displayed_frame": 0.2826501072812846
+          },
+          "wrapper_shmem_create": {
+            "samples": 0,
+            "total_ticks": 0,
+            "mean_ms": null,
+            "elapsed_ms_per_displayed_frame": 0.0
+          },
+          "wrapper_program": {
+            "samples": 0,
+            "total_ticks": 0,
+            "mean_ms": null,
+            "elapsed_ms_per_displayed_frame": 0.0
+          },
+          "native_resource_free": {
+            "samples": 75,
+            "total_ticks": 3236327,
+            "mean_ms": 2.2474493055555556,
+            "elapsed_ms_per_displayed_frame": 0.27999783707087483
+          }
+        },
+        "core_intervals": [
+          {
+            "scope": "compositor",
+            "samples": "1548",
+            "alwayson_ticks": "330776417",
+            "core_cycles": "10267670180",
+            "mean_hz": "595989488.138",
+            "min_hz": "548850000",
+            "max_hz": "595999335",
+            "invalid": "0",
+            "reference_hz": "19200000",
+            "counter_writes": "0"
+          },
+          {
+            "scope": "compositor",
+            "samples": "2264",
+            "alwayson_ticks": "352053361",
+            "core_cycles": "10928057300",
+            "mean_hz": "595985505.050",
+            "min_hz": "548850000",
+            "max_hz": "595999335",
+            "invalid": "0",
+            "reference_hz": "19200000",
+            "counter_writes": "0"
+          }
+        ],
+        "GPU_execution_delta": {
+          "samples": 716,
+          "alwayson_ticks": 21276944,
+          "mean_ms": 1.5477292830540037,
+          "actual_CP_hz": 595923583.0107932
+        }
+      }
+    }
+  },
+  "supplemental_scope": "Read existing files only. Current handoff runtime version/UUID fields are partially stale; no source of performance data is a new device action by this analysis."
+}

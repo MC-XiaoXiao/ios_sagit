@@ -1,0 +1,17 @@
+--- a/iokit/IOKit/IOLib.h
++++ b/iokit/IOKit/IOLib.h
+@@ -88,10 +88,14 @@
+ 	return s;
+ }
+ 
++#if !__has_builtin(__builtin_xnu_types_compatible)
++#define IOKIT_TYPE_IS_COMPATIBLE_PTR(ptr, type) 1
++#else
+ #define IOKIT_TYPE_IS_COMPATIBLE_PTR(ptr, type) \
+ 	(__builtin_xnu_types_compatible(os_get_pointee_type(ptr), type) ||   \
+ 	    __builtin_xnu_types_compatible(os_get_pointee_type(ptr), void))  \
+ 
++#endif
+ #define IOKIT_TYPE_ASSERT_COMPATIBLE_POINTER(ptr, type) \
+ 	_Static_assert(IOKIT_TYPE_IS_COMPATIBLE_PTR(ptr, type), \
+ 	    "Pointer type is not compatible with specified type")

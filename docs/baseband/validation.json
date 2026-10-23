@@ -1,0 +1,858 @@
+{
+  "schema": 6,
+  "recorded_at": "2026-10-20T13:26:43.205179+00:00",
+  "status": "offline-native-multichannel-rmtfs-tftp-sysmon-connected; lifecycle-producers-platform-handoff-and-telephony-incomplete",
+  "objective_complete": false,
+  "hardware_tested": false,
+  "installed": false,
+  "primary_firmware_build": "22H374",
+  "evidence": {
+    "build/baseband/Extensions/AppleARMGIC.kext/Contents/Info.plist": {
+      "sha256": "5387cfd21c5cbca81766ccfa300f359776f445967b26d3cff65ae5f17cceee00",
+      "bytes": 1930
+    },
+    "build/baseband/Extensions/AppleARMGIC.kext/Contents/MacOS/AppleARMGIC": {
+      "sha256": "680109791d08fb2c23ecea5c191a8dfdea7173c2640cae7e285d383e6af25122",
+      "bytes": 91080
+    },
+    "build/baseband/Extensions/GenericARMPlatform.kext/Contents/Info.plist": {
+      "sha256": "b5a972b6b5e144f0b5767ca2d73a25879769ba2709621366e429cd81ece64be9",
+      "bytes": 2521
+    },
+    "build/baseband/Extensions/GenericARMPlatform.kext/Contents/MacOS/GenericARMPlatform": {
+      "sha256": "305e127ab5696c84938331cf148311e079cdb62381d3369a1194cd774bbbf95b",
+      "bytes": 109016
+    },
+    "build/baseband/Extensions/GenericClockController.kext/Contents/Info.plist": {
+      "sha256": "9a45a069009f8d148c16f7f0984f532545b4b5088e4fa2bebb2fb44c1f543cc2",
+      "bytes": 1195
+    },
+    "build/baseband/Extensions/GenericClockController.kext/Contents/MacOS/GenericClockController": {
+      "sha256": "a28ea6bbe9548784c5d6d7118ba01277d93c6381b0396e32fc49c70f8615812d",
+      "bytes": 103640
+    },
+    "build/baseband/Extensions/QcomBaseband.kext/Contents/Info.plist": {
+      "sha256": "bd459ecc100a7124d19b6a62e1b384caf96cd49f3c62279a95ab402ca4fcc490",
+      "bytes": 1869
+    },
+    "build/baseband/Extensions/QcomBaseband.kext/Contents/MacOS/QcomBaseband": {
+      "sha256": "090a4968fa8d18863fef75e7bfdc4dbb83242945e55007f5c69b521363426d02",
+      "bytes": 336392
+    },
+    "build/baseband/Extensions/QcomBaseband.kext/Contents/Resources/NOTICE.RMTFS": {
+      "sha256": "ca2f1a7aeede1c785f0ab5d0a31fea81730477c7e461e862e8cc439ca6f0f1ba",
+      "bytes": 1798
+    },
+    "build/baseband/Extensions/QcomBaseband.kext/Contents/Resources/NOTICE.TFTP": {
+      "sha256": "47721e759b215b0334040a54d5e1da7b6f961a94b3876686fd850803fbc178b1",
+      "bytes": 1825
+    },
+    "build/baseband/Extensions/QcomGCC.kext/Contents/Info.plist": {
+      "sha256": "c4994a9851f5d9441ebcb9ac77142556aa05b95ac5b657b8249e2c97358789a9",
+      "bytes": 1630
+    },
+    "build/baseband/Extensions/QcomGCC.kext/Contents/MacOS/QcomGCC": {
+      "sha256": "48de93d28e018b1174c384511b6094a58322df289b2eb593bb2f3115939c45b0",
+      "bytes": 96392
+    },
+    "build/baseband/Extensions/QcomPowerController.kext/Contents/Info.plist": {
+      "sha256": "ef1b82bddd975009971a3848734cb677f98f51924b98da2eb1f9dd619323241d",
+      "bytes": 1265
+    },
+    "build/baseband/Extensions/QcomPowerController.kext/Contents/MacOS/QcomPowerController": {
+      "sha256": "f8fbc720a0e064a82f601c6fa361efc1b11e9b29257fa990c689be17ad628433",
+      "bytes": 109896
+    },
+    "build/baseband/Extensions/QcomRPM.kext/Contents/Info.plist": {
+      "sha256": "19698d9ae1663921d711214d165ee499eb1dcef653a130fbe1f1c2ede591212c",
+      "bytes": 1706
+    },
+    "build/baseband/Extensions/QcomRPM.kext/Contents/MacOS/QcomRPM": {
+      "sha256": "09a51a49ff198068fffa2eca7659ea1349afc5215b57f2150c6dfc200344c122",
+      "bytes": 134208
+    },
+    "build/baseband/Extensions/QcomSCM.kext/Contents/Info.plist": {
+      "sha256": "f02602f7b1874c4cabe78342b24b52cbbc2de4ee19190a4a87950d119fad2676",
+      "bytes": 1654
+    },
+    "build/baseband/Extensions/QcomSCM.kext/Contents/MacOS/QcomSCM": {
+      "sha256": "841098a0b2361e2cbf27a120e7c9a21f3ec792894493d360436e24fa026d617b",
+      "bytes": 88712
+    },
+    "build/baseband/Extensions/QcomSMEM.kext/Contents/Info.plist": {
+      "sha256": "4e184327565618c3fb9520a5587796c5da871f401b8bb7d18bf994584ba4c259",
+      "bytes": 1701
+    },
+    "build/baseband/Extensions/QcomSMEM.kext/Contents/MacOS/QcomSMEM": {
+      "sha256": "0ba1d8de7b3c9c4588c9dc2504fa859d4c8fe30110bdd4bed8a1b95decc9c57c",
+      "bytes": 87008
+    },
+    "build/baseband/Extensions/QcomSPMI.kext/Contents/Info.plist": {
+      "sha256": "345bdd2ea202a2252fd78a3a9b079ad99a0137b1acf1586e3bd18d930e8fa294",
+      "bytes": 1714
+    },
+    "build/baseband/Extensions/QcomSPMI.kext/Contents/MacOS/QcomSPMI": {
+      "sha256": "aab93d56e98b656f8be757d04dba9bf97210e1c1f25df55c0d09e3e00eea4649",
+      "bytes": 95536
+    },
+    "build/baseband/Extensions/QcomUFS.kext/Contents/Info.plist": {
+      "sha256": "ed6600b019405995db0e62f9b5c822808b38e877b9601c2c789b92d18143d727",
+      "bytes": 2040
+    },
+    "build/baseband/Extensions/QcomUFS.kext/Contents/MacOS/QcomUFS": {
+      "sha256": "42192155e2549db6bcfd7e72acec476e5db1f3864ef581f67ce113ac50a39d21",
+      "bytes": 121896
+    },
+    "build/baseband/Extensions/SDM835.kext/Contents/Info.plist": {
+      "sha256": "57aa0469934b27e1032895dd69c9c9a8e0bfd424887825fd512e59668073159f",
+      "bytes": 2091
+    },
+    "build/baseband/Extensions/SDM835.kext/Contents/MacOS/SDM835": {
+      "sha256": "5610f955029101d2ca75f6dbf556273e0c01a9409fc4e89f679c099a77d946e0",
+      "bytes": 93472
+    },
+    "build/baseband/bridge/Image": {
+      "sha256": "b480478c3ba3860a4f937fb0b155ca6a39e2c513a88fc6f003940e437bb2cb5e",
+      "bytes": 26181632
+    },
+    "build/baseband/bridge/XnuBridge.efi": {
+      "sha256": "1d819aff292574f77c4aae9bf80702955c82a48aa1dc57a4238f909e8a398d22",
+      "bytes": 26147328
+    },
+    "build/baseband/bridge/build.json": {
+      "sha256": "8115687aa56c3130b7a559443c4e612e75a3cfdb56e67e0534951e3be35c20e1",
+      "bytes": 3666
+    },
+    "build/baseband/bridge/xiaomi-sagit.apple-dt": {
+      "sha256": "217ef9ad43bd7492932b0024168071f3b5c7c20c14b9ecf61d55d2b76be9535c",
+      "bytes": 32856
+    },
+    "build/baseband/firmware-bridge/Image": {
+      "sha256": "59c710f09edc382f9fd74945551c8c08ef6ee9fcbeb8a30fb963016e8321835e",
+      "bytes": 26181632
+    },
+    "build/baseband/firmware-bridge/XnuBridge.efi": {
+      "sha256": "d9203253ade66c1c6527981272bac2d228bccd2df8b86169859bab930e38c65c",
+      "bytes": 82846208
+    },
+    "build/baseband/firmware-bridge/baseband-firmware.bin": {
+      "sha256": "f39c2fcd79aba890061784f11812cb9845117400cbbc86b7c6ef9ae02a15b5e2",
+      "bytes": 56623104
+    },
+    "build/baseband/firmware-bridge/build.json": {
+      "sha256": "de724682614713b0dbea5f85a41a7455b5fde5a4bcf02d135816fe646cf99ab3",
+      "bytes": 5632
+    },
+    "build/baseband/firmware-bridge/xiaomi-sagit.apple-dt": {
+      "sha256": "0f2f71b81d3375828927525f053dd3677a69a2406bb969a73e49f2d7933b986f",
+      "bytes": 34840
+    },
+    "build/baseband/record_tftp_validation.py": {
+      "sha256": "5c8441e97d9faec5a24cceb673c410502a0a21bb5599e3802a6f6a07aa86a65e",
+      "bytes": 15179
+    },
+    "build/baseband/tftp-artifact-audit.json": {
+      "sha256": "24f7cbd36ff3c5f6455e740c0f64da7d3b7c7a0c31eeddb8d68f77bcdcd6780f",
+      "bytes": 913
+    },
+    "build/baseband/tftp-build-inputs.json": {
+      "sha256": "6aa6bba3e247b0793d53c2d757ee89cef25cd23fc4a73c13be3ae76c90861ad7",
+      "bytes": 10529
+    },
+    "build/baseband/tftp-build-phases.json": {
+      "sha256": "85682a56563630e8c81cc9efc4597331b9158dd2378b10985d8b085f1335e8b2",
+      "bytes": 333
+    },
+    "build/baseband/tftp-collection-config.json": {
+      "sha256": "0b31968f1261037b364150da4465b70469ecd5edc85ac42e1f5c28883cdb6cc2",
+      "bytes": 34446
+    },
+    "build/baseband/tftp-kernel-inputs.json": {
+      "sha256": "6aa6bba3e247b0793d53c2d757ee89cef25cd23fc4a73c13be3ae76c90861ad7",
+      "bytes": 10529
+    },
+    "build/output/kernelcache.baseband": {
+      "sha256": "f614e53e3d6017819e471ebeb903ec57571a247cbb6515960ccc09ef3d0cf3fe",
+      "bytes": 26099712
+    },
+    "build/output/kernelcache.baseband.manifest.json": {
+      "sha256": "e46d1574370e5ef5ef1026334d8a5bebe50b88db20ad8e9515ae6768e933a6f2",
+      "bytes": 3007
+    },
+    "build/output/kernelcache.baseband.verification.json": {
+      "sha256": "22557907fd72ba93dc91e82be11cf90c48b8a8d1877ea36373f8b8b7c04e215e",
+      "bytes": 8488
+    },
+    "docs/baseband/firmware-sources.json": {
+      "sha256": "133d347922f446c43d6516834ed7e3187ffd1754702f4d7d7cc2f7172a1bd072",
+      "bytes": 1901
+    },
+    "docs/baseband/ios18-model.json": {
+      "sha256": "9815af4033b088401d559d4c9e46cc7702d030cfed27afe88e785f1e74f985f0",
+      "bytes": 85186
+    },
+    "docs/baseband/ipad-apple-control.json": {
+      "sha256": "0bbfd50df402afbde33ea3f724538703c4f890c5255d409164321be1a7df4ce4",
+      "bytes": 90438
+    },
+    "docs/baseband/ipad-runtime-libraries.json": {
+      "sha256": "27ea32301d6326d4385948e003c7f3fa471cbe1f20093183b05bc9d36d818113",
+      "bytes": 795829
+    },
+    "docs/baseband/reference/sources.json": {
+      "sha256": "f8cb72ad092ff3acf072061a5f11e20f4dd5f46fde3f774a632e0ef00f0b4b3c",
+      "bytes": 16348
+    },
+    "docs/baseband/remote-services.json": {
+      "sha256": "0022b437db0c02e7a4ff14ab080d48ce1832274c264c8c73e40fb199cf0603e6",
+      "bytes": 4396
+    }
+  },
+  "source_evidence": {
+    "Makefile": {
+      "sha256": "3b617d159f21543071839d511bd90813256b04e031f824280c88a0399995aa9c",
+      "bytes": 21465
+    },
+    "docs/baseband/README.md": {
+      "sha256": "268df23fbda612e4ff74e1def65379de5b1d9ed56ced750cd1e7b5e5b5ad33e3",
+      "bytes": 17987
+    },
+    "docs/baseband/reference/sources.json": {
+      "sha256": "f8cb72ad092ff3acf072061a5f11e20f4dd5f46fde3f774a632e0ef00f0b4b3c",
+      "bytes": 16348
+    },
+    "docs/baseband/reference/tqftpserv-LICENSE": {
+      "sha256": "a6d7cc7891d16f9c74c9a9c2514805e59bb8758db7690bb7ae065c79cec9515a",
+      "bytes": 1568
+    },
+    "docs/baseband/reference/tqftpserv-README.md": {
+      "sha256": "12254f235875819129897dcf5c42b5c99160a49c3fdf80d6ceb6b020529cdcd9",
+      "bytes": 2977
+    },
+    "docs/baseband/reference/tqftpserv-tqftpserv.c": {
+      "sha256": "b980c9d7ba3e67ac353b279d85e8bad9de6836d3887454a87d674001184b96ca",
+      "bytes": 26127
+    },
+    "docs/baseband/reference/tqftpserv-translate.c": {
+      "sha256": "aefa6e5e8afc0179ebbd1203910126995e2d4e257080fbaf223f882c067fc7ab",
+      "bytes": 8760
+    },
+    "docs/baseband/remote-services.json": {
+      "sha256": "0022b437db0c02e7a4ff14ab080d48ce1832274c264c8c73e40fb199cf0603e6",
+      "bytes": 4396
+    },
+    "scripts/baseband.py": {
+      "sha256": "e18ac72a41966885289e5086d591f21209a538f8c1ec034f0e50e271aff86239",
+      "bytes": 9142
+    },
+    "scripts/baseband_handoff.py": {
+      "sha256": "0ea5616235fca8e73559bd16cbb38e7c7ae6131d698d373b8ca78a43e382feef",
+      "bytes": 9163
+    },
+    "scripts/baseband_services.py": {
+      "sha256": "1c496fdff65c94183360cb8ac9494e6f8ab745c788c94f694ac0ba4190c7eb07",
+      "bytes": 4304
+    },
+    "scripts/build-bridge.py": {
+      "sha256": "eba4286092415f528086baf545dfc53521ef801204dff959ada1ebd646feda29",
+      "bytes": 120175
+    },
+    "scripts/toolchain.py": {
+      "sha256": "6e51e280034742daea3c2ae9fba862b7804037bd3db167690c4ff2f8f39b47cb",
+      "bytes": 293691
+    },
+    "drivers/Build.json": {
+      "sha256": "f940fad6d8e27d224f347dede5f2bf2c95c13bd970a6032e40b02104b5d5e1e9",
+      "bytes": 77204
+    },
+    "drivers/baseband/QcomBaseband/BasebandAXI.h": {
+      "sha256": "d7fd96d8841de29281749c40d65303491bd6532307b3d277fafa0250c4f3ad0e",
+      "bytes": 4420
+    },
+    "drivers/baseband/QcomBaseband/BasebandAdmission.h": {
+      "sha256": "c928616debaae5004ef234ff41cf602017b74f725834a6b197d9f852d3989f97",
+      "bytes": 1985
+    },
+    "drivers/baseband/QcomBaseband/BasebandBoot.h": {
+      "sha256": "cf1af23d96a108c611fb01e1f01f7d65c8d9724231188b744d2f95059b493a8e",
+      "bytes": 8678
+    },
+    "drivers/baseband/QcomBaseband/BasebandChannel.h": {
+      "sha256": "674a2f8d761a1259adb1275ec0f21987346117ffc2e653c653738f57ec0a3195",
+      "bytes": 17463
+    },
+    "drivers/baseband/QcomBaseband/BasebandFIFO.h": {
+      "sha256": "fa6565e5b87041f2d4bb3215a1beec1818f67b7e9d0deb8c8d1f75a41323b112",
+      "bytes": 4096
+    },
+    "drivers/baseband/QcomBaseband/BasebandFirmware.h": {
+      "sha256": "767a42349ada94d241224bf19aa72fed667507aa8bd9523432e659bdedd3662c",
+      "bytes": 7185
+    },
+    "drivers/baseband/QcomBaseband/BasebandGLINK.h": {
+      "sha256": "b104186d67f3fc5ad7efbf99fc2085f28a37375c63fe2d18fac70fc8a9e7a234",
+      "bytes": 9285
+    },
+    "drivers/baseband/QcomBaseband/BasebandHaltIO.cpp": {
+      "sha256": "466890f21553e6a8caa9f3ffcf6c7af505db03ce568958b4d87d23ea755dec83",
+      "bytes": 3280
+    },
+    "drivers/baseband/QcomBaseband/BasebandHaltIO.h": {
+      "sha256": "0fefb1014ee14e1d0c8ed0c6b6b0231c9cf1209f29e7896bc710c30c5f2a4e48",
+      "bytes": 846
+    },
+    "drivers/baseband/QcomBaseband/BasebandLink.h": {
+      "sha256": "5c888fa76ba122a6c938c85a5f2f02af8f6fcf4f89f879ee908c26e215c52773",
+      "bytes": 9923
+    },
+    "drivers/baseband/QcomBaseband/BasebandMemory.h": {
+      "sha256": "500924fcea4449d253e44e9de2319461c26e0925a7e4a0090178d764d07ff1b4",
+      "bytes": 4534
+    },
+    "drivers/baseband/QcomBaseband/BasebandMemoryAccess.h": {
+      "sha256": "84d3e468c614d02994d4f9cf91617d91343cf98ce5759b1a5b8dec3fcfd4fc6e",
+      "bytes": 2774
+    },
+    "drivers/baseband/QcomBaseband/BasebandMemoryIO.cpp": {
+      "sha256": "cf3d21e7deed951ff0f70c2702ada0ed100731c1a4814bf6038fd8132ee1ceb8",
+      "bytes": 6623
+    },
+    "drivers/baseband/QcomBaseband/BasebandMemoryIO.h": {
+      "sha256": "78f4f2bcf1757e8e78d248e11d0e78d0bc07724461bde933723f5263ae1662eb",
+      "bytes": 1105
+    },
+    "drivers/baseband/QcomBaseband/BasebandMultiplexer.h": {
+      "sha256": "4094748b712b3c74e24ff3994da2d07aab30a6450daaa35a8cd1fb44ec6924d3",
+      "bytes": 13607
+    },
+    "drivers/baseband/QcomBaseband/BasebandNative.cpp": {
+      "sha256": "d6535cad7da796b1677369a655a7837cca2253e448195e6407a6bfef6e32f061",
+      "bytes": 18136
+    },
+    "drivers/baseband/QcomBaseband/BasebandNative.h": {
+      "sha256": "3a65d654a1d7235b75aff5144f1ae2ccc9262fca422550d7bb62c455c32f2f0f",
+      "bytes": 1142
+    },
+    "drivers/baseband/QcomBaseband/BasebandQ6.h": {
+      "sha256": "bdfdb831e8aece8c5ddb8b307040ff4c231bb3bfc1d4913f4ffb9c5148b2a230",
+      "bytes": 5466
+    },
+    "drivers/baseband/QcomBaseband/BasebandQMI.h": {
+      "sha256": "b24727061e591cfb27ebd43261a14d2e93dacdde10769d065329dafc552359fb",
+      "bytes": 4344
+    },
+    "drivers/baseband/QcomBaseband/BasebandQRTR.h": {
+      "sha256": "d4fbfd69a330b3c1565a2010fce96e79abbe01290d49a9f68514dbfed52ba310",
+      "bytes": 15725
+    },
+    "drivers/baseband/QcomBaseband/BasebandQRTRService.h": {
+      "sha256": "5688bb5117fdf5a029dc6b5ea11e66300f9a4635334ad9b679eb1bed1c6baadf",
+      "bytes": 12112
+    },
+    "drivers/baseband/QcomBaseband/BasebandRMTFS.h": {
+      "sha256": "2aed1b3fc2ca5c6802da82da68223b8cd76de5fbf036486e9569107c83e14565",
+      "bytes": 14110
+    },
+    "drivers/baseband/QcomBaseband/BasebandRMTFSIO.cpp": {
+      "sha256": "154f6176f48676db4d139ea4d81985c5d8e0d4306098badca1f80414398fe731",
+      "bytes": 14231
+    },
+    "drivers/baseband/QcomBaseband/BasebandRMTFSIO.h": {
+      "sha256": "44bc48aa86a4724e6f6296a59d1c4969c18d54a8d9f8e745fa842a40e9581bb1",
+      "bytes": 1505
+    },
+    "drivers/baseband/QcomBaseband/BasebandRMTFSStorage.h": {
+      "sha256": "74b2308a08da5e2d95d2c640d64c09c76c75cc30a44c85ba336441b840c7c0e7",
+      "bytes": 7796
+    },
+    "drivers/baseband/QcomBaseband/BasebandRegisters.cpp": {
+      "sha256": "37db26e00e3b403905e7bae706e1294d74931169094781e108877b514f8bfd1c",
+      "bytes": 2023
+    },
+    "drivers/baseband/QcomBaseband/BasebandRegisters.h": {
+      "sha256": "1036263da929d55398d93e5c153589261d83670a336440f38cac88c5f580c3bc",
+      "bytes": 737
+    },
+    "drivers/baseband/QcomBaseband/BasebandResourceIO.cpp": {
+      "sha256": "0e3ded0871a9a1d2342bcb4255a8afcd7500fe96d3d65fd4fa04802140dabd22",
+      "bytes": 4355
+    },
+    "drivers/baseband/QcomBaseband/BasebandResourceIO.h": {
+      "sha256": "a59b64588198c057dc656c06269104efc4663fa4ed319f9136a4e125758c5fa4",
+      "bytes": 698
+    },
+    "drivers/baseband/QcomBaseband/BasebandResources.h": {
+      "sha256": "3b598889d214e5226ee4bc0dd27f0e467392029455a1fac947d18d1deba58745",
+      "bytes": 5213
+    },
+    "drivers/baseband/QcomBaseband/BasebandSMEM.h": {
+      "sha256": "a3d64ef9153111d3b0bc604327d17c2a536a02037c0592bcb9ffa16913f45bde",
+      "bytes": 10499
+    },
+    "drivers/baseband/QcomBaseband/BasebandSMEMPool.h": {
+      "sha256": "c2974eec01b2791b5bb2045ebde0d6a0620937d138768df848071406d8dd72a1",
+      "bytes": 10573
+    },
+    "drivers/baseband/QcomBaseband/BasebandSSR.h": {
+      "sha256": "4ed9bc22bc83be2c77cdd170576cdc49a18b01a74551c28e33eb6cebe726f802",
+      "bytes": 4757
+    },
+    "drivers/baseband/QcomBaseband/BasebandSecure.h": {
+      "sha256": "4f505af3062fb4d5f527355fd41f4dc66d0eea08b10e88cf616e768b35054cb9",
+      "bytes": 6205
+    },
+    "drivers/baseband/QcomBaseband/BasebandSecureIO.cpp": {
+      "sha256": "a5c9607ef66573e6d9da6875ff75223a47a78b6a75bce27a8ffec59688938cd9",
+      "bytes": 7181
+    },
+    "drivers/baseband/QcomBaseband/BasebandSecureIO.h": {
+      "sha256": "690378f13fe75e3aab8229fec21b1529e19eb30dd023057cbad701044520d9e2",
+      "bytes": 931
+    },
+    "drivers/baseband/QcomBaseband/BasebandShutdown.h": {
+      "sha256": "3888bc1762c56a8933a422bb4b64b31b9b882f8a0d99d32e706deb78e24dfcd2",
+      "bytes": 3127
+    },
+    "drivers/baseband/QcomBaseband/BasebandSignalIO.cpp": {
+      "sha256": "669baf6723457556e8acd6e0290f244ffcd42da524a81ed6635d83683ecfb133",
+      "bytes": 10581
+    },
+    "drivers/baseband/QcomBaseband/BasebandSignalIO.h": {
+      "sha256": "d724d829d71f9d462f279bf654088036adf3c3ebd40b1f04fd316d742b56dbd3",
+      "bytes": 1443
+    },
+    "drivers/baseband/QcomBaseband/BasebandSignals.h": {
+      "sha256": "af8102439ed76639d2a4407067fe359c900feb59dbb619641a229519df8dedd8",
+      "bytes": 3812
+    },
+    "drivers/baseband/QcomBaseband/BasebandSysmon.h": {
+      "sha256": "fe73c23e3045b550fd6f918e6496891ecea38f83b8fdfb7603f3f00d18261cfa",
+      "bytes": 10025
+    },
+    "drivers/baseband/QcomBaseband/BasebandTFTP.h": {
+      "sha256": "080fb2d162e5a2a179b15a1bbb8011b2c1c7e0b8fbd356f3132c394531b5fa35",
+      "bytes": 27584
+    },
+    "drivers/baseband/QcomBaseband/BasebandTFTPFiles.h": {
+      "sha256": "c241a4656dd8bd9eaa7878005380ae2e1e7cddd1addd70abd6e178347d8eb1a0",
+      "bytes": 9059
+    },
+    "drivers/baseband/QcomBaseband/BasebandTFTPIO.cpp": {
+      "sha256": "869d1e6f8f37209910bc90a54daf0316e2cf30f46d56e6e4f447c4321fef15a1",
+      "bytes": 633
+    },
+    "drivers/baseband/QcomBaseband/BasebandTFTPIO.h": {
+      "sha256": "274ab024dfb32cd3cd698714a2099906f545bcad9ceceaf8608a6f0c15209f52",
+      "bytes": 150
+    },
+    "drivers/baseband/QcomBaseband/BasebandTransport.cpp": {
+      "sha256": "53d2a51e8c7b054c46474b5c8407854db4175d653dcc4e58646971e97b3ea0e6",
+      "bytes": 889
+    },
+    "drivers/baseband/QcomBaseband/Info.plist": {
+      "sha256": "bd459ecc100a7124d19b6a62e1b384caf96cd49f3c62279a95ab402ca4fcc490",
+      "bytes": 1869
+    },
+    "drivers/baseband/QcomBaseband/LICENSE": {
+      "sha256": "f6b78c087c3ebdf0f3c13415070dd480a3f35d8fc76f3d02180a407c1c812f79",
+      "bytes": 18729
+    },
+    "drivers/baseband/QcomBaseband/NOTICE.RMTFS": {
+      "sha256": "ca2f1a7aeede1c785f0ab5d0a31fea81730477c7e461e862e8cc439ca6f0f1ba",
+      "bytes": 1798
+    },
+    "drivers/baseband/QcomBaseband/NOTICE.TFTP": {
+      "sha256": "47721e759b215b0334040a54d5e1da7b6f961a94b3876686fd850803fbc178b1",
+      "bytes": 1825
+    },
+    "drivers/baseband/QcomBaseband/QcomBaseband.cpp": {
+      "sha256": "9acb5c516fe4ad2cfbe02919688227e3f1e3448468327b6f0978c0353de2a3c1",
+      "bytes": 11891
+    },
+    "drivers/baseband/QcomBaseband/QcomBaseband.h": {
+      "sha256": "dcae498ff27e57ca625d2b66757736cd12be28ce2d56c363150723b7a01c874a",
+      "bytes": 2434
+    },
+    "drivers/abi-22H374/apple-storage-abi.json": {
+      "sha256": "023ce9cbf6989018554d8d5d0a2969ffc4d07923b49e70ec5552724e7a0d2064",
+      "bytes": 4427
+    },
+    "drivers/include/BasebandProtocol.h": {
+      "sha256": "83dfdc3fce3f7a4d20fb09ced4c24fee38ea34a09a23a62792aa19a7ee1c0d21",
+      "bytes": 2491
+    },
+    "tests/baseband_admission_test.cpp": {
+      "sha256": "a3a86ab9e6933991b5f8ee3e2f195dafb49e379992e307ada4f9db763c32db3c",
+      "bytes": 3849
+    },
+    "tests/baseband_axi_test.cpp": {
+      "sha256": "659db3aaffc5a58a87cf45f37375bca00d595615df50364070186d6a7ec25831",
+      "bytes": 5152
+    },
+    "tests/baseband_boot_test.cpp": {
+      "sha256": "66308dd9f5b4e525002534f7e50743718afc25f90c1f71625eab876f42c0e7c8",
+      "bytes": 10329
+    },
+    "tests/baseband_firmware_test.cpp": {
+      "sha256": "f9e68f342d92e0f99462147ae85fbdca6b8381fb821057f2f88f864f4a7ed42e",
+      "bytes": 5205
+    },
+    "tests/baseband_glink_test.cpp": {
+      "sha256": "2a0bca3ab78f49ac60d16471658a7db59401cc0b28ca3c9bdcb994f4a4186d11",
+      "bytes": 11490
+    },
+    "tests/baseband_kernel_compile.cpp": {
+      "sha256": "d6c7bd4d98c427ce7e0bf18bf0b39ba24f753f5cabeb05b7ede36f1081f98531",
+      "bytes": 2871
+    },
+    "tests/baseband_memory_test.cpp": {
+      "sha256": "925b1c05069eb14ab798dceb96f7d8c2f264313548479e57da4f12ece7326788",
+      "bytes": 4196
+    },
+    "tests/baseband_mux_test.cpp": {
+      "sha256": "fb05b241e018a8e18ada8d530c8ce5c878ef7dc6fa3d4376e093dfd38e029819",
+      "bytes": 8277
+    },
+    "tests/baseband_q6_test.cpp": {
+      "sha256": "31cb7aed0083b3f8306537375d8b152aa9d6078f0d62e86ddf2ad89ced6d4754",
+      "bytes": 2927
+    },
+    "tests/baseband_qmi_test.cpp": {
+      "sha256": "e8f0dcd2b89ab369119e5a26c7cff58a9f1e9a8d11ff0dec7b9c6c8c9eb5fbe3",
+      "bytes": 6575
+    },
+    "tests/baseband_resources_test.cpp": {
+      "sha256": "c1a55fef76a89864c82a9aeb4315c35fd69815fcaef84b78c5b24e76294145c9",
+      "bytes": 4994
+    },
+    "tests/baseband_rmtfs_storage_test.cpp": {
+      "sha256": "eca0bf16aa8bb79cabb1b1ab8753aba7a6cbc859efa2581f295fed1b0f7e1024",
+      "bytes": 6375
+    },
+    "tests/baseband_rmtfs_test.cpp": {
+      "sha256": "d25cebdd6316078b86a6af8180aed206346fa99552d2f1af36c167467eda9f9d",
+      "bytes": 20252
+    },
+    "tests/baseband_rpm_test.cpp": {
+      "sha256": "bd2944f9706e2ab2b4a97a7476bc18aac8bfeea184d9f72c08860cd295effd4f",
+      "bytes": 4363
+    },
+    "tests/baseband_services_test.cpp": {
+      "sha256": "8679aeffbc882e0502b1070946326fc00a2daea5912b6b45060801d72fde9689",
+      "bytes": 13347
+    },
+    "tests/baseband_shutdown_test.cpp": {
+      "sha256": "a912499bff080ba54445eef942a0866ec05ecc1c826a9f61843697a3d1d3fe26",
+      "bytes": 3475
+    },
+    "tests/baseband_signals_test.cpp": {
+      "sha256": "8aa8fb1f97dddb277e129c72a4c00459d3d95ce634ecfb9e302791e3f4a80e46",
+      "bytes": 3891
+    },
+    "tests/baseband_smem_pool_test.cpp": {
+      "sha256": "d8fd842a1ffe47ed5d3acd422b29b995d4f4d1137c416a17a855dd577e587055",
+      "bytes": 6639
+    },
+    "tests/baseband_ssr_test.cpp": {
+      "sha256": "6d042e4e9cb3b80fb3e52c7f4f24249d5bcd1b0c1b2d8c8be27d3cc4dd2bcab7",
+      "bytes": 4072
+    },
+    "tests/baseband_storage_kernel_compile.cpp": {
+      "sha256": "808ee36cac14124d80be7be880d62eb4ac40d013dcb169e64a93a91f6594c379",
+      "bytes": 507
+    },
+    "tests/baseband_sysmon_test.cpp": {
+      "sha256": "088523dc450df39b38818603ff9cb91a02321be8eb3aa9d1c0bfc0eccf8c08fc",
+      "bytes": 8477
+    },
+    "tests/baseband_tftp_test.cpp": {
+      "sha256": "76a08eae3bfd54e5b65d8ed1d6682b876954038d67a7c927f4e0a26b10fe1cf0",
+      "bytes": 18325
+    },
+    "tests/baseband_transport_test.cpp": {
+      "sha256": "54b49e2f7f890211c6a156df02aeb4c414e765fb7b1f6ba06ed4208ab321e98d",
+      "bytes": 6479
+    },
+    "tests/test_baseband_handoff.py": {
+      "sha256": "cca735fc0c068aa8dc89c5fb39e61f5c05a641d82628c00fbe99b895b9e15f67",
+      "bytes": 18101
+    },
+    "tests/test_baseband_integration.py": {
+      "sha256": "147bc70f447925336d12559130bd6f4e6977c8548a8f86c522eeb1840b4c3f60",
+      "bytes": 10524
+    }
+  },
+  "verification": {
+    "kernel_collection_kexts": 33,
+    "kernel_collection_report": "build/output/kernelcache.baseband.verification.json",
+    "kernel_collection_warnings": [],
+    "native_kexts_verified": 12,
+    "native_bundles": [
+      "org.darwin.driver.AppleARMGIC",
+      "org.mi6.driver.GenericARMPlatform",
+      "org.darwin.driver.GenericClockController",
+      "org.darwin.driver.QcomBaseband",
+      "org.darwin.driver.QcomGCC",
+      "org.darwin.driver.QcomPowerController",
+      "org.darwin.driver.QcomRPM",
+      "org.darwin.driver.QcomSCM",
+      "org.darwin.driver.QcomSMEM",
+      "org.darwin.driver.QcomSPMI",
+      "org.darwin.driver.QcomUFS",
+      "org.mi6.driver.SDM835"
+    ],
+    "host_protocol_suites": [
+      "baseband-firmware",
+      "baseband-transport",
+      "baseband-boot",
+      "baseband-qmi",
+      "baseband-smem-pool",
+      "baseband-signals",
+      "baseband-memory",
+      "baseband-admission",
+      "baseband-axi",
+      "baseband-rpm",
+      "baseband-resources",
+      "baseband-q6",
+      "baseband-glink",
+      "baseband-rmtfs",
+      "baseband-rmtfs-storage",
+      "baseband-mux",
+      "baseband-sysmon",
+      "baseband-shutdown",
+      "baseband-ssr",
+      "baseband-services",
+      "baseband-tftp"
+    ],
+    "dependency_host_suites": [
+      "ufs"
+    ],
+    "asan_ubsan_protocol_suites": [
+      "baseband-firmware",
+      "baseband-transport",
+      "baseband-boot",
+      "baseband-qmi",
+      "baseband-smem-pool",
+      "baseband-signals",
+      "baseband-memory",
+      "baseband-admission",
+      "baseband-axi",
+      "baseband-rpm",
+      "baseband-resources",
+      "baseband-q6",
+      "baseband-glink",
+      "baseband-rmtfs",
+      "baseband-rmtfs-storage",
+      "baseband-mux",
+      "baseband-sysmon",
+      "baseband-shutdown",
+      "baseband-ssr",
+      "baseband-services",
+      "baseband-tftp"
+    ],
+    "input_evidence_integration_tests": 7,
+    "smem_efi_handoff_tests": 2,
+    "firmware_efi_handoff_tests": 4,
+    "bridge_regression_tests": 49,
+    "patcher_ctest_suites": 5,
+    "arm64_compile_probe": "Boot/firmware/SMEM/SMP2P/GLINK/QRTR and native IOMedia slots; getter bytes and class sizes tied to the iPad image; all sysmon event methods and an SSR sender using a declaration-only stop-owner witness; all TFTP protocol and file-store methods",
+    "native_adapters": "NativeController uses one GLINK negotiation and named IPCRTR/sys_mon/glink_ssr endpoints; SSCTL/legacy graceful stop, fresh SMP fallback and final NV servicing are connected; TFTP raw QRTR transfer ports share the node-wide allocator and fair polling, with real immutable/temporary bytes",
+    "all_recorded_inputs_unchanged_during_kernel_pack": true,
+    "baseband_driver_sources_unchanged_during_kernel_pack": true,
+    "efi_sources_unchanged_during_current_build": true,
+    "build_phase_record": "build/baseband/tftp-build-phases.json",
+    "artifact_audit": "build/baseband/tftp-artifact-audit.json",
+    "efi_firmware_bridge_compiled": true,
+    "efi_firmware_bridge_executed_on_device": false,
+    "efi_bridges_match_current_collection": true,
+    "firmware_payload_excluded_from_raw_image": true,
+    "efi_dtc_warnings": [
+      "existing missing reg/ranges on secure-firmware and fingerprint nodes",
+      "existing duplicate unit-address on soc@0/pram@0"
+    ],
+    "selective_final_sanitized_regressions": [
+      "baseband-tftp",
+      "baseband-services"
+    ]
+  },
+  "runtime_connections": {
+    "baseband_start_has_native_boot_path": true,
+    "native_controller_executed_on_device": false,
+    "entry_conditions": [
+      "enabled exact sagit modem provider",
+      "valid final-map EFI record and MPSS/MBA/metadata/firmware/SMEM/RMTFS ranges",
+      "copied firmware hashes and ELF bounds",
+      "explicit original NV UUID/LUN/start/size/access policy and exclusive native IOMedia matches",
+      "real GCC/RPM resource contracts and cold reset/AXI state",
+      "three actual SCM HLOS confirmations before Boot RAM mapping/writes",
+      "separate RMTFS HLOS confirmation and shared RW assignment while MSS is held in reset",
+      "observed empty peer cursors before accepting this boot's GLINK traffic"
+    ],
+    "baseband_apple_telephony_ready": false,
+    "baseband_data_plane_ready": false,
+    "default_modem_node_enabled": false,
+    "default_smem_node_enabled": false,
+    "firmware_bridge_enables_modem": false,
+    "firmware_bridge_grants_mss_clocks_or_reset": false,
+    "firmware_bridge_record_flags_at_build": 0,
+    "device_authentication_proven": false,
+    "original_nv_partitions_accessed": false,
+    "original_nv_policy_provided": false,
+    "rmtfs": {
+      "service": 14,
+      "version": 1,
+      "shared_base": "0x88f00000",
+      "shared_bytes": 2097152,
+      "host_permissions": 6,
+      "mss_permissions": 6,
+      "commands": [
+        "Open",
+        "Close",
+        "RW_IOVEC",
+        "Allocate",
+        "DeviceError"
+      ],
+      "force_sync_indication_implemented": false,
+      "maximum_batch_bytes": 2097152,
+      "request_timeout_us": 5000000,
+      "native_media_backing": true,
+      "block_sizes_tested": [
+        512,
+        4096,
+        16384
+      ],
+      "short_io_is_error": true,
+      "empty_writes_flush": true,
+      "pending_response_does_not_repeat_io": true,
+      "no_fabricated_nv_or_discarded_write_ack": true
+    },
+    "mss_boot_policy": {
+      "cx": 512,
+      "mx": 512,
+      "qdss": 4,
+      "automatic_grants": false
+    },
+    "sysmon": {
+      "native_shutdown_connected": true,
+      "ssctl_service": 43,
+      "preferred_version": 2,
+      "modem_instance": 18,
+      "legacy_channel": "sys_mon",
+      "real_ack_required": true,
+      "standalone_indication_counts_as_ack": false,
+      "legacy_timeout_taints_channel": true,
+      "foreign_lifecycle_producers_connected": false,
+      "smp_fallback_requires_fresh_ack": true,
+      "stop_request_cleared": true,
+      "ack_replaces_axi_reset": false
+    },
+    "glink": {
+      "one_connection_negotiation": true,
+      "native_channel_names": [
+        "IPCRTR",
+        "sys_mon",
+        "glink_ssr"
+      ],
+      "local_ids_recycled": false,
+      "optional_channel_reopen_supported": true,
+      "whole_mss_restart_implemented": false
+    },
+    "ssr": {
+      "native_receive_pump_connected": true,
+      "foreign_stop_owner_witness_required": true,
+      "foreign_producers_connected": false,
+      "edge_labels": {
+        "ADSP": "lpass",
+        "SLPI": "dsps",
+        "WCNSS": "wcnss"
+      },
+      "cleanup_ack_proves_physical_reset": false
+    },
+    "tftp": {
+      "native_connected": true,
+      "service": 4096,
+      "version": 1,
+      "instance": 0,
+      "catalog_files": [
+        "modemr.jsn",
+        "modemuw.jsn"
+      ],
+      "catalog_limit_bytes": 1048576,
+      "catalog_limit_files": 64,
+      "missing_file_is_error": true,
+      "dynamic_module_directory_provided": false,
+      "temporary_files": 16,
+      "temporary_file_limit_bytes": 65536,
+      "temporary_persistence": "only this boot generation, per remote node",
+      "nv_access": false,
+      "sessions": 8,
+      "maximum_block_bytes": 8192,
+      "maximum_window_blocks": 16,
+      "write_ack_requires_stored_bytes": true,
+      "retransmit_does_not_repeat_write": true,
+      "local_ports_recycled": false,
+      "whole_mss_restart_implemented": false
+    }
+  },
+  "logs": {
+    "tests.log": {
+      "path": "build/baseband/tests.log",
+      "sha256": "2aff884b4c4e12d458a3c72372a757234bb8c6f4b257ea2e7f61cb84f76edbbd",
+      "bytes": 2831
+    },
+    "sanitizers.log": {
+      "path": "build/baseband/sanitizers.log",
+      "sha256": "9f06e6720e5e9ba5b8ccd89f60912c4483bf511cba8a895f030a1a57fd7008db",
+      "bytes": 2331
+    },
+    "collection.log": {
+      "path": "build/baseband/collection.log",
+      "sha256": "3c3ef6306923b883b0c00bf84148504f32bb17f06c319806075af313b3294a62",
+      "bytes": 3229
+    },
+    "verification.log": {
+      "path": "build/baseband/verification.log",
+      "sha256": "483ea8086de06d6dfb2c1af5a77667fe486df03a97148dd63b299319a00e5a25",
+      "bytes": 5334
+    },
+    "integration.log": {
+      "path": "build/baseband/integration.log",
+      "sha256": "029a350ed7ecaf2b0b1b5a417d8f79bf692601de88fa958ea073a73426635cb3",
+      "bytes": 105
+    },
+    "bridge-regression.log": {
+      "path": "build/baseband/bridge-regression.log",
+      "sha256": "6b3a4abe91ca3a33fd59cdc21a3c7f21c67db05c762b8f9593161ef77498937e",
+      "bytes": 855
+    },
+    "bridge-build.log": {
+      "path": "build/baseband/bridge-build.log",
+      "sha256": "429b72094d9051ab574b06f7d5f60dd61b3416f1c5ebf965aa3885dc7ca3d9f3",
+      "bytes": 621
+    },
+    "firmware-bridge-build.log": {
+      "path": "build/baseband/firmware-bridge-build.log",
+      "sha256": "e2d7a4255badeab783d4e0cf207e59364a2cb7fb422e7d4c70261adb5f841c90",
+      "bytes": 630
+    },
+    "tftp-final-regressions.log": {
+      "path": "build/baseband/tftp-final-regressions.log",
+      "sha256": "e3748e6ca7e913cded15cf46e65b4ea3c49532d55841c5e54e586c451f868f67",
+      "bytes": 253
+    },
+    "tftp-native-build.log": {
+      "path": "build/baseband/tftp-native-build.log",
+      "sha256": "eaf544048479ed485067750307c4631b5c1eda7e08294c38387723ac9dc319ae",
+      "bytes": 515
+    }
+  },
+  "remaining": [
+    "EFI MSS firmware-owner retirement and validated six-clock/reset grant producer, integrated with complete AP RPM baseline policy",
+    "Native foreign-processor lifecycle producers/bindings, provision of missing TFTP dynamic module files, and RMTFS ForceSync initiator",
+    "Original NV partition identity admission for a future device deployment; no device/NV access authorized or performed",
+    "SSR generation changes, service reconnection and explicit restart policy beyond fault shutdown",
+    "Apple control/notification/QMI transport ABI integration",
+    "SIM/NAS/WDS/voice functionality and IPA/GSI cellular data path",
+    "Full offline end-to-end telephony/data integration; no hardware test authorized"
+  ]
+}

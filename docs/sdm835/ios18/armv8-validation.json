@@ -1,0 +1,158 @@
+{
+  "date": "2026-10-15",
+  "scope": "Static Kext ARMv8 ISA lowering and offline KCGEN validation",
+  "artifact": "build/output/kernelcache.sdm835.platform",
+  "sha256": "2f1b3d935a7926e0232e7f1aa2a2c19d3d7d4e986dc4f7349b70b08c42afc9ca",
+  "bytes": 22020096,
+  "kext_count": 16,
+  "isa": {
+    "profile": "armv8-a+crc+crypto",
+    "patched": 208,
+    "scanned_words": 176968,
+    "helpers_bytes": 38688,
+    "counts": {
+      "sha512h": 40,
+      "sha512su0": 32,
+      "sha512h2": 40,
+      "sha512su1": 32,
+      "eor3": 10,
+      "rax1": 5,
+      "xar": 24,
+      "bcax": 25
+    },
+    "exclusions": [
+      {
+        "bundle": "com.apple.kec.corecrypto",
+        "address": 18446744005106582720,
+        "size": 256,
+        "kind": "SHA256-K",
+        "sha256": "74ef7306e7452d6859b6463ce496b8df30925f69e1b2969e1f3f34bbc9c6af04"
+      },
+      {
+        "bundle": "com.apple.kec.corecrypto",
+        "address": 18446744005106602736,
+        "size": 256,
+        "kind": "SHA256-K",
+        "sha256": "74ef7306e7452d6859b6463ce496b8df30925f69e1b2969e1f3f34bbc9c6af04"
+      },
+      {
+        "bundle": "com.apple.kec.corecrypto",
+        "address": 18446744005106629648,
+        "size": 16,
+        "kind": "byte-reversal-vector",
+        "sha256": "1f919296baf10802bb9783851d948bf3c048cebcf6bec518db898b2938fc2f20"
+      },
+      {
+        "bundle": "com.apple.kec.corecrypto",
+        "address": 18446744005106629664,
+        "size": 16,
+        "kind": "GHASH-polynomial",
+        "sha256": "0e1a40147fc42e77dc4d50f9c41d5a10c9676583be7c2679e8e8c6700cee3570"
+      },
+      {
+        "bundle": "com.apple.kec.corecrypto",
+        "address": 18446744005106656032,
+        "size": 16,
+        "kind": "byte-reversal-vector",
+        "sha256": "1f919296baf10802bb9783851d948bf3c048cebcf6bec518db898b2938fc2f20"
+      },
+      {
+        "bundle": "com.apple.kec.corecrypto",
+        "address": 18446744005106656048,
+        "size": 16,
+        "kind": "GHASH-polynomial",
+        "sha256": "0e1a40147fc42e77dc4d50f9c41d5a10c9676583be7c2679e8e8c6700cee3570"
+      },
+      {
+        "bundle": "com.apple.kec.corecrypto",
+        "address": 18446744005106671184,
+        "size": 16,
+        "kind": "byte-reversal-vector",
+        "sha256": "1f919296baf10802bb9783851d948bf3c048cebcf6bec518db898b2938fc2f20"
+      },
+      {
+        "bundle": "com.apple.kec.corecrypto",
+        "address": 18446744005106671200,
+        "size": 112,
+        "kind": "partial-block-masks",
+        "sha256": "b52237e93fcdfd209c4986766a7e183be3858c00c69e3f6c9362c7f2752dd059"
+      },
+      {
+        "bundle": "com.apple.kec.corecrypto",
+        "address": 18446744005106681248,
+        "size": 48,
+        "kind": "AES-key-schedule-vectors",
+        "sha256": "d027fb0d0eac943fe997104dbea2cc514b929a38a763def9b6b097e9bc571ac9"
+      },
+      {
+        "bundle": "com.apple.kec.corecrypto",
+        "address": 18446744005106705632,
+        "size": 16,
+        "kind": "byte-reversal-vector",
+        "sha256": "1f919296baf10802bb9783851d948bf3c048cebcf6bec518db898b2938fc2f20"
+      },
+      {
+        "bundle": "com.apple.kec.corecrypto",
+        "address": 18446744005106800784,
+        "size": 16,
+        "kind": "byte-reversal-vector",
+        "sha256": "1f919296baf10802bb9783851d948bf3c048cebcf6bec518db898b2938fc2f20"
+      },
+      {
+        "bundle": "com.apple.kec.corecrypto",
+        "address": 18446744005106800800,
+        "size": 112,
+        "kind": "partial-block-masks",
+        "sha256": "b52237e93fcdfd209c4986766a7e183be3858c00c69e3f6c9362c7f2752dd059"
+      },
+      {
+        "bundle": "com.apple.kec.corecrypto",
+        "address": 18446744005106816000,
+        "size": 64,
+        "kind": "SHA1-K-vectors",
+        "sha256": "97386c6d307f6519abd15350924e41a0bdf445f3d077e56889f6dd6078996b4b"
+      }
+    ],
+    "stock_patches_verified": 208,
+    "source_constant_spans_verified": 13
+  },
+  "native_kernel_sha256": "3d810e392063c338a75740548f82655ae37f501d988f2163484782ca0e39c057",
+  "source_sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+  "tests": {
+    "cpp": 5,
+    "python": 16,
+    "qemu_differential": 2944,
+    "real_structural_publication_mutations": 8,
+    "real_isa_mutations": 9,
+    "sanitizers": [
+      "ASAN",
+      "UBSAN"
+    ],
+    "sanitizer_output_identical": true
+  },
+  "hardware": {
+    "kernel_entry": true,
+    "vm_init_completed": true,
+    "kalloc_kcgen_assertion_fixed": true,
+    "dual_console": true,
+    "watchdog_recovered": true,
+    "boot_complete": false,
+    "crypto_helpers_exercised": false,
+    "last_trace": "[XNU IOKit] root nub init begin",
+    "stop_function": "IOPlatformExpertDevice::init(void *dtRoot)",
+    "remaining_candidates": [
+      "IODeviceTreeAlloc(dtRoot)",
+      "IOService::init(dt, gIODTPlane)"
+    ],
+    "report": "build/armv8-compat/hardware-final/report.json",
+    "uart": "armv8-hardware-uart.txt",
+    "payload_sha256": "7a13cf7aaebc1fd267baf01cca8db43b83468951878ce2d91ccfe525995b9040"
+  },
+  "limits": [
+    "Only implemented ISA classes are lowered; unsupported/unknown executable words block publication.",
+    "ARMv8-A plus CRC/AES/SHA1/SHA256 is the SDM835 profile; this is not a generic optional-feature-free ARMv8 CPU target.",
+    "CASP/SM4/FP16/dot-product/SVE and arm64e ABI are not implemented.",
+    "QEMU differential atomic cases are single-threaded; they do not constitute a hardware contention stress test.",
+    "Private ABI, crypto POST and full device boot are not certified."
+  ]
+}

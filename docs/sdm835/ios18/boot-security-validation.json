@@ -1,0 +1,300 @@
+{
+  "date": "2026-10-15T03:54:44.835295-07:00",
+  "scope": "corecrypto HMAC control test and native Image4/AMFI integration",
+  "artifact": "build/output/kernelcache.sdm835.platform",
+  "sha256": "89d36b13451fad883ac97ed434f62e381b4f24ef11bb541e0b3a7205e0a5b106",
+  "bytes": 25395200,
+  "kext_count": 28,
+  "integrity": {
+    "modules": [
+      {
+        "bundle": "com.apple.kec.corecrypto",
+        "algorithm": "HMAC-SHA256",
+        "hashed_bytes": 335056,
+        "hmac_offset": 20587968,
+        "hmac": "b8f03f8cad3edb531e3faf5908c6384514a19fed6c337343531816ba65dc27b3"
+      }
+    ]
+  },
+  "provider_sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+  "kernel_sha256": "aebc0007df19f384e2a9ffdc6714c3a9b63cb52d2b4d3fd17c834943b1657a80",
+  "cases": {
+    "old_hmac": {
+      "report": "build/corecrypto-diagnosis/panic-fixed/hardware-baseline/report.json",
+      "log": "build/corecrypto-diagnosis/panic-fixed/hardware-baseline/uart.txt",
+      "kernel_sha256": "097fe512c1213f5e73042440b4eac411a0282470691912635baf0fad2d7680a9",
+      "payload_sha256": "ba379f16b92da4b21922b3a9e86e2fdbacb5cf91e6aa78e4d8d2dca25335dd08",
+      "watchdog_recovered": true,
+      "evidence": [
+        {
+          "line": 111,
+          "text": "panic(cpu 0 caller 0xfffffff006f58b04): \"FIPS Kernel POST Failed (-2074)!\" @corecrypto_kext.c:346"
+        },
+        {
+          "line": 176,
+          "text": "** Stackshot Succeeded ** Bytes Traced 1909 (Uncompressed 4800) **"
+        },
+        {
+          "line": 178,
+          "text": "panic(cpu 0 caller 0xfffffff006f58b04): \"FIPS Kernel POST Failed (-2074)!\" @corecrypto_kext.c:346"
+        }
+      ]
+    },
+    "new_hmac": {
+      "report": "build/corecrypto-diagnosis/panic-fixed/hardware-rehashed/report.json",
+      "log": "build/corecrypto-diagnosis/panic-fixed/hardware-rehashed/uart.txt",
+      "kernel_sha256": "ff7cb15192bd514c75a155795deeb4b1048a36ee99b2b0cecf48773361fbd9c0",
+      "payload_sha256": "bff6b0216a36c3bf5475cb3ffbb858c4a5bf02a13913a69aadf9cf46df471981",
+      "watchdog_recovered": true,
+      "evidence": [
+        {
+          "line": 111,
+          "text": "[XNU IOKit] record_startup_extensions done"
+        },
+        {
+          "line": 112,
+          "text": "[XNU IOKit] InitIOKit done"
+        },
+        {
+          "line": 114,
+          "text": "[XNU IOKit] ConfigureIOKit done"
+        },
+        {
+          "line": 118,
+          "text": "Security policy loaded: Guarded vnode policy (vnguard)"
+        },
+        {
+          "line": 119,
+          "text": "panic(cpu 0 caller 0xfffffff0077f83e0): image4 interface not available @kern_trustcache.c:584"
+        },
+        {
+          "line": 176,
+          "text": "** Stackshot Succeeded ** Bytes Traced 2122 (Uncompressed 5712) **"
+        },
+        {
+          "line": 178,
+          "text": "panic(cpu 0 caller 0xfffffff0077f83e0): image4 interface not available @kern_trustcache.c:584"
+        }
+      ]
+    },
+    "security_kexts": {
+      "report": "build/corecrypto-diagnosis/hardware-security/report.json",
+      "log": "build/corecrypto-diagnosis/hardware-security/uart.txt",
+      "kernel_sha256": "42c6cb2f3b203642afd3121b881b30f4f733dbb1c09ce805ec19fb43b33c55cc",
+      "payload_sha256": "b6abbf5e092af90248ae154b44954a5e1069c27cd690a116a537ec89ab72d210",
+      "watchdog_recovered": true,
+      "evidence": [
+        {
+          "line": 111,
+          "text": "[XNU IOKit] record_startup_extensions done"
+        },
+        {
+          "line": 112,
+          "text": "[XNU IOKit] InitIOKit done"
+        },
+        {
+          "line": 114,
+          "text": "[XNU IOKit] ConfigureIOKit done"
+        },
+        {
+          "line": 117,
+          "text": "Darwin Image4 Extension Version 7.0.0: Tue Jul 21 20:38:52 PDT 2026; root:AppleImage4-320.100.22~2761/AppleImage4/RELEASE_ARM64"
+        },
+        {
+          "line": 119,
+          "text": "Security policy loaded: AppleImage4 hooks (AppleImage4)"
+        },
+        {
+          "line": 120,
+          "text": "panic(cpu 0 caller 0xfffffff006eba378): panic: failed to get product node"
+        },
+        {
+          "line": 185,
+          "text": "** Stackshot Succeeded ** Bytes Traced 2142 (Uncompressed 5776) **"
+        },
+        {
+          "line": 187,
+          "text": "panic(cpu 0 caller 0xfffffff006eba378): panic: failed to get product node"
+        }
+      ]
+    },
+    "product_and_manifest_dt": {
+      "report": "build/corecrypto-diagnosis/hardware-security-dt-final/report.json",
+      "log": "build/corecrypto-diagnosis/hardware-security-dt-final/uart.txt",
+      "kernel_sha256": "42c6cb2f3b203642afd3121b881b30f4f733dbb1c09ce805ec19fb43b33c55cc",
+      "payload_sha256": "fd2d13237610c5cd4744149f8f7a597a1cfb6c42fd7bf7b8b037a3a4ac4195b7",
+      "watchdog_recovered": true,
+      "evidence": [
+        {
+          "line": 111,
+          "text": "[XNU IOKit] record_startup_extensions done"
+        },
+        {
+          "line": 112,
+          "text": "[XNU IOKit] InitIOKit done"
+        },
+        {
+          "line": 114,
+          "text": "[XNU IOKit] ConfigureIOKit done"
+        },
+        {
+          "line": 119,
+          "text": "Security policy loaded: AppleImage4 hooks (AppleImage4)"
+        },
+        {
+          "line": 120,
+          "text": "panic(cpu 0 caller 0xfffffff007a7e844): Kernel data abort. at pc 0xfffffff006eb34d4, lr 0xfffffff006ec0eb4 (saved state: 0xfffffff6a613b3f0)"
+        },
+        {
+          "line": 200,
+          "text": "** Stackshot Succeeded ** Bytes Traced 2148 (Uncompressed 5776) **"
+        },
+        {
+          "line": 202,
+          "text": "panic(cpu 0 caller 0xfffffff007a7e844): Kernel data abort. at pc 0xfffffff006eb34d4, lr 0xfffffff006ec0eb4 (saved state: 0xfffffff6a613b3f0)"
+        }
+      ]
+    },
+    "options_dt": {
+      "report": "build/corecrypto-diagnosis/hardware-security-options/report.json",
+      "log": "build/corecrypto-diagnosis/hardware-security-options/uart.txt",
+      "kernel_sha256": "42c6cb2f3b203642afd3121b881b30f4f733dbb1c09ce805ec19fb43b33c55cc",
+      "payload_sha256": "4a95ef94a29acaae4d67e3b5ab505ea6a841e7a7301baf8fd77055536da4d67b",
+      "watchdog_recovered": true,
+      "evidence": [
+        {
+          "line": 111,
+          "text": "[XNU IOKit] record_startup_extensions done"
+        },
+        {
+          "line": 112,
+          "text": "[XNU IOKit] InitIOKit done"
+        },
+        {
+          "line": 116,
+          "text": "IONVRAMCHRPHandler.cpp:init:310 - Unable to get NVRAM properties"
+        },
+        {
+          "line": 117,
+          "text": "�panic(cpu 0 caller 0xfffffff0079f03d8): IONVRAMCHRPHandler creation failed"
+        },
+        {
+          "line": 179,
+          "text": "** Stackshot Succeeded ** Bytes Traced 2022 (Uncompressed 5424) **"
+        },
+        {
+          "line": 181,
+          "text": "panic(cpu 0 caller 0xfffffff0079f03d8): IONVRAMCHRPHandler creation failed"
+        }
+      ]
+    },
+    "nvram_handoff": {
+      "validation": "docs/sdm835/ios18/nvram-handoff-validation.json",
+      "rounds": 2,
+      "original_panic_resolved": true,
+      "watchdog_recovered": true
+    },
+    "crypto_hash_method": {
+      "log": "build/nvram-handoff/hardware-sha384-1/uart.txt",
+      "report": "build/nvram-handoff/hardware-sha384-1/report.json",
+      "payload_sha256": "410ce7aa7e4d470379d5c9dec5a9a4953aaa3c836712c35edb26e9a1849d2e10",
+      "kernelcache_sha256": "42c6cb2f3b203642afd3121b881b30f4f733dbb1c09ce805ec19fb43b33c55cc",
+      "crypto_hash_method": "sha2-384",
+      "checks": {
+        "nvram_partitions_parsed": true,
+        "nvram_panic_absent": true,
+        "hash_method_panic_absent": true,
+        "fips_panic_absent": true,
+        "trust_cache_amfi_check_reached": true,
+        "native_panic_complete": true,
+        "watchdog_recovered": true
+      },
+      "native_backtrace_frames": 11,
+      "device_tree_changes": "build/nvram-handoff/sha384-dt-diff.json",
+      "comparison_note": "Same kernelcache and NVRAM bytes. Build-time entropy changed; concurrent work also added a disabled GPU DT node, preserved in the new package.",
+      "evidence": [
+        {
+          "line": 116,
+          "text": "IONVRAM.cpp:getNVRAMProperties:1257 - _bankSize=0x4000, _bankCount=0x1, _currentBank=0"
+        },
+        {
+          "line": 117,
+          "text": "IONVRAMCHRPHandler.cpp:unserializeImage:487 - NVRAM : commonPartitionOffset - 0x30, commonPartitionSize - 0x1fd0, systemPartitionOffset - 0x2010, systemPartitionSize - 0x1ff0"
+        },
+        {
+          "line": 118,
+          "text": "[XNU IOKit] ConfigureIOKit done"
+        },
+        {
+          "line": 122,
+          "text": "Security policy loaded: AppleImage4 hooks (AppleImage4)"
+        },
+        {
+          "line": 135,
+          "text": "�panic(cpu 0 caller 0xfffffff0077f83fc): amfi interface not available @kern_trustcache.c:589"
+        },
+        {
+          "line": 192,
+          "text": "** Stackshot Succeeded ** Bytes Traced 2384 (Uncompressed 7072) **"
+        },
+        {
+          "line": 194,
+          "text": "panic(cpu 0 caller 0xfffffff0077f83fc): amfi interface not available @kern_trustcache.c:589"
+        }
+      ]
+    }
+  },
+  "control_changed_only_hmac_bytes": 32,
+  "post_checks_disabled": false,
+  "checks": {
+    "kernelcache_python_tests": 23,
+    "patcher_ctest": 5,
+    "bridge_python_tests": 15,
+    "stale_hmac_rejected": true,
+    "actual_image_hmac_tamper_rejected": true,
+    "full_collection_build": "passed",
+    "independent_collection_verification": "passed"
+  },
+  "current_blocker": "Waiting for an IOMedia root device with Content=Apple_HFS. RTC/calendar, pthread and network/lo0 initialization passed. No panic observed in the final test. No mountable root filesystem has been handed off; full userspace boot is not complete.",
+  "latest_bridge": "build/pthread-diagnosis/bridge/XnuBridge.efi",
+  "latest_device_tree": "device_trees/xiaomi-sagit.dts",
+  "partitions_written": false,
+  "full_boot_completed": false,
+  "device_reset_required": true,
+  "device_recovery": "Firmware reboot captured; USB transport not responding after cleanup.",
+  "changed_source_files": [
+    "scripts/kernelcache_integrity.py",
+    "scripts/verify-kernelcache.py",
+    "tools/kernelcache_patcher/main.cpp",
+    "drivers/Build.json",
+    "device_trees/msm8998.dtsi",
+    "device_trees/xiaomi-sagit.dts",
+    "tests/test_kernelcache_integrity.py",
+    "README.md",
+    "docs/sdm835/ios18-kext-analysis.md"
+  ],
+  "nvram_handoff_validation": "docs/sdm835/ios18/nvram-handoff-validation.json",
+  "nvram_handoff_panic_resolved": true,
+  "crypto_hash_method_panic_resolved": true,
+  "amfi_startup_validation": "docs/sdm835/ios18/amfi-startup-validation.json",
+  "amfi_interface_panic_resolved": true,
+  "latest_device_log": "docs/sdm835/ios18/pthread-hardware-uart.txt",
+  "latest_device_checks": {
+    "kernel_entry": true,
+    "rtc_ready": true,
+    "calendar_initialized": true,
+    "bsd_buffers_initialized": true,
+    "network_threads_initialized": true,
+    "loopback_initialized": true,
+    "pthread_panic_absent": true,
+    "all_panic_strings_absent": true,
+    "root_media_wait_reached": true,
+    "watchdog_recovered": true
+  },
+  "iig_compat_validation": "docs/sdm835/ios18/iig-compat-validation.json",
+  "iig_panic_resolved": true,
+  "rtc_wait_resolved": true,
+  "pthread_panic_resolved": true,
+  "rtc_validation": "docs/sdm835/ios18/rtc-validation.json",
+  "pthread_validation": "docs/sdm835/ios18/pthread-validation.json"
+}

@@ -1,0 +1,240 @@
+--- a/osfmk/arm64/arm_vm_init.c
++++ b/osfmk/arm64/arm_vm_init.c
+@@ -1864,6 +1864,81 @@
+ #define SDM835_VM_TRACE(s) do {} while (0)
+ #endif
+ 
++/* Optional firmware RAM whitelist. Absent on the normal contiguous boot ABI. */
++static uint64_t boot_memory_ranges[256][2];
++static unsigned int boot_memory_count;
++static uint64_t boot_memory_bootstrap_end;
++
++bool pmap_boot_memory_contains(pmap_paddr_t pa);
++bool
++pmap_boot_memory_contains(pmap_paddr_t pa)
++{
++	if (!boot_memory_count) {
++		return true;
++	}
++	unsigned int lo = 0, hi = boot_memory_count;
++	while (lo < hi) {
++		unsigned int mid = lo + (hi - lo) / 2;
++		if (pa < boot_memory_ranges[mid][0]) {
++			hi = mid;
++		} else if (pa >= boot_memory_ranges[mid][1]) {
++			lo = mid + 1;
++		} else {
++			return true;
++		}
++	}
++	return false;
++}
++
++static void
++boot_memory_init(boot_args *args)
++{
++	DTEntry chosen;
++	void const *property;
++	unsigned int bytes;
++	if (SecureDTLookupEntry(NULL, "/chosen", &chosen) != kSuccess ||
++	    SecureDTGetProperty(chosen, "boot-memory-count", &property, &bytes) != kSuccess) {
++		return;
++	}
++	if (bytes != sizeof(boot_memory_count)) {
++		panic("Boot memory: invalid count");
++	}
++	memcpy(&boot_memory_count, property, bytes);
++	if (!boot_memory_count) {
++		return;
++	}
++	if (boot_memory_count > 256 ||
++	    SecureDTGetProperty(chosen, "boot-memory-ranges", &property, &bytes) != kSuccess ||
++	    bytes < boot_memory_count * 16) {
++		panic("Boot memory: invalid ranges");
++	}
++	memcpy(boot_memory_ranges, property, boot_memory_count * 16);
++	uint64_t total = 0, end = args->physBase;
++	for (unsigned int i = 0; i < boot_memory_count; i++) {
++		uint64_t start = boot_memory_ranges[i][0], length = boot_memory_ranges[i][1];
++		if (start < end || !length || ((start | length) & PAGE_MASK) ||
++		    start > UINT64_MAX - length || start + length > (1ULL << 48)) {
++			panic("Boot memory: invalid range %u", i);
++		}
++		end = start + length;
++		boot_memory_ranges[i][1] = end;
++		total += length;
++	}
++	if (total != args->memSizeActual || boot_memory_ranges[0][0] != args->physBase ||
++	    SecureDTGetProperty(chosen, "boot-memory-bootstrap-end", &property, &bytes) != kSuccess || bytes != 8) {
++		panic("Boot memory: invalid totals/bootstrap range");
++	}
++	memcpy(&boot_memory_bootstrap_end, property, bytes);
++	if (boot_memory_bootstrap_end > boot_memory_ranges[0][1] ||
++	    boot_memory_bootstrap_end <= args->topOfKernelData ||
++	    boot_memory_bootstrap_end != args->physBase + args->memSize) {
++		panic("Boot memory: bootstrap crosses reserved RAM");
++	}
++	/* The initial assembly tables cover the contiguous bootstrap allocation.
++	 * Expand only when the VM is ready to build the full physical aperture. */
++	args->memSize = end - args->physBase;
++}
++
+ void
+ arm_vm_init(uint64_t memory_size, boot_args * args)
+ {
+@@ -1882,6 +1957,7 @@
+ 	 */
+ 	gVirtBase = args->virtBase;
+ 	gPhysBase = args->physBase;
++	boot_memory_init(args);
+ #if KASAN
+ 	real_phys_size = args->memSize + (shadow_ptop - shadow_pbase);
+ #else
+@@ -2273,8 +2349,8 @@
+ 		flush_mmu_tlb();
+ 	}
+ 
+-	sane_size = mem_size - (avail_start - gPhysBase);
+-	max_mem = mem_size;
++	max_mem = boot_memory_count ? mem_actual : mem_size;
++	sane_size = max_mem - (avail_start - gPhysBase);
+ 	vm_kernel_slid_base = segLOWESTTEXT;
+ 	// vm_kernel_slide is set by arm_init()->arm_slide_rebase_and_sign_image()
+ 	vm_kernel_stext = segTEXTB;
+@@ -2444,6 +2520,9 @@
+ 	pmap_static_allocations_done();
+ #endif
+ 	first_avail = avail_start;
++	if (boot_memory_bootstrap_end && first_avail > boot_memory_bootstrap_end) {
++		panic("Boot memory: bootstrap exhausted its contiguous allocation");
++	}
+ 	patch_low_glo_static_region(args->topOfKernelData, avail_start - args->topOfKernelData);
+ 	SDM835_VM_TRACE("VM ready");
+ 	enable_preemption();
+--- a/osfmk/arm/pmap/pmap.c
++++ b/osfmk/arm/pmap/pmap.c
+@@ -2724,7 +2724,11 @@
+ bool
+ pmap_is_bad_ram(__unused ppnum_t ppn)
+ {
++#if defined(__arm64__)
++	return !pmap_boot_memory_contains(ptoa(ppn));
++#else
+ 	return false;
++#endif
+ }
+ 
+ /**
+@@ -2744,7 +2748,12 @@
+ 	assert(first <= end);
+ 	assert(first == (first & ~PAGE_MASK));
+ 	assert(end == (end & ~PAGE_MASK));
+-	avail_page_count = atop(end - first);
++	avail_page_count = 0;
++	for (pmap_paddr_t pa = first; pa < end; pa += PAGE_SIZE) {
++		if (!pmap_is_bad_ram(atop(pa))) {
++			avail_page_count++;
++		}
++	}
+ 
+ 	need_ram_ranges_init = false;
+ }
+@@ -2775,7 +2784,12 @@
+ 	ppnum_t            * pnum,
+ 	__unused boolean_t might_free)
+ {
+-	return pmap_next_page(pnum);
++	while (pmap_next_page(pnum)) {
++		if (!pmap_is_bad_ram(*pnum)) {
++			return TRUE;
++		}
++	}
++	return FALSE;
+ }
+ 
+ 
+@@ -2791,8 +2805,10 @@
+ 	if (first_avail != avail_end) {
+ 		*pnum = (ppnum_t)atop(first_avail);
+ 		first_avail += PAGE_SIZE;
+-		assert(avail_page_count > 0);
+-		--avail_page_count;
++		if (!pmap_is_bad_ram(*pnum)) {
++			assert(avail_page_count > 0);
++			--avail_page_count;
++		}
+ 		return TRUE;
+ 	}
+ 	assert(avail_page_count == 0);
+--- a/osfmk/arm/pmap/pmap_data.h
++++ b/osfmk/arm/pmap/pmap_data.h
+@@ -61,6 +61,9 @@
+  * pages (usually iBoot carved out memory or I/O).
+  */
+ extern pmap_paddr_t vm_first_phys, vm_last_phys;
++#if defined(__arm64__)
++extern bool pmap_boot_memory_contains(pmap_paddr_t pa);
++#endif
+ 
+ /**
+  * Return whether the given address represents a kernel-managed physical page.
+@@ -74,7 +77,11 @@
+ static inline bool
+ pa_valid(pmap_paddr_t pa)
+ {
+-	return (pa >= vm_first_phys) && (pa < vm_last_phys);
++	return (pa >= vm_first_phys) && (pa < vm_last_phys)
++#if defined(__arm64__)
++	       && pmap_boot_memory_contains(pa)
++#endif
++	;
+ }
+ 
+ /**
+--- a/osfmk/vm/vm_resident.c
++++ b/osfmk/vm/vm_resident.c
+@@ -2445,6 +2445,7 @@
+ #endif /* defined(__x86_64__) */
+ 
+ 
++	uint32_t reserved_pages = 0;
+ 	for (uint32_t i = 0; i < npages && pmap_next_page(&phys_page); i++) {
+ #if XNU_VM_HAS_DELAYED_PAGES
+ 		if (phys_page < max_valid_low_ppnum) {
+@@ -2475,6 +2476,14 @@
+ 
+ 		++vm_pages_count;
+ 		vm_page_init(vm_page_get(i), phys_page);
++#if defined(__arm64__) && !CONFIG_SPTM
++		/* Keep the linear page array indexed by PA, but never free firmware holes. */
++		if (pmap_is_bad_ram(phys_page)) {
++			vm_page_get(i)->vmp_error = true;
++			reserved_pages++;
++			continue;
++		}
++#endif
+ 		if (fillval) {
+ 			fillPage(phys_page, fillval);
+ 		}
+@@ -2483,7 +2492,7 @@
+ 		}
+ 	}
+ 
+-	vm_page_pages = vm_pages_count; /* used to report to user space */
++	vm_page_pages = vm_pages_count - reserved_pages; /* used to report to user space */
+ 
+ 	if (!vm_himemory_mode) {
+ 		for (uint32_t i = npages; i-- > 0;) {
+@@ -3831,7 +3840,11 @@
+ 
+ #if DEBUG
+ 	if ((phys_page != vm_page_fictitious_addr) && (phys_page != vm_page_guard_addr)) {
+-		if (!(pmap_valid_page(phys_page))) {
++		if (!(pmap_valid_page(phys_page))
++#if defined(__arm64__) && !CONFIG_SPTM
++		    && !pmap_is_bad_ram(phys_page)
++#endif
++		    ) {
+ 			panic("vm_page_init: non-DRAM phys_page 0x%x", phys_page);
+ 		}
+ 	}

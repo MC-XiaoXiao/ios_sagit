@@ -1,0 +1,21 @@
+{
+  "sources": [
+    "Shaders.metal",
+    "Shaders.air.ll",
+    "Textures.air.ll",
+    "SampleShading.metal",
+    "SampleShading.air.ll",
+    "Resolve.metal",
+    "Multisample.metal",
+    "Depth.metal",
+    "Mipmaps.metal",
+    "Compositor.metal",
+    "Blit.metal",
+    "ConstantWindows.metal",
+    "ConstantWindows.air.ll",
+    "IntegerTextures.air.ll"
+  ],
+  "gpu": 540,
+  "local_size": "variable",
+  "profile": "aot-render-compute-msl-air-color-textures"
+}

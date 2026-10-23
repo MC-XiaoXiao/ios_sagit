@@ -1,0 +1,33 @@
+diff --git a/pkg/apfs/raw_data.go b/pkg/apfs/raw_data.go
+new file mode 100644
+--- /dev/null
++++ b/pkg/apfs/raw_data.go
+@@ -0,0 +1,28 @@
++package apfs
++
++import "fmt"
++
++// RawDataStream borrows the on-disk data fork, without decmpfs decoding.
++// Keep the container open while using it. Compression lives in xattrs and
++// must be copied separately; using ReadAt would decompress then retain an
++// incompatible UF_COMPRESSED flag. This also retains empty data forks.
++func (fe *FileEntry) RawDataStream() (*DataStream, error) {
++	if fe == nil || fe.Inode == nil {
++		return nil, fmt.Errorf("invalid file entry")
++	}
++	size := fe.Inode.DataStreamSize
++	if size == 0 {
++		return NewDataStreamFromData(nil)
++	}
++	if err := fe.getFileExtents(); err != nil {
++		return nil, err
++	}
++	ds, err := NewDataStreamFromFileExtents(fe.IOHandle, fe.EncryptionContext, fe.FileExtents, size, false)
++	if err != nil {
++		return nil, err
++	}
++	if r, ok := ds.readerAt.(*dataBlockReader); ok {
++		r.SetFileHandle(fe.FileHandle)
++	}
++	return ds, nil
++}

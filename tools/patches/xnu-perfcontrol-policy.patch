@@ -1,0 +1,145 @@
+--- a/osfmk/arm/machine_routines_common.c
++++ b/osfmk/arm/machine_routines_common.c
+@@ -39,6 +39,7 @@
+ #include <kern/machine.h>
+ #include <kern/thread.h>
+ #include <kern/thread_group.h>
++#include <kern/processor.h>
+ #include <kern/policy_internal.h>
+ #include <kern/sched_hygiene.h>
+ #include <kern/startup.h>
+@@ -168,8 +169,14 @@
+ sched_perfcontrol_thread_group_unblocked_t      sched_perfcontrol_thread_group_unblocked = sched_perfcontrol_thread_group_unblocked_default;
+ boolean_t sched_perfcontrol_thread_shared_rsrc_flags_enabled = false;
+ 
+-void
+-sched_perfcontrol_register_callbacks(sched_perfcontrol_callbacks_t callbacks, unsigned long size_of_state)
++// Configuration is serialized in thread context only. Scheduler callouts do
++// not acquire this mutex and never dereference the registration identity.
++LCK_GRP_DECLARE(perfcontrol_registration_grp, "perfcontrol registration");
++LCK_MTX_DECLARE(perfcontrol_registration_lock, &perfcontrol_registration_grp);
++static _Atomic(sched_perfcontrol_callbacks_t) perfcontrol_registration_owner;
++
++static void
++sched_perfcontrol_install_callbacks(sched_perfcontrol_callbacks_t callbacks, unsigned long size_of_state)
+ {
+ 	assert(callbacks == NULL || callbacks->version >= SCHED_PERFCONTROL_CALLBACKS_VERSION_2);
+ 
+@@ -298,6 +305,88 @@
+ 		sched_perfcontrol_thread_group_blocked = sched_perfcontrol_thread_group_blocked_default;
+ 		sched_perfcontrol_thread_group_unblocked = sched_perfcontrol_thread_group_unblocked_default;
+ 	}
++}
++
++
++void
++sched_perfcontrol_register_callbacks(sched_perfcontrol_callbacks_t callbacks, unsigned long size_of_state)
++{
++    // Preserve the Apple registration API. An explicit legacy registration
++    // supersedes an exclusive claimant, which can observe ownership loss.
++    lck_mtx_lock(&perfcontrol_registration_lock);
++    os_atomic_store(&perfcontrol_registration_owner, NULL, release);
++    sched_perfcontrol_install_callbacks(callbacks, size_of_state);
++    lck_mtx_unlock(&perfcontrol_registration_lock);
++}
++
++kern_return_t
++sched_perfcontrol_register_callbacks_exclusive(sched_perfcontrol_callbacks_t callbacks, unsigned long size_of_state)
++{
++    if (!callbacks || callbacks->version != SCHED_PERFCONTROL_CALLBACKS_VERSION_5 ||
++        size_of_state > sizeof(struct perfcontrol_state)) {
++        return KERN_INVALID_ARGUMENT;
++    }
++    lck_mtx_lock(&perfcontrol_registration_lock);
++    // This adapter must not replace any already installed Apple policy, even
++    // one using a callback slot it does not itself consume.
++    bool vacant = !os_atomic_load(&perfcontrol_registration_owner, relaxed) &&
++        sched_perfcontrol_offcore == sched_perfcontrol_offcore_default &&
++        sched_perfcontrol_switch == sched_perfcontrol_switch_default &&
++        sched_perfcontrol_oncore == sched_perfcontrol_oncore_default &&
++        sched_perfcontrol_csw == sched_perfcontrol_csw_default &&
++        sched_perfcontrol_state_update == sched_perfcontrol_state_update_default &&
++        sched_perfcontrol_deadline_passed == sched_perfcontrol_deadline_passed_default &&
++        sched_perfcontrol_max_runnable_latency == sched_perfcontrol_max_runnable_latency_default &&
++        sched_perfcontrol_work_interval_notify == sched_perfcontrol_work_interval_notify_default &&
++        sched_perfcontrol_work_interval_ctl == sched_perfcontrol_work_interval_ctl_default &&
++        sched_perfcontrol_thread_group_init == sched_perfcontrol_thread_group_default &&
++        sched_perfcontrol_thread_group_deinit == sched_perfcontrol_thread_group_default &&
++        sched_perfcontrol_thread_group_flags_update == sched_perfcontrol_thread_group_default &&
++        sched_perfcontrol_thread_group_blocked == sched_perfcontrol_thread_group_blocked_default &&
++        sched_perfcontrol_thread_group_unblocked == sched_perfcontrol_thread_group_unblocked_default;
++    if (vacant) {
++        sched_perfcontrol_install_callbacks(callbacks, size_of_state);
++        os_atomic_store(&perfcontrol_registration_owner, callbacks, release);
++    }
++    lck_mtx_unlock(&perfcontrol_registration_lock);
++    return vacant ? KERN_SUCCESS : KERN_RESOURCE_SHORTAGE;
++}
++
++boolean_t
++sched_perfcontrol_callbacks_owned(sched_perfcontrol_callbacks_t callbacks)
++{
++    return callbacks && os_atomic_load(&perfcontrol_registration_owner, acquire) == callbacks;
++}
++
++kern_return_t
++sched_perfcontrol_release_callbacks(sched_perfcontrol_callbacks_t callbacks)
++{
++    lck_mtx_lock(&perfcontrol_registration_lock);
++    bool owned = callbacks && os_atomic_load(&perfcontrol_registration_owner, relaxed) == callbacks;
++    if (owned) {
++        os_atomic_store(&perfcontrol_registration_owner, NULL, release);
++        sched_perfcontrol_install_callbacks(NULL, 0);
++    }
++    lck_mtx_unlock(&perfcontrol_registration_lock);
++    // In-flight callouts are not drained. Exclusive clients must use resident
++    // callbacks with permanent capture storage, independent of IOService life.
++    return owned ? KERN_SUCCESS : KERN_INVALID_ARGUMENT;
++}
++
++kern_return_t
++sched_perfcontrol_cpu_state(unsigned int cpu, perfcontrol_class_t *perfclass, boolean_t *online)
++{
++    if (!perfclass || !online || cpu >= MAX_SCHED_CPUS) return KERN_INVALID_ARGUMENT;
++    processor_t processor = processor_array[cpu];
++    if (processor == PROCESSOR_NULL) return KERN_INVALID_ARGUMENT;
++    processor_set_t pset = processor->processor_set;
++    boolean_t interrupts = ml_set_interrupts_enabled(FALSE);
++    pset_lock(pset);
++    *online = processor->state >= PROCESSOR_IDLE;
++    *perfclass = processor->state == PROCESSOR_RUNNING ? processor->current_perfctl_class : PERFCONTROL_CLASS_IDLE;
++    pset_unlock(pset);
++    ml_set_interrupts_enabled(interrupts);
++    return KERN_SUCCESS;
+ }
+ 
+ 
+--- a/osfmk/arm/machine_routines.h
++++ b/osfmk/arm/machine_routines.h
+@@ -1152,6 +1152,13 @@
+ typedef struct sched_perfcontrol_callbacks *sched_perfcontrol_callbacks_t;
+ 
+ extern void sched_perfcontrol_register_callbacks(sched_perfcontrol_callbacks_t callbacks, unsigned long size_of_state);
++/* Local XNU extension: thread-context ownership arbitration around the native
++ * callback table, and a bootstrap/offline snapshot for a resident controller.
++ * The scheduler ABI and native registration entry point remain unchanged. */
++extern kern_return_t sched_perfcontrol_register_callbacks_exclusive(sched_perfcontrol_callbacks_t, unsigned long);
++extern boolean_t sched_perfcontrol_callbacks_owned(sched_perfcontrol_callbacks_t);
++extern kern_return_t sched_perfcontrol_release_callbacks(sched_perfcontrol_callbacks_t);
++extern kern_return_t sched_perfcontrol_cpu_state(unsigned int, perfcontrol_class_t *, boolean_t *);
+ extern void sched_perfcontrol_thread_group_recommend(void *data, cluster_type_t recommendation);
+ extern void sched_perfcontrol_inherit_recommendation_from_tg(perfcontrol_class_t perfctl_class, boolean_t inherit);
+ extern const char* sched_perfcontrol_thread_group_get_name(void *data);
+--- a/config/Private.arm64.exports
++++ b/config/Private.arm64.exports
+@@ -43,6 +43,10 @@
+ _sched_perfcontrol_ml_set_interrupts_without_measurement
+ _sched_perfcontrol_inherit_recommendation_from_tg
+ _sched_perfcontrol_register_callbacks
++_sched_perfcontrol_register_callbacks_exclusive
++_sched_perfcontrol_callbacks_owned
++_sched_perfcontrol_release_callbacks
++_sched_perfcontrol_cpu_state
+ _sched_perfcontrol_update_recommended_cores
+ _sched_perfcontrol_update_recommended_cores_reason
+ _sched_perfcontrol_update_powered_cores

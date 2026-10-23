@@ -1,0 +1,10 @@
+--- a/pexpert/pexpert/arm64/VMAPPLE.h
++++ b/pexpert/pexpert/arm64/VMAPPLE.h
+@@ -30,6 +30,7 @@
+ 
+ #define NO_MONITOR                1
+ #define NO_ECORE                  1
++#define NO_CPU_OVRD               1
+ 
+ #define VMAPPLE                   1
+ #define APPLEVIRTUALPLATFORM      1

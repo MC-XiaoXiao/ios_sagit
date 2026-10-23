@@ -1,0 +1,76 @@
+{
+  "scope": "ARM64 boot bridge / SDM835 native panic report and UART/framebuffer output",
+  "date": "2026-10-15",
+  "timezone": "America/Los_Angeles",
+  "kernel_sha256": "6f8c1a5aa05a71e05121897a982ead03b6131c168f0813ad312034ed5372700a",
+  "build_manifest": "../../build/bridge/build.json",
+  "hardware": {
+    "edk2_handoff_verified": true,
+    "kernel_serial_verified": true,
+    "framebuffer_handoff_verified": true,
+    "dual_console_verified": true,
+    "panel_text_confirmed_by_user": true,
+    "watchdog_recovery_verified": true,
+    "successful_normal_boot_rounds": 2,
+    "report": "../../build/bridge/release-hardware/report.json",
+    "logs": [
+      "../../build/bridge/release-hardware/round-1/uart.txt",
+      "../../build/bridge/release-hardware/round-2/uart.txt"
+    ],
+    "usb_after_tests": "version-bootloader: edk2-fastboot-1\nFinished. Total time: 0.002s",
+    "previous_normal_boot_kernel_sha256": "6a7caa7640882eff17d0406f340476c02a2ed114cf89313d0db87b8a83cbab89"
+  },
+  "panic": {
+    "software_character_sink": true,
+    "xnu_original_formatter_and_state_machine_unchanged": true,
+    "macro": "XNU_SOFTWARE_PANIC=1",
+    "formatted_arguments_verified": true,
+    "watchdog_recovery_verified": true,
+    "report": "../../build/bridge/panic-fix/hardware-2/report.json",
+    "log": "../../build/bridge/panic-fix/hardware-2/uart.txt",
+    "complete_native_report_verified": true,
+    "native_backtrace_frames": 10,
+    "native_stackshot_succeeded": true,
+    "panel_panic_and_backtrace_confirmed_by_user": true,
+    "panic_text": "../../build/bridge/panic-fix/native-panic.txt",
+    "symbolized_backtrace": "../../build/bridge/panic-fix/backtrace-symbols.json",
+    "panic_ram_configured": true,
+    "panic_ram_bytes": 1048576,
+    "panic_ram_persistent_across_reboot": false,
+    "kernel_sha256": "6f8c1a5aa05a71e05121897a982ead03b6131c168f0813ad312034ed5372700a"
+  },
+  "generic_arm64": {
+    "qemu_el1_handoff_verified": true,
+    "qemu_el2_to_el1_handoff_verified": true,
+    "probe_is_xnu": false,
+    "relative_relocations_checked": 6
+  },
+  "android_boot": {
+    "wrapper_generated_and_structure_checked": true,
+    "artifact": "../../build/bridge/boot-bridge.img",
+    "stock_abl_hardware_verified": false
+  },
+  "checks": {
+    "unit_tests": 14,
+    "qemu_test_with_two_exception_levels": true,
+    "panic_sink_both_macro_modes_compiled": true,
+    "kernel_uart_and_board_tests_passed": true,
+    "patch_replay_files": 39,
+    "logs": [
+      "../../build/bridge/panic-fix/host-tests.log",
+      "../../build/bridge/panic-fix/panic-backend-tests.log",
+      "../../build/bridge/panic-fix/qemu-tests.log",
+      "../../build/bridge/panic-fix/patch-replay.json"
+    ],
+    "panic_backend_and_report_tests": 3,
+    "patch_replay_patches": 15,
+    "native_panic_and_backtrace_sources_match_upstream": true
+  },
+  "artifact_sha256": {
+    "XnuBridge.efi": "796e5871f535560b85754754e6c1f245a803779cefa4a5f838581f16b8fb46df",
+    "xiaomi-sagit.dtb": "4f2ab94d5cd9da7ff1579a9481ee67960166fad0f705df9d2f1ede07610b42ba",
+    "xiaomi-sagit.apple-dt": "e3e39cc5cc85e8dea9e692228b0e4256fb9e3d105cc225177d282e902cf33750",
+    "Image": "2bc14a9a9e9387e37c4716a32f8360654a950ab442038699222dc0389a78bcb4",
+    "boot-bridge.img": "ce13cc0acb284835c01c1fbc1cd8f40befea4fd45132d765723f3cb7e12d8d58"
+  }
+}

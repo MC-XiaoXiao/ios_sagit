@@ -1,0 +1,263 @@
+diff --git a/security/mac_iokit.c b/security/mac_iokit.c
+--- a/security/mac_iokit.c
++++ b/security/mac_iokit.c
+@@ -61,24 +61,146 @@
+ #include <bsd/sys/malloc.h>
+ #include <vm/vm_kern.h>
+ 
++#if DEVELOPMENT || DEBUG
++#include <pexpert/pexpert.h>
++#include <sys/proc.h>
++#include <sys/systm.h>
++#endif
++
+ #include <security/mac_framework.h>
+ #include <security/mac_internal.h>
+ 
++#if (DEVELOPMENT || DEBUG) && !SECURE_KERNEL
++static boolean_t mac_iokit_development_open_allowed(const char *, unsigned int);
++#endif
++
+ int
+ mac_iokit_check_open_service(kauth_cred_t cred, io_object_t service, unsigned int user_client_type)
+ {
+-	int error;
+-
++	return mac_iokit_check_open_service_development(cred, service, user_client_type, NULL);
++}
++
++int
++mac_iokit_check_open_service_development(kauth_cred_t cred, io_object_t service, unsigned int user_client_type,
++    const char *service_name)
++{
++	int error;
++	(void)service_name;
++
++#if DEVELOPMENT || DEBUG
++	int trace = 0;
++	boolean_t development_allow = FALSE;
++#if !SECURE_KERNEL
++	if (service_name && strcmp(service_name, "QcomGPU") == 0) {
++		const char *client = (user_client_type & 0xffff) == 1 ? "QcomGPUDeviceUserClient" :
++		    (user_client_type & 0xffff) == 33 ? "IOGPUMemoryInfoUserClient" : NULL;
++		development_allow = mac_iokit_development_open_allowed(client, user_client_type);
++	}
++#endif
++	PE_parse_boot_argn("iokit-wait-trace", &trace, sizeof(trace));
++	if (trace || development_allow) {
++		error = 0;
++		MAC_POLICY_ITERATE({
++			if (mpc->mpc_ops->mpo_iokit_check_open_service &&
++			    !(development_allow && strcmp(mpc->mpc_name, "Sandbox") == 0)) {
++				MAC_CHECK_CALL(iokit_check_open_service, mpc);
++				int __step_err = mpc->mpc_ops->mpo_iokit_check_open_service(cred, service, user_client_type);
++				MAC_CHECK_RSLT(iokit_check_open_service, mpc);
++				if (__step_err) printf("iokit denial: pid=%d policy=%s hook=iokit_check_open_service type=%u errno=%d\n",
++				    proc_selfpid(), mpc->mpc_name, user_client_type, __step_err);
++				error = mac_error_select(__step_err, error);
++			}
++		});
++	} else
++#endif
++	{
+ 	MAC_CHECK(iokit_check_open_service, cred, service, user_client_type);
+-	return error;
+-}
++	}
++	return error;
++}
++
++#if (DEVELOPMENT || DEBUG) && !SECURE_KERNEL
++static boolean_t
++mac_iokit_development_open_allowed(const char *client_name, unsigned int type)
++{
++	char allowed[MAXPATHLEN], path[MAXPATHLEN];
++	int size = sizeof(path);
++	struct vnode *vp;
++	boolean_t display_client = client_name && type == 0 &&
++	    (strcmp(client_name, "IOMobileFramebufferUserClient") == 0 ||
++	    strcmp(client_name, "RootDomainUserClient") == 0 ||
++	    strcmp(client_name, "IOSurfaceRootUserClient") == 0);
++	/* Native Family connection types; vendor task/entitlement checks still run. */
++	boolean_t gpu_client = client_name &&
++	    ((strcmp(client_name, "QcomGPUDeviceUserClient") == 0 && (type & 0xffff) == 1) ||
++	    (strcmp(client_name, "IOGPUMemoryInfoUserClient") == 0 && (type & 0xffff) == 33));
++	if ((!display_client && !gpu_client) ||
++	    !PE_i_can_has_debugger(NULL) ||
++	    !PE_parse_boot_argn("development-sandbox-iokit-path", allowed, sizeof(allowed)) ||
++	    allowed[0] != '/') {
++		return FALSE;
++	}
++	allowed[sizeof(allowed) - 1] = '\0';
++	vp = proc_getexecutablevnode(current_proc());
++	if (!vp) return FALSE;
++	int error = vn_getpath(vp, path, &size);
++	vnode_put(vp);
++	if (error) return FALSE;
++	for (char *entry = allowed, *next; entry && *entry; entry = next) {
++		next = strchr(entry, ':');
++		if (next) *next++ = '\0';
++		if (entry[0] == '/' && strcmp(path, entry) == 0) {
++			printf("iokit development allowance: Sandbox path=%s client=%s type=%u\n",
++			    path, client_name, type);
++			return TRUE;
++		}
++	}
++	if (gpu_client) printf("iokit development GPU path not listed: pid=%d path=%s client=%s type=%u\n",
++	    proc_selfpid(), path, client_name, type);
++	return FALSE;
++}
++#endif
+ 
+ int
+ mac_iokit_check_open(kauth_cred_t cred, io_object_t user_client, unsigned int user_client_type)
+ {
+-	int error;
+-
++	return mac_iokit_check_open_development(cred, user_client, user_client_type, NULL, NULL);
++}
++
++int
++mac_iokit_check_open_development(kauth_cred_t cred, io_object_t user_client, unsigned int user_client_type,
++    const char *client_name, boolean_t *development_allowed)
++{
++	int error;
++	(void)client_name;
++	if (development_allowed) *development_allowed = FALSE;
++
++#if DEVELOPMENT || DEBUG
++	int trace = 0;
++	boolean_t development_allow = FALSE;
++#if !SECURE_KERNEL
++	development_allow = mac_iokit_development_open_allowed(client_name, user_client_type);
++	if (development_allowed) *development_allowed = development_allow;
++#endif
++	PE_parse_boot_argn("iokit-wait-trace", &trace, sizeof(trace));
++	if (trace || development_allow) {
++		error = 0;
++		MAC_POLICY_ITERATE({
++			if (mpc->mpc_ops->mpo_iokit_check_open &&
++			    !(development_allow && strcmp(mpc->mpc_name, "Sandbox") == 0)) {
++				MAC_CHECK_CALL(iokit_check_open, mpc);
++				int __step_err = mpc->mpc_ops->mpo_iokit_check_open(cred, user_client, user_client_type);
++				MAC_CHECK_RSLT(iokit_check_open, mpc);
++				if (__step_err) printf("iokit denial: pid=%d policy=%s hook=iokit_check_open type=%u errno=%d\n",
++				    proc_selfpid(), mpc->mpc_name, user_client_type, __step_err);
++				error = mac_error_select(__step_err, error);
++			}
++		});
++	} else
++#endif
++	{
+ 	MAC_CHECK(iokit_check_open, cred, user_client, user_client_type);
++	}
+ 	return error;
+ }
+ 
+diff --git a/security/mac_process.c b/security/mac_process.c
+--- a/security/mac_process.c
++++ b/security/mac_process.c
+@@ -63,6 +63,9 @@
+  */
+ 
+ #include <string.h>
++#if DEVELOPMENT || DEBUG
++#include <pexpert/pexpert.h>
++#endif
+ #include <sys/param.h>
+ #include <sys/ucred.h>
+ #include <sys/malloc.h>
+@@ -433,7 +436,26 @@
+ 
+ 	assert(flavor <= TASK_FLAVOR_NAME);
+ 
+-	MAC_CHECK(proc_check_get_task_with_flavor, cred, pident, flavor);
++#if DEVELOPMENT || DEBUG
++	int trace = 0;
++	PE_parse_boot_argn("iokit-wait-trace", &trace, sizeof(trace));
++	if (trace) {
++		error = 0;
++		MAC_POLICY_ITERATE({
++			if (mpc->mpc_ops->mpo_proc_check_get_task_with_flavor) {
++				MAC_CHECK_CALL(proc_check_get_task_with_flavor, mpc);
++				int __step_err = mpc->mpc_ops->mpo_proc_check_get_task_with_flavor(cred, pident, flavor);
++				MAC_CHECK_RSLT(proc_check_get_task_with_flavor, mpc);
++				if (__step_err) printf("task port denial: pid=%d policy=%s flavor=%d errno=%d\n",
++				    proc_selfpid(), mpc->mpc_name, flavor, __step_err);
++				error = mac_error_select(__step_err, error);
++			}
++		});
++	} else
++#endif
++	{
++		MAC_CHECK(proc_check_get_task_with_flavor, cred, pident, flavor);
++	}
+ 
+ 	return error;
+ }
+diff --git a/security/mac_framework.h b/security/mac_framework.h
+--- a/security/mac_framework.h
++++ b/security/mac_framework.h
+@@ -212,7 +212,11 @@
+     char *bufp, size_t buflen) __result_use_check;
+ void    mac_file_notify_close(struct ucred *cred, struct fileglob *fg);
+ int     mac_iokit_check_open_service(kauth_cred_t cred, io_object_t service, unsigned int user_client_type) __result_use_check;
++int     mac_iokit_check_open_service_development(kauth_cred_t cred, io_object_t service, unsigned int user_client_type,
++    const char *service_name) __result_use_check;
+ int     mac_iokit_check_open(kauth_cred_t cred, io_object_t user_client, unsigned int user_client_type) __result_use_check;
++int     mac_iokit_check_open_development(kauth_cred_t cred, io_object_t user_client, unsigned int user_client_type,
++    const char *client_name, boolean_t *development_allowed) __result_use_check;
+ int     mac_iokit_check_set_properties(kauth_cred_t cred, io_object_t registry_entry, io_object_t properties) __result_use_check;
+ int     mac_iokit_check_filter_properties(kauth_cred_t cred, io_object_t registry_entry) __result_use_check;
+ int     mac_iokit_check_get_property(kauth_cred_t cred, io_object_t registry_entry, const char *name) __result_use_check;
+diff --git a/iokit/Kernel/IOUserClient.cpp b/iokit/Kernel/IOUserClient.cpp
+--- a/iokit/Kernel/IOUserClient.cpp
++++ b/iokit/Kernel/IOUserClient.cpp
+@@ -4399,7 +4399,13 @@
+ 	}
+ #endif
+ #if CONFIG_MACF
+-	if (mac_iokit_check_open_service(kauth_cred_get(), service, connect_type) != 0) {
++#if (DEVELOPMENT || DEBUG) && !SECURE_KERNEL
++	int macServiceStatus = mac_iokit_check_open_service_development(kauth_cred_get(), service, connect_type,
++	    service->getMetaClass()->getClassName());
++#else
++	int macServiceStatus = mac_iokit_check_open_service(kauth_cred_get(), service, connect_type);
++#endif
++	if (macServiceStatus != 0) {
+ #if DEVELOPMENT || DEBUG
+ 		if (trace_open) {
+ 			printf("[IOKit open] pid=%d denied by MAC service check\n", proc_selfpid());
+@@ -4565,18 +4571,28 @@
+ 
+ 			OSSafeReleaseNULL(requiredEntitlement);
+ 
++			boolean_t developmentIOKitOpen = FALSE;
+ 			if (disallowAccess) {
+ 				res = kIOReturnNotPrivileged;
+ 			}
+ #if CONFIG_MACF
+-			else if (0 != mac_iokit_check_open(kauth_cred_get(), client, connect_type)) {
+-				IOLog("IOUC %s failed MACF in process %s\n",
+-				    client->getMetaClass()->getClassName(), creatorNameCStr);
+-				res = kIOReturnNotPermitted;
++			else {
++#if (DEVELOPMENT || DEBUG) && !SECURE_KERNEL
++				int macStatus = mac_iokit_check_open_development(kauth_cred_get(), client, connect_type,
++				    client->getMetaClass()->getClassName(), &developmentIOKitOpen);
++#else
++				int macStatus = mac_iokit_check_open(kauth_cred_get(), client, connect_type);
++#endif
++				if (macStatus) {
++					IOLog("IOUC %s failed MACF in process %s\n",
++					    client->getMetaClass()->getClassName(), creatorNameCStr);
++					res = kIOReturnNotPermitted;
++				}
+ 			}
+ #endif
+ 
+ 			if ((kIOReturnSuccess == res)
++			    && !developmentIOKitOpen
+ 			    && gIOUCFilterCallbacks
+ 			    && gIOUCFilterCallbacks->io_filter_resolver) {
+ 				io_filter_policy_t filterPolicy;

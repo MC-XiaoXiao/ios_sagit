@@ -1,0 +1,279 @@
+{
+  "schema": 1,
+  "scope": "observed iOS 18.7.10 split kernel/DriverKit model; not a linkable private ABI contract",
+  "kernel": {
+    "file": "kernelcache.release.ipad7c.macho",
+    "sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+    "darwin_version": "Darwin Kernel Version 24.6.0: Tue Jul 21 20:48:55 PDT 2026; root:xnu-11417.140.69.706.66~1/RELEASE_ARM64_T8010"
+  },
+  "kernel_kexts": [
+    {
+      "DTSDKName": "iphoneos18.7.internal",
+      "IOKitPersonalities": {
+        "Kernel Debugging Driver": {
+          "IOClass": "IOKDP",
+          "IOMatchCategory": "IOKDP",
+          "IOProviderClass": "IOKernelDebugger",
+          "CFBundleIdentifier": "com.apple.iokit.IONetworkingFamily"
+        },
+        "IONetworkStack": {
+          "IOClass": "IONetworkStack",
+          "IOMatchCategory": "IONetworkStack",
+          "IOProviderClass": "IOResources",
+          "IOResourceMatch": "IOBSD",
+          "CFBundleIdentifier": "com.apple.iokit.IONetworkingFamily"
+        }
+      },
+      "OSBundleLibraries": {
+        "com.apple.kpi.mach": "10.0.0d1",
+        "com.apple.kpi.private": "10.0.0d1",
+        "com.apple.kpi.unsupported": "10.0.0d1",
+        "com.apple.kpi.iokit": "10.0.0d1",
+        "com.apple.kpi.libkern": "10.0.0d1",
+        "com.apple.kpi.bsd": "10.0.0d1"
+      },
+      "CFBundleVersion": "3.4",
+      "DTPlatformBuild": "22H368",
+      "CFBundleIdentifier": "com.apple.iokit.IONetworkingFamily"
+    },
+    {
+      "DTSDKName": "iphoneos18.7.internal",
+      "IOKitPersonalities": {
+        "IOSkywalkLegacyEthernet": {
+          "IOClass": "IOSkywalkLegacyEthernet",
+          "IOMatchCategory": "IOSkywalkLegacyEthernet",
+          "IOProviderClass": "IOSkywalkEthernetInterface",
+          "CFBundleIdentifier": "com.apple.iokit.IOSkywalkFamily"
+        },
+        "IOSkywalkNetworkBSDClient": {
+          "IOClass": "IOSkywalkNetworkBSDClient",
+          "IOProviderClass": "IOSkywalkNetworkInterface",
+          "IOProbeScore": 1000,
+          "IOResourceMatch": "IOBSD",
+          "CFBundleIdentifier": "com.apple.iokit.IOSkywalkFamily"
+        },
+        "IOSkywalkKernelPipeBSDClient": {
+          "IOClass": "IOSkywalkKernelPipeBSDClient",
+          "IOProviderClass": "IOSkywalkInterface",
+          "IOResourceMatch": "IOBSD",
+          "CFBundleIdentifier": "com.apple.iokit.IOSkywalkFamily"
+        }
+      },
+      "OSBundleLibraries": {
+        "com.apple.kpi.bsd": "15.0.0",
+        "com.apple.kpi.libkern": "15.0.0",
+        "com.apple.kpi.mach": "15.0.0",
+        "com.apple.kpi.iokit": "15.0.0",
+        "com.apple.driver.mDNSOffloadUserClient-Embedded": "1.0.0d6",
+        "com.apple.kpi.unsupported": "15.0.0",
+        "com.apple.kpi.private": "15.0.0",
+        "com.apple.iokit.IONetworkingFamily": "3.2"
+      },
+      "CFBundleVersion": "1.0",
+      "DTPlatformBuild": "22H368",
+      "CFBundleIdentifier": "com.apple.iokit.IOSkywalkFamily"
+    },
+    {
+      "DTSDKName": "iphoneos18.7.internal",
+      "CFBundleVersion": "1.0",
+      "CFBundleIdentifier": "com.apple.iokit.IONetworkFamily",
+      "OSBundleLibraries": {
+        "com.apple.kpi.libkern": "18.6.0",
+        "com.apple.iokit.IOSkywalkFamily": "1.0",
+        "com.apple.kpi.iokit": "18.6.0"
+      },
+      "DTPlatformBuild": "22H368"
+    },
+    {
+      "DTSDKName": "iphoneos18.7.internal",
+      "CFBundleVersion": "1",
+      "CFBundleIdentifier": "com.apple.driver.AppleOLYHAL",
+      "IOKitPersonalities": {
+        "UART": {
+          "IOProbeScore": 1000,
+          "IOMatchCategory": "AppleOLYHAL",
+          "IOClass": "AppleOLYHAL",
+          "IOProviderClass": "AppleOnboardSerialSync",
+          "IONetworkRootType": "airport",
+          "LoggingBundleName": "com.apple.driver.AppleOLYHAL",
+          "IONameMatch": "wlan",
+          "FilesDB": {}
+        },
+        "AppleARMIODevice": {
+          "IOProbeScore": 1000,
+          "IOMatchCategory": "AppleOLYHAL",
+          "IOClass": "AppleOLYHAL",
+          "IOProviderClass": "AppleARMIODevice",
+          "IONetworkRootType": "airport",
+          "LoggingBundleName": "com.apple.driver.AppleOLYHAL",
+          "IONameMatch": "wlan",
+          "FilesDB": {}
+        }
+      },
+      "OSBundleLibraries": {
+        "com.apple.kpi.bsd": "8.0.0",
+        "com.apple.driver.AppleARMPlatform": "1.0.0",
+        "com.apple.iokit.CoreAnalyticsFamily": "1.0",
+        "com.apple.iokit.IOPCIFamily": "2.7.3",
+        "com.apple.kpi.unsupported": "8.0",
+        "com.apple.kpi.iokit": "8.0",
+        "com.apple.driver.corecapture": "1.0.0",
+        "com.apple.driver.AppleOnboardSerial": "1.0",
+        "com.apple.iokit.IOSerialFamily": "11.0",
+        "com.apple.driver.AppleEmbeddedPCIE": "1.0.0",
+        "com.apple.kpi.mach": "8.0",
+        "com.apple.kpi.private": "8.0",
+        "com.apple.kpi.libkern": "8.0"
+      },
+      "DTPlatformBuild": "22H371"
+    }
+  ],
+  "classes": [
+    {
+      "name": "IOUserNetworkWLAN",
+      "super": "IOUserNetworkEthernet",
+      "instance_size": 488,
+      "vtable_slots": 222
+    },
+    {
+      "name": "IOSkywalkEthernetInterface",
+      "super": "IOSkywalkNetworkInterface",
+      "instance_size": 272,
+      "vtable_slots": 222
+    },
+    {
+      "name": "IOUserNetworkEthernet",
+      "super": "IOSkywalkEthernetInterface",
+      "instance_size": 408,
+      "vtable_slots": 222
+    },
+    {
+      "name": "IONetworkFamily",
+      "super": "IOUserNetworkWLAN",
+      "instance_size": 488,
+      "vtable_slots": 222
+    },
+    {
+      "name": "AppleOLYHAL",
+      "super": "IOService",
+      "instance_size": 400,
+      "vtable_slots": 168
+    }
+  ],
+  "user_driver": {
+    "rootfs": "build/apfs/firmware/094-32804-038.dmg",
+    "rootfs_build": "22H374",
+    "bundle_path": "/System/Library/DriverExtensions/com.apple.DriverKit-AppleBCMWLAN.dext",
+    "executable_sha256": "ec8e9f919d8ed043ae6904cc14d15d2d600fb52836e9082e9344a0f57bb2559c",
+    "info_plist_sha256": "6fbd5d28ee13c7bffad51ef609bb7011f11dc3c0ac4cd34c1a3ac230453022cb",
+    "sdk": "driverkit.iphoneos24.6.internal",
+    "minimum_driverkit": "24.6",
+    "build": "22H371",
+    "macho_platform": [
+      {
+        "platform": 10,
+        "minimum": 1574400,
+        "sdk": 1574400,
+        "tool_count": 1
+      }
+    ],
+    "linked_libraries": [
+      "/System/DriverKit/System/Library/PrivateFrameworks/BroadcomWLANDriverKit.framework/BroadcomWLANDriverKit",
+      "/System/DriverKit/System/Library/PrivateFrameworks/CoreCaptureDriverKit.framework/CoreCaptureDriverKit",
+      "/System/DriverKit/System/Library/Frameworks/DriverKit.framework/DriverKit",
+      "/System/DriverKit/System/Library/PrivateFrameworks/IO80211DriverKit.framework/IO80211DriverKit",
+      "/System/DriverKit/System/Library/Frameworks/NetworkingDriverKit.framework/NetworkingDriverKit",
+      "/System/DriverKit/System/Library/PrivateFrameworks/OLYHALDriverKit.framework/OLYHALDriverKit",
+      "/System/DriverKit/System/Library/Frameworks/PCIDriverKit.framework/PCIDriverKit",
+      "/System/DriverKit/System/Library/PrivateFrameworks/IOFileValidation.framework/IOFileValidation",
+      "/System/DriverKit/usr/lib/libc++.dylib"
+    ],
+    "personalities": {
+      "DriverKit_AppleBCMWLANCore": {
+        "IOClass": "IOUserService",
+        "IOPropertyMatch": {
+          "IOUserClass": "AppleBCMWLANBusInterfacePCIe"
+        },
+        "IOProviderClass": "IOUserService",
+        "IOUserServerName": "com.apple.bcmwlan",
+        "CFBundleIdentifierKernel": "com.apple.kpi.iokit",
+        "IOUserClass": "AppleBCMWLANCore"
+      },
+      "DriverKit_AppleBCMWLANBus": {
+        "IOClass": "IOUserService",
+        "IOProviderClass": "IOPCIDevice",
+        "IONameMatch": "wlan",
+        "IOPCIMatch": "0x000014e4&0x000044ff",
+        "IOMatchCategory": "com.apple.wifibus.driver",
+        "IOUserServerName": "com.apple.bcmwlan",
+        "CFBundleIdentifierKernel": "com.apple.kpi.iokit",
+        "IOUserClass": "AppleBCMWLANBusInterfacePCIe"
+      },
+      "DriverKit_IO80211Infra": {
+        "IOPropertyMatch": {
+          "IOUserClass": "AppleBCMWLANCore"
+        },
+        "IOProviderClass": "IOUserService",
+        "IO80211InterfaceRole": "Infrastructure",
+        "IOClass": "IOUserNetworkWLAN",
+        "CFBundleIdentifierKernel": "com.apple.iokit.IOSkywalkFamily",
+        "IOUserClass": "AppleBCMWLANSkywalkInterface",
+        "IOUserServerName": "com.apple.bcmwlan"
+      }
+    },
+    "observed_entitlements": [
+      "com.apple.developer.driverkit",
+      "com.apple.developer.driverkit.family.networking",
+      "com.apple.developer.driverkit.transport.pci",
+      "com.apple.private.wifi.driverkit"
+    ],
+    "entitlements_note": "observed on the signed Apple binary; not an authorization template for this driver"
+  },
+  "reference_project": {
+    "path": "/home/xxiao/Projects/Project_iOS2ARM",
+    "legacy_sdk": "12.1",
+    "legacy_build": "16B81",
+    "usage": "historical Kext layout only; no runtime dependency"
+  },
+  "interpretation": [
+    "AppleOLYHAL owns platform/PCIe glue in the kernel; it is not an interchangeable WCN3990 bus driver.",
+    "AppleBCMWLANBusInterfacePCIe and AppleBCMWLANCore run as DriverKit IOUserService objects in this firmware.",
+    "Infrastructure interface uses IOUserNetworkWLAN in the kernel and a private IO80211DriverKit subclass in user space.",
+    "Public NetworkingDriverKit Ethernet APIs do not define the private iOS WLAN control/queue ABI."
+  ],
+  "native_family_link_audit": {
+    "status": "passed",
+    "collection": "wifi",
+    "kext_count": 33,
+    "native_families": [
+      "com.apple.iokit.IONetworkingFamily",
+      "com.apple.iokit.IOSkywalkFamily",
+      "com.apple.iokit.IONetworkFamily"
+    ],
+    "manifest": "build/output/kernelcache.wifi.manifest.json",
+    "verification": "build/output/kernelcache.wifi.verification.json",
+    "published": true,
+    "hardware_boot_verified": false,
+    "previous_rejection": {
+      "status": "rejected-unresolved-adrp-consumers",
+      "log": "build/wifi/native-link-rejected.log",
+      "log_sha256": "50148a0c1a98c5a1a5998a8b73bae3aec1b67607364bb41d2afe9c16aa52651f",
+      "sites": {
+        "com.apple.iokit.IONetworkingFamily": [
+          "0xfffffff0058dd560",
+          "0xfffffff0058dd574",
+          "0xfffffff0058dd57c"
+        ],
+        "com.apple.iokit.IOSkywalkFamily": [
+          "0xfffffff00590d710"
+        ]
+      },
+      "published": false
+    }
+  },
+  "sources": [
+    "https://developer.apple.com/library/archive/documentation/DeviceDrivers/Conceptual/IOKitFundamentals/Matching/Matching.html",
+    "https://developer.apple.com/documentation/networkingdriverkit/iousernetworkethernet",
+    "https://developer.apple.com/documentation/networkingdriverkit"
+  ]
+}

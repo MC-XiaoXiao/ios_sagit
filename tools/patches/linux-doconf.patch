@@ -1,0 +1,8 @@
+--- a/SETUP/config/doconf
++++ b/SETUP/config/doconf
+@@ -1,4 +1,4 @@
+-#!/bin/csh -f
++#!/usr/bin/env -S tcsh -f
+ set path = ($path .)
+ ######################################################################
+ # HISTORY

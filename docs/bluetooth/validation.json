@@ -1,0 +1,287 @@
+{
+  "target": "SDM835/WCN3990",
+  "architecture": "arm64",
+  "sdk": "iPhoneOS18.6",
+  "hardware_backend_implemented": true,
+  "hardware_backend_runtime_verified": false,
+  "native_serial_adapter_implemented": true,
+  "native_uart_control_implemented": true,
+  "model_specific_names_added": false,
+  "new_build_scripts": [],
+  "schema": 3,
+  "status": "offline-bluetool-backend-verified-native-chipset-policy-incomplete",
+  "hardware_tested": false,
+  "bluetool_backend_implemented": true,
+  "bluetool_script_interfaces": [
+    "boot",
+    "init",
+    "deepsleep"
+  ],
+  "native_chipset_policy_ported": false,
+  "native_bluetooth_stack_connected": false,
+  "native_daemon_configuration_installed": false,
+  "scope": "WCN3990 BlueTool XPC backend, real HCI initialization proof, epoch-scoped power/cancellation and sealed native UART handoff. Unified build, development signing, launchd overlay and trustcache verified offline. Native bluetoothd capability-model/VSC dispatch is not ported; the complete system-stack objective remains unfinished.",
+  "checks": [
+    {
+      "command": "make bluetooth",
+      "status": "passed",
+      "kext_count": 32,
+      "local_kext_count": 10,
+      "log": "build/bluetooth/bootstrap-collection-build.log"
+    },
+    {
+      "command": "make verify-bluetooth",
+      "status": "passed",
+      "errors": [],
+      "warnings": [],
+      "stack_artifact_verified": true,
+      "native_chipset_policy_ported": false,
+      "log": "build/bluetooth/bootstrap-verify.log"
+    },
+    {
+      "command": "make test-bluetooth",
+      "status": "passed",
+      "host_suites": [
+        "gcc",
+        "gpio",
+        "bluetooth",
+        "bluetooth-firmware",
+        "bluetooth-runtime",
+        "bluetooth-bootstrap"
+      ],
+      "kernel_sdk_compile": true,
+      "integration_tests": 19,
+      "apple_device_tree_tests": 1,
+      "malformed_firmware_inputs": 10000,
+      "log": "build/bluetooth/bootstrap-tests.log"
+    },
+    {
+      "command": "make test-bluetooth-sanitized",
+      "status": "passed",
+      "sanitizers": [
+        "address",
+        "undefined"
+      ],
+      "log": "build/bluetooth/bootstrap-sanitizers.log"
+    },
+    {
+      "command": "make bluetooth-stack",
+      "status": "passed",
+      "installed": false,
+      "log": "build/bluetooth/bootstrap-package.log"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p 'test_bluetooth_integration.py'",
+      "status": "passed",
+      "tests": 19,
+      "log": "build/bluetooth/bootstrap-integration.log"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p 'test_macho_development_sign.py'",
+      "status": "passed",
+      "tests": 5,
+      "log": "build/bluetooth/bootstrap-signing-tests.log"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p 'test_bridge_trustcache.py'",
+      "status": "passed",
+      "tests": 6,
+      "log": "build/bluetooth/bootstrap-trustcache-tests.log"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p 'test_boot_bridge.py'",
+      "status": "passed",
+      "tests": 26,
+      "log": "build/bluetooth/bootstrap-bridge-regression.log"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p 'test_driver_toolchain.py'",
+      "status": "passed",
+      "tests": 11,
+      "log": "build/bluetooth/bootstrap-toolchain-tests.log"
+    }
+  ],
+  "coverage": [
+    "UART PIO-only admission, NCF-ordered TX, TX/RX interrupt masks, physical drain and stale snapshots",
+    "Boot pulses, ROM identity, baud/RTS switch, patch modes, NVM upload and real acknowledgement deadlines",
+    "GCC dedicated UART ownership, firmware pin transfer, gated rate changes, exact raw configuration restoration and retained failure token",
+    "TLMM pin ownership, IRQ exclusion, failed writes and partial-restore retry",
+    "Asynchronous startup cancellation, resource rollback/retention and generation isolation",
+    "Native tty settings/queues, control session epochs and termios ABI",
+    "Pinned firmware archive, transport-only NVM edits, preserved calibration/MAC, atomic DT merge and native launchd configuration preparation",
+    "Native serial instance sizes/vtables/symbol providers, BSDKernel KPI exports, linked collection relocations and ARMv8 ISA",
+    "Hash-pinned native BlueTool XPC envelope/reply ABI and independent transport-encoding discovery",
+    "QCA loaded Patch/ROM/SoC/company/MAC validation, seven real HCI queries, optional/late CC and VSE, BR/EDR/LE buffers including shared LE pool",
+    "25 s total / 2 s command deadlines, startup cancellation, expected-generation power CAS, no stale cleanup of later controller generations",
+    "Bootstrap socket seal, rejected repeat/wrong-unit/wrong-epoch/native-client handoff, unsealed close/crash quarantine, physical TX drain",
+    "Native launchd users/services/other fields preserved, exact source hashes, XML/DER Boolean entitlement agreement, code/special-slot hashing, __LINKEDIT coverage and exact trustcache cdhash",
+    "Artifact validator rejects hardware/native-policy completion claims not established by this work"
+  ],
+  "logs": {
+    "build/bluetooth/bootstrap-bridge-regression.log": "d0d17d15bcc6187d6f12c7a098c0b1e881f1cef4f423d0ca021df356f4da4bb5",
+    "build/bluetooth/bootstrap-client-build.log": "49d4a4a4c050948ed438d1b446c013e37b47222cafd114dd56b8258f8685a84d",
+    "build/bluetooth/bootstrap-collection-build.log": "db9d1d5da5521857fb8a28e730555ec6f3ab964587bb49275ba0421a63dd936c",
+    "build/bluetooth/bootstrap-handoff-tests.log": "ca53562ee9379714e5310fe32b2743e511518f409b654bd837b9c11706838cd0",
+    "build/bluetooth/bootstrap-integration.log": "ff3ff7e0932008525e0bb7448684103410c22dfbc495ae9e94b4af67f31f4c35",
+    "build/bluetooth/bootstrap-package-verify.log": "8b875cde5cb8213f5bac4735ec6dd4d378d40d6a804e1a88f6168d786a0fd856",
+    "build/bluetooth/bootstrap-package.log": "2a1db8b0b2d72c3f4bdb86f38cb16b4124dfefd0d55c052d9e0211bde51abe74",
+    "build/bluetooth/bootstrap-sanitizers.log": "b261011db0552486e412a657650051e66642a628ad24f2bb448023f34e6a3b6b",
+    "build/bluetooth/bootstrap-signing-tests.log": "d03ce458f2a6cd2b4f27522f3aacad03ce1872c028853507c3ad02ca621bdcad",
+    "build/bluetooth/bootstrap-tests.log": "397f8eb8e5a38efca0e27cdf5186c42e30be5bb2f04296cb9f16d34d9275eb94",
+    "build/bluetooth/bootstrap-toolchain-tests.log": "cf62e455cd13befefb4c8bdeca3f2012608684097a6c204fcec9f7c0f4d21fe2",
+    "build/bluetooth/bootstrap-trustcache-tests.log": "c6b9b1f09add0403cc07e90bfdf272129b1ddfa2f8f7675ea8218862f2516371",
+    "build/bluetooth/bootstrap-verify.log": "4514b17eac597a7fb298155921664cb7026e79dc8bec5dfdb7132241199cb2cd"
+  },
+  "outputs": [
+    {
+      "path": "build/output/Bluetooth/bluetooth.trustcache",
+      "sha256": "283744202660eb526a28afcf16cfc3f882e11c082b84cabdc69ad8d8c03f9d7f",
+      "bytes": 46
+    },
+    {
+      "path": "build/output/Bluetooth/manifest.json",
+      "sha256": "0f993b55883cf0cce4c1f0880ddc9c31583abf697bac1b08900460bcbdef07b1",
+      "bytes": 4260
+    },
+    {
+      "path": "build/output/Bluetooth/root/System/Library/LaunchDaemons/com.apple.BlueTool.plist",
+      "sha256": "60d033dbd3e7a9aa147db1af4d068942b8242b342dd8b6e4cd8da4592f4b659d",
+      "bytes": 640
+    },
+    {
+      "path": "build/output/Bluetooth/root/System/Library/LaunchDaemons/com.apple.bluetoothd.plist",
+      "sha256": "426d89c6c5171be0fa81a7e293f33ceb8a430344ab8a47c7843bb25ea7f98ef1",
+      "bytes": 2158
+    },
+    {
+      "path": "build/output/Bluetooth/root/usr/libexec/bluetoothbootstrap",
+      "sha256": "d620d86458263b7287ecfb8bba9bbed514792cf0bf9b50be1af46cc33d94daf4",
+      "bytes": 62640
+    },
+    {
+      "path": "build/output/Extensions/QcomBluetooth.kext/Contents/Info.plist",
+      "sha256": "cb57280e5b434b4dedf822c6b3ee147e993daab8e47a31ea033647bdee82620a",
+      "bytes": 1939
+    },
+    {
+      "path": "build/output/Extensions/QcomBluetooth.kext/Contents/MacOS/QcomBluetooth",
+      "sha256": "1b8d86aa935d27e866aada6771ab5a75470a27080673974949dfc37bc81f346a",
+      "bytes": 153696
+    },
+    {
+      "path": "build/output/bluetoothbootstrap",
+      "sha256": "d620d86458263b7287ecfb8bba9bbed514792cf0bf9b50be1af46cc33d94daf4",
+      "bytes": 62640
+    },
+    {
+      "path": "build/output/bluetoothbootstrap.json",
+      "sha256": "e800910b632e8735dff679afd3bce5a243e22a3968d9a4f718d69ba5e5984616",
+      "bytes": 2322
+    },
+    {
+      "path": "build/output/bluetoothctl",
+      "sha256": "277192f001db6fc29674147cf3be8e9166c79c5f10335e78cf5503bb821c358b",
+      "bytes": 51696
+    },
+    {
+      "path": "build/output/bluetoothctl.json",
+      "sha256": "6e27628e879275152ef6aee6e53a1cb59161dfef9d7af99935e007fdaf97f07e",
+      "bytes": 1078
+    },
+    {
+      "path": "build/output/kernelcache.bluetooth",
+      "sha256": "f531abfee64baf76b294136b0b05c48407bc955e1bbeed0f3c84c4e43624059e",
+      "bytes": 25837568
+    },
+    {
+      "path": "build/output/kernelcache.bluetooth.manifest.json",
+      "sha256": "07148bca36eecf871ce837a2c074856efcfb087fa2592f2948ad8fc499238abe",
+      "bytes": 2782
+    },
+    {
+      "path": "build/output/kernelcache.bluetooth.verification.json",
+      "sha256": "be9b0313e9187e28ca3e4c9d4a0cc73c5ee8474a5b0df0c9be71f82c2e47ad85",
+      "bytes": 6251
+    }
+  ],
+  "source_sha256": {
+    "Makefile": "7229cb6f472ee1ad710ce3264c5fdedbaf0e8aceed03bbb9110dd7d4ce9f8cd8",
+    "docs/bluetooth/README.md": "e13a3c19bc5c01b7e991e369ae8a02e250c46603bb8de868ed60b9beeb06961b",
+    "docs/bluetooth/ios18-model.json": "a26861780f4d32a35f1206d9f1f8eb35cae0b5693ab9432297743f52518562d4",
+    "docs/bluetooth/native-bootstrap-evidence.json": "ed1a486899b8fbe5d0a89d26bfe410db2bf16686c4c17c4bb41fd5fd790058e9",
+    "docs/bluetooth/native-serial-evidence.json": "7ccff8c7b3ff012019f85b4c17c10bc29510d692dab1729f151e12d759295c36",
+    "docs/bluetooth/profile.schema.json": "0e533385743d6edd589070a8d7e3ca32712131fc6ae1ec19c1bca222f6f2e7b1",
+    "docs/bluetooth/reference/sources.json": "3ec7ad860a1c73e6d07adbbab711bbe0f78d21070ed29d2b0bec73c83e1dc598",
+    "scripts/bridge_trustcache.py": "1760ac73abc633b22cedfd5e05ebee88bfb57cd1765025796837086023c9b73c",
+    "scripts/build-bridge.py": "ce74ab65b19b929cec82e71927a659fcbc167aac99d32e26d0822a6f1ffe817a",
+    "scripts/macho_development_sign.py": "c06107ed44f4ab86c4e2580398b01a577c517d7842a5d1aba2d6387b9cc4b588",
+    "scripts/toolchain.py": "4b3fb81fa899fcc76aed0257b11965d4e9d1418060ef81c7e14ecd793d9ffe61",
+    "drivers/bluetooth/userspace/BlueToolBootstrap.h": "8179c8cc865f7634c60f3c7cd687620b99dcc2cb7baf3a4955e76e5084b9578d",
+    "drivers/bluetooth/userspace/BlueToolService.cpp": "833d5143e9ac9d75a871828eae68e0b9a93c039baf06ab3dbe1a66dbb59f22bb",
+    "drivers/bluetooth/userspace/IOKitBluetoothTransport.cpp": "ba697849daa39e0d6f328e98b7da191aff1e43c594a8507315f1ea0c3589c955",
+    "drivers/bluetooth/userspace/IOKitBluetoothTransport.h": "cc8667a383475ddd93f554c4a9e40949a383b98099b2168a07c943f411ad54dd",
+    "drivers/Build.json": "f26931ffbae432ff3b0104bbf945285caffb4afc7eb2ca80959499a68d4cd326",
+    "drivers/bluetooth/QcomBluetooth/BluetoothBoot.h": "b62a6c7abaac143bdde32102e0838e5f8c8bc9ade79c8c0f266cd02d49bd0498",
+    "drivers/bluetooth/QcomBluetooth/BluetoothConfiguration.h": "b76f6a0afba4ac5afd84ce6123f49d3df0bf2b8afa3f5a04e340955bc8e43c0d",
+    "drivers/bluetooth/QcomBluetooth/BluetoothControl.cpp": "44e833d189e6e298539d5ad15db9bb5ef46ffdcfab7e007c0b10ab2ac703ac3a",
+    "drivers/bluetooth/QcomBluetooth/BluetoothControl.h": "cf5f4f6918b8a154d6976eaa886b3f192dba810e2db99b0cbc16b3e743ba285c",
+    "drivers/bluetooth/QcomBluetooth/BluetoothController.h": "e2e08585d2885083e10e635553553873ef9f3d3f3805a382589ccda686418426",
+    "drivers/bluetooth/QcomBluetooth/BluetoothFirmware.h": "2a883c50c043d250c9decf81921c29db3b23f0795f3c243791899c58e5536651",
+    "drivers/bluetooth/QcomBluetooth/BluetoothH4.h": "4be094d818894ddee7f8da95c73ae5e69f7f87f427a5885ea3283eb55331ef48",
+    "drivers/bluetooth/QcomBluetooth/BluetoothIBS.h": "9da62c3b8c314744126c0fafa66c3fd2122e8ad00b9bc4f38ccfbde5c4cf8a70",
+    "drivers/bluetooth/QcomBluetooth/BluetoothLoader.h": "fac2845908f9f56d0e81da3d1b632d021790a8a6c73b2e2c118c45ffcb1958ef",
+    "drivers/bluetooth/QcomBluetooth/BluetoothPlatform.cpp": "7e3d813d36683a06403c3f91442a243a95d76849531417c68a5eb477589a28e2",
+    "drivers/bluetooth/QcomBluetooth/BluetoothPlatform.h": "393291c804056c0b8289e27aecbaa61ef3f4a9864bd1849a95ca8ceb639774d8",
+    "drivers/bluetooth/QcomBluetooth/BluetoothSerial.cpp": "79bd99de3570f9731b576254b764f9a135bbc2064385eef409482eee3aa64144",
+    "drivers/bluetooth/QcomBluetooth/BluetoothSerial.h": "321f13201bd35083bf585958de1023884949c5f32971cd98bc3b2628beb25e57",
+    "drivers/bluetooth/QcomBluetooth/BluetoothUART.h": "36df65837af43737df72afeef18bda2b26dc6c3bab6c90c7c4885f77a002e93d",
+    "drivers/bluetooth/QcomBluetooth/Info.plist": "cb57280e5b434b4dedf822c6b3ee147e993daab8e47a31ea033647bdee82620a",
+    "drivers/bluetooth/QcomBluetooth/LICENSE": "71f0efe0c6312ff140529aa0e249a0b2f7870ba337fb6b553fc303dd1ffb1f3b",
+    "drivers/bluetooth/QcomBluetooth/QcomBluetooth.cpp": "e4bb67b47d171428e91f9288482af44759e01015ccce7e83242c88695dd0e80f",
+    "drivers/bluetooth/QcomBluetooth/QcomBluetooth.h": "268c3a6d75b64802e7882c9479921f672bd16029fa88eecdf4c3ca860b097523",
+    "drivers/bluetooth/QcomBluetooth/QcomBluetoothSerial.cpp": "005cec6e95c1ed046ba02362609173d0283eeefce2fc88343de036f019c9d0c9",
+    "drivers/bluetooth/QcomBluetooth/QcomBluetoothSerial.h": "0ad4ae72961938e456951bba760cc5f4bd3f07f99d1e20fd0acdc096aa35b195",
+    "drivers/bluetooth/QcomBluetooth/QcomBluetoothUserClient.cpp": "4c7b61e026f36fda93ca226020933d0e2928e10438a9f1bf46ceb260d671f091",
+    "drivers/bluetooth/QcomBluetooth/QcomBluetoothUserClient.h": "c7231b43dd8600424c62b2c2bb7615177651474346124efb2deb1c3ef895101a",
+    "drivers/clock/QcomGCC/GCCController.h": "e9afdbb8cf43c34075eb01f9c7b950d44469d583195e9992d0dc4ea0828f2cab",
+    "drivers/clock/QcomGCC/QcomGCC.cpp": "ddbffb5cba8a684112e7095bda3200a2395bfcdcaf6c27efe2ee0ce34cc967e9",
+    "drivers/bus/QcomGPIO/QcomGPIO.cpp": "1438e6d9566af2fdb0ee1d7953c925cfead85a00e325de68ceddba535a85f773",
+    "drivers/bus/QcomGPIO/QcomGPIO.h": "80958354a7462e583dc56df4fd5549d6160a37a2513dd5b332399b025c5420c9",
+    "drivers/bus/QcomGPIO/TLMMPinmux.h": "366c49af5ab7ea5d6b8eeb2ea9a3b3fdf2d1e22f1195f36751520f31defeaa6d",
+    "drivers/abi-22H374/apple-serial-abi.json": "4b0371f4cfcd5fa68908cc32a33a2730e36006a70abde64b3bb523d2a80715bf",
+    "drivers/include/BluetoothProtocol.h": "02ce4fae8bbcc6d0909745a71228acec80991d9992b809063b4914a54acbde42",
+    "drivers/include/ClockControllerProtocol.h": "c7b8eb3552e49ea0d72ad995aced7a34a6d5151b43c36a3597dbfa86ad176cda",
+    "drivers/include/IOKit/serial/IOSerialDriverSync.h": "509d8c12bf735103f188d78e6cbc922890fdcf55abe3ed5c4eff1bb3af869adc",
+    "drivers/include/PinmuxProtocol.h": "cbbe19713b41ea7d94b6d105b60a5042a374f7ae4d8237e44b457eeaa58a778e",
+    "tests/bluetooth_bootstrap_test.cpp": "f23250476df70648425f5e8650338b2afee55fb12f23c27a9c0f02c3a4e5f394",
+    "tests/bluetooth_firmware_test.cpp": "64bf7c5ca47a6bffe46a56360bc411b08e0642129a1889fbb54e158c35cfa811",
+    "tests/bluetooth_kernel_compile.cpp": "06bfeff460f1c07b2b23bd3172f1d26f7523d814f138d0d9f42930ffefc4a1da",
+    "tests/bluetooth_runtime_test.cpp": "717dc520ba7127fd67497a95cec0bdc1f4c2cf0ebefca56dd97c2238151c3327",
+    "tests/bluetooth_test.cpp": "a7b0bf15fc81543c4436ce29f2869e37df191d1830204485f10e2b6910f429dc",
+    "tests/gcc_test.cpp": "cd361221a549fda543b2d0dded909dac439e0a212dca4210c82319778e5d5831",
+    "tests/gpio_test.cpp": "ebbddffeed4d62daf3c98af09c7697abc1d45a2b7772aee2fb8088ef7df3d21f",
+    "tests/test_bluetooth_integration.py": "9538b3bf381b1b00f42692af65287b5ac12ce6ad654b8c8145bc0a9dda41d21c",
+    "tests/test_boot_bridge.py": "4deea9eed45919edad5a49effb1e0b7f2e3e6a6ea4d2f82e815b5e57e96e7309",
+    "tests/test_bridge_trustcache.py": "4875d1b7adef3e239a1cf8efd358bab0a858bed0086459087c4e5dbecb63b73b",
+    "tests/test_driver_toolchain.py": "083b61549400cfe5317657cd552c75a5472346fdc6ca826df2d5f09fa2108e31",
+    "tests/test_macho_development_sign.py": "9fed88bc1549c55a6a73796d279dce478f42b8cedf8fa3286f8059344f7057f6",
+    "tools/bluetoothctl/LICENSE": "71f0efe0c6312ff140529aa0e249a0b2f7870ba337fb6b553fc303dd1ffb1f3b",
+    "tools/bluetoothctl/bluetoothctl.cpp": "07f8dfe76ac2a6ea69eeb3d25d7c4ae823ffe6ab3f4399e090d236b1ceabbcda",
+    "tools/include/IOKitUser.h": "200e1768bb781467d2714ea89a2e432329a49707535fce546e4e779970418f71"
+  },
+  "provider_sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+  "kernel_sha256": "6893bd67ee57b3f910fd57050ad68995c304d0c285a51ff5c5866e34a6c3700e",
+  "known_limits": [
+    "Native bluetoothd LEHardwareModel and VSC dispatch lack a WCN3990 profile. The full system Bluetooth stack is not connected; BluetoothNativeStackReady remains false and NativeStackABI stays set.",
+    "The adapter implements the three observed initialization scripts, not RunExternalScript/RunCommand. deepsleep requires the HCI host to close its port and performs full shutdown rather than deep retention.",
+    "No production board profile/ROM/NVM is asserted. Default DT is disabled. Firmware preparation tests use automatically removed synthetic assets.",
+    "The rootfs overlay/trustcache is staged only. No device, native XPC process, controller, scan, pairing, audio, CoreBluetooth or live socket callback test was run.",
+    "Existing BAM/DMA handoff rejection and lack of deep suspend/external wake/controller coredump recovery remain."
+  ],
+  "analysis_notes": [
+    "Independent native chipset factory was identified during this turn; BlueTool success is not reported as successful system-stack operation.",
+    "Native Apple binaries remain byte-for-byte unchanged. Only offline launchd ProgramArguments and H4/POSIX environment selection are prepared.",
+    "No new build scripts, model-specific naming or device operations. Temporary preparation fixtures are removed by their test contexts.",
+    "Existing unrelated DTS warnings remain in bridge tests; final collection has zero errors or warnings."
+  ]
+}

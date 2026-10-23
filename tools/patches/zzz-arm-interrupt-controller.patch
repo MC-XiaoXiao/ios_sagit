@@ -1,0 +1,106 @@
+--- a/iokit/Kernel/IOPlatformExpert.cpp
++++ b/iokit/Kernel/IOPlatformExpert.cpp
+@@ -42,6 +42,9 @@
+ #include <IOKit/IOUserClient.h>
+ #include <IOKit/IOKitDiagnosticsUserClient.h>
+ #include <IOKit/IOUserServer.h>
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++#include <IOKit/PassthruInterruptController.h>
++#endif
+ 
+ #include "IOKitKernelInternal.h"
+ 
+@@ -174,6 +177,17 @@
+ 
+ 	setPlatform( this );
+ 	gIOPlatform = this;
++
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++	/* Publish Apple's parent-controller service before arm-io nubs match.
++	 * Timer/IPI bootstrap is independent of this IOKit peripheral path. */
++	PassthruInterruptController *interruptController = new PassthruInterruptController;
++	if (!interruptController || !interruptController->init()) {
++		panic("Cannot initialize platform interrupt controller");
++	}
++	/* The registry and platform controller table retain the service. */
++	interruptController->release();
++#endif
+ 
+ 	PMInstantiatePowerDomains();
+ 
+--- a/iokit/Kernel/PassthruInterruptController.cpp
++++ b/iokit/Kernel/PassthruInterruptController.cpp
+@@ -35,6 +35,20 @@
+ #include <IOKit/IOPlatformExpert.h>
+ #include <IOKit/IOService.h>
+ #include <IOKit/PassthruInterruptController.h>
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++#include <os/atomic_private.h>
++
++/* Internal bridge only: no added KPI or change to the class/vtable ABI. */
++static PassthruInterruptController *platformIRQController;
++static IOLock *platformIRQRegistrationLock;
++extern "C" bool PE_dispatch_irq(unsigned int intid);
++extern "C" bool
++PE_dispatch_irq(unsigned int intid)
++{
++	PassthruInterruptController *controller = os_atomic_load(&platformIRQController, acquire);
++	return controller && controller->handleInterrupt(NULL, NULL, (int)intid) == kIOReturnSuccess;
++}
++#endif
+ 
+ #define super IOInterruptController
+ OSDefineMetaClassAndStructors(PassthruInterruptController, IOInterruptController);
+@@ -42,6 +56,12 @@
+ bool
+ PassthruInterruptController::init(void)
+ {
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++	platformIRQRegistrationLock = IOLockAlloc();
++	if (!platformIRQRegistrationLock) {
++		return false;
++	}
++#endif
+ 	if (!super::init() ||
+ 	    !this->setProperty(gPlatformInterruptControllerName, kOSBooleanTrue) ||
+ 	    !this->attach(getPlatform())) {
+@@ -86,10 +106,24 @@
+     IOInterruptHandler handler,
+     void *refCon)
+ {
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++	IOLockLock(platformIRQRegistrationLock);
++	if (!nub || target != nub || !handler || source != 0 || child_handler) {
++		IOLockUnlock(platformIRQRegistrationLock);
++		return kIOReturnBadArgument;
++	}
++	/* The primary controller is permanent; callback publication retains it. */
++	nub->retain();
++#endif
+ 	child_handler = handler;
+ 	child_nub = nub;
+ 	child_target = target;
+ 	child_refCon = refCon;
++
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++	os_atomic_store(&platformIRQController, this, release);
++	IOLockUnlock(platformIRQRegistrationLock);
++#endif
+ 
+ 	// Wake up waitForChildController() to tell it that AIC is registered
+ 	semaphore_signal(child_sentinel);
+@@ -148,7 +182,14 @@
+     IOService */*nub*/,
+     int source)
+ {
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++	/* The bootstrap already read ICC_IAR1. Forward the INTID unchanged;
++	 * it also owns the sole EOI after the child handler finishes. */
++	child_handler(child_target, child_refCon, child_nub, source);
++	return kIOReturnSuccess;
++#else
+ 	panic("handleInterrupt shouldn't be invoked directly");
++#endif
+ }
+ 
+ void

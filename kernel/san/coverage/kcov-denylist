@@ -1,0 +1,32 @@
+# Blanket ignore non-sanitized functions
+fun:ksancov_*
+fun:kcov_*
+fun:dtrace_*
+
+# Exclude KSANCOV itself
+src:./san/coverage/kcov.c
+src:./san/coverage/kcov_ksancov.c
+src:./san/coverage/kcov_stksz.c
+
+# Exclude KASan runtime
+src:./san/memory/*
+
+src:./osfmk/kern/debug.c
+
+# Calls from sanitizer hook back to kernel.
+fun:_disable_preemption
+fun:_enable_preemption
+fun:current_thread
+fun:ml_at_interrupt_context
+fun:get_interrupt_level
+fun:get_active_thread
+fun:cpu_datap
+fun:cpu_number
+fun:get_cpu_number
+fun:pmap_in_ppl
+fun:get_preemption_level
+
+# Closure of VM_KERNEL_UNSLIDE
+fun:vm_memtag_add_ptr_tag
+fun:ml_static_unslide
+fun:vm_is_addr_slid

@@ -1,0 +1,178 @@
+iPhone14,6 iOS 18.6.2 22G100, offline IDA/Hex-Rays evidence.
+
+Names below are semantic labels inferred from string references, not recovered C++ signatures.
+
+PAC/import targets and helper calls remain unresolved in extracted Kexts.
+
+Do not use pseudocode offsets as an arm64 subclass ABI.
+
+
+
+__int64 __fastcall sub_FFFFFFF008C71C80(__int64 a1, unsigned int a2)
+{
+  __int64 v4; // x20
+  char v5; // zf
+  __int64 v6; // x0
+  __int64 v7; // x0
+  __int64 v8; // x16
+  __int64 v9; // x20
+  const char *v10; // x21
+
+  v4 = a2; /*0xfffffff008c71cac*/
+  ((void (*)(void))sub_FFFFFFF008C70E68)(); /*0xfffffff008c71cb8*/
+  if ( !v5 ) /*0xfffffff008c71cbc*/
+    sub_FFFFFFF008C70E4C(a1: 86289589, a2: a1, a3: v4); /*0xfffffff008c71cd0*/
+  v6 = *(_QWORD *)(a1 + 528); /*0xfffffff008c71cd4*/
+  if ( v6 != 0 ) /*0xfffffff008c71cd8*/
+  {
+    v7 = sub_FFFFFFF008C70158(); /*0xfffffff008c71cdc*/
+    v6 = (*(__int64 (__fastcall **)(__int64, __int64, _QWORD, _QWORD))(v8 + 128))(a1: v7, a2: v4, a3: 0, a4: 0); /*0xfffffff008c71d04*/
+    v9 = v6; /*0xfffffff008c71d08*/
+    if ( (_DWORD)v6 != 0 ) /*0xfffffff008c71d0c*/
+    {
+      if ( a2 != 0 ) /*0xfffffff008c71d24*/
+        v10 = "start"; /*0xfffffff008c71d24*/
+      else
+        v10 = "stop"; /*0xfffffff008c71d24*/
+      MEMORY[0xFFFFFFF008554BC8]( /*0xfffffff008c71d54*/
+        a1: &dword_FFFFFFF00732E490,
+        a2: off_FFFFFFF007B72948,
+        a3: 16,
+        a4: "%s::Unable to notify Haptics Session %s %d",
+        "_notifyHapticsSessionStartStop",
+        v10,
+        v6);
+      v6 = MEMORY[0xFFFFFFF008576FA8]( /*0xfffffff008c71d68*/
+             a1: "%s::Unable to notify Haptics Session %s %d\n",
+             "_notifyHapticsSessionStartStop",
+             v10,
+             v9);
+    }
+  }
+  else
+  {
+    v9 = 0; /*0xfffffff008c71da4*/
+  }
+  sub_FFFFFFF008C70E68(a1: v6); /*0xfffffff008c71d6c*/
+  if ( !v5 ) /*0xfffffff008c71d70*/
+    sub_FFFFFFF008C70E4C(a1: 86289590, a2: a1, a3: (int)v9); /*0xfffffff008c71d84*/
+  return v9; /*0xfffffff008c71da0*/
+}
+
+__int64 __fastcall sub_FFFFFFF008C704F8(__int64 a1, __int64 a2)
+{
+  if ( (*(__int64 (__fastcall **)(__int64, const char *))(*(_QWORD *)a2 + 280LL))( /*0xfffffff008c70548*/
+         a1: a2,
+         a2: "function-haptics_session") != 0 )
+    *(_QWORD *)(a1 + 528) = MEMORY[0xFFFFFFF00885FA70](a1: a2, a2: "function-haptics_session"); /*0xfffffff008c7055c*/
+  return 0; /*0xfffffff008c7056c*/
+}
+
+__int64 __fastcall sub_FFFFFFF008C6FB44(__int64 a1, __int64 a2)
+{
+  __int64 v4; // x19
+  __int64 v5; // x20
+  __int64 v6; // x22
+  __int64 v7; // x2
+  __int64 v8; // x0
+  __int64 v9; // x0
+  __int64 v10; // x23
+  const char *v12; // x0
+  __int64 v13; // x0
+
+  v4 = MEMORY[0xFFFFFFF0085AA128](a1: "AppleAOPAudioDeviceProvider", a2: 0); /*0xfffffff008c6fb78*/
+  if ( v4 != 0 ) /*0xfffffff008c6fb7c*/
+  {
+    v5 = MEMORY[0xFFFFFFF008512D88](a1: 1); /*0xfffffff008c6fb88*/
+    if ( v5 != 0 ) /*0xfffffff008c6fb8c*/
+    {
+      v6 = MEMORY[0xFFFFFFF00854A2AC](a1: "compatible"); /*0xfffffff008c6fb9c*/
+      if ( v6 != 0 ) /*0xfffffff008c6fba0*/
+      {
+        v7 = (*(__int64 (__fastcall **)(__int64, const char *))(*(_QWORD *)a2 + 280LL))(a1: a2, a2: "compatible"); /*0xfffffff008c6fbdc*/
+        (*(void (__fastcall **)(__int64, __int64, __int64))(*(_QWORD *)v5 + 240LL))(a1: v5, a2: v6, a3: v7); /*0xfffffff008c6fc1c*/
+        (*(void (__fastcall **)(__int64, _QWORD, __int64))(*(_QWORD *)v4 + 240LL))( /*0xfffffff008c6fc68*/
+          a1: v4,
+          a2: *(_QWORD *)off_FFFFFFF007B72950,
+          a3: v5);
+        v8 = MEMORY[0xFFFFFFF0085A9E24](a1: v4, a2: -1); /*0xfffffff008c6fc74*/
+        v9 = MEMORY[0xFFFFFFF008506124](a1: v8, a2: *(_QWORD *)off_FFFFFFF007B72938); /*0xfffffff008c6fc84*/
+        *(_QWORD *)(a1 + 448) = v9; /*0xfffffff008c6fc88*/
+        if ( v9 != 0 ) /*0xfffffff008c6fc8c*/
+        {
+          v10 = 0; /*0xfffffff008c6fc90*/
+LABEL_6:
+          (*(void (__fastcall **)(__int64))(*(_QWORD *)v6 + 40LL))(a1: v6); /*0xfffffff008c6fc94*/
+          goto LABEL_7; /*0xfffffff008c6fcb8*/
+        }
+        sub_FFFFFFF008C71900(); /*0xfffffff008c6fd6c*/
+        v12 = "AppleAOPEmbeddedAudio::%s unable to retrieve matching interface\n"; /*0xfffffff008c6fd70*/
+      }
+      else
+      {
+        sub_FFFFFFF008C71948(); /*0xfffffff008c6fd5c*/
+        v12 = "AppleAOPEmbeddedAudio::%s unable to create OSSymbol\n"; /*0xfffffff008c6fd60*/
+      }
+    }
+    else
+    {
+      sub_FFFFFFF008C71990(); /*0xfffffff008c6fd48*/
+      v6 = 0; /*0xfffffff008c6fd4c*/
+      v12 = "AppleAOPEmbeddedAudio::%s unable to create OSDictionary\n"; /*0xfffffff008c6fd50*/
+    }
+  }
+  else
+  {
+    sub_FFFFFFF008C719D8(); /*0xfffffff008c6fd30*/
+    v6 = 0; /*0xfffffff008c6fd34*/
+    v5 = 0; /*0xfffffff008c6fd38*/
+    v12 = "AppleAOPEmbeddedAudio::%s unable to create matching dictionary\n"; /*0xfffffff008c6fd3c*/
+  }
+  MEMORY[0xFFFFFFF008576FA8](a1: v12); /*0xfffffff008c6fd84*/
+  v13 = *(_QWORD *)(a1 + 448); /*0xfffffff008c6fd88*/
+  if ( v13 != 0 ) /*0xfffffff008c6fd8c*/
+    (*(void (__fastcall **)(__int64))(*(_QWORD *)v13 + 40LL))(a1: v13); /*0xfffffff008c6fdb0*/
+  v10 = 3758097084LL; /*0xfffffff008c6fdb4*/
+  *(_QWORD *)(a1 + 448) = 0; /*0xfffffff008c6fdbc*/
+  if ( v6 != 0 ) /*0xfffffff008c6fdc0*/
+    goto LABEL_6; /*0xfffffff008c6fdc0*/
+LABEL_7:
+  if ( v5 != 0 ) /*0xfffffff008c6fcbc*/
+    (*(void (__fastcall **)(__int64))(*(_QWORD *)v5 + 40LL))(a1: v5); /*0xfffffff008c6fce4*/
+  if ( v4 != 0 ) /*0xfffffff008c6fce8*/
+    (*(void (__fastcall **)(__int64))(*(_QWORD *)v4 + 40LL))(a1: v4); /*0xfffffff008c6fd10*/
+  return v10; /*0xfffffff008c6fd2c*/
+}
+
+__int64 __fastcall sub_FFFFFFF008FBEFF8(__int64 a1, __int64 a2, __int64 a3, __int64 a4, __int64 a5)
+{
+  __int64 v10; // x0
+  __int64 v11; // x19
+  __int64 v12; // x20
+  __int64 v13; // x16
+
+  if ( a2 == 0 ) /*0xfffffff008fbf010*/
+    return 0; /*0xfffffff008fbf0cc*/
+  v10 = MEMORY[0xFFFFFFF008621BE4](a1: a2, a2: "com.apple.ahs.userclientaccess"); /*0xfffffff008fbf034*/
+  v11 = v10; /*0xfffffff008fbf038*/
+  if ( v10 != **(_QWORD **)off_FFFFFFF007BE6318 ) /*0xfffffff008fbf050*/
+  {
+    v12 = 0; /*0xfffffff008fbf0d0*/
+    if ( v10 == 0 ) /*0xfffffff008fbf0d4*/
+      return v12; /*0xfffffff008fbf0d4*/
+    goto LABEL_4; /*0xfffffff008fbf0d4*/
+  }
+  v12 = (*((__int64 (__fastcall **)(__int64, __int64, __int64, __int64, __int64))off_FFFFFFF007BE62C0 + 172))( /*0xfffffff008fbf084*/
+          a1,
+          a2,
+          a3,
+          a4,
+          a5);
+  if ( v11 != 0 ) /*0xfffffff008fbf088*/
+  {
+LABEL_4:
+    sub_FFFFFFF008F95640(); /*0xfffffff008fbf08c*/
+    (*(void (__fastcall **)(__int64))(v13 + 40))(a1: v11); /*0xfffffff008fbf0ac*/
+  }
+  return v12; /*0xfffffff008fbf0c4*/
+}

@@ -1,0 +1,86 @@
+diff --git a/deps.mk b/deps.mk
+index 4cb2625..6aa5933 100644
+--- a/deps.mk
++++ b/deps.mk
+@@ -3,7 +3,9 @@ INIT_LINKS = \
+ 	src/init.a \
+ 	external/libblkid/libblkid.a \
+ 	sysroot/lib/libc.a
++src/serial-control.o: sysroot/include src/serial-control.c src/serial-command.h
+ INIT_OBJS = \
++	src/serial-control.o \
+ 	src/cleanup.o \
+ 	src/debug.o \
+ 	src/devfs.o \
+diff --git a/src/config.h b/src/config.h
+index d47f18b..82779ef 100644
+--- a/src/config.h
++++ b/src/config.h
+@@ -7,10 +7,10 @@
+ #define USE_ERROR        1
+ #define DEBUG_TAG        1
+ #define DEBUG_LOCATION   0
+-#define USE_DEVTMPFS     0
+-#define DISPLAY_INIT     1
+-#define DISPLAY_IMAGE    1
+-#define DISPLAY_SVG      1
++#define USE_DEVTMPFS     1
++#define DISPLAY_INIT     0
++#define DISPLAY_IMAGE    0
++#define DISPLAY_SVG      0
+ #define DISPLAY_STB      0
+ #define DISPLAY_SCALE    0.75
+ #define DISPLAY_JUMP     0
+diff --git a/src/gadget.c b/src/gadget.c
+index 514ea85..5b9dc82 100644
+--- a/src/gadget.c
++++ b/src/gadget.c
+@@ -43,11 +43,8 @@ static bool block_name_sorter(list*l1,list*l2){
+ 	LIST_DATA_DECLARE(b1,l1,struct use_block*);
+ 	LIST_DATA_DECLARE(b2,l2,struct use_block*);
+ 	char*s1=b1->name,*s2=b2->name;
+-	for(size_t i=0;;i++){
+-		if(s1[i]==0||s2[i]==0)return false;
+-		if(s1[i]!=s2[i])return s1[i]>s2[i];
+-	}
+-	return false;
++	/* Preserve the shipped exporter's descending order (userdata is LUN 5). */
++	return strcmp(s1,s2)<0;
+ }
+ 
+ int gadget_block_delete_name(const char*name){
+@@ -102,8 +99,7 @@ int gadget_start(){
+ 
+ int gadget_stop(){
+ 	DEBUG("stopping gadget\n");
+-	write_file(gadget_fd,"\n","UDC");
+-	return 0;
++	return write_file(gadget_fd,"\n","UDC") > 0 ? 0 : -1;
+ }
+ 
+ static void gadget_add_mass_storage(int b,struct use_block*blk){
+diff --git a/src/init.c b/src/init.c
+index bdf1d41..a895962 100644
+--- a/src/init.c
++++ b/src/init.c
+@@ -77,7 +77,7 @@ int init_main(void){
+ 		));
+ 		DEBUG("starting usbipd as %d\n",p);
+ 		#endif
+-		while(1)sleep(3600);
++		serial_control_run();
+ 	}
+ 	return 0;
+ }
+diff --git a/src/init.h b/src/init.h
+index ed86f14..d9de898 100644
+--- a/src/init.h
++++ b/src/init.h
+@@ -87,6 +87,7 @@ extern list*gadget_blocks;
+ extern enum mass_mode gadget_mode;
+ extern struct gadget_config gadget_config;
+ extern void init_console(void);
++extern void serial_control_run(void);
+ extern void init_devfs(void);
+ extern int init_fbdev(void);
+ extern int fastboot_init(const char*path);

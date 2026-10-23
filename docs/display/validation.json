@@ -1,0 +1,210 @@
+{
+  "status": "offline-passed",
+  "date": "2026-10-15",
+  "provider_sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+  "framework": "native iOS 18 IOMobileFramebufferLegacy and AppleARMMIPIDSIController",
+  "artifact": {
+    "path": "build/output/kernelcache.sdm835.display",
+    "sha256": "645fd1ad6239766a062a3dd769b7267a9abdaf461e39c376efed8fd842b5d053",
+    "bytes": 26341376,
+    "kext_count": 36,
+    "manifest": "build/output/kernelcache.sdm835.display.manifest.json",
+    "verification": "build/output/kernelcache.sdm835.display.verification.json"
+  },
+  "drivers": [
+    {
+      "identifier": "org.darwin.driver.QcomMIPIDSI",
+      "sha256": "9aad657431fc8922543305af743e710922f8955ea459ebbeb8fd45c07c7e1238",
+      "bytes": 95352,
+      "architecture": "arm64",
+      "filetype": "MH_KEXT_BUNDLE",
+      "compiler_vtable": {
+        "slots": 181,
+        "bindings": {
+          "44": "IOReturn AppleARMMIPIDSIController::setProperties(OSObject *)",
+          "168": "IOReturn QcomMIPIDSI::enableInterface(bool)",
+          "169": "IOReturn QcomMIPIDSI::enableHighSpeedMode(bool)",
+          "170": "IOReturn QcomMIPIDSI::enableVideo(bool)",
+          "171": "IOReturn QcomMIPIDSI::sendShortCommand(UInt8, UInt8, UInt8)",
+          "172": "IOReturn QcomMIPIDSI::sendLongCommand(UInt8, const UInt8 *, UInt64)",
+          "178": "IOService *AppleARMMIPIDSIController::newDeviceWithRegistryEntry(IORegistryEntry *, IOService *)",
+          "179": "void AppleARMMIPIDSIController::publishBelow(IORegistryEntry *)",
+          "173": "IOReturn QcomMIPIDSI::receiveShortCommand(UInt8, UInt8 *)",
+          "174": "IOReturn QcomMIPIDSI::receiveLongCommand(UInt8, UInt8 *, UInt64 *)"
+        }
+      }
+    },
+    {
+      "identifier": "org.darwin.driver.QcomDisplay",
+      "sha256": "777195ce149082a92bb68fbee514ecbd2f015d14bb9f13d54ae0dd64027ca35a",
+      "bytes": 106792,
+      "architecture": "arm64",
+      "filetype": "MH_KEXT_BUNDLE",
+      "compiler_vtable": {
+        "slots": 368,
+        "bindings": {
+          "21": "bool IOMobileFramebufferLegacy::init(OSDictionary *)",
+          "86": "bool QcomDisplay::start(IOService *)",
+          "111": "IOWorkLoop *IOMobileFramebufferLegacy::getWorkLoop() const",
+          "141": "IOReturn IOMobileFramebufferLegacy::newUserClient(task_t, void *, UInt32, IOUserClient **)",
+          "174": "UInt32 IOMobileFramebufferLegacy::default_fb_surface(UInt32, UInt32)",
+          "184": "bool QcomDisplay::is_main_display()",
+          "212": "IOReturn QcomDisplay::set_notify_tag_mask_gated(UInt32, void *, UInt32)",
+          "214": "IOReturn QcomDisplay::supported_frame_info(UInt32, UInt32 *, char (*)[64], UInt32 *)",
+          "247": "IOReturn QcomDisplay::factory_portal(void *, task_t)",
+          "248": "IOReturn QcomDisplay::executeFactoryConfigurations_gated()",
+          "296": "bool QcomDisplay::start_hardware()",
+          "297": "void QcomDisplay::stop_hardware_gated()",
+          "298": "void QcomDisplay::swap_begin_gated()",
+          "300": "IOReturn QcomDisplay::verify_swap(void *)",
+          "301": "IOReturn QcomDisplay::verify_swap_surfaces(void *)",
+          "307": "void QcomDisplay::create_default_fb_surface()",
+          "309": "bool QcomDisplay::get_timing_attributes_gated(UInt64 *, bool) const",
+          "343": "UInt32 QcomDisplay::default_fb_surface_gated(UInt32, UInt32)",
+          "345": "IOReturn QcomDisplay::deallocate_default_fb_surface_gated()",
+          "347": "void QcomDisplay::notify_swap_done_gated(UInt32)",
+          "348": "void QcomDisplay::notify_crc_ready_gated(UInt32)",
+          "355": "bool QcomDisplay::isReplaying() const"
+        }
+      }
+    }
+  ],
+  "sources": [
+    {
+      "path": "drivers/display/QcomDisplay/DisplayProtocol.h",
+      "sha256": "ac48b38e791584612ccb19e362c54a50e96bc6ea40337f89834be282aec037b3"
+    },
+    {
+      "path": "drivers/display/QcomDisplay/QcomDisplay.h",
+      "sha256": "65f5a6d2be7359cec610e8d316438bc48104ba1ab60e9e7d23b73ab0cb67ffd0"
+    },
+    {
+      "path": "drivers/display/QcomDisplay/QcomDisplay.cpp",
+      "sha256": "6e19bebee8d9041975c00d9df1201d202f3acd2837215f5c700e2450b93015bc"
+    },
+    {
+      "path": "drivers/display/QcomDisplay/Info.plist",
+      "sha256": "8e5ff3af9dc9e33572332f0060f80f8283435dc2d35d121e74a8fa41498b9e04"
+    },
+    {
+      "path": "drivers/display/QcomMIPIDSI/MIPIDSIProtocol.h",
+      "sha256": "161b8f6a2f45a7f60b98be7147993bb13a56c0e82932f3674d554962abd43612"
+    },
+    {
+      "path": "drivers/display/QcomMIPIDSI/QcomMIPIDSI.h",
+      "sha256": "421186552ae300ff3001c3ba5d74988fe6944bbf547c3a07c98b8e3a35e1786a"
+    },
+    {
+      "path": "drivers/display/QcomMIPIDSI/QcomMIPIDSI.cpp",
+      "sha256": "4c1d60fe931cfb6bcbcec65c5b2cf6816255dc9e82e2b384d2e0c73990b6b8c5"
+    },
+    {
+      "path": "drivers/display/QcomMIPIDSI/Info.plist",
+      "sha256": "1d307eee31f3e56f3e584e0def630270508f85a782a6e02e1600e435df4ea3ce"
+    },
+    {
+      "path": "drivers/display/QcomMIPIDSI/PanelProtocol.h",
+      "sha256": "463a9ede65e32c214b75d666e3644d35e1ecd8672f372dd5ceb074a8f61e7d39"
+    },
+    {
+      "path": "drivers/display/QcomMIPIDSI/QcomPanel.h",
+      "sha256": "0374cee323d76841fc71bf3ef2ed691e1a1731ec6b07cd81c87822fc8e4a8c2c"
+    },
+    {
+      "path": "drivers/display/QcomMIPIDSI/QcomPanel.cpp",
+      "sha256": "e6aae4fe4fff30617e7bc184e393f3e54bc3bd98aebdaa76075b8f86307e61bb"
+    },
+    {
+      "path": "drivers/include/AppleARMPlatform/AppleARMMIPIDSI.h",
+      "sha256": "700c97646d845b0c4868b501db8e7697a1cef04249687b0bd3222fc29edb0eac"
+    },
+    {
+      "path": "drivers/include/AppleARMPlatform/ARMDisplayProperties.h",
+      "sha256": "349a9c5e25fc7c30ffe6c7b699c1586cf6c1bac30cdea6ed4327a4aa4d1acd9e"
+    },
+    {
+      "path": "drivers/include/IOKit/graphics/IOMobileFramebuffer.h",
+      "sha256": "6456d253f534fd3b9bf8fcee1150224e711c89edf037bbb6f1338f9f1aaa3df5"
+    },
+    {
+      "path": "drivers/include/IOKit/graphics/IOSurface.h",
+      "sha256": "79c8924754b5c430e5ffe14129b1dae0709fc569e2727a6e896784055cd46fb7"
+    },
+    {
+      "path": "drivers/abi-22H374/apple-mobile-graphics-abi.json",
+      "sha256": "50a40793b5485ccf64f5dfda4e8a17f681b3c279f77adf40c0ee8e79787a2b3e"
+    },
+    {
+      "path": "drivers/abi-22H374/apple-surface-abi.json",
+      "sha256": "c6a635aa3b88960f8beaaf1e6bbc7be33ec98c4dedc9b77d2c206c49fb5386c6"
+    }
+  ],
+  "checks": [
+    "Mach-O commands",
+    "segments and sections",
+    "file/VM mappings and overlap",
+    "symbol/relocation ranges, indices and relocation sites",
+    "Kext metadata, versions and dependency closure",
+    "Kext segment ownership",
+    "structor/GOT pointers and ARM64 import stubs",
+    "kmod records",
+    "kernel entry",
+    "XNU KCGEN Kext header walk and terminal zero padding",
+    "Kext ARMv8-A+CRC+Crypto ISA and regenerated static helpers",
+    "native kernel segment contents and non-prelink commands preserved",
+    "source SHA256 constant tables preserved: 2"
+  ],
+  "isa": {
+    "profile": "armv8-a+crc+crypto",
+    "patched": 208,
+    "scanned_words": 751889,
+    "helpers_bytes": 38688,
+    "stock_patches_verified": 208,
+    "source_constant_spans_verified": 26
+  },
+  "tests": {
+    "driver_host_suites": {
+      "count": 6,
+      "passed": true,
+      "command": "make test-drivers",
+      "log": "build/display-collection.log"
+    },
+    "patcher_cpp": {
+      "count": 5,
+      "passed": true,
+      "log": "build/display-collection.log"
+    },
+    "driver_toolchain_python": {
+      "count": 6,
+      "passed": true,
+      "log": "build/display-toolchain-tests.log"
+    },
+    "boot_bridge_python": {
+      "count": 13,
+      "passed": true,
+      "log": "build/display-bridge-tests.log"
+    },
+    "kernelcache_python": {
+      "count": 17,
+      "passed": true,
+      "log": "build/display-kernelcache-tests.log"
+    }
+  },
+  "hardware_boot_verified": false,
+  "lcd_first_frame_verified": false,
+  "window_server_verified": false,
+  "cold_power_phy_bringup_implemented": false,
+  "constraints": [
+    "Firmware must hold clocks, power, reset/PHY and scanout mappings; loader must emit versioned resource contracts.",
+    "Fixed-mode single-layer full-canvas linear BGRA CPU copy; optional reserved double buffer.",
+    "Single buffering can tear; no arbitrary IOSurface SMMU mapping, hardware scaling or GPU composition.",
+    "Native private ABI semantics and backboardd/SpringBoard integration require runtime validation."
+  ],
+  "old_window_evidence": {
+    "reference": "/home/xxiao/Projects/Project_iOS2ARM/qemu_test/SPRINGBOARD_FIRST_FRAME_2026-08-07.md",
+    "section": "小点 122",
+    "observed": "Some managed runs created LCD primary before SpringBoard CARenderServer lookup returned 0x44c/port 0. Other runs failed server display creation/update. No cross-run causal conflation.",
+    "resolved_in_this_phase": false
+  },
+  "scope": "Historical offline baseline from2026-10-15; current runtime driver/ABI and first-frame evidence are in runtime-validation.json, ios18-layout.json and native-queue-audit.json."
+}

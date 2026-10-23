@@ -1,0 +1,32 @@
+// SPDX-License-Identifier: BSD-2-Clause
+// ARM64 loader integration test board. XNU still needs its own matching BSP.
+/dts-v1/;
+/ {
+    #address-cells = <2>;
+    #size-cells = <2>;
+    compatible = "linux,dummy-virt";
+    model = "QEMU ARM64 virt";
+    cpus {
+        #address-cells = <1>;
+        #size-cells = <0>;
+        cpu@0 { device_type = "cpu"; compatible = "arm,cortex-a57"; reg = <0>; state = "running"; timebase-frequency = <62500000>; };
+    };
+    memory@40000000 { device_type = "memory"; reg = <0 0x40000000 0 0x40000000>; };
+    pram@0 { reg = <0 0 0 0>; };
+    soc@8000000 {
+        compatible = "simple-bus";
+        #address-cells = <2>;
+        #size-cells = <2>;
+        ranges = <0 0 0 0x08000000 0 0x02000000>;
+        uart: serial@1000000 { compatible = "arm,pl011"; reg = <0 0x01000000 0 0x1000>; current-speed = <115200>; };
+    };
+    chosen {
+        serial-device = <&uart>;
+        dram-base = /bits/ 64 <0>;
+        dram-size = /bits/ 64 <0>;
+        embedded-panic-log-size = <0x100000>;
+        bootargs = "-v serial=3 cpus=1";
+        memory-map { Kernel = /bits/ 64 <0 0>; DeviceTree = /bits/ 64 <0 0>; BootArgs = /bits/ 64 <0 0>; PanicLog = /bits/ 64 <0 0>; };
+    };
+    defaults { serial-device = <&uart>; };
+};

@@ -1,0 +1,30 @@
+{
+  "IOBlockStorageDevice.h": {
+    "url": "https://raw.githubusercontent.com/apple-oss-distributions/IOStorageFamily/IOStorageFamily-323/IOBlockStorageDevice.h",
+    "sha256": "afe6609327355c84a70f764c55291d41931e47dedbfb49dc9a2b3601902cdd9c"
+  },
+  "IOMedia.h": {
+    "url": "https://raw.githubusercontent.com/apple-oss-distributions/IOStorageFamily/IOStorageFamily-323/IOMedia.h",
+    "sha256": "f8d96b002ec37bdc32e8b715394b8324e399f73ede88ac5d2d9770780e7a3bab"
+  },
+  "IOStorage.h": {
+    "url": "https://raw.githubusercontent.com/apple-oss-distributions/IOStorageFamily/IOStorageFamily-323/IOStorage.h",
+    "sha256": "9f8125d6b4fc3915185960f571ba5007ff59bbad362199dddd67c005b294f540"
+  },
+  "IOStorageDeviceCharacteristics.h": {
+    "url": "https://raw.githubusercontent.com/apple-oss-distributions/IOStorageFamily/IOStorageFamily-323/IOStorageDeviceCharacteristics.h",
+    "sha256": "eb054c1ac78d6d893b1c60221aeedad4edddec735836a76924aef722469b2be4"
+  },
+  "IOStorageProtocolCharacteristics.h": {
+    "url": "https://raw.githubusercontent.com/apple-oss-distributions/IOStorageFamily/IOStorageFamily-323/IOStorageProtocolCharacteristics.h",
+    "sha256": "704a61da21588227bda6e0fdacadf24e763fe36ff2e215da47b7d922cd619649"
+  },
+  "IOStorageControllerCharacteristics.h": {
+    "url": "https://raw.githubusercontent.com/apple-oss-distributions/IOStorageFamily/IOStorageFamily-323/IOStorageControllerCharacteristics.h",
+    "sha256": "5a187d3e33b5a45d1a55b798d80b2973ea5da1b55735f7a6bef5acec024fc844"
+  },
+  "APPLE_LICENSE": {
+    "url": "https://raw.githubusercontent.com/apple-oss-distributions/IOStorageFamily/IOStorageFamily-323/APPLE_LICENSE",
+    "sha256": "e5881019d8766c1e88a5fe1dbca4ba40c78011d41fcb18f6e9f50df60182685b"
+  }
+}

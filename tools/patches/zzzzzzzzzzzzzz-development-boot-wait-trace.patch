@@ -1,0 +1,165 @@
+--- a/bsd/dev/arm/systemcalls.c
++++ b/bsd/dev/arm/systemcalls.c
+@@ -177,9 +177,33 @@
+ 	}
+ #endif /* CONFIG_DEBUG_SYSCALL_REJECTION */
+ 
++#if DEVELOPMENT || DEBUG
++	int trace_pid = 0;
++	PE_parse_boot_argn("syscall-trace-pid", &trace_pid, sizeof(trace_pid));
++	bool trace_call = trace_pid > 0 && pid == trace_pid;
++	if (trace_call) {
++		printf("[syscall trace] begin pid=%d comm=%s tid=%llu code=%u args=%llx/%llx/%llx\n",
++		    pid, proc->p_comm, thread_tid(thread_act), code,
++		    (unsigned long long)uthread->uu_arg[0], (unsigned long long)uthread->uu_arg[1],
++		    (unsigned long long)uthread->uu_arg[2]);
++		if (code == SYS_open || code == SYS_open_nocancel) {
++			char trace_path[256];
++			size_t trace_path_length = 0;
++			if (copyinstr((user_addr_t)uthread->uu_arg[0], trace_path, sizeof(trace_path), &trace_path_length) == 0) {
++				printf("[syscall trace] path pid=%d %s\n", pid, trace_path);
++			}
++		}
++	}
++#endif
+ 	AUDIT_SYSCALL_ENTER(code, proc, uthread);
+ 	error = (*(callp->sy_call))(proc, &uthread->uu_arg[0], &(uthread->uu_rval[0]));
+ 	AUDIT_SYSCALL_EXIT(code, proc, uthread, error);
++#if DEVELOPMENT || DEBUG
++	if (trace_call) {
++		printf("[syscall trace] end pid=%d tid=%llu code=%u error=%d result=%x/%x\n",
++		    pid, thread_tid(thread_act), code, error, uthread->uu_rval[0], uthread->uu_rval[1]);
++	}
++#endif
+ 
+ #if CONFIG_MACF
+ skip_syscall:
+--- a/iokit/Kernel/IOService.cpp
++++ b/iokit/Kernel/IOService.cpp
+@@ -6597,6 +6597,18 @@
+ 		return NULL;
+ 	}
+ 
++#if DEVELOPMENT || DEBUG
++	int trace_wait = 0;
++	PE_parse_boot_argn("iokit-wait-trace", &trace_wait, sizeof(trace_wait));
++	if (trace_wait) {
++		OSSerialize * serialized = OSSerialize::withCapacity(256);
++		if (serialized && matching->serialize(serialized)) {
++			IOLog("[IOKit wait] begin tid=%llu timeout=%llu match=%s\n",
++			    thread_tid(current_thread()), timeout, serialized->text());
++		}
++		OSSafeReleaseNULL(serialized);
++	}
++#endif
+ 	result = NULL;
+ 	cancelArgs.ref = &result;
+ 	cancelArgs.canceled = false;
+@@ -6686,6 +6698,12 @@
+ 	}
+ 
+ 	OSSafeReleaseNULL(cancellationHandler);
++#if DEVELOPMENT || DEBUG
++	if (trace_wait) {
++		IOLog("[IOKit wait] end tid=%llu service=%s\n", thread_tid(current_thread()),
++		    result ? result->getName() : "<none>");
++	}
++#endif
+ 
+ 	return result;
+ }
+--- a/osfmk/arm64/bsd_arm64.c
++++ b/osfmk/arm64/bsd_arm64.c
+@@ -52,6 +52,7 @@
+ #include <sys/kdebug.h>
+ 
+ #include <sys/syscall.h>
++#include <pexpert/pexpert.h>
+ 
+ #if CONFIG_MACF
+ #include <security/mac_mach_internal.h>
+@@ -278,7 +279,24 @@
+ #endif /* CONFIG_DEBUG_SYSCALL_REJECTION */
+ 
+ 
++#if DEVELOPMENT || DEBUG
++	int trace_pid = 0;
++	PE_parse_boot_argn("syscall-trace-pid", &trace_pid, sizeof(trace_pid));
++	bool trace_call = trace_pid > 0 && proc_pid(current_proc()) == trace_pid;
++	if (trace_call) {
++		printf("[mach trace] begin pid=%d tid=%llu trap=%d args=%llx/%llx/%llx/%llx\n",
++		    trace_pid, thread_tid(current_thread()), call_number,
++		    (unsigned long long)args.arg1, (unsigned long long)args.arg2,
++		    (unsigned long long)args.arg3, (unsigned long long)args.arg4);
++	}
++#endif
+ 	retval = mach_call(&args);
++#if DEVELOPMENT || DEBUG
++	if (trace_call) {
++		printf("[mach trace] end pid=%d tid=%llu trap=%d result=%x\n",
++		    trace_pid, thread_tid(current_thread()), call_number, retval);
++	}
++#endif
+ 
+ skip_machcall:
+ 
+--- a/iokit/Kernel/IOUserClient.cpp
++++ b/iokit/Kernel/IOUserClient.cpp
+@@ -52,6 +52,7 @@
+ #include <vm/vm_kern_xnu.h>
+ 
+ #include <mach/sdt.h>
++#include <pexpert/pexpert.h>
+ #include <os/hash.h>
+ 
+ #include <libkern/amfi/amfi.h>
+@@ -2709,6 +2710,25 @@
+ 	return internal_io_service_match_property_table(service, matching, matchingCnt, matches);
+ }
+ 
++#if DEVELOPMENT || DEBUG
++static void
++trace_user_matching(OSDictionary *matching)
++{
++	int enabled = 0;
++	PE_parse_boot_argn("iokit-wait-trace", &enabled, sizeof(enabled));
++	if (enabled) {
++		OSSerialize *serialized = OSSerialize::withCapacity(256);
++		if (serialized && matching->serialize(serialized)) {
++			IOLog("[IOKit user matching] pid=%d tid=%llu match=%s\n",
++			    proc_selfpid(), thread_tid(current_thread()), serialized->text());
++		}
++		OSSafeReleaseNULL(serialized);
++	}
++}
++#else
++#define trace_user_matching(matching) do {} while (0)
++#endif
++
+ static kern_return_t
+ internal_io_service_get_matching_services(
+ 	mach_port_t main_port,
+@@ -2729,6 +2749,7 @@
+ 
+ 	if ((dict = OSDynamicCast( OSDictionary, obj))) {
+ 		IOTaskRegistryCompatibilityMatching(current_task(), dict);
++		trace_user_matching(dict);
+ 		*existing = IOUserIterator::withIterator(IOService::getMatchingServices( dict ));
+ 		kr = kIOReturnSuccess;
+ 	} else {
+@@ -2812,6 +2833,7 @@
+ 
+ 	if ((dict = OSDynamicCast( OSDictionary, obj))) {
+ 		IOTaskRegistryCompatibilityMatching(current_task(), dict);
++		trace_user_matching(dict);
+ 		*service = IOService::copyMatchingService( dict );
+ 		kr = *service ? kIOReturnSuccess : kIOReturnNotFound;
+ 	} else {
+@@ -2917,6 +2939,7 @@
+ 			continue;
+ 		}
+ 		IOTaskRegistryCompatibilityMatching(current_task(), dict);
++		trace_user_matching(dict);
+ 
+ 		if ((sym == gIOPublishNotification)
+ 		    || (sym == gIOFirstPublishNotification)) {

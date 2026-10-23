@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WCN3990 offline firmware and resource policy",
+  "description": "Input to toolchain.py prepare-bluetooth. This is a schema, not a usable board profile. Rail routing, voltage limits, GPIO electrical settings, ROM identity and address require actual board evidence.",
+  "type": "object",
+  "required": ["version", "archive_sha256", "controller", "local_address", "rails", "pins", "patch", "nvm"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {"const": 1},
+    "archive_sha256": {"$ref": "#/$defs/hash"},
+    "controller": {
+      "type": "object",
+      "required": ["product", "soc", "rom"],
+      "additionalProperties": false,
+      "properties": {
+        "product": {"type": "integer", "minimum": 0, "maximum": 4294967295},
+        "soc": {"type": "integer", "minimum": 1, "maximum": 4294967295},
+        "rom": {"type": "integer", "minimum": 1, "maximum": 65535}
+      }
+    },
+    "local_address": {
+      "type": "string",
+      "pattern": "^([0-9a-fA-F]{2}:){5}[0-9a-fA-F]{2}$",
+      "description": "Canonical display order. Must be unicast, nonzero, and equal to NVM tag 2 in reverse byte order. Preparation never replaces this address."
+    },
+    "rails": {
+      "type": "array", "minItems": 1, "maxItems": 6,
+      "description": "IDs must be distinct voltage resources in the existing RPMRails.h catalog. Limits must fit that catalog; target and boot floor must align to its voltage steps.",
+      "items": {
+        "type": "object",
+        "required": ["id", "microvolts", "minimum", "maximum", "boot_floor"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "integer", "minimum": 1, "maximum": 4095},
+          "microvolts": {"type": "integer", "minimum": 300000, "maximum": 4000000},
+          "minimum": {"type": "integer", "minimum": 300000, "maximum": 4000000},
+          "maximum": {"type": "integer", "minimum": 300000, "maximum": 4000000},
+          "boot_floor": {"type": "integer", "minimum": 0, "maximum": 4000000}
+        }
+      }
+    },
+    "pins": {
+      "type": "array", "minItems": 4, "maxItems": 4,
+      "description": "GPIO45,46,47,48 in this order. Configuration is TLMM low nine bits: pull bits 0..1, mux 2 in bits 2..5, drive bits 6..8; GPIO output-enable must be clear. Electrical settings require board evidence.",
+      "prefixItems": [
+        {"allOf": [{"$ref": "#/$defs/pin"}, {"properties": {"pin": {"const": 45}}}]},
+        {"allOf": [{"$ref": "#/$defs/pin"}, {"properties": {"pin": {"const": 46}}}]},
+        {"allOf": [{"$ref": "#/$defs/pin"}, {"properties": {"pin": {"const": 47}}}]},
+        {"allOf": [{"$ref": "#/$defs/pin"}, {"properties": {"pin": {"const": 48}}}]}
+      ]
+    },
+    "patch": {"$ref": "#/$defs/asset", "description": "Type-1 patch TLV, at most 1 MiB; product/ROM fields must match controller identity."},
+    "nvm": {"$ref": "#/$defs/asset", "description": "Original type-2 board NVM, at most 64 KiB, with unique address/HCI/sleep tags 2/17/27. Only host transport bits are prepared."}
+  },
+  "$defs": {
+    "hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "asset": {
+      "type": "object", "required": ["file", "sha256"], "additionalProperties": false,
+      "properties": {
+        "file": {"type": "string", "minLength": 1, "description": "Unique relative ZIP member; absolute paths and parent components are rejected."},
+        "sha256": {"$ref": "#/$defs/hash"}
+      }
+    },
+    "pin": {
+      "type": "object", "required": ["pin", "configuration"], "additionalProperties": false,
+      "properties": {
+        "pin": {"type": "integer"},
+        "configuration": {"type": "integer", "minimum": 0, "maximum": 511}
+      }
+    }
+  }
+}

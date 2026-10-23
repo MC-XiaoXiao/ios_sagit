@@ -1,0 +1,430 @@
+{
+  "status": "bash-cow-update-installed-and-device-files-direct-readback-verified",
+  "session_date": "2026-10-15",
+  "firmware": "iPad iOS 18.7.10 22H374 j171ap",
+  "userdata_erase_authorized": true,
+  "android_dual_boot_deferred_by_user": true,
+  "image": {
+    "authenticated_root_preserved": false,
+    "container_bytes": 12603883520,
+    "container_uuid": "C96112D8-A0A9-4A12-8E50-4518A2520464",
+    "cryptex_images": {
+      "AppOS.dmg": {
+        "activation_verified": false,
+        "bytes": 16777216,
+        "sha256": "41172b47944cfa57a7d0545a719799ae6c1a7a87ec2583f2f9e49fad4ea03c78",
+        "source": "/home/xxiao/Projects/MI6_iOS/build/apfs/firmware/22H374__iPad7,11_12/094-32850-038.dmg"
+      },
+      "SystemOS.dmg": {
+        "activation_verified": false,
+        "bytes": 3963617280,
+        "sha256": "617c55c3c1b27944a976ae1be22a88068a1e62a157610ddc13d8c8a849e16192",
+        "source": "/home/xxiao/Projects/MI6_iOS/build/apfs/firmware/094-33089-038.dmg"
+      }
+    },
+    "data_free_mib": 2048,
+    "data_uuid": "33888466-84EE-4238-A837-230EA4F61F00",
+    "fstab": "UUID=C1FFCBC9-9565-4E1F-8686-2000A9397B25 / apfs ro 0 1\nUUID=33888466-84EE-4238-A837-230EA4F61F00 /private/var apfs rw,nosuid,nodev 0 2\n",
+    "hardware_boot_verified": false,
+    "image": "ios.apfs",
+    "image_sha256": "b793e33ddb47585fc2775f4c2e017b5733138fb79edb270de858d216b60c25a1",
+    "inventory": {
+      "allocated_payload_bytes": 11002449920,
+      "entries": 368462
+    },
+    "minimum_layout_mib": 9971,
+    "schema": 1,
+    "shared_free_bytes": 2148376576,
+    "source": "/home/xxiao/Projects/MI6_iOS/build/apfs/firmware/094-32804-038.dmg",
+    "source_sha256": "be43bec0cdde80a0153c2f80b26b7a4c429ef3eace828f318f81d051b813820c",
+    "source_volume_uuid": "B07DF049-7AD9-47B5-9F8F-9EE728056398",
+    "system_min_mib": 6528,
+    "system_uuid": "C1FFCBC9-9565-4E1F-8686-2000A9397B25",
+    "volume_group_uuid": "299E8090-2570-403D-A7EF-FB5BED8B5758"
+  },
+  "device_plan": {
+    "schema": 1,
+    "sector_size": 4096,
+    "disk_bytes": 56916705280,
+    "gpt_sha256": "8a170caa430e5a5192f4625f3c0a0aec5a99a1227d703252560039d46a94b9d7",
+    "disk_guid": "98101B32-BBE2-4BF2-A06E-2BB33D000C20",
+    "userdata": {
+      "index": 16,
+      "first_lba": 114688,
+      "last_lba": 13895674,
+      "name": "userdata",
+      "guid": "CC7279BB-1188-3D39-81EE-31EF165B9DDB"
+    },
+    "userdata_new_last_lba": 10818303,
+    "apfs": {
+      "index": 17,
+      "first_lba": 10818304,
+      "last_lba": 13895423,
+      "name": "ios-apfs",
+      "type_guid": "7C3457EF-0000-11AA-AA11-00306543ECAC",
+      "guid": "1AA2F04D-E440-4633-B455-CEB454F3431E"
+    },
+    "container_bytes": 12603883520,
+    "image_sha256": "b793e33ddb47585fc2775f4c2e017b5733138fb79edb270de858d216b60c25a1",
+    "system_uuid": "C1FFCBC9-9565-4E1F-8686-2000A9397B25",
+    "data_uuid": "33888466-84EE-4238-A837-230EA4F61F00",
+    "destructive_userdata": true,
+    "userdata_remainder_formatted": false,
+    "hardware_boot_verified": false
+  },
+  "kernelcache": {
+    "path": "build/output/kernelcache.sdm835.apfs",
+    "sha256": "33c801eeda451bc0759e72ba07b000bea4b4c5ffb4efd7cab2ead36e8d5ff2fc",
+    "kext_count": 33,
+    "bundle_order": [
+      "com.apple.kpi.bsd",
+      "com.apple.kpi.iokit",
+      "com.apple.kpi.libkern",
+      "com.apple.kpi.mach",
+      "com.apple.kpi.private",
+      "com.apple.kpi.unsupported",
+      "com.apple.kec.corecrypto",
+      "com.apple.kec.pthread",
+      "com.apple.iokit.IOCryptoAcceleratorFamily",
+      "com.apple.kext.CoreTrust",
+      "com.apple.kpi.dsep",
+      "com.apple.security.AppleImage4",
+      "com.apple.iokit.IOReportFamily",
+      "com.apple.iokit.IOSlowAdaptiveClockingFamily",
+      "com.apple.iokit.IOStorageFamily",
+      "com.apple.driver.AppleARMPlatform",
+      "com.apple.driver.ApplePMGR",
+      "com.apple.iokit.CoreAnalyticsFamily",
+      "com.apple.driver.AppleMobileFileIntegrity",
+      "com.apple.kext.AppleMatch",
+      "com.apple.security.sandbox",
+      "org.mi6.driver.GenericARMPlatform",
+      "org.mi6.driver.SDM835",
+      "org.darwin.driver.AppleARMGIC",
+      "org.darwin.driver.GenericClockController",
+      "org.darwin.driver.QcomGCC",
+      "org.darwin.driver.QcomPowerController",
+      "org.darwin.driver.QcomSPMI",
+      "org.darwin.driver.QcomUFS",
+      "com.apple.driver.AppleARMWatchdogTimer",
+      "com.apple.driver.AppleEffaceableStorage",
+      "com.apple.filesystems.apfs",
+      "com.apple.driver.AppleBSDKextStarter"
+    ],
+    "historical_at_initial_installation": true
+  },
+  "bridge": {
+    "path": "build/apfs/bridge/XnuBridge.efi",
+    "sha256": "c102bc1b3e243e881142dd26a9a9458cdac27540af95ae2785927b0963b78146",
+    "kernel_sha256": "33c801eeda451bc0759e72ba07b000bea4b4c5ffb4efd7cab2ead36e8d5ff2fc",
+    "apfs_root": {
+      "system_uuid": "C1FFCBC9-9565-4E1F-8686-2000A9397B25",
+      "data_uuid": "33888466-84EE-4238-A837-230EA4F61F00",
+      "hardware_boot_verified": false
+    }
+  },
+  "tests": {
+    "storage_python": 5,
+    "apfs_go": 4,
+    "bridge_python": 15,
+    "patcher_ctest": 5,
+    "kernelcache_offline_structure": "passed",
+    "final_image_independent_apfsck": "passed"
+  },
+  "full_ios_boot_verified": false,
+  "android_userdata_formatted": false,
+  "dual_boot_ready": false,
+  "remaining_boot_integration": [
+    "QcomUFS real firmware resource/DMA handoff",
+    "APFS authenticated-root / Image4 boot policy",
+    "Cryptex activation",
+    "original Android boot.img and two boot entries"
+  ],
+  "kernel_partition_refresh_command": "sudo blockdev --rereadpt /dev/disk/by-id/usb-Qualcomm_sda_1234567890-0:5",
+  "device_install": {
+    "schema": 1,
+    "sector_size": 4096,
+    "disk_bytes": 56916705280,
+    "gpt_sha256": "8a170caa430e5a5192f4625f3c0a0aec5a99a1227d703252560039d46a94b9d7",
+    "disk_guid": "98101B32-BBE2-4BF2-A06E-2BB33D000C20",
+    "userdata": {
+      "index": 16,
+      "first_lba": 114688,
+      "last_lba": 13895674,
+      "name": "userdata",
+      "guid": "CC7279BB-1188-3D39-81EE-31EF165B9DDB"
+    },
+    "userdata_new_last_lba": 10818303,
+    "apfs": {
+      "index": 17,
+      "first_lba": 10818304,
+      "last_lba": 13895423,
+      "name": "ios-apfs",
+      "type_guid": "7C3457EF-0000-11AA-AA11-00306543ECAC",
+      "guid": "1AA2F04D-E440-4633-B455-CEB454F3431E"
+    },
+    "container_bytes": 12603883520,
+    "image_sha256": "b793e33ddb47585fc2775f4c2e017b5733138fb79edb270de858d216b60c25a1",
+    "system_uuid": "C1FFCBC9-9565-4E1F-8686-2000A9397B25",
+    "data_uuid": "33888466-84EE-4238-A837-230EA4F61F00",
+    "destructive_userdata": true,
+    "userdata_remainder_formatted": false,
+    "hardware_boot_verified": false,
+    "image_readback_verified": true,
+    "userdata_primary_signatures_cleared": true,
+    "kernel_partition_refresh_required": false,
+    "kernel_partition_refresh_verified": true
+  },
+  "direct_readback": {
+    "device": "/dev/disk/by-id/usb-Qualcomm_sda_1234567890-0:5",
+    "sha256": "b793e33ddb47585fc2775f4c2e017b5733138fb79edb270de858d216b60c25a1",
+    "bytes": 12603883520,
+    "host_cache_bypassed": true,
+    "passed": true
+  },
+  "device_filesystem": {
+    "container_bytes": 12603883520,
+    "data_headroom_verified": true,
+    "data_uuid": "33888466-84EE-4238-A837-230EA4F61F00",
+    "device": "/dev/disk/by-id/usb-Qualcomm_sda_1234567890-0:5",
+    "device_filesystem_read_verified": true,
+    "fstab_matches": true,
+    "full_ios_boot_verified": false,
+    "partition_byte_offset": 44311773184,
+    "shared_free_bytes": 2148376576,
+    "system_uuid": "C1FFCBC9-9565-4E1F-8686-2000A9397B25",
+    "volume_group_uuid": "299E8090-2570-403D-A7EF-FB5BED8B5758"
+  },
+  "partition_verification": {
+    "primary_backup_gpt_valid": true,
+    "changed_gpt_entry_indices": [
+      16,
+      17
+    ],
+    "other_partition_entries_preserved": true,
+    "userdata_primary_signatures_cleared": true,
+    "partitions": [
+      {
+        "index": 0,
+        "first_lba": 6,
+        "last_lba": 7,
+        "name": "switch",
+        "guid": "029A2D54-5DE9-BD19-A0FF-F7EF65700CA3"
+      },
+      {
+        "index": 1,
+        "first_lba": 8,
+        "last_lba": 15,
+        "name": "ssd",
+        "guid": "ABA73483-DA03-F932-1CF0-865492662495"
+      },
+      {
+        "index": 2,
+        "first_lba": 16,
+        "last_lba": 127,
+        "name": "bk1",
+        "guid": "B7F06911-7C8A-F7A6-87BC-3E4432EC74EE"
+      },
+      {
+        "index": 3,
+        "first_lba": 128,
+        "last_lba": 191,
+        "name": "bk2",
+        "guid": "8F091EA2-89F5-C713-79FC-393FCD333F3F"
+      },
+      {
+        "index": 4,
+        "first_lba": 192,
+        "last_lba": 255,
+        "name": "bk3",
+        "guid": "BE26DCAA-068E-4357-0D22-20B85D67670D"
+      },
+      {
+        "index": 5,
+        "first_lba": 256,
+        "last_lba": 383,
+        "name": "keystore",
+        "guid": "4B7CFF7B-A3FD-217E-BC9E-C0794A010493"
+      },
+      {
+        "index": 6,
+        "first_lba": 384,
+        "last_lba": 511,
+        "name": "frp",
+        "guid": "F0A130F6-2202-F53B-2AA1-B812C9818319"
+      },
+      {
+        "index": 7,
+        "first_lba": 512,
+        "last_lba": 1023,
+        "name": "bk4",
+        "guid": "B3B974C4-0F4C-43DF-5789-50D552C8555D"
+      },
+      {
+        "index": 8,
+        "first_lba": 1024,
+        "last_lba": 2047,
+        "name": "misc",
+        "guid": "06F3039E-E15D-FA8A-A337-FAA6A3AC7369"
+      },
+      {
+        "index": 9,
+        "first_lba": 2048,
+        "last_lba": 4095,
+        "name": "logfs",
+        "guid": "305C90A1-0BF5-6B0B-8E6C-BA4F477176F0"
+      },
+      {
+        "index": 10,
+        "first_lba": 4096,
+        "last_lba": 8191,
+        "name": "oops",
+        "guid": "AE1AA170-CC3A-814E-3587-E3171D23D9C9"
+      },
+      {
+        "index": 11,
+        "first_lba": 8192,
+        "last_lba": 12287,
+        "name": "bk5",
+        "guid": "6A3C354E-10AA-5D91-07DD-8CBB1112EFFE"
+      },
+      {
+        "index": 12,
+        "first_lba": 12288,
+        "last_lba": 16383,
+        "name": "bk6",
+        "guid": "F19DCDD4-A32D-4B69-3455-0C35887F1574"
+      },
+      {
+        "index": 13,
+        "first_lba": 16384,
+        "last_lba": 32767,
+        "name": "persist",
+        "guid": "284363AF-4CE5-20CE-3B65-BA9FD702690C"
+      },
+      {
+        "index": 14,
+        "first_lba": 32768,
+        "last_lba": 49151,
+        "name": "recovery",
+        "guid": "62562DFA-286B-7FCA-4F5D-CD8468DF3A41"
+      },
+      {
+        "index": 15,
+        "first_lba": 49152,
+        "last_lba": 114687,
+        "name": "cache",
+        "guid": "DAE840E8-C20A-9B44-6D06-FC05F21D16DD"
+      },
+      {
+        "index": 16,
+        "first_lba": 114688,
+        "last_lba": 10818303,
+        "name": "userdata",
+        "guid": "CC7279BB-1188-3D39-81EE-31EF165B9DDB"
+      },
+      {
+        "index": 17,
+        "first_lba": 10818304,
+        "last_lba": 13895423,
+        "name": "ios-apfs",
+        "guid": "1AA2F04D-E440-4633-B455-CEB454F3431E"
+      }
+    ]
+  },
+  "backup_directory": "/home/xxiao/Projects/MI6_iOS/build/apfs/device-gpt-backup-final",
+  "host_partition_verification": {
+    "kernel_partition_refresh_verified": true,
+    "userdata": {
+      "name": "sdf17",
+      "size": 43842011136,
+      "type": "part",
+      "fstype": null,
+      "partlabel": "userdata",
+      "partuuid": "cc7279bb-1188-3d39-81ee-31ef165b9ddb"
+    },
+    "ios_apfs": {
+      "name": "sdf18",
+      "size": 12603883520,
+      "type": "part",
+      "fstype": "apfs",
+      "partlabel": "ios-apfs",
+      "partuuid": "1aa2f04d-e440-4633-b455-ceb454f3431e"
+    },
+    "passed": true
+  },
+  "kernel_partition_refresh_required": false,
+  "kernel_partition_refresh_verified": true,
+  "initial_installation_record_note": "image/device_plan and original kernelcache hashes describe the initial installation; the host ios.apfs is retained unchanged. The device has the separately recorded COW update below.",
+  "cow_update": {
+    "plan": "build/ufs-mount/serial-shell.delta.json",
+    "independent_composed_check": {
+      "schema": 1,
+      "delta_sha256": "0d81557b95228418d3d9b2910516569c1afef17fa1118fc2ecff0ae75eab2cf9",
+      "source_sha256": "b793e33ddb47585fc2775f4c2e017b5733138fb79edb270de858d216b60c25a1",
+      "apfsck_clean": true,
+      "apfsck_exit_code": 0,
+      "apfsck_sha256": "6680d1edc641e2a092e11ec8bdaccceec71dfcc6d6007a04ef9e4bbca0309df1",
+      "log": "build/ufs-mount/cow-apfsck.log",
+      "validated_view": "build/ufs-mount/cow-view/container.apfs",
+      "validated_archive": "build/ufs-mount/serial-shell-v1.delta",
+      "full_image_created": false,
+      "device_written": false,
+      "validated_archive_sha256": "0d81557b95228418d3d9b2910516569c1afef17fa1118fc2ecff0ae75eab2cf9",
+      "archive": "build/ufs-mount/serial-shell.delta",
+      "duplicate_validation_archive_removed": true
+    },
+    "transaction": {
+      "device": "/dev/disk/by-id/usb-Qualcomm_sda_1234567890-0:5",
+      "disk_guid": "98101B32-BBE2-4BF2-A06E-2BB33D000C20",
+      "partition": {
+        "index": 17,
+        "first_lba": 10818304,
+        "last_lba": 13895423,
+        "name": "ios-apfs",
+        "guid": "1AA2F04D-E440-4633-B455-CEB454F3431E"
+      },
+      "partition_byte_offset": 44311773184,
+      "delta_sha256": "0d81557b95228418d3d9b2910516569c1afef17fa1118fc2ecff0ae75eab2cf9",
+      "source_sha256": "b793e33ddb47585fc2775f4c2e017b5733138fb79edb270de858d216b60c25a1",
+      "primary_before_sha256": "0cd128597b027e7d944494dc6caf1e434bc32ccef378bcccc5936a3c3174a265",
+      "primary_after_sha256": "986f28e478af184d7750df93fcecf93cf6276ab5a7dcdcf17a475f42ceaa7f24",
+      "changed_blocks": 42902,
+      "gpt_changed": false,
+      "commit_started": true,
+      "committed": true,
+      "changed_blocks_readback_verified": true
+    },
+    "actual_files": {
+      "container_byte_offset": 44311773184,
+      "data_uuid": "33888466-84EE-4238-A837-230EA4F61F00",
+      "device": "/dev/disk/by-id/usb-Qualcomm_sda_1234567890-0:5",
+      "fstab_matches": true,
+      "full_ios_boot_verified": false,
+      "shared_free_bytes": 2144940032,
+      "system_uuid": "C1FFCBC9-9565-4E1F-8686-2000A9397B25",
+      "verified_overlay_files": 393,
+      "volume_group_uuid": "299E8090-2570-403D-A7EF-FB5BED8B5758"
+    },
+    "actual_direct_readback": {
+      "delta_sha256": "0d81557b95228418d3d9b2910516569c1afef17fa1118fc2ecff0ae75eab2cf9",
+      "changed_blocks": 42902,
+      "changed_bytes": 175726592,
+      "all_changed_blocks_verified": true,
+      "host_cache_bypassed": true,
+      "device": "/dev/disk/by-id/usb-Qualcomm_sda_1234567890-0:5"
+    },
+    "actual_device_apfsck": {
+      "exit_code": 0,
+      "clean": true,
+      "log": "build/ufs-mount/cow-device-apfsck.log",
+      "source": "actual UAS partition through offset-only read-only FUSE view, no delta overlay"
+    },
+    "net_allocated_bytes": 3436544,
+    "full_image_created": false,
+    "bash_service_started": false,
+    "xnu_system_data_mount_verified": false,
+    "host_incremental_writer_scope": "offline COW overlay on this project formatter, unencrypted/unsealed two-volume containers; not a general writable FUSE filesystem"
+  },
+  "native_ufs_progress_record": "docs/ufs/validation.json"
+}

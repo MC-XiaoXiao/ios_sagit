@@ -1,0 +1,386 @@
+diff --git a/pkg/apfs/data_stream.go b/pkg/apfs/data_stream.go
+index bffb4a2..3716ff0 100644
+--- a/pkg/apfs/data_stream.go
++++ b/pkg/apfs/data_stream.go
+@@ -11,6 +11,8 @@ import (
+ // DataStream represents a data stream abstraction for APFS data
+ // This wraps various data sources (embedded data, file extents, compressed data)
+ type DataStream struct {
++	PhysicalExtents []*FileExtent
++
+ 	// The underlying reader
+ 	reader io.Reader
+ 
+@@ -73,10 +75,11 @@ func NewDataStreamFromFileExtents(
+ 	}
+ 
+ 	return &DataStream{
+-		reader:   reader,
+-		readerAt: reader,
+-		size:     dataHandle.DataSize,
+-		offset:   0,
++		reader:          reader,
++		readerAt:        reader,
++		size:            dataHandle.DataSize,
++		PhysicalExtents: fileExtents,
++		offset:          0,
+ 	}, nil
+ }
+ 
+diff --git a/pkg/apfs/extended_attribute.go b/pkg/apfs/extended_attribute.go
+index a81eef6..0764e06 100644
+--- a/pkg/apfs/extended_attribute.go
++++ b/pkg/apfs/extended_attribute.go
+@@ -359,3 +359,11 @@ func (ea *ExtendedAttribute) ExtentByIndex(index int) (offset int64, size uint64
+ 
+ 	return physicalOffset, dataSize, extentFlags, nil
+ }
++
++// RawDataStream exposes attribute extents for a same-container COW update.
++func (ea *ExtendedAttribute) RawDataStream() (*DataStream, error) {
++	if err := ea.getDataStream(); err != nil {
++		return nil, err
++	}
++	return ea.DataStream, nil
++}
+diff --git a/pkg/apfswrite/btree.go b/pkg/apfswrite/btree.go
+index e51befd..d948d2c 100644
+--- a/pkg/apfswrite/btree.go
++++ b/pkg/apfswrite/btree.go
+@@ -141,6 +141,9 @@ func (b *builder) writeEmptyTree(paddr, oid uint64, subtype uint32) error {
+ 	// that checkpoint's transaction id. apfsck: "Ephemeral object: not part of
+ 	// latest transaction".
+ 	xid := uint64(formatXID)
++	if b.cowMetadataBase != 0 {
++		xid = b.liveXID
++	}
+ 	if typ&objEphemeral != 0 {
+ 		xid = b.liveXID
+ 	}
+@@ -189,9 +192,9 @@ func (b volCtx) omapEntries(isVol bool) []omapEntry {
+ 	// The file-system tree's nodes are shared by the live volume and the
+ 	// snapshots, so they carry no OMAP_VAL_SAVED flag (that would mark them as
+ 	// superseded in the live volume, which is not the case here).
+-	entries := []omapEntry{{volFSTreeRootOID(b.index), b.fsTreeRootPaddr, formatXID, 0}}
++	entries := []omapEntry{{volFSTreeRootOID(b.index), b.fsTreeRootPaddr, b.treeXID(), 0}}
+ 	for j := range b.fsTreeNodes {
+-		entries = append(entries, omapEntry{b.fsTreeNodeOID(j), b.fsTreeNodeBase + j, formatXID, 0})
++		entries = append(entries, omapEntry{b.fsTreeNodeOID(j), b.fsTreeNodeBase + j, b.treeXID(), 0})
+ 	}
+ 	return entries
+ }
+@@ -201,7 +204,7 @@ func (b volCtx) omapEntries(isVol bool) []omapEntry {
+ // state a snapshot captures; the container omap names the live volume.
+ func (b *builder) omapXID(isVol bool) uint64 {
+ 	if isVol {
+-		return formatXID
++		return b.treeXID()
+ 	}
+ 	return b.liveXID
+ }
+@@ -261,3 +264,10 @@ func (b volCtx) writeObjectMap(paddr uint64, isVol bool) error {
+ 		objPhysical|objectTypeOmap, objectTypeInvalid, b.omapXID(isVol))
+ 	return b.writeBlock(block, paddr)
+ }
++
++func (b *builder) treeXID() uint64 {
++	if b.cowMetadataBase != 0 {
++		return b.liveXID
++	}
++	return formatXID
++}
+diff --git a/pkg/apfswrite/cow.go b/pkg/apfswrite/cow.go
+new file mode 100644
+index 0000000..e973f74
+--- /dev/null
++++ b/pkg/apfswrite/cow.go
+@@ -0,0 +1,34 @@
++package apfswrite
++
++import (
++	"fmt"
++	"sort"
++)
++
++type blockRange struct{ start, end uint64 }
++
++func (b *builder) validateReuse() error {
++	if b.cowMetadataBase == 0 {
++		return nil
++	}
++	sort.Slice(b.reusedRanges, func(i, j int) bool { return b.reusedRanges[i].start < b.reusedRanges[j].start })
++	var merged []blockRange
++	for _, r := range b.reusedRanges {
++		if r.start < 1 || r.end > b.cowMetadataBase {
++			return fmt.Errorf("retained extent overlaps COW metadata")
++		}
++		if len(merged) > 0 {
++			prev := &merged[len(merged)-1]
++			if r.start < prev.end {
++				return fmt.Errorf("overlapping retained extents/clones unsupported")
++			}
++			if r.start == prev.end {
++				prev.end = r.end
++				continue
++			}
++		}
++		merged = append(merged, r)
++	}
++	b.reusedRanges = merged
++	return nil
++}
+diff --git a/pkg/apfswrite/file.go b/pkg/apfswrite/file.go
+index 4d8fb81..b561094 100644
+--- a/pkg/apfswrite/file.go
++++ b/pkg/apfswrite/file.go
+@@ -319,8 +319,8 @@ func (b volCtx) writeFileData() error {
+ 	var window []byte
+ 
+ 	for _, f := range b.streamFiles {
+-		if f.blocks == 0 {
+-			continue // 0-byte file: no data block
++		if f.blocks == 0 || f.reused {
++			continue // No write for a retained same-container extent
+ 		}
+ 
+ 		for done := uint64(0); done < f.blocks; {
+diff --git a/pkg/apfswrite/object.go b/pkg/apfswrite/object.go
+index 441fa6e..ba42122 100644
+--- a/pkg/apfswrite/object.go
++++ b/pkg/apfswrite/object.go
+@@ -48,3 +48,11 @@ func setObjectHeaderXID(block []byte, size int, oid uint64, typ, subtype uint32,
+ 	}
+ 	binary.LittleEndian.PutUint64(block[objOffCksum:], cksum)
+ }
++
++func (b *builder) setObjectHeader(block []byte, size int, oid uint64, typ, subtype uint32) {
++	xid := uint64(formatXID)
++	if b.cowMetadataBase != 0 {
++		xid = b.liveXID
++	}
++	setObjectHeaderXID(block, size, oid, typ, subtype, xid)
++}
+diff --git a/pkg/apfswrite/snapshot.go b/pkg/apfswrite/snapshot.go
+index 3423c20..76f8991 100644
+--- a/pkg/apfswrite/snapshot.go
++++ b/pkg/apfswrite/snapshot.go
+@@ -196,7 +196,7 @@ func (b *builder) writeSnapMetaNode(paddr uint64, recs []fsTreeRecord) error {
+ 	binary.LittleEndian.PutUint64(info[24:], uint64(len(recs)))              // bt_key_count
+ 	binary.LittleEndian.PutUint64(info[32:], 1)                              // bt_node_count
+ 
+-	setObjectHeader(block, int(b.blocksize), paddr, objectTypeBtree|objPhysical, objectTypeSnapMetaTree)
++	b.setObjectHeader(block, int(b.blocksize), paddr, objectTypeBtree|objPhysical, objectTypeSnapMetaTree)
+ 	return b.writeBlock(block, paddr)
+ }
+ 
+@@ -308,6 +308,6 @@ func (b volCtx) writeOmapSnapshotTree(paddr uint64) error {
+ 	binary.LittleEndian.PutUint64(info[24:], uint64(n))    // bt_key_count
+ 	binary.LittleEndian.PutUint64(info[32:], 1)            // bt_node_count
+ 
+-	setObjectHeader(block, int(b.blocksize), paddr, objectTypeBtree|objPhysical, objectTypeOmapSnapshot)
++	b.setObjectHeader(block, int(b.blocksize), paddr, objectTypeBtree|objPhysical, objectTypeOmapSnapshot)
+ 	return b.writeBlock(block, paddr)
+ }
+diff --git a/pkg/apfswrite/spaceman.go b/pkg/apfswrite/spaceman.go
+index 5e6f580..44dbbdb 100644
+--- a/pkg/apfswrite/spaceman.go
++++ b/pkg/apfswrite/spaceman.go
+@@ -135,6 +135,15 @@ func (b *builder) usedInChunk(dev *deviceLayout, chunkno uint64) uint32 {
+ 	start := chunkno * b.blocksPerChunk()
+ 	end := min(start+b.blocksPerChunk(), dev.blockCount)
+ 
++	if b.cowMetadataBase != 0 {
++		used := rangeOverlap(start, end, 0, 1)
++		used += rangeOverlap(start, end, b.xpDescBase, b.volFixedBase()+volFixedBlocks*uint64(len(b.vols)))
++		used += rangeOverlap(start, end, b.ipBmapBase, dev.usedBlocksEnd)
++		for _, r := range b.reusedRanges {
++			used += rangeOverlap(start, end, r.start, r.end)
++		}
++		return uint32(used)
++	}
+ 	lowSpanEnd := b.volFixedBase() + volFixedBlocks*uint64(len(b.vols))
+ 	used := rangeOverlap(start, end, 0, lowSpanEnd)
+ 	used += rangeOverlap(start, end, b.ipBmapBase, dev.usedBlocksEnd)
+@@ -179,6 +188,9 @@ func (b *builder) writeAllocBitmap() error {
+ 		markBits(bmap, b.postIPBase, b.postIPBlocks)
+ 	}
+ 
++	for _, r := range b.reusedRanges {
++		markBits(bmap, r.start, r.end-r.start)
++	}
+ 	return b.writeBlocks(bmap, dev.firstChunkBmap)
+ }
+ 
+@@ -188,7 +200,7 @@ func (b *builder) fillChunkInfo(dev *deviceLayout, chunk []byte, start uint64) u
+ 	chunkno := start / b.blocksPerChunk()
+ 	blockCount := min(b.blocksPerChunk(), dev.blockCount-start)
+ 
+-	binary.LittleEndian.PutUint64(chunk[0:], formatXID) // ci_xid
++	binary.LittleEndian.PutUint64(chunk[0:], b.liveXID) // ci_xid
+ 	binary.LittleEndian.PutUint64(chunk[8:], start)     // ci_addr
+ 	if start < dev.usedBlocksEnd {
+ 		binary.LittleEndian.PutUint64(chunk[24:], dev.firstChunkBmap+chunkno) // ci_bitmap_addr
+@@ -212,7 +224,7 @@ func (b *builder) writeChunkInfoBlock(dev *deviceLayout, paddr uint64, index int
+ 	}
+ 	binary.LittleEndian.PutUint32(cib[36:], uint32(placed)) // cib_chunk_info_count
+ 
+-	setObjectHeader(cib, int(b.blocksize), paddr, objPhysical|objectTypeSpacemanCIB, objectTypeInvalid)
++	b.setObjectHeader(cib, int(b.blocksize), paddr, objPhysical|objectTypeSpacemanCIB, objectTypeInvalid)
+ 	if err := b.writeBlock(cib, paddr); err != nil {
+ 		return 0, err
+ 	}
+@@ -339,7 +351,7 @@ func (b *builder) writeInternalPool(sm []byte) error {
+ 
+ 	binary.LittleEndian.PutUint32(sm[smOffIPBMXidOffset:], bitmapXidOff)
+ 	for i := uint32(0); i < b.sm.ipBmSize; i++ {
+-		binary.LittleEndian.PutUint64(sm[bitmapXidOff+uint64(i)*8:], formatXID)
++		binary.LittleEndian.PutUint64(sm[bitmapXidOff+uint64(i)*8:], b.liveXID)
+ 	}
+ 
+ 	binary.LittleEndian.PutUint32(sm[smOffIPBMFreeNextOff:], b.sm.bmFreeNextOff)
+@@ -424,18 +436,28 @@ func (b volCtx) placePostPool(base uint64) uint64 {
+ 	b.extentrefNodeBase = b.fsTreeNodeBase + b.fsTreeNodes
+ 	b.omapNodeBase = b.extentrefNodeBase + b.extentrefNodes
+ 	b.fileDataBase = b.omapNodeBase + b.omapNodes
+-	b.placeSnapshots(b.fileDataBase + b.fileDataBlocks)
+ 	b.ownedBlocks = b.fsTreeNodes + b.extentrefNodes + b.omapNodes + b.fileDataBlocks + b.snapBlocks
+-
+ 	blk := b.fileDataBase
+ 	for _, f := range b.streamFiles {
+ 		if f.blocks == 0 {
+ 			continue
+ 		}
++		if b.cowMetadataBase != 0 {
++			if reuse, ok := f.dataValue.(interface{ ExistingExtent() (uint64, uint64, bool) }); ok {
++				address, blocks, valid := reuse.ExistingExtent()
++				if valid && blocks == f.blocks && address > 0 && address+blocks <= b.mainBlockCount {
++					f.reused = true
++					f.dataBlock = address
++					b.builder.reusedRanges = append(b.builder.reusedRanges, blockRange{address, address + blocks})
++					continue
++				}
++			}
++		}
+ 		f.dataBlock = blk
+ 		blk += f.blocks
+ 	}
+-	return base + b.ownedBlocks
++	b.placeSnapshots(blk)
++	return blk + b.snapBlocks
+ }
+ 
+ // spacemanPlacement fixes every absolute block position that depends on the
+diff --git a/pkg/apfswrite/tree.go b/pkg/apfswrite/tree.go
+index 5309d17..dd21ff3 100644
+--- a/pkg/apfswrite/tree.go
++++ b/pkg/apfswrite/tree.go
+@@ -182,7 +182,7 @@ func (b *builder) writeVarNode(paddr, oid uint64, recs []fsTreeRecord, level uin
+ 		objType = objectTypeBtree | storage
+ 		footer(block[int(b.blocksize)-infoLen:])
+ 	}
+-	setObjectHeader(block, int(b.blocksize), oid, objType, subtype)
++	b.setObjectHeader(block, int(b.blocksize), oid, objType, subtype)
+ 	return b.writeBlock(block, paddr)
+ }
+ 
+diff --git a/pkg/apfswrite/writer.go b/pkg/apfswrite/writer.go
+index e74f9d9..9034c02 100644
+--- a/pkg/apfswrite/writer.go
++++ b/pkg/apfswrite/writer.go
+@@ -20,6 +20,10 @@ import (
+ // a 4096-byte-block, normalization-sensitive-by-default, case-insensitive
+ // volume named "untitled" with deterministic default UUIDs.
+ type CreateOptions struct {
++	// Same-container COW mode: metadata must be placed in a verified free range.
++	MetadataStartBlock uint64
++	TransactionID      uint64
++
+ 	// MinimumFreeBytes requires this much actual shared free space after metadata.
+ 	MinimumFreeBytes uint64
+ 
+@@ -293,7 +297,8 @@ type builderEntry struct {
+ 	data        []byte
+ 	dataValue   appledouble.Value
+ 	valueSize   uint64
+-	hasStream   bool   // true for every regular file (has a DSTREAM xfield + DSTREAM_ID record)
++	hasStream   bool // true for every regular file (has a DSTREAM xfield + DSTREAM_ID record)
++	reused      bool
+ 	dataBlock   uint64 // physical block number of the first content block (0 if empty)
+ 	blocks      uint64 // number of allocation blocks in the file's extent (0 for a 0-byte file)
+ 	allocedSize uint64 // block-aligned allocated size in bytes (0 for a 0-byte file)
+@@ -338,7 +343,7 @@ func buildContainer(w io.WriterAt, sizeBytes int64, opts *CreateOptions, planOnl
+ 		opts = &CreateOptions{}
+ 	}
+ 
+-	b := &builder{w: w}
++	b := &builder{w: w, cowMetadataBase: opts.MetadataStartBlock}
+ 
+ 	// The format allows any power of two in [nxMinimumBlockSize,
+ 	// nxMaximumBlockSize], and this writer's arithmetic is parameterised by
+@@ -390,6 +395,16 @@ func buildContainer(w io.WriterAt, sizeBytes int64, opts *CreateOptions, planOnl
+ 		return 0, err
+ 	}
+ 
++	if opts.TransactionID > b.liveXID {
++		b.liveXID = opts.TransactionID
++	}
++	if b.cowMetadataBase != 0 {
++		for _, v := range b.vols {
++			if len(v.snapshots) != 0 {
++				return 0, fmt.Errorf("COW updates do not support snapshots")
++			}
++		}
++	}
+ 	// The container has a floor of 512 KiB.
+ 	const minBytes = 512 * 1024
+ 	if sizeBytes == 0 {
+@@ -423,6 +438,9 @@ func buildContainer(w io.WriterAt, sizeBytes int64, opts *CreateOptions, planOnl
+ 	}
+ 
+ 	b.mainBlockCount = uint64(sizeBytes) / uint64(b.blocksize)
++	if b.cowMetadataBase != 0 && (b.cowMetadataBase >= b.mainBlockCount || opts.TransactionID <= formatXID) {
++		return 0, fmt.Errorf("apfswrite: invalid COW free-range base or transaction id")
++	}
+ 	b.blockCount = b.mainBlockCount
+ 	if b.mainBlockCount*uint64(b.blocksize) < minBytes {
+ 		return 0, fmt.Errorf("apfswrite: container too small (%d bytes); minimum is %d", sizeBytes, minBytes)
+@@ -441,6 +459,9 @@ func buildContainer(w io.WriterAt, sizeBytes int64, opts *CreateOptions, planOnl
+ 	if err := b.spacemanPlacement(); err != nil {
+ 		return 0, err
+ 	}
++	if err := b.validateReuse(); err != nil {
++		return 0, err
++	}
+ 	freeBytes := (b.mainBlockCount - uint64(b.deviceUsedBlocks(&b.sm.dev[sdMain]))) * uint64(b.blocksize)
+ 	if freeBytes < opts.MinimumFreeBytes {
+ 		return 0, fmt.Errorf("apfswrite: insufficient shared free space: %d < %d", freeBytes, opts.MinimumFreeBytes)
+@@ -455,7 +476,7 @@ func buildContainer(w io.WriterAt, sizeBytes int64, opts *CreateOptions, planOnl
+ 	// Only the blocks actually used are written, so grow the image to its full
+ 	// size by writing its final byte.
+ 	total := b.mainBlockCount * uint64(b.blocksize)
+-	if total > 0 {
++	if total > 0 && b.cowMetadataBase == 0 {
+ 		if _, err := w.WriteAt([]byte{0}, int64(total)-1); err != nil {
+ 			return 0, fmt.Errorf("apfswrite: sizing image: %w", err)
+ 		}
+@@ -491,7 +512,9 @@ func CreateContainerFromDir(w io.WriterAt, sizeBytes int64, srcDir string, opts
+ // container is being written: the requested geometry, the resolved directory
+ // tree, and every block position derived from them.
+ type builder struct {
+-	w io.WriterAt
++	w               io.WriterAt
++	cowMetadataBase uint64
++	reusedRanges    []blockRange
+ 
+ 	// Parameters.
+ 	blocksize      uint32
+@@ -954,6 +977,9 @@ func (b *builder) sizeCheckpointAreas() {
+ // write-back-cache slots — are intentionally left unused).
+ func (b *builder) layoutFixedBlocks() {
+ 	b.xpDescBase = nxBlockNum + 1
++	if b.cowMetadataBase != 0 {
++		b.xpDescBase = b.cowMetadataBase
++	}
+ 	b.xpDataBase = b.xpDescBase + uint64(b.xpDescBlocks)
+ 	b.xpEnd = b.xpDataBase + uint64(b.xpDataBlocks)
+ 

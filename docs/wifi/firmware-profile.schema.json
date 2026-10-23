@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WCN3990 board data import policy",
+  "type": "object",
+  "required": ["schema", "controller", "archive_sha256", "chip_id", "board_id", "board"],
+  "properties": {
+    "schema": {"const": 1},
+    "controller": {"const": "WCN3990"},
+    "archive_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "chip_id": {"type": "integer", "minimum": 0, "maximum": 4294967295},
+    "board_id": {"type": "integer", "minimum": 0, "maximum": 4294967295},
+    "board": {
+      "type": "object",
+      "required": ["member", "format", "sha256"],
+      "properties": {
+        "member": {"type": "string", "minLength": 1},
+        "format": {"enum": ["raw", "board-2"]},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "identity": {"type": "string", "minLength": 1, "maxLength": 200}
+      },
+      "allOf": [{"if": {"properties": {"format": {"const": "board-2"}}}, "then": {"required": ["identity"]}}],
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

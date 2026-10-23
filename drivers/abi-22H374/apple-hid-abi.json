@@ -1,0 +1,237 @@
+{
+  "bundle_identifier": "com.apple.iokit.IOHIDFamily",
+  "bundle_version": "2.0.0",
+  "image_sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+  "architecture": "arm64",
+  "classes": {
+    "IOHIDDevice": {
+      "super": "IOService",
+      "instance_size": 208,
+      "vtable_slots": 207
+    },
+    "IOHIDEventDriver": {
+      "super": "IOHIDEventService",
+      "instance_size": 264,
+      "vtable_slots": 220
+    }
+  },
+  "required_symbols": [
+    "__ZN11IOHIDDevice10gMetaClassE",
+    "__ZN11IOHIDDevice10handleOpenEP9IOServicejPv",
+    "__ZN11IOHIDDevice11handleCloseEP9IOServicej",
+    "__ZN11IOHIDDevice11setPropertyEPK8OSSymbolP8OSObject",
+    "__ZN11IOHIDDevice12handleReportEP18IOMemoryDescriptor15IOHIDReportTypej",
+    "__ZN11IOHIDDevice12updateReportEP19IOReportChannelListjPvS2_",
+    "__ZN11IOHIDDevice13nativeSlot185Ev",
+    "__ZN11IOHIDDevice13nativeSlot186Ev",
+    "__ZN11IOHIDDevice13nativeSlot187Ev",
+    "__ZN11IOHIDDevice13nativeSlot188Ev",
+    "__ZN11IOHIDDevice13nativeSlot189Ev",
+    "__ZN11IOHIDDevice13nativeSlot190Ev",
+    "__ZN11IOHIDDevice13nativeSlot191Ev",
+    "__ZN11IOHIDDevice13nativeSlot192Ev",
+    "__ZN11IOHIDDevice13nativeSlot193Ev",
+    "__ZN11IOHIDDevice13nativeSlot194Ev",
+    "__ZN11IOHIDDevice13nativeSlot195Ev",
+    "__ZN11IOHIDDevice13nativeSlot196Ev",
+    "__ZN11IOHIDDevice13nativeSlot197Ev",
+    "__ZN11IOHIDDevice13nativeSlot198Ev",
+    "__ZN11IOHIDDevice13nativeSlot199Ev",
+    "__ZN11IOHIDDevice13nativeSlot200Ev",
+    "__ZN11IOHIDDevice13nativeSlot201Ev",
+    "__ZN11IOHIDDevice13nativeSlot202Ev",
+    "__ZN11IOHIDDevice13nativeSlot203Ev",
+    "__ZN11IOHIDDevice13nativeSlot204Ev",
+    "__ZN11IOHIDDevice13nativeSlot205Ev",
+    "__ZN11IOHIDDevice13nativeSlot206Ev",
+    "__ZN11IOHIDDevice13newUserClientEP4taskPvjP12OSDictionaryPP12IOUserClient",
+    "__ZN11IOHIDDevice13willTerminateEP9IOServicej",
+    "__ZN11IOHIDDevice15configureReportEP19IOReportChannelListjPvS2_",
+    "__ZN11IOHIDDevice17publishPropertiesEP9IOService",
+    "__ZN11IOHIDDevice18matchPropertyTableEP12OSDictionaryPi",
+    "__ZN11IOHIDDevice4initEP12OSDictionary",
+    "__ZN11IOHIDDevice7messageEjP9IOServicePv",
+    "__ZN11IOHIDDevice8DispatchE5IORPC",
+    "__ZN11IOHIDDevice9setReportEP18IOMemoryDescriptor15IOHIDReportTypej",
+    "__ZN11IOHIDDeviceC2EPK11OSMetaClass",
+    "__ZN11IOHIDDeviceD2Ev",
+    "__ZN16IOHIDEventDriver10gMetaClassE",
+    "__ZNK11IOHIDDevice12handleIsOpenEPK9IOService",
+    "__ZNK11IOHIDDevice15newSerialNumberEv",
+    "__ZNK11IOHIDDevice16newVersionNumberEv",
+    "__ZNK11IOHIDDevice17newVendorIDNumberEv",
+    "__ZNK11IOHIDDevice18newProductIDNumberEv",
+    "__ZNK11IOHIDDevice33getMemoryWithCurrentElementValuesEv",
+    "__ZTV11IOHIDDevice"
+  ],
+  "virtual_symbols": {
+    "__ZN11IOHIDDevice10handleOpenEP9IOServicejPv": {
+      "class": "IOHIDDevice",
+      "slot": 91
+    },
+    "__ZN11IOHIDDevice11handleCloseEP9IOServicej": {
+      "class": "IOHIDDevice",
+      "slot": 92
+    },
+    "__ZN11IOHIDDevice11setPropertyEPK8OSSymbolP8OSObject": {
+      "class": "IOHIDDevice",
+      "slot": 23
+    },
+    "__ZN11IOHIDDevice12handleReportEP18IOMemoryDescriptor15IOHIDReportTypej": {
+      "class": "IOHIDDevice",
+      "slot": 181
+    },
+    "__ZN11IOHIDDevice12updateReportEP19IOReportChannelListjPvS2_": {
+      "class": "IOHIDDevice",
+      "slot": 82
+    },
+    "__ZN11IOHIDDevice13nativeSlot185Ev": {
+      "class": "IOHIDDevice",
+      "slot": 185
+    },
+    "__ZN11IOHIDDevice13nativeSlot186Ev": {
+      "class": "IOHIDDevice",
+      "slot": 186
+    },
+    "__ZN11IOHIDDevice13nativeSlot187Ev": {
+      "class": "IOHIDDevice",
+      "slot": 187
+    },
+    "__ZN11IOHIDDevice13nativeSlot188Ev": {
+      "class": "IOHIDDevice",
+      "slot": 188
+    },
+    "__ZN11IOHIDDevice13nativeSlot189Ev": {
+      "class": "IOHIDDevice",
+      "slot": 189
+    },
+    "__ZN11IOHIDDevice13nativeSlot190Ev": {
+      "class": "IOHIDDevice",
+      "slot": 190
+    },
+    "__ZN11IOHIDDevice13nativeSlot191Ev": {
+      "class": "IOHIDDevice",
+      "slot": 191
+    },
+    "__ZN11IOHIDDevice13nativeSlot192Ev": {
+      "class": "IOHIDDevice",
+      "slot": 192
+    },
+    "__ZN11IOHIDDevice13nativeSlot193Ev": {
+      "class": "IOHIDDevice",
+      "slot": 193
+    },
+    "__ZN11IOHIDDevice13nativeSlot194Ev": {
+      "class": "IOHIDDevice",
+      "slot": 194
+    },
+    "__ZN11IOHIDDevice13nativeSlot195Ev": {
+      "class": "IOHIDDevice",
+      "slot": 195
+    },
+    "__ZN11IOHIDDevice13nativeSlot196Ev": {
+      "class": "IOHIDDevice",
+      "slot": 196
+    },
+    "__ZN11IOHIDDevice13nativeSlot197Ev": {
+      "class": "IOHIDDevice",
+      "slot": 197
+    },
+    "__ZN11IOHIDDevice13nativeSlot198Ev": {
+      "class": "IOHIDDevice",
+      "slot": 198
+    },
+    "__ZN11IOHIDDevice13nativeSlot199Ev": {
+      "class": "IOHIDDevice",
+      "slot": 199
+    },
+    "__ZN11IOHIDDevice13nativeSlot200Ev": {
+      "class": "IOHIDDevice",
+      "slot": 200
+    },
+    "__ZN11IOHIDDevice13nativeSlot201Ev": {
+      "class": "IOHIDDevice",
+      "slot": 201
+    },
+    "__ZN11IOHIDDevice13nativeSlot202Ev": {
+      "class": "IOHIDDevice",
+      "slot": 202
+    },
+    "__ZN11IOHIDDevice13nativeSlot203Ev": {
+      "class": "IOHIDDevice",
+      "slot": 203
+    },
+    "__ZN11IOHIDDevice13nativeSlot204Ev": {
+      "class": "IOHIDDevice",
+      "slot": 204
+    },
+    "__ZN11IOHIDDevice13nativeSlot205Ev": {
+      "class": "IOHIDDevice",
+      "slot": 205
+    },
+    "__ZN11IOHIDDevice13nativeSlot206Ev": {
+      "class": "IOHIDDevice",
+      "slot": 206
+    },
+    "__ZN11IOHIDDevice13newUserClientEP4taskPvjP12OSDictionaryPP12IOUserClient": {
+      "class": "IOHIDDevice",
+      "slot": 140
+    },
+    "__ZN11IOHIDDevice13willTerminateEP9IOServicej": {
+      "class": "IOHIDDevice",
+      "slot": 76
+    },
+    "__ZN11IOHIDDevice15configureReportEP19IOReportChannelListjPvS2_": {
+      "class": "IOHIDDevice",
+      "slot": 81
+    },
+    "__ZN11IOHIDDevice17publishPropertiesEP9IOService": {
+      "class": "IOHIDDevice",
+      "slot": 170
+    },
+    "__ZN11IOHIDDevice18matchPropertyTableEP12OSDictionaryPi": {
+      "class": "IOHIDDevice",
+      "slot": 101
+    },
+    "__ZN11IOHIDDevice4initEP12OSDictionary": {
+      "class": "IOHIDDevice",
+      "slot": 21
+    },
+    "__ZN11IOHIDDevice7messageEjP9IOServicePv": {
+      "class": "IOHIDDevice",
+      "slot": 132
+    },
+    "__ZN11IOHIDDevice8DispatchE5IORPC": {
+      "class": "IOHIDDevice",
+      "slot": 12
+    },
+    "__ZN11IOHIDDevice9setReportEP18IOMemoryDescriptor15IOHIDReportTypej": {
+      "class": "IOHIDDevice",
+      "slot": 183
+    },
+    "__ZNK11IOHIDDevice12handleIsOpenEPK9IOService": {
+      "class": "IOHIDDevice",
+      "slot": 93
+    },
+    "__ZNK11IOHIDDevice15newSerialNumberEv": {
+      "class": "IOHIDDevice",
+      "slot": 177
+    },
+    "__ZNK11IOHIDDevice16newVersionNumberEv": {
+      "class": "IOHIDDevice",
+      "slot": 176
+    },
+    "__ZNK11IOHIDDevice17newVendorIDNumberEv": {
+      "class": "IOHIDDevice",
+      "slot": 174
+    },
+    "__ZNK11IOHIDDevice18newProductIDNumberEv": {
+      "class": "IOHIDDevice",
+      "slot": 175
+    },
+    "__ZNK11IOHIDDevice33getMemoryWithCurrentElementValuesEv": {
+      "class": "IOHIDDevice",
+      "slot": 184
+    }
+  }
+}

@@ -1,0 +1,370 @@
+{
+  "schema_version": 1,
+  "status": "Native Sandbox exec label stall traced to missing persona metadata and cleared on hardware; native display startup investigation continues.",
+  "reference": {
+    "kernel": "build/ios18-kext-analysis/kernelcache.release.ipad7c.macho",
+    "sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+    "xnu_source_tag": "xnu-11417.140.69",
+    "userland": "iOS 18.7.10 (22H374)",
+    "decompilation": "build/display-runtime/sandbox-analysis.json",
+    "analysis_copy": "build/display-runtime/sandbox-analysis.i64",
+    "method": "Native binary analysis, original code-signature XML entitlements, original launchd plist and existing UART logs. No daemon or Sandbox binary modified."
+  },
+  "abi_checks": {
+    "native_sandbox_mpc": "0xfffffff006f87838",
+    "native_ops": "0xfffffff006f87898",
+    "cred_label_update_execve_slot": 18,
+    "slot_address": "0xfffffff006f87928",
+    "callback": "0xfffffff006a57e60",
+    "callback_parameter_order_matches_source": true,
+    "note": "Native callback uses spawnattr and its length at arguments 11/12; the final disjoint parameter is unused. These checks do not prove every private ABI correct.",
+    "native_ucred_cr_label_offset": 120,
+    "source_ucred_cr_label_offset": 120
+  },
+  "original_entitlements": {
+    "backboardd": {
+      "source": "build/display-runtime/backboardd-entitlements.json",
+      "seatbelt-profiles": [
+        "backboardd"
+      ],
+      "com.apple.security.system-container": true,
+      "com.apple.security.application-groups": [
+        "group.com.apple.BlockMonitoring"
+      ]
+    },
+    "cfprefsd": {
+      "source": "build/display-runtime/cfprefsd-entitlements.json",
+      "seatbelt-profiles": [
+        "cfprefsd"
+      ],
+      "com.apple.security.system-groups": [
+        "systemgroup.com.apple.cfpreferences.managed"
+      ]
+    },
+    "container_daemons": {
+      "sources": [
+        "build/display-runtime/containermanagerd-entitlements.json",
+        "build/display-runtime/containermanagerd_system-entitlements.json"
+      ],
+      "com.apple.private.sandbox.profile:embedded": "containermanagerd",
+      "com.apple.private.security.container-manager": true
+    }
+  },
+  "native_container_upcall": {
+    "exec_callback": "0xfffffff006a57e60",
+    "entitlement_flags": "0xfffffff006a6662c",
+    "container_request_builder": "0xfffffff006a66d1c",
+    "container_rpc": "0xfffffff006a654d8",
+    "host_get_special_port_call": "0xfffffff006a6551c",
+    "host_special_port": 25,
+    "port_name": "HOST_CONTAINERD_PORT",
+    "mach_rpc_call": "0xfffffff006a656c0",
+    "mach_rpc": "mach_msg_rpc_from_kernel_proper",
+    "rpc_has_timeout_argument": false,
+    "profile_assignment_after_container_resolution": "0xfffffff006a54f20",
+    "profile_lookup": "0xfffffff006a60a8c",
+    "credential_label_assignment": "0xfffffff006a3e930",
+    "launchd_plist": "build/display-runtime/com.apple.containermanagerd-launchd.json",
+    "mach_service": "com.apple.containermanagerd.upcall",
+    "launchd_host_special_port": 25,
+    "condition": "Exec requests container paths when the entitlements require them and the relevant paths are not cached. This is a possible wait site; the original stalled process kernel stack has not been captured."
+  },
+  "runtime_observations": [
+    {
+      "run": 10,
+      "uart": "build/display-runtime/handoff-10/uart.txt",
+      "uart_sha256": "c20d797926252a552977b6166a25f7fd869690b543e0d35638fcbf44855af8fc",
+      "process": "containermanagerd_system",
+      "pid": 102,
+      "service_match_queries": [
+        {
+          "line": 4919,
+          "text": "[IOKit user matching] pid=102 tid=689 match=<dict ID=\"0\"><key>IOProviderClass</key><string ID=\"1\">AppleKeyStore</string><key>IOServiceNotificationUser</key><true/></dict>"
+        }
+      ],
+      "interpretation": "Matching/notification registration was observed; it does not prove that this thread is synchronously blocked on AppleKeyStore."
+    },
+    {
+      "run": 17,
+      "uart": "build/display-runtime/handoff-17/uart.txt",
+      "uart_sha256": "c861bfe64920988fa4542d3eb399948ed470f1a4427c656893d642aa92875fbc",
+      "process": "containermanagerd_system",
+      "pid": 101,
+      "service_match_queries": [
+        {
+          "line": 1063,
+          "text": "[IOKit user matching] pid=101 tid=679 match=<dict ID=\"0\"><key>IOProviderClass</key><string ID=\"1\">AppleKeyStore</string><key>IOServiceNotificationUser</key><true/></dict>"
+        }
+      ],
+      "interpretation": "Matching/notification registration was observed; it does not prove that this thread is synchronously blocked on AppleKeyStore."
+    }
+  ],
+  "keystore_dependency": {
+    "current_collection_manifest": "build/output/kernelcache.sdm835.display-runtime.manifest.json",
+    "apple_sep_keystore_included": true,
+    "native_bundle": "com.apple.driver.AppleSEPKeyStore",
+    "native_personality": {
+      "IOClass": "AppleKeyStore",
+      "IOMatchCategory": "AppleKeyStore",
+      "IOProviderClass": "IOResources",
+      "IOPlatformWakeAction": 1000,
+      "IOResourceMatch": "IOKit",
+      "IOUserClientClass": "AppleKeyStoreUserClient"
+    },
+    "native_bundle_dependencies": {
+      "com.apple.kpi.bsd": "8.0",
+      "com.apple.driver.AppleARMPlatform": "1.0.0",
+      "com.apple.driver.AppleEffaceableStorage": "1.0.0",
+      "com.apple.driver.IOSlaveProcessor": "1.0.0",
+      "com.apple.kpi.libkern": "8.0",
+      "com.apple.kpi.unsupported": "8.0",
+      "com.apple.driver.AppleMobileFileIntegrity": "1.0.2",
+      "com.apple.kpi.iokit": "8.0",
+      "com.apple.kpi.mach": "8.0",
+      "com.apple.kpi.private": "8.0",
+      "com.apple.iokit.IOCryptoAcceleratorFamily": "1.0.0",
+      "com.apple.driver.AppleSEPManager": "1.0.0",
+      "com.apple.kec.corecrypto": "1.0"
+    },
+    "native_start": "0xfffffff0065d880c",
+    "native_start_register_service_call": "0xfffffff0065d8a54",
+    "native_resources": [
+      "AKSFileSystemKeyServices",
+      "AKSKernelServices",
+      "AKSFileVaultServices"
+    ],
+    "native_start_observation": "Publishes the native frontend/resources without synchronously requiring AppleSEPManager. Run18 later blocked in the request gate before the endpoint-disabled check; run19 reordered that exact check and completed boot with native NotReady results.",
+    "development_no_sep_scope": "Sets native APFS DoNotUseSEP and aks-endpoint=0; with an unsealed development root, reorders the audited original native endpoint-disabled check before manager lookup. Does not emulate SEP or successful cryptographic operations.",
+    "native_bundle_added_to_display_runtime": true,
+    "native_bundle_integration": {
+      "config": "drivers/Build.json",
+      "runtime_roots_added": [
+        "com.apple.driver.AppleSEPKeyStore"
+      ],
+      "dependency_closure_added": [
+        "com.apple.driver.AppleSEPKeyStore",
+        "com.apple.driver.AppleSEPManager",
+        "com.apple.driver.AppleA7IOP",
+        "com.apple.driver.IOSlaveProcessor"
+      ],
+      "kext_count": 58,
+      "no_replacement_service": true
+    },
+    "historical_pre_keystore_collection": {
+      "sha256": "2a10a010548682ba582d4f349eb15bdb4d18d5174bf1e12bf0c24a847166458d",
+      "kext_count": 54,
+      "apple_sep_keystore_included": false
+    },
+    "current_collection_sha256": "01773c35289d26cbcf2b7df68f82bf75dbaef57f539f671c689f9dfec7335f2e",
+    "current_collection_kext_count": 58
+  },
+  "later_permission_denials": {
+    "run_16": "Sandbox iokit_check_open denied native framebuffer/root-domain user clients; AMFI separately denied task_for_pid.",
+    "run_17": "After the narrow Sandbox open-hook bypass, the independent IOUserClient selector filter resolver still rejected the same clients.",
+    "exec_bypass_effect": "Skipping Sandbox cred_label_update_execve preserves the inherited label instead of installing the executable-specific label. These later denials do not establish that the original backboardd profile lacks framebuffer access.",
+    "bash_scope": "A diagnostic Bash is not entitled or sandboxed like backboardd. Its denial cannot be used as an equivalent native-daemon test.",
+    "apple_source": "https://github.com/apple-oss-distributions/xnu/blob/xnu-11417.140.69/iokit/Kernel/IOUserClient.cpp#L4262-L4283"
+  },
+  "hypotheses_not_confirmed": [
+    "Missing AppleKeyStore prevents the native container manager from replying.",
+    "The original 256 MiB arena caused or contributed to native profile/container initialization stalls."
+  ],
+  "next_native_policy_fixture": {
+    "status": "native-session-lookup-run-in-progress",
+    "current_run": 28,
+    "purpose": "Compare native service lookup by current/foreground/mobile user and inspect native CADisplay mode fields. All Fastboot commands target edk2-fastboot1."
+  },
+  "public_cross_check": {
+    "host_port_header": "https://github.com/apple-oss-distributions/xnu/blob/xnu-11417.140.69/osfmk/mach/host_special_ports.h",
+    "io_user_client": "https://github.com/apple-oss-distributions/xnu/blob/xnu-11417.140.69/iokit/Kernel/IOUserClient.cpp"
+  },
+  "native_no_sep_endpoint": {
+    "argument": "aks-endpoint=0",
+    "native_start_argument_parser": "0xfffffff0065d8af8",
+    "disabled_endpoint_field_offset": 472,
+    "native_gate": "0xfffffff0065ddc98",
+    "native_manager_lookup": "0xfffffff006601240",
+    "native_gate_original_sequence": "Lookup AppleSEPManager before testing the disabled-endpoint field. The lookup waits indefinitely for a service absent on SDM835.",
+    "development_adjustment": "Reorder the four existing instructions at native gate +0x18..+0x27 to MOV zero; LDR endpoint-disabled flag; CBNZ original continuation; BL original manager lookup. Preserve both branch targets and native failure results.",
+    "helper": "scripts/build-bridge.py::prepare_no_sep_keystore",
+    "scope": "Only explicit --development-no-sep with --development-unsealed-root; one original AppleSEPKeyStore module, exact text layout, prologue, opcodes, disabled-endpoint continuation and manager-call destination checked.",
+    "tests": "tests/test_boot_bridge.py::test_no_sep_gate_checks_endpoint_before_lookup_and_preserves_targets",
+    "native_selector_17_return_observed": "0xe00002d8 kIOReturnNotReady",
+    "sandbox_exec_bypass": false,
+    "sandbox_iokit_bypass": false,
+    "does_not_implement_sep_key_operations": true
+  },
+  "runtime_keystore_rounds": [
+    {
+      "run": 18,
+      "report": "build/display-runtime/handoff-18/report.json",
+      "native_frontend_published": true,
+      "native_user_client_created": true,
+      "aks_endpoint_argument": 0,
+      "unbounded_wait_observed": "AppleSEPManager",
+      "serial_bash_started": false,
+      "manual_reset": true
+    },
+    {
+      "run": 19,
+      "report": "build/display-runtime/handoff-19/report.json",
+      "native_frontend_published": true,
+      "native_user_client_created": true,
+      "native_no_sep_gate_reordered": true,
+      "container_system_daemon_pid": 106,
+      "container_system_daemon_native_selector_17_result": "0xe00002d8",
+      "serial_bash_interactive": true,
+      "sandbox_exec_return_backboardd": false,
+      "sandbox_exec_return_cfprefsd": false,
+      "native_main_display": "pending",
+      "cadisplay_result": "nil",
+      "sandbox_exec_bypassed": false,
+      "sandbox_iokit_bypassed": false
+    }
+  ],
+  "runtime_container_rpc": {
+    "run": 20,
+    "report": "build/display-runtime/handoff-20/report.json",
+    "native_rpc_message": "0x13392fd4",
+    "enter_count": 26,
+    "leave_count": 0,
+    "backboardd_pid": 65,
+    "cfprefsd_pids": [
+      99,
+      100
+    ],
+    "wait_site_confirmed": true,
+    "container_agent_pid": 73,
+    "container_system_pid": 102,
+    "container_thread_stacks_obtained": false,
+    "native_task_port_requests_denied": true,
+    "limitation": "Native synchronous request and a container listener blocked in a UserManagement synchronous XPC call are now observed. Need usermanagerd stack to identify the next server-side wait.",
+    "container_wait_confirmed": {
+      "run": 21,
+      "pid": 73,
+      "thread": 694,
+      "queue": "com.apple.containermanagerd.listener",
+      "port_label": "com.apple.mobile.usermanagerd.xpc",
+      "native_selector": "personaGenerationIdentifierWithError:",
+      "mcm_call_return_address": "0x1d16c22e4",
+      "native_callee_thunk": "0x1d17ce7c0",
+      "shared_cache_slide": "0x112b4000",
+      "kcdata": "build/display-runtime/handoff-21/container-73.kcdata",
+      "kcdata_sha256": "cb0c327da3399473a53424bff50e7d0fbe22e5750d6ff0dfff25adf42dc60614",
+      "decoded": "build/display-runtime/handoff-21/container-73.json",
+      "frames": "build/display-runtime/handoff-21/container-73-frames.json",
+      "main_thread": "Normal CFRunLoop wait, not the blocked server listener."
+    }
+  },
+  "persona_manifest_failure": {
+    "run": 22,
+    "uart": "build/display-runtime/handoff-22/uart.txt",
+    "agent_native_stackshot": "build/display-runtime/handoff-21/container-73.json",
+    "daemon_log": "build/display-runtime/handoff-22/usermanagerd.log.0",
+    "daemon_log_sha256": "c1185ebff75190b0c8763ccd08563b42eae9470f6d75ff4a15269437548198ce",
+    "failure": "Repeated native usermanagerd startup reports ENOENT loading persona manifest; launchd repeatedly respawns it.",
+    "manifest_device_path": "/private/var/keybags/persona.kb",
+    "keybags_directory_present": false,
+    "early_native_init_already_completed": true,
+    "keybagd_native_stackshot": "build/display-runtime/handoff-22/service-50.json",
+    "keybagd_state": "Main CFRunLoop wait; no blocked AppleKeyStore call observed in that snapshot.",
+    "backboardd_native_stackshot": "build/display-runtime/handoff-22/service-65.json",
+    "backboardd_kernel_chain": [
+      "machine_switch_context",
+      "thread_invoke",
+      "thread_block_reason",
+      "ipc_mqueue_receive",
+      "kernel_mach_msg_rpc_common",
+      "mach_msg_rpc_from_kernel_proper",
+      "native Sandbox container resolution",
+      "native Sandbox exec callback",
+      "mac_cred_label_update_execve"
+    ],
+    "native_reader": "0x100083364",
+    "native_writer": "0x100083ab8",
+    "native_manifest_v1_parser": "0x100051b10",
+    "native_manifest_v1_serializer": "0x100051f30",
+    "native_plist_parser": "0x100089590",
+    "native_plist_serializer": "0x100089368",
+    "metadata_fields": {
+      "UsePersonaManifestVersion": 1,
+      "UsePersonaGenerationID": 1,
+      "UserPersonaDictionary": {}
+    },
+    "plan": "Only on this empty unencrypted development Data volume, create the missing initial metadata via native NSPropertyListSerialization, preserve existing files, then test native daemon/Sandbox behavior. This is persona metadata, not a successful cryptographic keybag.",
+    "runtime_fix": {
+      "run": 23,
+      "report": "build/display-runtime/handoff-23/report.json",
+      "uart": "build/display-runtime/handoff-23/uart.txt",
+      "command": "displayctl initialize-persona",
+      "result": 0,
+      "native_plist_bytes": 133,
+      "sandbox_exec_bypass": false,
+      "sandbox_iokit_bypass": false,
+      "backboardd_pid_65_native_exec_completed": true,
+      "cfprefsd_native_exec_completed": true,
+      "rpc_returns": 59,
+      "nonzero_rpc_returns": [],
+      "cadisplay_result": "nil",
+      "diagnostic_bash_main_display_result": "0xe00002e2 (kIOReturnNotPermitted)",
+      "remaining": "backboardd now advances past native Sandbox initialization, opens native framebuffer paths, and restarts later; need its post-exec stack/crash evidence.",
+      "usb_persistence_verified": {
+        "file": "build/display-runtime/handoff-23/persona.kb",
+        "bytes": 133,
+        "sha256": "770b3871beb075f3485a9723fc300a1dd041e1711ae329314586910e36e7dbb8",
+        "uid": 0,
+        "gid": 0,
+        "mode": "0600",
+        "parent_mode": "0700",
+        "fields": {
+          "UsePersonaManifestVersion": 1,
+          "UsePersonaGenerationID": 1,
+          "UserPersonaDictionary": {}
+        }
+      },
+      "full_post_exec_stackshot": {
+        "pid": 151,
+        "bytes": 13376,
+        "file": "build/display-runtime/handoff-23/service-151-clean.kcdata",
+        "sha256": "e76952ca0eec926cb4f2826f73a69e5b112848662156c4dbeabf5d4a4645756d",
+        "frames": "build/display-runtime/handoff-23/service-151-clean-frames.json",
+        "shared_cache_slide": "0xe264000",
+        "main_thread": 1193,
+        "main_wait": "Synchronous LaunchServices XPC from the Accessibility startup chain; native CoreAnimation render-server and display.primary threads already exist.",
+        "display_caveat": "Display thread existence alone does not prove a published remote CADisplay or a successful frame submission."
+      },
+      "native_following_boot": {
+        "bytes": 1514,
+        "sha256": "0c16d704c79d1c2620d94f17eda82d763141eb69dfb602213507e44059ea95a6",
+        "generation": 1,
+        "user_records": 2,
+        "persona_records": 6,
+        "writer": "Native usermanagerd early initialization; no manual update after the initial missing manifest was seeded.",
+        "summary": "build/display-runtime/handoff-24/persona-summary.json"
+      }
+    }
+  },
+  "native_container_diagnostic": {
+    "source": "tools/displayctl/displayctl.mm",
+    "reference": "iOS 18 _LSDefaults userContainerURL block at 0x18273e3e4",
+    "query_create": "0x1d1691864",
+    "query_set_class": "0x1d1691f5c",
+    "query_set_persona_unique_string": "0x1d1695f80",
+    "query_operation_set_flags": "0x1d169331c",
+    "query_get_single_result": "0x1d16934a0",
+    "query_get_last_error": "0x1d16aa76c",
+    "error_copy_unlocalized_description": "0x1d169c218",
+    "class": 10,
+    "persona": "CONTAINER_PERSONA_PRIMARY (native exported constant)",
+    "flags": "0x900000001",
+    "implementation": "Resolve original library exports; keep all native authorization and error returns. A detached worker retains storage if the original call waits longer than three seconds.",
+    "run_27": {
+      "result": "2→(51) XPC_INVALID_REPLY",
+      "caller": "root diagnostic Bash94",
+      "query": "Native class10, primary persona, flags0x900000001; no custom server reply",
+      "evidence": "build/display-runtime/handoff-27/stacks-clean.txt",
+      "observed_native_lsd_pid": 109,
+      "note": "The root probe and mobile lsd do not have the same user identity; do not infer the lsd error from this root result."
+    }
+  }
+}

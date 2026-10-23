@@ -1,0 +1,16 @@
+--- a/config/MASTER.arm64.iPhoneOS
++++ b/config/MASTER.arm64.iPhoneOS
+@@ -16,7 +16,13 @@
+ #  Standard Apple OS Configurations:
+ #  -------- ----- -- ---------------
+ #
++#if SOC_CONFIG_sdm835
++#  ARM_EXTRAS_BASE = [ config_pmap_ppl nos_arm_asm nos_arm_pmap ]
++#elif SOC_IS_VIRTUALIZED
++#  ARM_EXTRAS_BASE = [ config_pmap_ppl nos_arm_asm nos_arm_pmap ]
++#else
+ #  ARM_EXTRAS_BASE = [ config_pmap_ppl ]
++#endif
+ #  KERNEL_BASE =    [ arm64 xsmall msgb_small config_embedded config_enforce_signed_code config_code_signature_reconstitution config_requires_u32_munging config_darkboot ARM_EXTRAS_BASE ]
+ #  KERNEL_RELEASE = [ KERNEL_BASE ]
+ #  KERNEL_DEV =     [ KERNEL_BASE development mach_assert config_xnupost proc_ref_debug config_proc_resource_limits config_ext_paniclog ]

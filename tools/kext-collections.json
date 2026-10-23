@@ -1,0 +1,43 @@
+{
+  "01-crypto": [
+    "com.apple.kec.corecrypto"
+  ],
+  "02-platform": [
+    "com.apple.kec.corecrypto",
+    "com.apple.driver.AppleARMPlatform"
+  ],
+  "03-ramdisk-hfs": [
+    "com.apple.kec.corecrypto",
+    "com.apple.driver.AppleARMPlatform",
+    "com.apple.driver.DiskImages.RAMBackingStore",
+    "com.apple.filesystems.hfs.kext",
+    "com.apple.driver.AppleBSDKextStarter"
+  ],
+  "04-apfs-security": [
+    "com.apple.filesystems.apfs",
+    "com.apple.driver.AppleMobileFileIntegrity",
+    "com.apple.security.sandbox"
+  ],
+  "05-input": [
+    "com.apple.iokit.IOHIDFamily",
+    "com.apple.iokit.IOHIDEventDriver"
+  ],
+  "06-usb-host": [
+    "com.apple.iokit.IOUSBHostFamily"
+  ],
+  "07-graphics": [
+    "com.apple.iokit.IOSurface",
+    "com.apple.iokit.IOMobileGraphicsFamily",
+    "com.apple.iokit.IOHIDFamily"
+  ],
+  "08-wifi-model": [
+    "com.apple.driver.AppleOLYHAL",
+    "com.apple.iokit.IOSkywalkFamily",
+    "com.apple.iokit.IONetworkFamily"
+  ],
+  "09-bluetooth-model": [
+    "com.apple.driver.AppleBluetooth",
+    "com.apple.iokit.IOSerialFamily",
+    "com.apple.driver.AppleOnboardSerial"
+  ]
+}

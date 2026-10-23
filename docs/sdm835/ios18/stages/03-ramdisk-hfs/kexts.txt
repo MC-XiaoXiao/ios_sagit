@@ -1,0 +1,17 @@
+# Candidate dependency closure; linking and hardware are unverified.
+com.apple.kpi.bsd
+com.apple.kpi.iokit
+com.apple.kpi.libkern
+com.apple.kpi.mach
+com.apple.kpi.private
+com.apple.kpi.unsupported
+com.apple.kec.corecrypto
+com.apple.iokit.IOReportFamily
+com.apple.iokit.IOSlowAdaptiveClockingFamily
+com.apple.iokit.IOStorageFamily
+com.apple.driver.AppleARMPlatform
+com.apple.driver.DiskImages
+com.apple.driver.DiskImages.KernelBacked
+com.apple.driver.DiskImages.RAMBackingStore
+com.apple.filesystems.hfs.kext
+com.apple.driver.AppleBSDKextStarter

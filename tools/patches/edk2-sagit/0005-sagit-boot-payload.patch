@@ -1,0 +1,267 @@
+# Mi 6 MI6BOOT1 payload loader, optional automatic EFI boot and USB recovery.
+--- a/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/PlatformBm.c
++++ b/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/PlatformBm.c
+@@ -32,6 +32,10 @@
+ 
+ #include "PlatformBm.h"
+ 
++#ifdef MI6_BOOT_PAYLOAD_ENABLED
++EFI_STATUS Mi6BootPayload(VOID);
++#endif
++
+ #define DP_NODE_LEN(Type)                                                      \
+   {                                                                            \
+     (UINT8)sizeof(Type), (UINT8)(sizeof(Type) >> 8)                            \
+@@ -667,6 +671,13 @@
+       &gUefiShellFileGuid, L"UEFI Shell", LOAD_OPTION_ACTIVE);
+ 
+ #ifdef QCOM_UARTDM_CONSOLE
++  // A missing, cancelled or rejected payload falls through to USB Fastboot.
++#ifdef MI6_BOOT_PAYLOAD_ENABLED
++  Status = Mi6BootPayload();
++  if (Status != EFI_NOT_FOUND) {
++    Print(L"XNU payload returned: %r. Entering USB Fastboot.\r\n", Status);
++  }
++#endif
+   {
+     EFI_GUID FastbootGuid = {0x9588502a,0x5370,0x11e3,{0x86,0x31,0xd7,0xc5,0x95,0x13,0x64,0xc8}};
+     PlatformRegisterFvBootOption(&FastbootGuid, L"UEFI Fastboot", LOAD_OPTION_ACTIVE);
+@@ -677,7 +688,7 @@
+     Options = EfiBootManagerGetLoadOptions(&Count, LoadOptionTypeBoot);
+     for (Index = 0; Index < Count; Index++) {
+       if (StrCmp(Options[Index].Description, L"UEFI Fastboot") == 0) {
+-        Print(L"Entering UEFI Fastboot (UART 115200 8N1)\r\n");
++        Print(L"Entering USB Fastboot\r\n");
+         EfiBootManagerBoot(&Options[Index]);
+         break;
+       }
+--- a/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/PlatformBootManagerLib.inf
++++ b/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/PlatformBootManagerLib.inf
+@@ -27,6 +27,8 @@
+ [Sources]
+   PlatformBm.c
+   PlatformBm.h
++  XnuBoot.c
++  XnuBootFormat.h
+ 
+ [Packages]
+   EmbeddedPkg/EmbeddedPkg.dec
+@@ -82,6 +84,10 @@
+   gLinuxSimpleMassStorageGuid
+ 
+ [Protocols]
++  gEfiBlockIoProtocolGuid
++  gEfiDiskIoProtocolGuid
++  gEfiPartitionInfoProtocolGuid
++  gEfiSimpleTextInputExProtocolGuid
+   gEdkiiNonDiscoverableDeviceProtocolGuid
+   gEfiDevicePathProtocolGuid
+   gEfiGraphicsOutputProtocolGuid
+--- a/Platforms/Msm8998FamilyPkg/Msm8998FamilyPkg.dsc.inc
++++ b/Platforms/Msm8998FamilyPkg/Msm8998FamilyPkg.dsc.inc
+@@ -510,7 +510,12 @@
+   MdeModulePkg/Universal/DisplayEngineDxe/DisplayEngineDxe.inf
+   MdeModulePkg/Universal/SetupBrowserDxe/SetupBrowserDxe.inf
+   MdeModulePkg/Universal/DriverHealthManagerDxe/DriverHealthManagerDxe.inf
+-  MdeModulePkg/Universal/BdsDxe/BdsDxe.inf
++  MdeModulePkg/Universal/BdsDxe/BdsDxe.inf {
++!if $(PLATFORM_NAME) == sagit
++    <LibraryClasses>
++      NULL|MdeModulePkg/Library/LzmaCustomDecompressLib/LzmaCustomDecompressLib.inf
++!endif
++  }
+   MdeModulePkg/Application/UiApp/UiApp.inf {
+     <LibraryClasses>
+       NULL|MdeModulePkg/Library/DeviceManagerUiLib/DeviceManagerUiLib.inf
+--- a/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.dsc
++++ b/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.dsc
+@@ -13,7 +13,7 @@
+ !include Platforms/Msm8998Pkg/Msm8998.dsc
+ 
+ [BuildOptions]
+-  GCC:*_*_AARCH64_CC_FLAGS = -DQCOM_UARTDM_CONSOLE
++  GCC:*_*_AARCH64_CC_FLAGS = -DQCOM_UARTDM_CONSOLE -DMI6_BOOT_PAYLOAD_ENABLED
+ 
+ [PcdsFixedAtBuild.common]
+   gMSM8998PkgTokenSpaceGuid.PcdMipiFrameBufferWidth|1080
+--- /dev/null
++++ b/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/XnuBoot.c
+@@ -0,0 +1,129 @@
++// SPDX-License-Identifier: BSD-2-Clause-Patent
++// Android ramdisk payload packaging follows the UniXNU/sheng design. The
++// existing Mi 6 XnuBridge remains responsible for every hardware handoff.
++#ifdef MI6_BOOT_PAYLOAD_ENABLED
++#include <Uefi.h>
++#include "PlatformBm.h"
++#include <Protocol/BlockIo.h>
++#include <Protocol/DiskIo.h>
++#include <Protocol/PartitionInfo.h>
++#include <Protocol/SimpleTextInEx.h>
++#include "XnuBootFormat.h"
++
++// Public decoder entry points supplied by EDK2's LzmaCustomDecompressLib,
++// linked into sagit's BdsDxe as a NULL library instance.
++RETURN_STATUS EFIAPI LzmaUefiDecompressGetInfo(CONST VOID *, UINT32, UINT32 *, UINT32 *);
++RETURN_STATUS EFIAPI LzmaUefiDecompress(CONST VOID *, UINTN, VOID *, VOID *);
++
++STATIC EFI_STATUS Mi6FindBoot(EFI_DISK_IO_PROTOCOL **Io, UINT32 *MediaId, UINT64 *Bytes) {
++  EFI_HANDLE *Handles;
++  UINTN Count, Index;
++  EFI_STATUS Status;
++  *Io=NULL;
++  Status=gBS->LocateHandleBuffer(ByProtocol,&gEfiPartitionInfoProtocolGuid,NULL,&Count,&Handles);
++  if (EFI_ERROR(Status)) return Status;
++  for (Index=0;Index<Count;Index++) {
++    EFI_PARTITION_INFO_PROTOCOL *Part;
++    EFI_BLOCK_IO_PROTOCOL *Block;
++    EFI_DISK_IO_PROTOCOL *Disk;
++    if (EFI_ERROR(gBS->HandleProtocol(Handles[Index],&gEfiPartitionInfoProtocolGuid,(VOID **)&Part)) ||
++        Part->Type!=PARTITION_TYPE_GPT || StrnCmp(Part->Info.Gpt.PartitionName,L"boot",36)!=0) continue;
++    if (EFI_ERROR(gBS->HandleProtocol(Handles[Index],&gEfiBlockIoProtocolGuid,(VOID **)&Block)) ||
++        EFI_ERROR(gBS->HandleProtocol(Handles[Index],&gEfiDiskIoProtocolGuid,(VOID **)&Disk))) continue;
++    if (!Block->Media->MediaPresent || !Block->Media->LogicalPartition || Block->Media->RemovableMedia ||
++        !Block->Media->BlockSize || Block->Media->LastBlock==MAX_UINT64 ||
++        Block->Media->LastBlock+1>MAX_UINT64/Block->Media->BlockSize) continue;
++    if (*Io!=NULL) { FreePool(Handles); return EFI_COMPROMISED_DATA; }
++    *Io=Disk; *MediaId=Block->Media->MediaId;
++    *Bytes=(Block->Media->LastBlock+1)*Block->Media->BlockSize;
++  }
++  FreePool(Handles);
++  return *Io ? EFI_SUCCESS : EFI_NOT_FOUND;
++}
++
++STATIC BOOLEAN Mi6CancelBoot(UINT32 Seconds) {
++  EFI_HANDLE *Handles=NULL;
++  UINTN Count=0, Index, Tick;
++  EFI_INPUT_KEY Key;
++  gBS->LocateHandleBuffer(ByProtocol,&gEfiSimpleTextInputExProtocolGuid,NULL,&Count,&Handles);
++  Print(L"\r\nMi 6: EDK2 -> XnuBridge -> XNU\r\nPress a volume key for USB Fastboot.\r\n");
++  for (Tick=0;Tick<Seconds*10;Tick++) {
++    if (Tick%10==0) Print(L"Starting XNU in %u seconds...\r\n",Seconds-Tick/10);
++    for (Index=0;Index<Count;Index++) {
++      EFI_SIMPLE_TEXT_INPUT_EX_PROTOCOL *Input;
++      EFI_KEY_DATA Data;
++      if (!EFI_ERROR(gBS->HandleProtocol(Handles[Index],&gEfiSimpleTextInputExProtocolGuid,(VOID **)&Input)) &&
++          !EFI_ERROR(Input->ReadKeyStrokeEx(Input,&Data))) {
++        FreePool(Handles); return TRUE;
++      }
++    }
++    if (gST->ConIn && !EFI_ERROR(gST->ConIn->ReadKeyStroke(gST->ConIn,&Key))) {
++      if (Handles) FreePool(Handles);
++      return TRUE;
++    }
++    gBS->Stall(100000);
++  }
++  if (Handles) FreePool(Handles);
++  return FALSE;
++}
++
++EFI_STATUS Mi6BootPayload(VOID) {
++  EFI_DISK_IO_PROTOCOL *Disk;
++  EFI_STATUS Status;
++  EFI_HANDLE Child=NULL;
++  UINT8 Header[1632], PayloadHeader[64];
++  UINT8 *Stored=NULL, *Expanded=NULL;
++  VOID *Scratch=NULL;
++  UINT32 MediaId=0, RamdiskSize, Crc, DestinationSize, ScratchSize;
++  UINT64 Bytes=0, Offset;
++  MI6_BOOT_PAYLOAD Payload;
++  Status=Mi6FindBoot(&Disk,&MediaId,&Bytes);
++  if (EFI_ERROR(Status)) return Status;
++  if (Bytes<sizeof(Header)) return EFI_COMPROMISED_DATA;
++  Status=Disk->ReadDisk(Disk,MediaId,0,sizeof(Header),Header);
++  if (EFI_ERROR(Status)) return Status;
++  if (CompareMem(Header+48,"sagit-mi6boot1",14)!=0) return EFI_NOT_FOUND;
++  if (!Mi6RamdiskRange(Header,Bytes,&Offset,&RamdiskSize)) return EFI_NOT_FOUND;
++  Status=Disk->ReadDisk(Disk,MediaId,Offset,sizeof(PayloadHeader),PayloadHeader);
++  if (EFI_ERROR(Status)) return Status;
++  if (!Mi6PayloadHeader(PayloadHeader,RamdiskSize,&Payload)) return EFI_COMPROMISED_DATA;
++  if (!(Payload.Flags & 1)) return EFI_NOT_FOUND;
++  if (Mi6CancelBoot(Payload.Delay)) return EFI_ABORTED;
++  Stored=AllocatePool((UINTN)Payload.Stored);
++  Expanded=AllocatePool((UINTN)Payload.Expanded);
++  if (!Stored || !Expanded) { Status=EFI_OUT_OF_RESOURCES; goto Done; }
++  Status=Disk->ReadDisk(Disk,MediaId,Offset+64,(UINTN)Payload.Stored,Stored);
++  if (EFI_ERROR(Status)) goto Done;
++  Status=gBS->CalculateCrc32(Stored,(UINTN)Payload.Stored,&Crc);
++  if (EFI_ERROR(Status) || Crc!=Payload.StoredCrc) { Status=EFI_CRC_ERROR; goto Done; }
++  if (Payload.Flags & 2) {
++    // Accept only the bounded dictionary and the decoded size emitted by our packer.
++    if (CompareMem(Stored,"\x5d\x00\x00\x80\x00",5)!=0 || Mi6U64(Stored+5)!=Payload.Expanded) {
++      Status=EFI_COMPROMISED_DATA; goto Done;
++    }
++    Status=LzmaUefiDecompressGetInfo(Stored,(UINT32)Payload.Stored,&DestinationSize,&ScratchSize);
++    if (EFI_ERROR(Status) || DestinationSize!=Payload.Expanded || ScratchSize>0x100000) {
++      Status=EFI_COMPROMISED_DATA; goto Done;
++    }
++    Scratch=AllocatePool(MAX(ScratchSize,1));
++    if (!Scratch) { Status=EFI_OUT_OF_RESOURCES; goto Done; }
++    Status=LzmaUefiDecompress(Stored,(UINTN)Payload.Stored,Expanded,Scratch);
++    if (EFI_ERROR(Status)) goto Done;
++  } else CopyMem(Expanded,Stored,(UINTN)Payload.Expanded);
++  Status=gBS->CalculateCrc32(Expanded,(UINTN)Payload.Expanded,&Crc);
++  if (EFI_ERROR(Status) || Crc!=Payload.ExpandedCrc) { Status=EFI_CRC_ERROR; goto Done; }
++  Status=gBS->LoadImage(FALSE,gImageHandle,NULL,Expanded,(UINTN)Payload.Expanded,&Child);
++  if (EFI_ERROR(Status)) goto Done;
++  FreePool(Stored); Stored=NULL;
++  FreePool(Expanded); Expanded=NULL;
++  if (Scratch) { FreePool(Scratch); Scratch=NULL; }
++  Print(L"Starting bundled EFI payload...\r\n");
++  Status=gBS->StartImage(Child,NULL,NULL);
++Done:
++  if (Child) gBS->UnloadImage(Child);
++  if (Scratch) FreePool(Scratch);
++  if (Stored) FreePool(Stored);
++  if (Expanded) FreePool(Expanded);
++  return Status;
++}
++#endif
+--- /dev/null
++++ b/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/XnuBootFormat.h
+@@ -0,0 +1,46 @@
++// SPDX-License-Identifier: BSD-2-Clause-Patent
++// MI6BOOT1 is little-endian and independent of the host structure alignment.
++#ifndef MI6_XNU_BOOT_FORMAT_H
++#define MI6_XNU_BOOT_FORMAT_H
++
++typedef struct {
++  UINT32 Flags;
++  UINT32 Delay;
++  UINT64 Stored;
++  UINT64 Expanded;
++  UINT32 StoredCrc;
++  UINT32 ExpandedCrc;
++} MI6_BOOT_PAYLOAD;
++
++STATIC UINT32 Mi6U32(CONST UINT8 *P) {
++  return (UINT32)P[0] | ((UINT32)P[1]<<8) | ((UINT32)P[2]<<16) | ((UINT32)P[3]<<24);
++}
++STATIC UINT64 Mi6U64(CONST UINT8 *P) {
++  return Mi6U32(P) | ((UINT64)Mi6U32(P+4)<<32);
++}
++STATIC BOOLEAN Mi6PayloadHeader(CONST UINT8 *P, UINT64 RamdiskSize, MI6_BOOT_PAYLOAD *Out) {
++  UINTN Index;
++  CONST CHAR8 Magic[8] = {'M','I','6','B','O','O','T','1'};
++  if (RamdiskSize < 64) return FALSE;
++  for (Index=0;Index<8;Index++) if (P[Index] != (UINT8)Magic[Index]) return FALSE;
++  if (Mi6U32(P+8)!=1 || Mi6U32(P+12)!=64) return FALSE;
++  Out->Flags=Mi6U32(P+16); Out->Delay=Mi6U32(P+20);
++  Out->Stored=Mi6U64(P+24); Out->Expanded=Mi6U64(P+32);
++  Out->StoredCrc=Mi6U32(P+40); Out->ExpandedCrc=Mi6U32(P+44);
++  if ((Out->Flags & ~3U) || Out->Delay<1 || Out->Delay>30 ||
++      Out->Stored<13 || Out->Stored>0x4000000 || Out->Stored!=RamdiskSize-64 ||
++      Out->Expanded<64 || Out->Expanded>0x10000000) return FALSE;
++  for (Index=48;Index<64;Index++) if (P[Index]) return FALSE;
++  if (!(Out->Flags & 2) && Out->Stored!=Out->Expanded) return FALSE;
++  return TRUE;
++}
++STATIC BOOLEAN Mi6RamdiskRange(CONST UINT8 *P, UINT64 PartitionBytes, UINT64 *Offset, UINT32 *Size) {
++  UINT32 Kernel=Mi6U32(P+8), Page=Mi6U32(P+36);
++  if (Mi6U64(P)!=0x2144494f52444e41ULL || !Kernel || Mi6U32(P+24) ||
++      Mi6U32(P+40) || (Page!=2048 && Page!=4096)) return FALSE;
++  *Offset=Page+(((UINT64)Kernel+Page-1)&~((UINT64)Page-1));
++  *Size=Mi6U32(P+16);
++  return *Size>=64 && *Size<=0x4000000 && *Offset<=PartitionBytes &&
++         (((UINT64)*Size+Page-1)&~((UINT64)Page-1))<=PartitionBytes-*Offset;
++}
++#endif

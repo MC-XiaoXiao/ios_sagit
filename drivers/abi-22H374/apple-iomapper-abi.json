@@ -1,0 +1,349 @@
+{
+  "image_sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+  "architecture": "arm64",
+  "classes": {
+    "IOMapper": {
+      "super": "IOService",
+      "instance_size": 208,
+      "vtable_slots": 174
+    },
+    "IODMACommand": {
+      "super": "IOCommand",
+      "instance_size": 120,
+      "vtable_slots": 31
+    },
+    "IOCommand": {
+      "super": "OSObject",
+      "instance_size": 32,
+      "vtable_slots": 15
+    },
+    "IOMemoryDescriptor": {
+      "super": "OSObject",
+      "instance_size": 96,
+      "vtable_slots": 37
+    },
+    "IOGeneralMemoryDescriptor": {
+      "super": "IOMemoryDescriptor",
+      "instance_size": 176,
+      "vtable_slots": 37
+    },
+    "IOBufferMemoryDescriptor": {
+      "super": "IOGeneralMemoryDescriptor",
+      "instance_size": 232,
+      "vtable_slots": 44
+    }
+  },
+  "required_symbols": [
+    "__ZN8IOMapper10gMetaClassE",
+    "__ZN8IOMapperC2EPK11OSMetaClass",
+    "__ZN8IOMapperD2Ev",
+    "__ZN8IOMapper4freeEv",
+    "__ZN8IOMapper5startEP9IOService",
+    "__ZN8IOMapper19copyMapperForDeviceEP9IOService",
+    "__ZN8IOMapper28copyMapperForDeviceWithIndexEP9IOServicej",
+    "__ZN12IODMACommand8completeEbb",
+    "__ZN12IODMACommand21clearMemoryDescriptorEb",
+    "__ZN12IODMACommand10gMetaClassE",
+    "__ZN12IODMACommandC2EPK11OSMetaClass",
+    "__ZN12IODMACommandD2Ev",
+    "__ZN12IODMACommand4freeEv",
+    "__ZN12IODMACommand19setMemoryDescriptorEPK18IOMemoryDescriptorb",
+    "__ZN12IODMACommand7prepareEyybb",
+    "__ZN12IODMACommand11synchronizeEj",
+    "__ZN12IODMACommand12cloneCommandEPv",
+    "__ZN12IODMACommand14initWithRefConEPv",
+    "__ZN12IODMACommand15genIOVMSegmentsEPyPvPj",
+    "__ZN12IODMACommand16createCopyBufferEjy",
+    "__ZN12IODMACommand21initWithSpecificationEPFbPS_NS_9Segment64EPvjEPKNS_14SegmentOptionsEjP8IOMapperS2_",
+    "__ZN12IODMACommand21initWithSpecificationEPFbPS_NS_9Segment64EPvjEhyNS_14MappingOptionsEyjP8IOMapperS2_",
+    "__ZN12IODMACommand24prepareWithSpecificationEPFbPS_NS_9Segment64EPvjEPKNS_14SegmentOptionsEjP8IOMapperyybb",
+    "__ZN12IODMACommand24prepareWithSpecificationEPFbPS_NS_9Segment64EPvjEhyNS_14MappingOptionsEyjP8IOMapperyybb",
+    "__ZN12IODMACommand26getPreparedOffsetAndLengthEPyS0_",
+    "__ZN12IODMACommand8DispatchE5IORPC",
+    "__ZN12IODMACommand8transferEjyPvy",
+    "__ZN9IOCommand4initEv",
+    "__ZNK12IODMACommand19getMemoryDescriptorEv",
+    "__ZN8IOMapper7gSystemE",
+    "__ZN24IOBufferMemoryDescriptor10gMetaClassE",
+    "__ZN24IOBufferMemoryDescriptorC2EPK11OSMetaClass",
+    "__ZN24IOBufferMemoryDescriptorD2Ev",
+    "__ZN25IOGeneralMemoryDescriptor8completeEj",
+    "__ZN18IOMemoryDescriptor10addMappingEP11IOMemoryMap",
+    "__ZN18IOMemoryDescriptor10setMappingEP4taskyj",
+    "__ZN18IOMemoryDescriptor10writeBytesEyPKvy",
+    "__ZN18IOMemoryDescriptor13removeMappingEP11IOMemoryMap",
+    "__ZN18IOMemoryDescriptor16performOperationEjyy",
+    "__ZN18IOMemoryDescriptor3mapEj",
+    "__ZN18IOMemoryDescriptor6getTagEv",
+    "__ZN18IOMemoryDescriptor6setTagEj",
+    "__ZN18IOMemoryDescriptor8redirectEP4taskb",
+    "__ZN18IOMemoryDescriptor9readBytesEyPvy",
+    "__ZN24IOBufferMemoryDescriptor11appendBytesEPKvm",
+    "__ZN24IOBufferMemoryDescriptor12setDirectionEj",
+    "__ZN24IOBufferMemoryDescriptor14getBytesNoCopyEmm",
+    "__ZN24IOBufferMemoryDescriptor14getBytesNoCopyEv",
+    "__ZN24IOBufferMemoryDescriptor20initWithPhysicalMaskEP4taskjyyy",
+    "__ZN24IOBufferMemoryDescriptor22inTaskWithPhysicalMaskEP4taskjyy",
+    "__ZN24IOBufferMemoryDescriptor4freeEv",
+    "__ZN24IOBufferMemoryDescriptor8DispatchE5IORPC",
+    "__ZN24IOBufferMemoryDescriptor9setLengthEm",
+    "__ZN25IOGeneralMemoryDescriptor11makeMappingEP18IOMemoryDescriptorP4taskyjyy",
+    "__ZN25IOGeneralMemoryDescriptor12setPurgeableEjPj",
+    "__ZN25IOGeneralMemoryDescriptor15initWithOptionsEPvjjP4taskjP8IOMapper",
+    "__ZN25IOGeneralMemoryDescriptor16getPreparationIDEv",
+    "__ZN25IOGeneralMemoryDescriptor18getPhysicalSegmentEyPyj",
+    "__ZN25IOGeneralMemoryDescriptor5doMapEP7_vm_mapPyjyy",
+    "__ZN25IOGeneralMemoryDescriptor7doUnmapEP7_vm_mapyy",
+    "__ZN25IOGeneralMemoryDescriptor7prepareEj",
+    "__ZNK18IOMemoryDescriptor12getDirectionEv",
+    "__ZNK18IOMemoryDescriptor9getLengthEv",
+    "__ZNK24IOBufferMemoryDescriptor11getCapacityEv",
+    "__ZNK25IOGeneralMemoryDescriptor19dmaCommandOperationEjPvj",
+    "__ZNK25IOGeneralMemoryDescriptor9serializeEP11OSSerialize"
+  ],
+  "virtual_symbols": {
+    "__ZN8IOMapper4freeEv": {
+      "class": "IOMapper",
+      "slot": 14
+    },
+    "__ZN8IOMapper5startEP9IOService": {
+      "class": "IOMapper",
+      "slot": 86
+    },
+    "__ZN12IODMACommand4freeEv": {
+      "class": "IODMACommand",
+      "slot": 14
+    },
+    "__ZN12IODMACommand19setMemoryDescriptorEPK18IOMemoryDescriptorb": {
+      "class": "IODMACommand",
+      "slot": 17
+    },
+    "__ZN12IODMACommand21clearMemoryDescriptorEb": {
+      "class": "IODMACommand",
+      "slot": 18
+    },
+    "__ZN12IODMACommand7prepareEyybb": {
+      "class": "IODMACommand",
+      "slot": 20
+    },
+    "__ZN12IODMACommand8completeEbb": {
+      "class": "IODMACommand",
+      "slot": 21
+    },
+    "__ZN12IODMACommand11synchronizeEj": {
+      "class": "IODMACommand",
+      "slot": 22
+    },
+    "__ZN12IODMACommand12cloneCommandEPv": {
+      "class": "IODMACommand",
+      "slot": 15
+    },
+    "__ZN12IODMACommand14initWithRefConEPv": {
+      "class": "IODMACommand",
+      "slot": 27
+    },
+    "__ZN12IODMACommand15genIOVMSegmentsEPyPvPj": {
+      "class": "IODMACommand",
+      "slot": 23
+    },
+    "__ZN12IODMACommand16createCopyBufferEjy": {
+      "class": "IODMACommand",
+      "slot": 30
+    },
+    "__ZN12IODMACommand21initWithSpecificationEPFbPS_NS_9Segment64EPvjEPKNS_14SegmentOptionsEjP8IOMapperS2_": {
+      "class": "IODMACommand",
+      "slot": 28
+    },
+    "__ZN12IODMACommand21initWithSpecificationEPFbPS_NS_9Segment64EPvjEhyNS_14MappingOptionsEyjP8IOMapperS2_": {
+      "class": "IODMACommand",
+      "slot": 16
+    },
+    "__ZN12IODMACommand24prepareWithSpecificationEPFbPS_NS_9Segment64EPvjEPKNS_14SegmentOptionsEjP8IOMapperyybb": {
+      "class": "IODMACommand",
+      "slot": 29
+    },
+    "__ZN12IODMACommand24prepareWithSpecificationEPFbPS_NS_9Segment64EPvjEhyNS_14MappingOptionsEyjP8IOMapperyybb": {
+      "class": "IODMACommand",
+      "slot": 25
+    },
+    "__ZN12IODMACommand26getPreparedOffsetAndLengthEPyS0_": {
+      "class": "IODMACommand",
+      "slot": 26
+    },
+    "__ZN12IODMACommand8DispatchE5IORPC": {
+      "class": "IODMACommand",
+      "slot": 12
+    },
+    "__ZN12IODMACommand8transferEjyPvy": {
+      "class": "IODMACommand",
+      "slot": 24
+    },
+    "__ZN9IOCommand4initEv": {
+      "class": "IOCommand",
+      "slot": 13
+    },
+    "__ZNK12IODMACommand19getMemoryDescriptorEv": {
+      "class": "IODMACommand",
+      "slot": 19
+    },
+    "__ZN25IOGeneralMemoryDescriptor8completeEj": {
+      "class": "IOGeneralMemoryDescriptor",
+      "slot": 28
+    },
+    "__ZN18IOMemoryDescriptor10addMappingEP11IOMemoryMap": {
+      "class": "IOMemoryDescriptor",
+      "slot": 33
+    },
+    "__ZN18IOMemoryDescriptor10setMappingEP4taskyj": {
+      "class": "IOMemoryDescriptor",
+      "slot": 30
+    },
+    "__ZN18IOMemoryDescriptor10writeBytesEyPKvy": {
+      "class": "IOMemoryDescriptor",
+      "slot": 26
+    },
+    "__ZN18IOMemoryDescriptor13removeMappingEP11IOMemoryMap": {
+      "class": "IOMemoryDescriptor",
+      "slot": 34
+    },
+    "__ZN18IOMemoryDescriptor16performOperationEjyy": {
+      "class": "IOMemoryDescriptor",
+      "slot": 17
+    },
+    "__ZN18IOMemoryDescriptor3mapEj": {
+      "class": "IOMemoryDescriptor",
+      "slot": 29
+    },
+    "__ZN18IOMemoryDescriptor6getTagEv": {
+      "class": "IOMemoryDescriptor",
+      "slot": 24
+    },
+    "__ZN18IOMemoryDescriptor6setTagEj": {
+      "class": "IOMemoryDescriptor",
+      "slot": 23
+    },
+    "__ZN18IOMemoryDescriptor8redirectEP4taskb": {
+      "class": "IOMemoryDescriptor",
+      "slot": 31
+    },
+    "__ZN18IOMemoryDescriptor9readBytesEyPvy": {
+      "class": "IOMemoryDescriptor",
+      "slot": 25
+    },
+    "__ZN24IOBufferMemoryDescriptor11appendBytesEPKvm": {
+      "class": "IOBufferMemoryDescriptor",
+      "slot": 43
+    },
+    "__ZN24IOBufferMemoryDescriptor12setDirectionEj": {
+      "class": "IOBufferMemoryDescriptor",
+      "slot": 39
+    },
+    "__ZN24IOBufferMemoryDescriptor14getBytesNoCopyEmm": {
+      "class": "IOBufferMemoryDescriptor",
+      "slot": 42
+    },
+    "__ZN24IOBufferMemoryDescriptor14getBytesNoCopyEv": {
+      "class": "IOBufferMemoryDescriptor",
+      "slot": 41
+    },
+    "__ZN24IOBufferMemoryDescriptor20initWithPhysicalMaskEP4taskjyyy": {
+      "class": "IOBufferMemoryDescriptor",
+      "slot": 37
+    },
+    "__ZN24IOBufferMemoryDescriptor4freeEv": {
+      "class": "IOBufferMemoryDescriptor",
+      "slot": 14
+    },
+    "__ZN24IOBufferMemoryDescriptor8DispatchE5IORPC": {
+      "class": "IOBufferMemoryDescriptor",
+      "slot": 12
+    },
+    "__ZN24IOBufferMemoryDescriptor9setLengthEm": {
+      "class": "IOBufferMemoryDescriptor",
+      "slot": 38
+    },
+    "__ZN25IOGeneralMemoryDescriptor11makeMappingEP18IOMemoryDescriptorP4taskyjyy": {
+      "class": "IOGeneralMemoryDescriptor",
+      "slot": 32
+    },
+    "__ZN25IOGeneralMemoryDescriptor12setPurgeableEjPj": {
+      "class": "IOGeneralMemoryDescriptor",
+      "slot": 16
+    },
+    "__ZN25IOGeneralMemoryDescriptor15initWithOptionsEPvjjP4taskjP8IOMapper": {
+      "class": "IOGeneralMemoryDescriptor",
+      "slot": 15
+    },
+    "__ZN25IOGeneralMemoryDescriptor16getPreparationIDEv": {
+      "class": "IOGeneralMemoryDescriptor",
+      "slot": 20
+    },
+    "__ZN25IOGeneralMemoryDescriptor18getPhysicalSegmentEyPyj": {
+      "class": "IOGeneralMemoryDescriptor",
+      "slot": 19
+    },
+    "__ZN25IOGeneralMemoryDescriptor5doMapEP7_vm_mapPyjyy": {
+      "class": "IOGeneralMemoryDescriptor",
+      "slot": 35
+    },
+    "__ZN25IOGeneralMemoryDescriptor7doUnmapEP7_vm_mapyy": {
+      "class": "IOGeneralMemoryDescriptor",
+      "slot": 36
+    },
+    "__ZN25IOGeneralMemoryDescriptor7prepareEj": {
+      "class": "IOGeneralMemoryDescriptor",
+      "slot": 27
+    },
+    "__ZNK18IOMemoryDescriptor12getDirectionEv": {
+      "class": "IOMemoryDescriptor",
+      "slot": 21
+    },
+    "__ZNK18IOMemoryDescriptor9getLengthEv": {
+      "class": "IOMemoryDescriptor",
+      "slot": 22
+    },
+    "__ZNK24IOBufferMemoryDescriptor11getCapacityEv": {
+      "class": "IOBufferMemoryDescriptor",
+      "slot": 40
+    },
+    "__ZNK25IOGeneralMemoryDescriptor19dmaCommandOperationEjPvj": {
+      "class": "IOGeneralMemoryDescriptor",
+      "slot": 18
+    },
+    "__ZNK25IOGeneralMemoryDescriptor9serializeEP11OSSerialize": {
+      "class": "IOGeneralMemoryDescriptor",
+      "slot": 6
+    }
+  },
+  "function_bindings": {
+    "__ZN8IOMapper5startEP9IOService": {
+      "address": "0xfffffff007884b20",
+      "bytes": "f85fbca9f65701a9f44f02a9fd7b03a9fdc30091f50301aaf40300aa080040f9"
+    },
+    "__ZN8IOMapper19copyMapperForDeviceEP9IOService": {
+      "address": "0xfffffff0078854f0",
+      "bytes": "0100805201000014ff0304d1fa670ba9f85f0ca9f6570da9f44f0ea9fd7b0fa9"
+    },
+    "__ZN8IOMapper28copyMapperForDeviceWithIndexEP9IOServicej": {
+      "address": "0xfffffff0078854f8",
+      "bytes": "ff0304d1fa670ba9f85f0ca9f6570da9f44f0ea9fd7b0fa9fdc30391f50301aa"
+    },
+    "__ZN12IODMACommand8completeEbb": {
+      "address": "0xfffffff0078816cc",
+      "bytes": "086840b9c8010034ff8302d1f85f06a9f65707a9f44f08a9fd7b09a9fd430291"
+    },
+    "__ZN12IODMACommand21clearMemoryDescriptorEb": {
+      "address": "0xfffffff007881060",
+      "bytes": "086840b91f0100712018407a80040054f44fbea9fd7b01a9fd430091f30300aa"
+    },
+    "__ZN25IOGeneralMemoryDescriptor8completeEj": {
+      "address": "0xfffffff00788dc70",
+      "bytes": "ff8301d1f85f02a9f65703a9f44f04a9fd7b05a9fd430191172040b9f60e1c12"
+    },
+    "__ZN24IOBufferMemoryDescriptor22inTaskWithPhysicalMaskEP4taskjyy": {
+      "address": "0xfffffff0078807e8",
+      "bytes": "f85fbca9f65701a9f44f02a9fd7b03a9fdc30091f30303aaf40302aaf50301aa"
+    }
+  },
+  "note": "Native IOMapper, IODMACommand and memory descriptor ABI/lifecycle evidence. Probe code is compiled only; Native callbacks and hardware have not run."
+}

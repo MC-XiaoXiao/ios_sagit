@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleIdentifier</key>
+	<string>org.darwin.driver.QcomOSM</string>
+	<key>CFBundleExecutable</key>
+	<string>QcomOSM</string>
+	<key>CFBundleName</key>
+	<string>QcomOSM</string>
+	<key>CFBundleVersion</key>
+	<string>1.4.3</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.4.3</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundlePackageType</key>
+	<string>KEXT</string>
+	<key>CFBundleSupportedPlatforms</key>
+	<array>
+		<string>iPhoneOS</string>
+	</array>
+	<key>OSBundleCompatibleVersion</key>
+	<string>1.0.0</string>
+	<key>OSBundleRequired</key>
+	<string>Root</string>
+	<key>OSBundleLibraries</key>
+	<dict>
+		<key>com.apple.kpi.iokit</key>
+		<string>8.0.0</string>
+		<key>com.apple.kpi.libkern</key>
+		<string>8.0.0</string>
+		<key>com.apple.kpi.mach</key>
+		<string>8.0.0</string>
+		<key>com.apple.kpi.unsupported</key>
+		<string>8.0.0</string>
+		<key>com.apple.kpi.private</key>
+		<string>22.0</string>
+		<key>org.darwin.driver.GenericClockController</key>
+		<string>1.3.1</string>
+		<key>org.darwin.driver.QcomPowerController</key>
+		<string>1.1.0</string>
+	</dict>
+	<key>IOKitPersonalities</key>
+	<dict>
+		<key>QcomOSM</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>org.darwin.driver.QcomOSM</string>
+			<key>IOClass</key>
+			<string>QcomOSM</string>
+			<key>IOProviderClass</key>
+			<string>AppleARMIODevice</string>
+			<key>IONameMatch</key>
+			<array>
+				<string>qcom,cpu-clock-osm-msm8998-v1</string>
+				<string>qcom,cpu-clock-osm-msm8998-v2</string>
+			</array>
+			<key>IOProbeScore</key>
+			<integer>1000</integer>
+		</dict>
+	</dict>
+</dict>
+</plist>

@@ -1,0 +1,1281 @@
+{
+  "repository": "https://github.com/chaotic-cx/mesa-mirror.git",
+  "upstream": "https://gitlab.freedesktop.org/mesa/mesa",
+  "tag": "mesa-24.3.4",
+  "commit": "769e51468b49b2a42f0a0eaf71cf9eed5ff4e5de",
+  "license": "MIT (compiler/Freedreno); preserve the upstream notices",
+  "sparse_paths": [
+    "include",
+    "bin",
+    "subprojects",
+    "src/compiler",
+    "src/freedreno",
+    "src/gallium/auxiliary",
+    "src/gallium/include",
+    "src/gallium/drivers/freedreno",
+    "src/gallium/targets",
+    "src/gallium/frontends",
+    "src/gallium/winsys/freedreno",
+    "src/util",
+    "src/mesa",
+    "src/mapi",
+    "src/loader",
+    "src/c11",
+    "src/egl",
+    "src/gbm",
+    "src/vulkan/util",
+    "src/vulkan/registry",
+    "src/gtest",
+    "src/amd/common",
+    "src/tool",
+    "src/virtio",
+    "src/android_stub",
+    "src/x11",
+    "src/gallium/winsys/sw",
+    "src/gallium/drivers/llvmpipe",
+    "src/gallium/drivers/zink",
+    "src/gallium/winsys/kmsro"
+  ],
+  "air_frontend": {
+    "source": "AIR.cpp",
+    "license": "BSD-2-Clause (independent implementation; LLVM 23 for host AOT, iOS libLLVM C ABI for runtime AIR)",
+    "llvm_major": 23,
+    "metadata_references": [
+      "https://github.com/steelbrain/metal2vulkan/tree/720ef1ce9ae2a2068999a8675717418b9416283e/crates/metal2vulkan-air/src/abi",
+      "https://github.com/zhuowei/MetalShaderTools/tree/820e4301bc85c472bf5c44ebf2c8660fec0d0f70/sampleshader"
+    ],
+    "container_reference": "https://github.com/YuAo/MetalLibraryArchive/blob/de573ba4a7b986bbecb3e4ce2464945d266a28e9/Sources/MetalLibraryArchive/Archive.swift"
+  },
+  "runtime": {
+    "backend": "Backend.c",
+    "msl_frontend": "MSL.cpp",
+    "air_frontend": "AIRRuntime.cpp",
+    "shared_library": "QcomGPUCompiler.dylib",
+    "target": "arm64-apple-ios18.6",
+    "llvm_abi": "Exported LLVM C entry points checked against the iOS SDK libLLVM.tbd",
+    "wire_version": 24,
+    "privilege": "Existing administrator-only IOGPU device connection; trusted shader ISA registration",
+    "cache": "Per-device bounded weak in-memory library cache; no disk cache or executable CPU pages"
+  },
+  "control_flow": {
+    "shared_air_lowering": "AIRControlFlow.h",
+    "msl": [
+      "if/else",
+      "for",
+      "while",
+      "do/while",
+      "switch",
+      "break",
+      "continue",
+      "early graphics/compute returns",
+      "lexical local scopes",
+      "scalar C++ condition conversion"
+    ],
+    "air": [
+      "conditional/unconditional branches",
+      "switch",
+      "data/vector/aggregate PHIs",
+      "cyclic parallel PHI copies",
+      "non-topological block order",
+      "multiple returns"
+    ],
+    "air_max_blocks": 128,
+    "air_max_instructions": 4096,
+    "air_lowering": "Postdominator joins for acyclic graphs; per-invocation dispatch for loops or large crossing graphs. PHIs are parallel copies on the selected edge. No artificial iteration truncation.",
+    "resource_address_proof": "Bounded scalar/vector SSBO accesses; pointer/address PHIs remain unsupported",
+    "llvm_c_compatibility": {
+      "legacy_branch_opcode": 2,
+      "split_branch_opcodes": [
+        70,
+        71
+      ],
+      "switch_cases": "Legacy operand-pair representation or a dynamically resolved public LLVMGetSwitchCaseValue accessor; no private LLVM object layouts",
+      "references": [
+        "https://llvm.org/docs/LangRef.html#phi-instruction",
+        "https://raw.githubusercontent.com/llvm/llvm-project/llvmorg-18.1.8/llvm/include/llvm-c/Core.h",
+        "https://llvm.org/doxygen/group__LLVMCCoreValueInstructionTerminator.html"
+      ]
+    },
+    "target_runtime_verified": false
+  },
+  "compute": {
+    "workgroup_size": "runtime variable; uniform groups or exact partial edge groups",
+    "max_threads_per_group": 1024,
+    "max_local_dimensions": [
+      1024,
+      1024,
+      64
+    ],
+    "max_grid_groups_per_dimension": 65535,
+    "max_invocations_per_dispatch": 16777216,
+    "grid_dimensions": 3,
+    "resource_address_proof": "NIR guards on final SSBO byte offsets; typed indices and relative address arithmetic preserve overflow information",
+    "shared_memory": true,
+    "nonuniform_groups": true,
+    "references": [
+      "https://developer.apple.com/metal/Metal-Shading-Language-Specification.pdf",
+      "https://registry.khronos.org/OpenGL/extensions/ARB/ARB_compute_variable_group_size.txt",
+      "https://developer.apple.com/documentation/metal/mtlcomputecommandencoder/dispatchthreadgroups(_:threadsperthreadgroup:)",
+      "Mesa src/gallium/drivers/freedreno/a5xx/fd5_compute.c and src/freedreno/ir3/ir3_shader.h at the pinned compiler commit"
+    ],
+    "hardware_verified": false,
+    "system_input_types": [
+      "uint",
+      "uint2",
+      "uint3"
+    ],
+    "primary_specification_evidence": "build/drivers/gpu-compute-specification.json",
+    "system_input_semantics": [
+      "thread_position_in_grid",
+      "thread_position_in_threadgroup",
+      "threadgroup_position_in_grid",
+      "threads_per_threadgroup",
+      "dispatch_threads_per_threadgroup",
+      "threadgroups_per_grid",
+      "threads_per_grid",
+      "thread_index_in_threadgroup"
+    ]
+  },
+  "buffer_access": {
+    "compiler_flag": 8,
+    "stages": [
+      "compute",
+      "vertex-readonly",
+      "fragment-read-write"
+    ],
+    "scalar_bits": 32,
+    "vector_components": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "array_strides": [
+      4,
+      8,
+      16
+    ],
+    "address_model": "64-bit relative GEP arithmetic represented as two uint32 words; aligned word access only; physical base remains an opaque binding",
+    "load_policy": "per-component zero outside the actual binding byte range",
+    "store_policy": "discard each out-of-range component",
+    "minimum_bound_bytes": 4,
+    "descriptor_size_source": "A5xx SSBO resinfo returns byte count as low/high 16 bits",
+    "msl_constants": [
+      "scalar/vector reference",
+      "readonly struct fields with Metal float3 padding"
+    ],
+    "inline_compute_and_vertex_bytes": 4096,
+    "air_compound_argument_bytes_max": 4096,
+    "pointer_phis": false,
+    "unaligned_subword_access": false,
+    "fragment_buffers": true,
+    "kernel_isa_sandbox": false,
+    "runtime_verified": false,
+    "references": [
+      "https://developer.apple.com/documentation/metal/mtlcomputecommandencoder/setbytes(_:length:index:)",
+      "https://developer.apple.com/metal/Metal-Shading-Language-Specification.pdf",
+      "Pinned Mesa src/freedreno/ir3/ir3_compiler_nir.c emit_intrinsic_ssbo_size and src/compiler/nir/ API",
+      "https://developer.apple.com/documentation/metal/mtlrendercommandencoder/setfragmentbytes(_:length:index:)",
+      "Pinned Mesa src/gallium/drivers/freedreno/freedreno_screen.c PIPE_SHADER_CAP_MAX_SHADER_BUFFERS and a5xx/fd5_emit.c emit_ssbos; ir3/ir3_image.c ir3_ssbo_to_ibo"
+    ],
+    "inline_fragment_bytes": 4096,
+    "graphics_buffer_banks": {
+      "vertex": [
+        0,
+        7
+      ],
+      "fragment": [
+        8,
+        15
+      ],
+      "state_block": 14,
+      "compute_state_block": 15,
+      "per_stage_bindings": 8
+    }
+  },
+  "threadgroup_memory": {
+    "static_memory": true,
+    "max_bytes": 32768,
+    "dynamic_threadgroup_arguments": true,
+    "barrier": {
+      "msl": "threadgroup_barrier",
+      "air": "air.wg.barrier(i32 flags, i32 1)",
+      "memory_flags": [
+        "mem_none",
+        "mem_device",
+        "mem_threadgroup",
+        "mem_texture"
+      ],
+      "execution_scope": "workgroup",
+      "control_flow_must_be_group_uniform": true
+    },
+    "msl_storage": [
+      "function-local threadgroup scalar/vector",
+      "fixed-size threadgroup scalar/vector arrays",
+      "threadgroup scalar/vector/atomic pointer or reference arguments [[threadgroup(0..7)]]"
+    ],
+    "air_storage": "Uninitialized addrspace(3) globals and air.buffer addrspace(3) arguments; 32-bit scalar/vector/relaxed integer atomic accesses",
+    "native_metadata": "sharedBytes aligned static prefix, threadgroupMask dynamic arguments; shader/JIT 15/13; Dispatch 648, Draw 1016, description/image 1732/7992 bytes",
+    "native_threadgroup_bytes_validation": true,
+    "backend": "Mesa IR3 LDL/STL, FENCE and BAR; fd5_compute.c fixed HLSQ_CS_CNTL_1=1",
+    "target_runtime_verified": false,
+    "references": [
+      "Pinned Mesa src/freedreno/common/freedreno_devices.py A540 cs_shared_mem_size",
+      "Pinned Mesa src/gallium/drivers/freedreno/a5xx/fd5_compute.c",
+      "Pinned Mesa src/freedreno/ir3/ir3_compiler_nir.c emit_intrinsic_load/store_shared, emit_intrinsic_barrier",
+      "https://github.com/vertex-language/air/blob/3d277d16858a/intrinsic.go",
+      "https://developer.apple.com/metal/Metal-Shading-Language-Specification.pdf",
+      "https://developer.apple.com/documentation/metal/mtlcomputecommandencoder/setthreadgroupmemorylength(_:index:)",
+      "https://github.com/vertex-language/air/blob/3d277d16858a/kernel.go",
+      "Pinned Mesa ir3_shader_options.num_reserved_user_consts and nir_load_const_ir3"
+    ],
+    "address_bounds": "Invalid or huge relative offsets are clamped to the 32 KiB capacity before NIR adds a variable base; final per-component NIR bounds cover the allocated shared region and intrinsic-base overflow.",
+    "dynamic_bindings": 8,
+    "dynamic_alignment_bytes": 16,
+    "dynamic_size_source": "MTLComputeCommandEncoder setThreadgroupMemoryLength:atIndex:, snapshotted per dispatch",
+    "dynamic_layout": "Static objects precede a 16-byte-aligned raw shared pool; native admission packs positive aligned lengths within the combined 32768-byte capacity. The first 16 IR3 constant words hold relative byte offsets and lengths.",
+    "dynamic_bounds": "Per-argument 64-bit offset/alignment/component checks precede each shared access; invalid loads/atomics return zero and invalid stores/atomics do not execute. Final shared NIR guards also enforce the 32768-byte allocation.",
+    "compiler_integration": "Defer GL shared-variable layout only for the generated dynamic pool; Interface.h assigns its base, trims the reservation, and lowers explicit shared IO. IR3 reserves four vec4 user constants before driver params/immediates."
+  },
+  "integer_atomics": {
+    "integer_bits": 32,
+    "scalar_types": [
+      "atomic_uint",
+      "atomic_int"
+    ],
+    "memory": [
+      "compute/fragment writable device buffers",
+      "compute static and dynamic threadgroup memory"
+    ],
+    "operations": [
+      "load",
+      "store",
+      "exchange",
+      "fetch_add",
+      "fetch_sub",
+      "fetch_and",
+      "fetch_or",
+      "fetch_xor",
+      "fetch_min",
+      "fetch_max",
+      "compare_exchange_weak",
+      "compare_exchange_strong"
+    ],
+    "memory_orders": [
+      "relaxed"
+    ],
+    "load_lowering": "atomicOr(0), conservatively treated as a write",
+    "store_lowering": "atomicExchange, result discarded",
+    "signed_minmax_lowering": "CAS retry over the raw uint view",
+    "weak_cas": "strong CAS is used; no spurious failure",
+    "cas_expected": "matching thread-local int32 scalar; updated on comparison failure",
+    "air_forms": [
+      "air.atomic.global/local.*.i32 and .s/.u.i32 with checked order/scope",
+      "LLVM int32 atomicrmw/cmpxchg and relaxed atomic load/store"
+    ],
+    "bounds": "Per-word NIR guard branches around the atomic; out-of-range/unaligned operations execute no atomic and return zero",
+    "native_isa_sandbox": false,
+    "administrator_registration": true,
+    "float_atomics": false,
+    "int64_atomics": false,
+    "target_runtime_verified": false,
+    "references": [
+      "Pinned Mesa ir3/ir3_a4xx.c emit_atomic/emit_intrinsic_atomic_ssbo and ir3_compiler_nir.c emit_intrinsic_atomic_shared",
+      "https://github.com/vertex-language/air/blob/3d277d16858a/intrinsic.go",
+      "https://github.com/vertex-language/air/blob/3d277d16858a/intrinsic_test.go"
+    ]
+  },
+  "texture_mipmaps": {
+    "color_formats": [
+      "rgba8unorm",
+      "bgra8unorm",
+      "rgba8unorm_srgb",
+      "bgra8unorm_srgb"
+    ],
+    "max_levels": 15,
+    "linear_layout": "RGBA8 fdl5, pitchalign=8 (256 bytes), fdl_pitch minifies aligned base pitch with a minimum of one before alignment; last level has 32-row padding; complete layer is page aligned",
+    "single_level_compatibility": "existing 64-byte row alignment and exact image span; IOSurface remains single-level",
+    "compiler_sample_lod": [
+      "MSL default sample, level(float), bias(float)",
+      "AIR sample mode with float32 level or bias"
+    ],
+    "generation": "mipmap_rgba8 AOT compute kernel, per-level nonoverlapping source texture0 and destination image7; sampler0 linear filtering in linear RGB; sRGB encoded by bounded image stores; serial native fences; no CPU generation",
+    "native_range": "full chain length checked against resource and alias spans; attachments/CPU/blit use selected single-level planes",
+    "shader_command_version": 31,
+    "jit_version": 28,
+    "texture_bytes": 48,
+    "sampler_bytes": 28,
+    "dispatch_bytes": 824,
+    "draw_bytes": 2816,
+    "sampler_lod": "unsigned 8.8 min/max, mip none/nearest/linear; fd5 none clamps to 0.125",
+    "runtime_verified": false,
+    "references": [
+      "https://github.com/chaotic-cx/mesa-mirror/blob/769e51468b49b2a42f0a0eaf71cf9eed5ff4e5de/src/freedreno/fdl/fd5_layout.c",
+      "https://github.com/chaotic-cx/mesa-mirror/blob/769e51468b49b2a42f0a0eaf71cf9eed5ff4e5de/src/freedreno/fdl/freedreno_layout.h",
+      "https://github.com/chaotic-cx/mesa-mirror/blob/769e51468b49b2a42f0a0eaf71cf9eed5ff4e5de/src/gallium/drivers/freedreno/a5xx/fd5_texture.c",
+      "Metal SDK MTLBlitCommandEncoder whole-mip copy and generateMipmaps contracts",
+      "Metal SDK MTLRenderCommandEncoder sampler LOD clamps"
+    ]
+  },
+  "compute_textures": {
+    "bindings": 8,
+    "formats": [
+      "rgba8unorm",
+      "bgra8unorm",
+      "rgba8unorm_srgb",
+      "bgra8unorm_srgb"
+    ],
+    "access": [
+      "read",
+      "write",
+      "read_write"
+    ],
+    "mip_access": "uint32 dynamic or constant mip level; per-level dimensions and range checks",
+    "physical_ssbo_bank": [
+      8,
+      15
+    ],
+    "ordinary_buffer_slots": [
+      0,
+      7
+    ],
+    "native_constant_words": [
+      16,
+      47
+    ],
+    "constants": "native-validated width,height,base pitch,format|levelCount<<8; no addresses",
+    "backend": "A540 guarded SSBO 8..15 for linear image read/write; hardware CS texture state block 5 and independent sampler indices for normalized sample/level, no CPU pixel execution",
+    "oob_read": "zero",
+    "oob_write": "discard",
+    "barrier": "mem_texture uses buffer memory barrier plus workgroup execution barrier",
+    "shader_version": 28,
+    "jit_version": 28,
+    "description_bytes": 2384,
+    "image_bytes": 20936,
+    "dispatch_bytes": 824,
+    "draw_bytes": 2816,
+    "complete_read_write_tier_advertised": false,
+    "runtime_verified": false,
+    "references": [
+      "https://github.com/vertex-language/air/blob/3d277d16858a/intrinsic.go",
+      "Pinned Mesa fd5_image.c SSBO image-store model, fd5_emit.c SSBO bank capacity",
+      "Pinned Mesa fdl5_layout/fdl_pitch linear mip layout"
+    ],
+    "sampling": true,
+    "sampler_bindings": 8,
+    "sample_modes": [
+      "implicit level zero",
+      "explicit float32 level"
+    ],
+    "hardware_texture_block": 5,
+    "independent_sampler_indices": true,
+    "combined_pair_frontend_limit": 32
+  },
+  "sampler_state": {
+    "address_modes": [
+      "clamp-to-edge",
+      "mirror-clamp-to-edge",
+      "repeat",
+      "mirror-repeat",
+      "clamp-to-zero",
+      "clamp-to-border-color"
+    ],
+    "mirror_clamp": "Production GLSL abs/gradient reflection with native-owned flags for POT/NPOT. Fragment implicit/bias sampling preserves derivatives of the original coordinates before mirror reflection.",
+    "max_anisotropy": 16,
+    "anisotropy_encoding": "Mesa fd5 floor-power-of-two cap; ANISO filter only when linear filtering is selected",
+    "normalized_and_pixel_coordinates": true,
+    "pixel_coordinates_restrictions": "edge modes, no mip filter, anisotropy one",
+    "border_colors": [
+      "transparent-black",
+      "opaque-black",
+      "opaque-white"
+    ],
+    "border_table": "Three immutable A5xx 128-byte entries in private read-only IB, 512-byte aligned",
+    "unsupported": "Mixed S/T ClampToZero and nontransparent ClampToBorderColor in one sampler; depth comparison and arbitrary custom colors",
+    "explicit_lod": "Dedicated unclamped hardware sampler slots: CS logical+8, FS 1, shared texture index; implicit/bias/gradient retain clamps",
+    "gradient": "MSL gradient2d for compute/vertex/fragment AOT/JIT, real IR3 derivative sampling; AIR gradient ABI not inferred",
+    "constants": "Compute sampler flags at words 48..55 in reserved 64-word prefix; Fragment flags at word 0 in reserved 16-word prefix; image-only 48 and dynamic-shared-only 16 remain",
+    "wire": "shader/JIT 27/24; Texture44, Sampler28, Dispatch792, Draw2704, description2384/image20936",
+    "references": [
+      "Pinned Mesa fd5_texture.c and fd5_emit.c",
+      "iOS18.6 Metal.framework/Headers/MTLSampler.h",
+      "Apple MSL specification texture LOD semantics"
+    ],
+    "runtime_verified": false,
+    "derivative_lowering": "Standalone GL NIR options set scalarize_ddx=true, matching pinned IR3 compiler requirements before vector ddx/ddy are created."
+  },
+  "srgb_color_formats": {
+    "formats": [
+      "rgba8unorm_srgb",
+      "bgra8unorm_srgb"
+    ],
+    "shader_version": 28,
+    "jit_version": 28,
+    "native_format_codes": [
+      5,
+      6
+    ],
+    "storage": "existing four-byte linear fdl5 layout and task-authorized IOSurface imports",
+    "sampling": "A5xx TEX_CONST_0_SRGB, RGB decoding before filtering",
+    "render": "RB_MRT_BUF_INFO_COLOR_SRGB and SP_FS_MRT_REG_COLOR_SRGB; fixed-function linear blending",
+    "image_read_write": "shared MSL/AIR AOT/JIT GLSL helpers decode/encode RGB around bounded SSBO loads/stores; alpha remains linear",
+    "mipmap": "native per-level dispatch, source plane sampler0/texture0, destination image7; nonoverlapping physical subranges; hardware bilinear linear-space filtering; sRGB encode before guarded stores",
+    "cpu_blit": "raw encoded bytes; user-mode clear encodes linear RGB once",
+    "unsupported": [
+      "compressed formats",
+      "generic texture views"
+    ],
+    "hardware_tested": false,
+    "primary_specification": "https://developer.apple.com/metal/capabilities/"
+  },
+  "texture_views": {
+    "formats": [
+      "rgba8unorm",
+      "bgra8unorm",
+      "rgba8unorm_srgb",
+      "bgra8unorm_srgb"
+    ],
+    "type": "2D and color 2DArray, nonempty parent-relative mip/slice ranges; nested views flatten offsets and retain the original layer stride and parent",
+    "storage": "no new GPU resource/allocation; textureSize checks addressable pitch*height mip span, allocation still uses the complete padded fdl5 layout",
+    "compiler": "unchanged MSL/AIR AOT/JIT geometry and mip functions operate relative to the rebased view",
+    "native": "original task/resource/session, geometry, CPU/GPU synchronization and physical alias checks are preserved; compatible IOSurface color views retain single-level geometry",
+    "render_blit_clear": "view-selected plane offsets, format and dimensions; copies compare actual backing byte ranges rather than relative mip indices",
+    "sampling": "A5xx rebased pointer/pitch, visible MIPLVLS, original layer stride and visible layer count with matching RGBA/BGRA/sRGB/swizzle state",
+    "shader_command_version": 31,
+    "jit_version": 28,
+    "texture_bytes": 48,
+    "sampler_bytes": 28,
+    "dispatch_bytes": 824,
+    "draw_bytes": 2816,
+    "arbitrary_swizzle": true,
+    "unsupported": [
+      "cross-format depth/stencil views",
+      "compressed texture views"
+    ],
+    "hardware_tested": false,
+    "references": [
+      "https://developer.apple.com/documentation/metal/mtltexture/maketextureview%28pixelformat%3A%29",
+      "https://developer.apple.com/documentation/metal/mtltextureusage/pixelformatview",
+      "Pinned Mesa fdl5_layout: final 32-row allocation padding is required by GMEM blits; this backend exposes only direct 2D sampling/rendering and bounded linear buffer copies"
+    ]
+  },
+  "texture_swizzle": {
+    "formats": [
+      "rgba8unorm",
+      "bgra8unorm",
+      "rgba8unorm_srgb",
+      "bgra8unorm_srgb"
+    ],
+    "channels": [
+      "zero",
+      "one",
+      "red",
+      "green",
+      "blue",
+      "alpha"
+    ],
+    "encoding": "Zero is identity; otherwise four semantic 3-bit channel selectors plus one. All-zero swizzle has encoding1. Invalid selectors/high bits are rejected.",
+    "composition": "view selectors index the effective parent pattern; constants are propagated; a view without an explicit swizzle inherits the parent pattern.",
+    "native_sampling": "A5xx SWIZ_X/Y/Z/W composed with storage-format RGBA/BGRA order; sRGB conversion precedes read swizzle.",
+    "compute_reads": "Shared MSL/AIR AOT/JIT read helper decodes sRGB, fixes BGRA order, then applies native-owned swizzle bits in image geometry word.w[16..27].",
+    "mip_count": "Image geometry word.w[8..15] is masked independently from swizzle; get_num_mip_levels and coordinate/mip bounds keep the visible view count.",
+    "writes": "Compute stores, render attachments, clears and byte copies ignore read swizzle. Internal blit mip generation clears swizzle in source/destination descriptors so successive levels filter stored color without accumulating channel permutations.",
+    "oob": "Existing bounded RGBA/BGRA reads return all-zero for invalid coordinates/mip before swizzle; stores remain suppressed.",
+    "depth_stencil": "Identity only for D32 shader reads/sampling and render/resolve/blit depth/stencil planes.",
+    "shader_command_version": 31,
+    "jit_version": 28,
+    "texture_bytes": 48,
+    "dispatch_bytes": 824,
+    "draw_bytes": 2816,
+    "sampler_bytes": 28,
+    "program_description_bytes": 2424,
+    "program_image_bytes": 41832,
+    "hardware_tested": false,
+    "primary_references": [
+      "https://developer.apple.com/documentation/metal/mtltexturedescriptor/swizzle",
+      "https://developer.apple.com/documentation/metal/mtltexture/newtextureviewwithpixelformat%3Atexturetype%3Alevels%3Aslices%3Aswizzle%3A",
+      "Pinned Mesa fd5_format.c fd5_tex_swiz and a5xx.xml a5xx_tex_swiz"
+    ]
+  },
+  "nonuniform_compute": {
+    "entry": "MTLComputeCommandEncoder dispatchThreads:threadsPerThreadgroup:",
+    "implementation": "Cartesian full/tail regions, at most eight CP_EXEC_CS launches with actual local sizes inside one original native submission and completion fence",
+    "semantics": [
+      "thread_position_in_grid",
+      "threadgroup_position_in_grid",
+      "threads_per_grid",
+      "threadgroups_per_grid",
+      "threads_per_threadgroup (actual region size)",
+      "dispatch_threads_per_threadgroup (requested nominal size)",
+      "thread_index_in_threadgroup"
+    ],
+    "driver_constants": "Actual physical region local/groups, zero hardware base group; native read-only word64..79 contains global thread/group bases, original grid/group counts and requested local XYZ in words67/71/75.",
+    "program_flag": 128,
+    "constant_prefix_words": 80,
+    "resource_state": "Code, textures/samplers/SSBO descriptors are uploaded once; constants and NDRANGE are updated per region; real threads only, group-local shared allocation and barriers preserved.",
+    "limits": "Original active grid <=16777216 invocations, requested local product <=1024, group XYZ<=65535 and requested Z<=64; actual groups=ceil(grid/local). Fixed-size trusted kernels reject partial groups.",
+    "shader_command_version": 31,
+    "jit_version": 28,
+    "dispatch_bytes": 824,
+    "texture_bytes": 48,
+    "draw_bytes": 2816,
+    "program_description_bytes": 2424,
+    "program_image_bytes": 41832,
+    "hardware_tested": false,
+    "references": [
+      "https://developer.apple.com/documentation/metal/calculating-threadgroup-and-grid-sizes",
+      "https://developer.apple.com/documentation/metal/Metal-Shading-Language-Specification.pdf",
+      "Pinned Mesa fd5_compute.c and A5xx NDRANGE/CP_EXEC_CS state"
+    ]
+  },
+  "texture_arrays": {
+    "types": [
+      "MTLTextureType2D",
+      "MTLTextureType2DArray"
+    ],
+    "formats": [
+      "rgba8unorm",
+      "bgra8unorm",
+      "rgba8unorm_srgb",
+      "bgra8unorm_srgb"
+    ],
+    "max_layers": 2048,
+    "allocation_limit_bytes": 16777216,
+    "layout": "Layer-major fdl5 mip chains. Each array layer stride is page-aligned; views retain the owner stride and native bounds cover the actual last-layer/mip access span.",
+    "views": "Nested nonempty mip and slice ranges; 2D<->2DArray views, one slice for 2D; direct parent and backing retained.",
+    "cpu_blit": "Per-slice CPU reads/writes and buffer/texture copies; all source/destination intervals checked before range copies. Per-slice mip generation uses the existing hardware sampler/guarded store and native completion fences.",
+    "render": "One selected color slice/mip per attachment, same existing sysmem render backend; no vertex-selected layered rendering.",
+    "compiler": "MSL and observed float32 AIR read/write/query/sample/gradient signatures share native typed2DArray resources, guarded image SSBOs and hardware sample/fetch descriptors. AIR nonzero offsets/min-LOD and wider texel types remain rejected; target execution is unverified.",
+    "native": "Per-binding array type in flags bits8..15; shader/resource dimensionality must match. Compute word80..95 stores eight layer-count/byte-stride pairs before driver/immediates. FS uses native DEPTH and ARRAY_PITCH with its existing 16-word sampler prefix.",
+    "image_bounds": "Array slice and coordinate/mip bounds checked before address multiplication. Invalid bounded reads return zero and writes are suppressed. Swizzle and sRGB preserve existing semantics.",
+    "iosurface": "Creation/import stays single 2D layer; compatible 2DArray-one-layer views may share the existing authorized backing; multi-layer imported descriptors are rejected.",
+    "shader_command_version": 31,
+    "jit_version": 28,
+    "texture_bytes": 48,
+    "sampler_bytes": 28,
+    "dispatch_bytes": 824,
+    "draw_bytes": 2816,
+    "program_description_bytes": 2424,
+    "program_image_bytes": 41832,
+    "hardware_tested": false,
+    "air_array_intrinsics_verified": true,
+    "full_metal_family_supported": false,
+    "references": [
+      "https://developer.apple.com/documentation/metal/mtltexturetype/type2darray",
+      "https://developer.apple.com/documentation/metal/mtltexture/newtextureviewwithpixelformat%3Atexturetype%3Alevels%3Aslices%3A",
+      "https://developer.apple.com/metal/Metal-Shading-Language-Specification.pdf",
+      "Mesa 24.3.4 pinned fd5_texture.c/fdl5_layout and IR3 array sampler lowering"
+    ]
+  },
+  "vertex_texture_sampling": {
+    "implemented": true,
+    "bindings_per_graphics_stage": 8,
+    "binding_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "msl_types": [
+      "texture2d<float>",
+      "texture2d_array<float>"
+    ],
+    "air_types": [
+      "texture2d<float>"
+    ],
+    "air_array_intrinsics_verified": true,
+    "formats": [
+      "rgba8unorm",
+      "bgra8unorm",
+      "rgba8unorm_srgb",
+      "bgra8unorm_srgb"
+    ],
+    "msl_sampling": [
+      "implicit level zero with ordinary sampler clamps",
+      "explicit float level ignoring sampler clamps",
+      "gradient2d"
+    ],
+    "air_sampling": [
+      "implicit level zero with zero bias",
+      "explicit float level using existing verified 2D intrinsic signature"
+    ],
+    "native_state": "SB4_VS_TEX block0 and TPL1_VS_TEX_COUNT, independent from fragment block4/count. Existing texture layout, view layer stride/count, sRGB/swizzle, border color and sampler shadow state are reused.",
+    "constants": "Vertex and fragment sampler helpers each reserve16 words in their own stage. Mirror flags are at stage word0; driver/immediates follow the prefix. Vertex-only GLSL uniform names prevent link-time aliasing with fragment controls.",
+    "resource_lifetime": "Per-draw descriptor and sampler snapshots retain vertex texture/view/sampler and backing until the original native real-completion fence.",
+    "alias_policy": "Vertex/fragment read-only textures may alias each other or read-only buffers. Attachments and fragment buffer writes are checked against both texture stages using existing strided pinned physical-page ranges.",
+    "metal_api": [
+      "setVertexTexture:atIndex:",
+      "setVertexTextures:withRange:",
+      "setVertexSamplerState:atIndex:",
+      "setVertexSamplerState:lodMinClamp:lodMaxClamp:atIndex:",
+      "setVertexSamplerStates:withRange:",
+      "setVertexSamplerStates:lodMinClamps:lodMaxClamps:withRange:"
+    ],
+    "shader_command_version": 31,
+    "jit_version": 28,
+    "texture_bytes": 48,
+    "sampler_bytes": 28,
+    "dispatch_bytes": 824,
+    "draw_bytes": 2816,
+    "program_description_bytes": 2424,
+    "program_image_bytes": 41832,
+    "hardware_tested": false,
+    "native_runtime_verified": false,
+    "full_metal_family_supported": false,
+    "references": [
+      "https://developer.apple.com/documentation/metal/mtlrendercommandencoder/setvertextexture(_:index:)",
+      "https://developer.apple.com/metal/Metal-Shading-Language-Specification.pdf",
+      "Pinned Mesa24.3.4 fd5_emit.c/IR3 and SB4_VS_TEX in adreno_pm4.xml"
+    ]
+  },
+  "graphics_texture_bindings": {
+    "implemented": true,
+    "texture_bindings_per_stage": 8,
+    "sampler_bindings_per_stage": 8,
+    "graphics_stages": [
+      "vertex",
+      "fragment"
+    ],
+    "binding_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "independent_texture_sampler_indices": true,
+    "sparse_slots": true,
+    "msl_types": [
+      "texture2d<float>",
+      "texture2d_array<float>"
+    ],
+    "air_types": [
+      "texture2d<float>"
+    ],
+    "air_array_gradient_intrinsics_verified": true,
+    "ordinary_sampler_slots": [
+      0,
+      7
+    ],
+    "explicit_level_shadow_slots": [
+      8,
+      15
+    ],
+    "sampler_mirror_constant_words": [
+      0,
+      7
+    ],
+    "graphics_sampler_constant_prefix_words": 16,
+    "stage_uniform_names_independent": true,
+    "native_state": "VS block0 and FS block4 upload each active texture/sampler at its logical slot; texture count is highest active texture slot plus one. Both counts reset every draw.",
+    "resource_lifetime": "Separate masks admit and retain only active texture and sampler slots to real completion; unreferenced wire slots must be empty. Original task authorization, resource quota and strided physical overlap checks remain.",
+    "shader_command_version": 31,
+    "jit_version": 28,
+    "texture_bytes": 48,
+    "sampler_bytes": 28,
+    "dispatch_bytes": 824,
+    "draw_bytes": 2816,
+    "program_description_bytes": 2424,
+    "program_image_bytes": 41832,
+    "hardware_tested": false,
+    "native_runtime_verified": false,
+    "full_metal_family_supported": false
+  },
+  "cube_textures": {
+    "types": [
+      "Cube",
+      "CubeArray"
+    ],
+    "formats": [
+      "rgba8unorm",
+      "bgra8unorm",
+      "rgba8unorm_srgb",
+      "bgra8unorm_srgb"
+    ],
+    "face_order": [
+      "+X",
+      "-X",
+      "+Y",
+      "-Y",
+      "+Z",
+      "-Z"
+    ],
+    "square_faces": true,
+    "max_cube_array_elements": 2048,
+    "allocation_limit_bytes": 16777216,
+    "layout": "Each face contains an fdl5 mip chain with page-aligned original face stride. Array length counts cubes; physical slice count is six times cube count.",
+    "views": "Full cube groups, nested mip/cube subranges, single-face2D and face-range2DArray views retain parent/backing/original stride. Cube view slice count is six, or a multiple of six for CubeArray; first slice is preserved independently.",
+    "cpu_blit_render_mipmap": "Existing slice operations use physical face count; selected face render/clear and per-face mip generation use2D planes.",
+    "msl_sampling": [
+      "vertex",
+      "fragment",
+      "compute",
+      "implicit level0 outside fragment",
+      "level",
+      "fragment bias",
+      "gradientcube"
+    ],
+    "msl_types": [
+      "texturecube<float>",
+      "texturecube_array<float>"
+    ],
+    "msl_image_read_write_queries": true,
+    "air_cube_intrinsic_abi_verified": true,
+    "native_type": "Texture.cube Boolean; layers counts cubes for CubeArray and zero denotes one Cube. Flags16..23 mark cube texture slots; existing8..15 marks array types.",
+    "native_sampler": "cubeSamplerMask identifies actual sampler bindings, enforces normalized coordinates and enables A5xx seamless filtering only for cube samplers. Cube direction coordinates do not use2D mirror abs lowering.",
+    "native_descriptor": "A5xx TYPE2, original face ARRAY_PITCH, DEPTH number of cubes. Sampler and texture bindings remain independent.",
+    "shader_command_version": 31,
+    "jit_version": 28,
+    "texture_bytes": 48,
+    "sampler_bytes": 28,
+    "dispatch_bytes": 824,
+    "draw_bytes": 2816,
+    "program_description_bytes": 2424,
+    "program_image_bytes": 41832,
+    "hardware_tested": false,
+    "native_runtime_verified": false,
+    "full_metal_family_supported": false
+  },
+  "cube_images": {
+    "implemented": true,
+    "stages": [
+      "compute"
+    ],
+    "types": [
+      "texturecube<float>",
+      "texturecube_array<float>"
+    ],
+    "access": [
+      "read",
+      "write",
+      "read_write",
+      "sample-type queries"
+    ],
+    "operations": [
+      "read",
+      "write",
+      "get_width",
+      "get_height",
+      "get_num_mip_levels",
+      "get_array_size(CubeArray)"
+    ],
+    "index_order": "2D coordinate, face, optional cube element, optional mip level. Writes prepend float4 color.",
+    "native_constants": "Existing image words16..47 describe dimensions/pitch/format/mips/swizzle; words80..95 contain actual physical face count and original face byte stride.",
+    "constant_prefix_words": 96,
+    "type_metadata": "Shape-specific native-owned uniform names derive cube/array image masks without requiring a sampler. cubeSamplerMask reflects sampled cube textures only.",
+    "face_address": "(cube*6+face)*originalFaceStride + existing2D mip/row offset; validate face<6 and cube<faceCount/6 before multiplication.",
+    "read_oob": "zero",
+    "write_oob": "discard",
+    "formats": [
+      "rgba8unorm",
+      "bgra8unorm",
+      "rgba8unorm_srgb",
+      "bgra8unorm_srgb"
+    ],
+    "color_helpers": "Reuse production planar sRGB/BGRA/swizzle helpers in shape-specific namespaces; stores ignore view swizzle.",
+    "air_cube_intrinsic_abi_verified": true,
+    "shader_command_version": 31,
+    "jit_version": 28,
+    "texture_bytes": 48,
+    "sampler_bytes": 28,
+    "dispatch_bytes": 824,
+    "draw_bytes": 2816,
+    "program_description_bytes": 2424,
+    "program_image_bytes": 41832,
+    "hardware_tested": false,
+    "native_runtime_verified": false,
+    "full_metal_family_supported": false
+  },
+  "scope": "Partial native IOGPU/Metal A540 driver with bounded MSL/AIR JIT,2D/2DArray/Cube/CubeArray color resources, native render/compute, graphics direct fetch/queries and observed float32 AIR texture read/write/query/sample/gradient signatures. Argument buffers, wider formats/language/types, nonzero AIR offsets/min-LOD, persistent task VA, generic queues/events, CAMetalLayer/display and full power/fault/runtime behavior remain incomplete. No target execution; complete families remain disabled.",
+  "shader_code_fetch": {
+    "max_code_bytes": 16384,
+    "max_instruction_units": 128,
+    "instruction_unit_bytes": 128,
+    "compute_cache_units": 32,
+    "graphics_shared_cache_units": 64,
+    "compute": "Above32 units, disable BUFFER and both cached-length registers and skip CP shader preload; retain SP object address for memory fetch.",
+    "graphics": "When VS+FS exceed64 units, follow fd5_program.c FS-first cache partition; one or both stages fetch from memory.",
+    "ib_bytes": 65536,
+    "lifetime": "All code bytes remain in the read-only private job IB and address space through real completion or quarantine.",
+    "jit_program_image_bytes": 20944,
+    "shader_command_version": 31,
+    "jit_version": 28,
+    "hardware_tested": false,
+    "reference": "Pinned Mesa24.3.4 fd5_compute.c/fd5_program.c"
+  },
+  "graphics_texture_fetch": {
+    "stages": [
+      "vertex",
+      "fragment"
+    ],
+    "types": [
+      "2D",
+      "2DArray",
+      "Cube",
+      "CubeArray"
+    ],
+    "msl_access": [
+      "read",
+      "sample-type read and queries"
+    ],
+    "operations": [
+      "read",
+      "get_width",
+      "get_height",
+      "get_num_mip_levels",
+      "get_array_size(array types)"
+    ],
+    "public_texture_slots": 8,
+    "hardware_descriptors": 16,
+    "fetch_alias_base": 8,
+    "descriptor_count": "highest active sampled or fetch-alias descriptor + 1; zero for query-only programs",
+    "samplers": "Only sample operations require sampler state. Integer fetches use ISAML without a public sampler.",
+    "cube_alias": "2D array of physical faces, with original face stride, mip range, format and swizzle; validate face and cube separately before flattening.",
+    "native_constants": "48-word prefix: sampler controls in words0..15, native width/height/logical array or cube count/format+mips+swizzle in words16..47.",
+    "query_only": "Resource validated and retained through native fence completion; no texture descriptor or pixel feedback hazard. Actual sample/fetch accesses retain attachment and write-alias rejection.",
+    "oob_read": "zero for invalid coordinates, face, element or mip",
+    "air_fetch_intrinsic_abi_verified": true,
+    "shader_command_version": 31,
+    "jit_version": 28,
+    "program_description_bytes": 2424,
+    "program_image_bytes": 41832,
+    "max_programs": 256,
+    "hardware_tested": false,
+    "native_runtime_verified": false,
+    "full_metal_family_supported": false,
+    "references": [
+      "Pinned Mesa24.3.4 ir3_compiler_nir.c nir_texop_txf -> OPC_ISAML",
+      "https://developer.apple.com/metal/Metal-Shading-Language-Specification.pdf"
+    ]
+  },
+  "air_texture_operations": {
+    "implemented": true,
+    "stages": [
+      "compute",
+      "vertex",
+      "fragment"
+    ],
+    "types": [
+      "2D",
+      "2DArray",
+      "Cube",
+      "CubeArray"
+    ],
+    "read_forms": [
+      "legacy without sampler or planar offset",
+      "current with get_read_sampler and zero planar offset"
+    ],
+    "coordinates": "32-bit integer coord/face/element/mip; float32 sample directions and gradients",
+    "texel": "float4, direct or {float4,i8} with unavailable residency byte",
+    "operations": [
+      "read",
+      "compute-only write",
+      "get_width",
+      "get_height",
+      "get_num_mip_levels",
+      "get_array_size(array types)",
+      "sample with implicit/explicit LOD",
+      "gradient2d/gradientcube sampling"
+    ],
+    "binding_checks": "Intrinsic shape and access immediate must match native semantic texture metadata; current reads require a distinct builtin read-sampler value, never a public Metal sampler.",
+    "public_sampler_required_for_read": false,
+    "nonzero_offsets_supported": true,
+    "dynamic_min_lod_operand_supported": false,
+    "underlying_read_backend": "Compute guarded image SSBOs; graphics integer-fetch descriptor aliases8..15; native IOGPU resources and fence lifetime unchanged.",
+    "abi_reference_commit": "720ef1ce9ae2a2068999a8675717418b9416283e",
+    "primary_reference_evidence": "build/drivers/gpu-air-textures-primary-reference.json",
+    "primary_reference_toolchain": "Public modern Apple metal32023.883/32023.921 outputs; acceptance of observed forms is not an iOS18 ABI or runtime guarantee. Existing older2D AIR forms retained.",
+    "fixture_sources": [
+      "Shaders.air.ll",
+      "Textures.air.ll"
+    ],
+    "hardware_tested": false,
+    "native_runtime_verified": false,
+    "full_metal_family_supported": false,
+    "texture_result_ssa": "Materialize float4 texels at the original AIR read/sample call, including aggregate results; later extraction or branches do not reissue a resource read across writes or move implicit derivatives.",
+    "runtime_32bit_conversions": "Typed air.convert between float32 and signed/unsigned int32 scalars or vectors1..4, validated name/type agreement; no guessed rounding/saturation modifiers.",
+    "unsupported": [
+      "argument-buffer handles",
+      "dynamic sample offsets or nonzero read-planar offsets",
+      "dynamic/nonzero per-call min-LOD",
+      "16-bit coordinates/texels",
+      "sparse residency results",
+      "graphics image writes"
+    ],
+    "wire": "Shader31/JIT28; description2384/image20936, Texture48/Sampler28/Dispatch824/Draw2704",
+    "nonzero_offset_scope": "constant -8..7 sample/gradient texel offsets for 2D and 2DArray; dynamic sample and nonzero read-planar offsets remain unsupported"
+  },
+  "constant_samplers": {
+    "source": [
+      "MSL constant/constexpr sampler constructors with lexical scope",
+      "AIR read-only addrspace(2) i64 or [2 x i64] globals, including constant bitcasts"
+    ],
+    "primary_encoding_reference": "https://github.com/steelbrain/metal2vulkan/blob/720ef1ce9ae2a2068999a8675717418b9416283e/crates/metal2vulkan-air/src/abi/sampler.rs",
+    "evidence": "build/drivers/gpu-constant-samplers-primary-reference.json",
+    "max_literal_states": 16,
+    "hardware_slots_per_stage": 16,
+    "public_slots_per_stage": 8,
+    "allocation": "Reserve only used external implicit/gradient i and explicit-LOD i+8 states, then assign literals to the remaining physical slots. Reject any overlap or exhaustion. Implicit and explicit states are separately allocated.",
+    "shader_command_version": 31,
+    "jit_version": 28,
+    "program_description_bytes": 2424,
+    "program_image_bytes": 41832,
+    "state": "Semantic filters, fixed 8.8 LOD clamps, address modes, anisotropy, border color and coordinates in the immutable program prefix; native A5xx state emitted per dispatch/draw. Public Sampler remains 28 bytes.",
+    "unsupported": [
+      "reduction filters",
+      "bicubic filters",
+      "nonzero AIR sampler bias",
+      "fractional LOD clamps not representable in 8.8",
+      "pixel-coordinate modes outside the current native profile"
+    ],
+    "hardware_verified": false,
+    "combined_uniforms_per_stage_max": 32,
+    "internal_glsl_linker": "32 active combined uniforms per VS/FS/CS; virtual binding192 and post-link sampler indices256..511 do not widen public or hardware slots.",
+    "msl_specification": "https://developer.apple.com/metal/Metal-Shading-Language-Specification.pdf",
+    "msl_default_address": "clamp_to_edge, verified against Apple table2.7; mirror_clamp_to_edge is not an MSL constexpr enum"
+  },
+  "multiple_color_attachments": {
+    "max_colors": 8,
+    "msl": "Fragment float4 color(n) struct members, sparse slots and independently evaluated outputs",
+    "air": "Float4 render_target metadata for up to eight aggregate members with unique indices0..7; dual-source blending index zero only",
+    "native": "Immutable compiler output mask and real IR3 register per color; A5xx SP_FS_OUTPUT_REG0..7, highest framebuffer slot plus one in MRT count, per-target address/format/mask/blend state",
+    "lifetime": "All color/depth/stencil attachments are checked and retained; physical alias checks cover all attachments, sampled/fetched pixels and stage buffers",
+    "shader_command_version": 31,
+    "jit_version": 28,
+    "draw_bytes": 2816,
+    "program_description_bytes": 2424,
+    "program_image_bytes": 41832,
+    "scope": "Linear RGBA8/BGRA8 UNorm/sRGB, 1x/2x/4x attachments and explicit array slices. No layered rendering or dual-source blending.",
+    "hardware_verified": false,
+    "raster_order_groups": "Explicitly rejected until fragment interlock is implemented",
+    "aot_jit_interface_assignment": "Shared qgpu_assign_graphics_io orders semantic IO locations before IR3; arbitrary AIR aggregate member order does not change compiler entry point behavior."
+  },
+  "fragment_depth_discard": {
+    "implemented": true,
+    "depth_outputs": [
+      "MSL scalar float struct member depth(any/less/greater)",
+      "AIR scalar float air.depth output with depth_qualifier"
+    ],
+    "colorless_fragment": true,
+    "nil_fragment_pipeline": "private raster_depth_only AOT program for depth/stencil-only pipeline descriptors",
+    "discard": "MSL discard_fragment() and AIR air.discard_fragment() with helper-preserving software demotion on A5xx",
+    "lowering": "Shared NIR pass remembers discarded lanes, predicates SSBO stores and all supported atomics, then terminates at a common exit; reads/private variables/derivatives continue. GLSL discard-loop escape lowering excludes demote. IR3 false dependencies keep explicit and implicit derivatives before the deferred KILL.",
+    "depth_testing": "Late plane mode for no_earlyz, discard or replacement depth; RB_FS_OUTPUT_CNTL.FRAG_WRITES_Z and SP_FS_OUTPUT_CNTL.DEPTH_REGID are enabled only for actual depth exports. LRZ stays disabled.",
+    "derivatives": [
+      "MSL dfdx",
+      "MSL dfdy",
+      "MSL fwidth",
+      "implicit texture gradients"
+    ],
+    "wire": "Shader32/JIT29; depthReg is an independent scalar output register, inactive zero. The following MSAA extension contains multisampleMask and depthTextureMask (the former reserved word). description2424/image41832/Draw2816.",
+    "primary_reference": "build/drivers/gpu-fragment-primary-reference.json",
+    "metal_specification": "https://developer.apple.com/metal/Metal-Shading-Language-Specification.pdf",
+    "unsupported": [
+      "early_fragment_tests",
+      "stencil output",
+      "framebuffer fetch",
+      "graphics image writes",
+      "SIMD/helper introspection"
+    ],
+    "shader_command_version": 31,
+    "jit_version": 28,
+    "hardware_tested": false,
+    "native_runtime_verified": false,
+    "full_metal_family_supported": false,
+    "air_float_comparisons": "Both AIR readers share float32 scalar/vector1..4 FCmp lowering for all ordered/unordered predicates, with explicit NaN handling; no optional LLVM fast-math API required."
+  },
+  "multisampling": {
+    "implemented": true,
+    "sample_counts": [
+      1,
+      2,
+      4
+    ],
+    "texture_type": "MTLTextureType2DMultisample and MTLTextureType2DMultisampleArray; private linear storage, one mip, rebased single-slice render/resolve views",
+    "render_formats": [
+      "RGBA8/BGRA8 UNorm/sRGB",
+      "Depth32Float",
+      "Stencil8",
+      "split Depth32Float_Stencil8"
+    ],
+    "native_layout": "fdl5 cpp = format bytes * samples; sample array varies fastest in X; pitch alignment grows by the sample count",
+    "render_state": "Matching samples across every attachment and PSO; A5xx RB, GRAS and TPL1 raster/destination sample fields; per-target color and depth/stencil pitches",
+    "alpha_to_coverage": true,
+    "default_sample_positions": "Pinned Mesa u_default_get_sample_position for 1/2/4",
+    "shader_msl": "texture2d_ms<float,read>, read(coord,sample), get_num_samples/get_width/get_height in CS/VS/FS; no samplers",
+    "compute_read": "Bounded SSBO sample addressing with sRGB/BGRA/swizzle conversion",
+    "graphics_read": "Real IR3 ISAMM using the MSAA texture descriptor and guarded sample/coordinate operands",
+    "color_resolve": "Internal resolve_color MSL compute program, linear float4 average, one sRGB encoding; source view swizzle ignored for a framebuffer resolve",
+    "store_actions": [
+      "Store",
+      "DontCare",
+      "MultisampleResolve",
+      "StoreAndMultisampleResolve"
+    ],
+    "resolve_validation": "Same format/extents, single-sample destination; validate all attachment/destination aliases before clears; retain both textures through native fences",
+    "wire": "Shader31/JIT28, Texture48/Sampler28/Dispatch824/Draw2816, description2424/image41832; Apple outer resource/queue ABI and native limits264 unchanged",
+    "multisample_mask": "Dedicated immutable per-program eight-bit texture mask, separate from render sample count and fragment flags",
+    "unsupported": [
+      "memoryless storage",
+      "programmable sample positions",
+      "alpha-to-one",
+      "AIR multisample texture intrinsics until their signatures are verified"
+    ],
+    "primary_reference": "build/drivers/gpu-msaa-primary-reference.json; build/drivers/gpu-sample-rate-primary-reference.json",
+    "shader_command_version": 31,
+    "jit_version": 28,
+    "program_description_bytes": 2424,
+    "program_image_bytes": 41832,
+    "texture_bytes": 48,
+    "dispatch_bytes": 824,
+    "draw_bytes": 2816,
+    "hardware_tested": false,
+    "native_runtime_verified": false,
+    "full_metal_family_supported": false
+  },
+  "sample_shading": {
+    "implemented": true,
+    "stages": [
+      "fragment"
+    ],
+    "interpolation": [
+      "center perspective/linear",
+      "flat",
+      "centroid perspective/linear",
+      "sample perspective/linear"
+    ],
+    "inputs": [
+      "MSL uint sample_id",
+      "MSL uint sample_mask before depth/stencil tests",
+      "AIR air.sample_id / air.sample_mask"
+    ],
+    "output": "MSL uint sample_mask struct member and AIR scalar uint air.sample_mask; ignored with a single-sample attachment",
+    "variants": "One public function ID and immutable owner; separate single-sample and MSAA IR3 code/constant/register allocations. Metal PSO and resource validation and native A540 submission select by render sample count.",
+    "hardware_mode": "A5xx requires live HALF SampleID plus RB_RENDER_CONTROL1.SAMPLEMODE=3. HLSQ pixel/centroid/sample pairs, RB/GRAS enables, center-RHW and coverage export use compiler-owned registers.",
+    "position": "At sample rate, hoist pixel-center XY and affine Z/reciprocal-W gradient correction before control flow in shared NIR lowering; center-qualified varyings keep pixel interpolators.",
+    "reference": "https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/44343",
+    "primary_evidence": "build/drivers/gpu-sample-rate-primary-reference.json",
+    "air_metadata_reference": "steelbrain/metal2vulkan@720ef1ce9ae2a2068999a8675717418b9416283e engine/multisample.air.ll and engine/rt6_resolves.air.ll, recorded in gpu-msaa-primary-reference.json",
+    "shader_command_version": 31,
+    "jit_version": 28,
+    "program_description_bytes": 2424,
+    "program_image_bytes": 41832,
+    "unsupported": [
+      "post_depth_coverage and early_fragment_tests",
+      "framebuffer fetch",
+      "programmable sample positions",
+      "sample_position/interpolation query intrinsics"
+    ],
+    "hardware_tested": false,
+    "native_runtime_verified": false,
+    "full_metal_family_supported": false
+  },
+  "depth_stencil_resolve": {
+    "implemented": true,
+    "depth_formats": [
+      "Depth32Float",
+      "Depth32Float_Stencil8 depth plane"
+    ],
+    "stencil_formats": [
+      "Stencil8",
+      "Depth32Float_Stencil8 stencil plane"
+    ],
+    "depth_filters": [
+      "Sample0",
+      "Min",
+      "Max"
+    ],
+    "stencil_filters": [
+      "Sample0",
+      "DepthResolvedSample"
+    ],
+    "selection": "Strict float32 comparisons select the first matching extremum; depth and stencil use identical selection even when no depth resolve destination is supplied. DepthResolvedSample requires a depth attachment.",
+    "backend": "Bounded native compute SSBO dispatches with immutable AOT IR3; raw uint D32 bit patterns are copied and compared through as_type<float>. No public image retyping or CPU resolve.",
+    "stencil_packing": "One work item owns a complete destination uint word; 1..3 trailing padding bytes are preserved and no inter-thread byte RMW occurs.",
+    "validation": "Same plane format/extent; 2x/4x source and 1x destination; check all attachment and resolve aliases before clears. Combined D32S8 planes may share non-overlapping backing.",
+    "lifetime": "Keep source, destination, depth dependency and parameter buffer alive through ordinary native queue/fence completion.",
+    "store_actions": [
+      "MultisampleResolve",
+      "StoreAndMultisampleResolve"
+    ],
+    "resolve_parameter_bytes": 32,
+    "wire": "Existing Shader31/JIT28, description2424/image41832, Dispatch824 and native resource/queue ABI unchanged.",
+    "reference": "build/drivers/gpu-depth-resolve-primary-reference.json",
+    "hardware_tested": false,
+    "native_runtime_verified": false,
+    "full_metal_family_supported": false
+  },
+  "msl_bitcasts": {
+    "implemented": true,
+    "scope": "as_type<T> for float/int/uint 32-bit scalar/vector1..4 with matching lane count; GLSL overload checking rejects mismatched shapes or other scalar widths.",
+    "lowering": "uintBitsToFloat/intBitsToFloat, floatBitsToUint/floatBitsToInt and bit-preserving int/uint conversion; identity casts preserve their source.",
+    "unsupported": [
+      "cross-width casts",
+      "casts involving padded float3 and a different lane count",
+      "half/short/char/bool types"
+    ],
+    "hardware_tested": false
+  },
+  "multisample_arrays": {
+    "implemented": true,
+    "sample_counts": [
+      2,
+      4
+    ],
+    "max_layers": 2048,
+    "allocation": "Private, single mip; page-aligned layer stride; total extent constrained by native resource limits.",
+    "color_reads": [
+      "MSL texture2d_ms_array<float,read> read(coord,array,sample) in CS/VS/FS",
+      "get_width/get_height/get_array_size/get_num_samples"
+    ],
+    "compute_backend": "Guarded SSBOs using native image and per-layer stride constants.",
+    "graphics_backend": "Real A540 IR3 ISAMM with array flag, sampler2DMSArray lowering and native MSAA/array descriptors; no sampler required.",
+    "depth_stencil": "D32 and D32S8 depth planes additionally support read/sample/compare; S8 remains render/resolve/blit-only. All are private. Combined arrays keep separate page-aligned depth/stencil layer strides.",
+    "views": "Array ranges and same-sample 2D/2DMS single-slice views preserve original per-plane strides and backing.",
+    "render_resolve": "Select source and destination slices, then existing color/D32/S8 GPU resolve kernels. Whole arrays and layered rendering remain rejected.",
+    "alias_checks": "Include both D32S8 planes and sort actual intervals before recording multi-slice copies.",
+    "platform_scope": "Own compiler/native profile: iOS18 SDK exposes texture type8 from iOS14; Apple MSL specification lists multisample arrays for macOS and does not list standard iOS language support. No Apple family conformance inferred.",
+    "unsupported": [
+      "AIR multisample-array intrinsics without verified signatures",
+      "multisample array shader writes",
+      "MSAA cubes",
+      "layered render passes",
+      "stencil shader reads and depth texture writes"
+    ],
+    "shader_command_version": 31,
+    "jit_version": 28,
+    "description_bytes": 2424,
+    "image_bytes": 41832,
+    "hardware_tested": false,
+    "native_runtime_verified": false,
+    "full_metal_family_supported": false
+  },
+  "depth_textures": {
+    "formats": [
+      "D32Float",
+      "D32Float_Stencil8 depth plane"
+    ],
+    "shapes": [
+      "depth2d",
+      "depth2d_array",
+      "depth2d_ms",
+      "depth2d_ms_array (own extension)"
+    ],
+    "stages": [
+      "compute",
+      "vertex",
+      "fragment"
+    ],
+    "read": "raw float32; graphics TFMT5_32_FLOAT / guarded compute SSBO",
+    "sample_compare": "hardware IR3 shadow instruction, sampler compare function0..7; compare before filtering",
+    "comparison_lod": "Direct textureLod via the private EXT_texture_shadow_lod language bridge; NIR txl / IR3 saml.s preserves requested LOD and trilinear comparison weights without gradient reconstruction",
+    "air_depth_intrinsics": "unsupported until signatures are verified",
+    "unsupported": [
+      "depth cube",
+      "stencil shader read",
+      "depth shader write"
+    ],
+    "shader_version": 33,
+    "jit_version": 30,
+    "hardware_verified": false,
+    "max_depth_mip_levels": 15,
+    "depth_stencil_mip_views": true,
+    "storage_layout": "Common linear color/D32/S8 layout; CPP-based aligned pitch, padded final mip, page-aligned chains and independent D32/S8 layer strides"
+  },
+  "gradient_sampling_single_evaluation": {
+    "msl": true,
+    "air": true,
+    "normal_and_comparison": true,
+    "coordinate_gradient_layer_lod_operands": "Evaluated once as helper parameters; mirror transforms and derivatives operate on values",
+    "hardware_verified": false
+  },
+  "ui_composition": {
+    "native_drawable_present_bridge": true,
+    "framebuffer_only_textures": true,
+    "shared_event_command_bridge": true,
+    "shared_event_wait_timeout_ms": 5000,
+    "layer_compositor": true,
+    "max_layers_per_pass": 8,
+    "composition_profile": "premultiplied alpha, opacity, affine geometry, normalized crop and scissor; linear RGBA/BGRA8 UNorm/sRGB",
+    "coreanimation_system_compositor_runtime_verified": false,
+    "hardware_verified": false
+  },
+  "native_graphics_texture_bindings": {
+    "shader_version": 37,
+    "jit_version": 34,
+    "program_description_bytes": 2428,
+    "program_image_bytes": 41840,
+    "scope": "AIR vertex/fragment metadata and native Metal graphics binding indices 0..15; at most eight enabled textures per specialized entry; compute and current MSL source binding profile remain at eight",
+    "mapping": "Preserve enabled logical indices 0..7; allocate higher enabled indices into remaining physical slots. Immutable eight-nibble textureBindings is zero for identity. Duplicate logical/physical bindings, index16 and more than eight enabled textures are rejected.",
+    "wire": "Program descriptions carry the mapping through compiler, archive, user encoder and kernel admission. Native IOGPU resources/queues and draw texture descriptor counts are unchanged.",
+    "native_failure": "round63 backboardd COREANIMATION abort: fixed_frag_lph_cpf TimgBdsoXfcn_Isrc uses original texture3 and noise texture9.",
+    "numeric_fixes": "Scalar constant i8/i16 AIR conversion inputs preserve signedness. LLVM scalar-backed constant splats preserve float16 vector width.",
+    "hardware_tested": false
+  },
+  "native_constant_windows": {
+    "jit_version": 38,
+    "program_description_bytes": 2464,
+    "program_image_bytes": 83704,
+    "max_windows": 4,
+    "window_bytes": 64,
+    "scope": "Static readonly 16/32-bit fragment ranges; up to four independent, canonical nonoverlapping windows across logical buffers. Native GPU indirect constants retain exact integer bits and original bounded SSBO fallback.",
+    "validation": "Actual buffer range, mapping, source16B alignment, destination/count64B, no SSBO writes; native physical attachment/read alias checks retained.",
+    "constant_layout": "Original112word prefix;16words per window; one full vec4 valid flags after data; no overlap with immediates/driver constants.",
+    "guard_coalescing": "Group independent static readonly 16/32-bit loads of one window within a basic block across pure SSA only. Preserve exact source bits, no crossing volatile/coherent/other memory, texture, barrier, output or control-flow boundaries; let Mesa merge identical uniform guards.",
+    "static_read_bounds": "Readonly nonvolatile/noncoherent fragment SSBO constant32 offsets use size>=uint64(offset+relative+span) when end<=UINT32_MAX; odd half offsets or overflow are false. Dynamic/shared/store/atomic paths unchanged. Original scalar tail and guarded full-vector load retained.",
+    "hardware_tested": false,
+    "shader_command_version": 43,
+    "full_window_specialization": "Optional separately compiled base/MSAA variants specialize only native eligibility flags; actual GPU source bounds/alignment checked before selecting them, original bounded variants retained.",
+    "upload": "Two immutable-owned shared-memory pieces, each at most 64 KiB; image 83704 bytes, description unchanged 2464 bytes."
+  },
+  "ios18_display_intrinsics": {
+    "math": [
+      "exp",
+      "log",
+      "atan2",
+      "powr",
+      "fmin3",
+      "fmax3"
+    ],
+    "precision": "AIR float16/float32 scalar/vector1..4; transcendental half inputs use native f32 lowering and narrow once at the result",
+    "boolean_reductions": "runtime air.any/air.all for bool vectors2..4, independent of function constants",
+    "extrema": "Metal x op (y op z) ordering; numeric operand wins over a single NaN; AIR fast names or no-nans-fp-math=true omit NaN selection",
+    "sampling_offsets": "constant int2 -8..7 for 2D/2DArray, implicit/explicit/gradient sampling through native texture offset instructions; zero offsets retain previous lowering",
+    "dynamic_sampling_offsets": false,
+    "read_planar_offsets": "zero only; distinct from sample texel offsets",
+    "primary_reference": "https://developer.apple.com/metal/Metal-Shading-Language-Specification.pdf",
+    "native_reference": "iOS18.7/22H374 QuartzCore default.metallib SHA256 8ca2bef447981ae26acbe3c5023043ad9dcc312e893f44781d7373b1e27adfa7",
+    "kernel_shader_abi_changed": false,
+    "hardware_tested": false
+  },
+  "unsigned_integer_images": {
+    "shader_version": 44,
+    "jit_version": 39,
+    "program_description_bytes": 2468,
+    "program_image_bytes": 83720,
+    "formats": [
+      "R32Uint"
+    ],
+    "scope": "Compute read/write/query for 2D, array, cube and cube array mip views. Bit-exact uint reads/writes/swizzles; four-byte BGRA/RGBA raw views and IOSurface import. No integer filtering, render targets or multisampling.",
+    "air": "uint4 texture intrinsics; half2/half4 word bitcasts; unorm4x8 half/float pack; bounded private int32/float32 arrays, at most 1024 bytes and eight array dimensions per entry.",
+    "branch_stack": "A5xx compiler uses 64 reconvergence entries and SP register encodes pairs. Barrier-free shader limit32; shaders with workgroup barriers retain prior limit3 to preserve admission for full 1024-thread groups.",
+    "tests": "IntegerTextures.air.ll authored examples; native uint-texture-test checks high bits, swizzles, raw views, IOSurface packing, dimensional mip addressing, all half bit patterns and private arrays.",
+    "hardware_tested": false
+  },
+  "air_direct_nir_runtime": {
+    "entry": "qgpu_compile_air_nir / Compiler::compileAIR",
+    "policy": "Try NIR for selected entries or an entire AIR library (up to 64 entries); resolve named constants per entry; commit the library only when all entries succeed. Discard partial images before the original GLSL fallback.",
+    "scope": "Compute, vertex and fragment entries; reducible single-exit/nested loops with parallel PHIs; all existing compute system inputs; shared/dynamic threadgroup storage, relaxed int32 atomics and barriers; bounded private arrays and constant tables; packed integer reads and half word bitcasts; float/half 2D/array/cube/cube-array sampling, graphics reads/queries, compute float/uint image access; MRT/depth/sample mask/discard and existing AIR display math. General int64 scalar/vector arithmetic, casts, comparisons and guarded word-split memory; pointer select/PHIs over bounded buffers/shared/private storage, including null tests; multi-exit and irreducible CFG via Mesa unstructured-NIR structurization. Natural loops retain their compact path.",
+    "serialization": "One Compiler.cpp mutex shared with GLSL compilation. NIR and LLVM handles stay private to the compiler dylib.",
+    "cache": "Immutable LLVM decode templates for AIR >=32 KiB: four entries, 32 MiB retained source bytes, exact source equality, per-call specialization clones and context lifetime mutex. Direct capability-failure LRU: eight entries, 32 MiB source bytes, exact source/entry/constants/registry key; backend failures are retried. Process-local only; final existing shader caches are unchanged.",
+    "validation": "Host compiler/interface/cache regressions, existing 54-entry finalized-NIR output differential, Compute/Welcome/eight Fluidity profile matrix, and independent integer/control-flow references for the remaining-features suite. Candidate-specific receipts live under build/air-nir-remaining-20261021. A540 hardware results remain separate.",
+    "fallback_limits": "Unsupported Metal resource/intrinsic families, raw pointer-integer conversions, pointer ordering, unsupported aggregate/type shapes and atomic orders still use GLSL or report a checked error. Existing input/CFG/JIT machine-code and register limits remain enforced; expanded 64-bit division can reach those limits."
+  }
+}

@@ -1,0 +1,10 @@
+iokit/Families/IONVRAM/IONVRAMController.cpp				optional iokitcpp
+
+# Power Domains
+iokit/Kernel/IOPMrootDomain.cpp    					optional iokitcpp
+
+# SMP
+iokit/Kernel/arm/AppleARMSMP.cpp    					optional iokitcpp
+
+# tightbeamc generated implementation files
+./Exclaves/IOService.tightbeam.c		optional iokitcpp config_exclaves

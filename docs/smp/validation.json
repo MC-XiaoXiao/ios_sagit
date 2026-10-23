@@ -1,0 +1,421 @@
+{
+  "generated_at": "2026-10-16T05:11:09.205392+00:00",
+  "target": "SDM835",
+  "objective": "Apple IOCPU/IOKit SMP boot through interactive Bash, retaining native backboardd watchdog restart",
+  "passed": true,
+  "tested_cpu_counts": [
+    2,
+    4,
+    8
+  ],
+  "one_cpu_hardware_test_performed": false,
+  "scheduler": "XNU dualq SMP; two physical processor sets; AMP/DVFS tuning deferred",
+  "collection": {
+    "path": "build/multicore/kernelcache",
+    "sha256": "8a90b33eb7db58a00b49f16829c07e77800d25acedfa8a2b1c0b07ffb0a4d698",
+    "bytes": 27836416,
+    "kexts": 41,
+    "kernel_sha256": "a0023b0203431422bfbfdb894d7929fc055c7606c8e0682d3829f7f1222c2cf0",
+    "runtime_kernel_sha256": "d63f9fbad04ab7495556348fc90bdf9ed78b9b405a35a0527a5d23b78a85e22e",
+    "provider_sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+    "structure_verification": "build/multicore/kernelcache.verification.json"
+  },
+  "method": {
+    "boot_metric": "Host UART timestamp at actual expanded Bash verification minus EFI entry; excludes transfer and firmware Fastboot setup",
+    "final_boot_samples_per_cpu_count": 1,
+    "efi_arena_mib": 256,
+    "same_extra_boot_args": "imageboot-attach=file:///usr/standalone/firmware/Cryptex1/SystemOS.dmg imageboot-mountpoint=/private/preboot/Cryptexes imageboot-fstype=apfs imageboot-volume-uuid=4A77BA00-2826-44C4-B883-1FA92AC36880 imageboot-parent-role=preboot imageboot-parent-mountpoint=/private/preboot imageboot-probe=/private/preboot/Cryptexes/System/Library/Caches/com.apple.dyld/dyld_shared_cache_arm64 vm-pagesize=16384 wdt=0x238 iokit-wait-trace=1 -enable_kprintf_spam user-breakpoint-trace=1 -wdt_no_pmu",
+    "trust_cache_modules_match_single_cpu_baseline": true,
+    "partition_flashing_performed": false,
+    "temporary_device_test_scripts_written": false,
+    "uncertainty": "Scheduling, cache, APFS I/O and service waits vary; samples do not establish stable medians or a sole cause of inter-cluster overhead."
+  },
+  "final_runs": [
+    {
+      "cpus": 2,
+      "passed": true,
+      "report": "build/multicore/hardware-2-fast-console/report.json",
+      "uart": "build/multicore/hardware-2-fast-console/uart.txt",
+      "uart_sha256": "084f23a95dec0fa7b56b06a2e9643f0be0a54f15ea40c0039ed265a6e85a535c",
+      "payload": "build/multicore/bridge-2/XnuBridge.efi",
+      "payload_sha256": "32b82c1b310f6fc9c541a2be9192705e2cc84c03d16a332a44dbb452d9e8dc91",
+      "boot_timing": {
+        "capture_seconds": {
+          "efi_entry": 18.901,
+          "kernel_entry": 19.703,
+          "bash_banner": 53.18,
+          "bash_verified": 59.735
+        },
+        "efi_to_bash_seconds": 34.279,
+        "kernel_to_bash_seconds": 33.477,
+        "efi_to_verified_bash_seconds": 40.834
+      },
+      "evidence": {
+        "registered_cpus": [
+          0,
+          1
+        ],
+        "online_cpus": [
+          0,
+          1
+        ],
+        "interrupts_cpus": [
+          0,
+          1
+        ],
+        "timer_cpus": [
+          0,
+          1
+        ],
+        "ipi_cpus": [
+          0,
+          1
+        ],
+        "multicore_verified": true,
+        "apfs_root_mounted": true,
+        "serial_bash_interactive": true,
+        "watchdog_backboardd_timeout": true,
+        "native_panic_report_completed": true,
+        "watchdog_recovered": true,
+        "external_trust_cache_modules": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "generic_aes_cbc_self_test": true
+      },
+      "firmware_entry": "from-shell"
+    },
+    {
+      "cpus": 4,
+      "passed": true,
+      "report": "build/multicore/hardware-4-fast-console/report.json",
+      "uart": "build/multicore/hardware-4-fast-console/uart.txt",
+      "uart_sha256": "1d2e5247182adbb7a8e90aac8b588f5da12ea4ddacf7dcc6f4bc32e8922287fe",
+      "payload": "build/multicore/bridge-4/XnuBridge.efi",
+      "payload_sha256": "69d41e93a16008cf6fd74ddaefa21059f29b82eb1e736f7038ebc7b935039af9",
+      "boot_timing": {
+        "capture_seconds": {
+          "efi_entry": 18.818,
+          "kernel_entry": 19.631,
+          "bash_banner": 44.988,
+          "bash_verified": 46.688
+        },
+        "efi_to_bash_seconds": 26.17,
+        "kernel_to_bash_seconds": 25.357,
+        "efi_to_verified_bash_seconds": 27.87
+      },
+      "evidence": {
+        "registered_cpus": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "online_cpus": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "interrupts_cpus": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "timer_cpus": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "ipi_cpus": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "multicore_verified": true,
+        "apfs_root_mounted": true,
+        "serial_bash_interactive": true,
+        "watchdog_backboardd_timeout": true,
+        "native_panic_report_completed": true,
+        "watchdog_recovered": true,
+        "external_trust_cache_modules": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "generic_aes_cbc_self_test": true
+      },
+      "firmware_entry": "from-shell"
+    },
+    {
+      "cpus": 8,
+      "passed": true,
+      "report": "build/multicore/hardware-8-fast-console/report.json",
+      "uart": "build/multicore/hardware-8-fast-console/uart.txt",
+      "uart_sha256": "82808fb862ac3060dfb0dd948a5de8ab759ae3bc7603af464a5af54529219f6b",
+      "payload": "build/multicore/bridge-8/XnuBridge.efi",
+      "payload_sha256": "3367f877a62673f5d7b4a9066f57f9282f6b5e2bec420a5bdb15a76dce4e43d8",
+      "boot_timing": {
+        "capture_seconds": {
+          "efi_entry": 18.477,
+          "kernel_entry": 19.277,
+          "bash_banner": 53.678,
+          "bash_verified": 54.845
+        },
+        "efi_to_bash_seconds": 35.201,
+        "kernel_to_bash_seconds": 34.401,
+        "efi_to_verified_bash_seconds": 36.368
+      },
+      "evidence": {
+        "registered_cpus": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "online_cpus": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "interrupts_cpus": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "timer_cpus": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "ipi_cpus": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7
+        ],
+        "multicore_verified": true,
+        "apfs_root_mounted": true,
+        "serial_bash_interactive": true,
+        "watchdog_backboardd_timeout": true,
+        "native_panic_report_completed": true,
+        "watchdog_recovered": true,
+        "external_trust_cache_modules": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "generic_aes_cbc_self_test": true
+      },
+      "firmware_entry": "from-shell"
+    }
+  ],
+  "earlier_runs": [
+    {
+      "report": "build/multicore/hardware-2-verified/report.json",
+      "cpus": 2,
+      "collection_sha256": "478bc50b5a64737bca0b52574f8b4a4b2e9e31753385d45bf8840677638b4a0b",
+      "passed": true,
+      "boot_timing": {
+        "capture_seconds": {
+          "efi_entry": 18.448,
+          "kernel_entry": 19.243,
+          "bash_banner": 129.198,
+          "bash_verified": 130.302
+        },
+        "efi_to_bash_seconds": 110.75,
+        "kernel_to_bash_seconds": 109.955,
+        "efi_to_verified_bash_seconds": 111.854
+      },
+      "benchmark_samples": [
+        {
+          "repeat": 1,
+          "elapsed_us": 3792610,
+          "jobs": 8,
+          "loops": 20000,
+          "verified": true
+        },
+        {
+          "repeat": 2,
+          "elapsed_us": 3863446,
+          "jobs": 8,
+          "loops": 20000,
+          "verified": true
+        },
+        {
+          "repeat": 3,
+          "elapsed_us": 3886370,
+          "jobs": 8,
+          "loops": 20000,
+          "verified": true
+        }
+      ],
+      "benchmark_verified": true
+    },
+    {
+      "report": "build/multicore/hardware-4-verified/report.json",
+      "cpus": 4,
+      "collection_sha256": "478bc50b5a64737bca0b52574f8b4a4b2e9e31753385d45bf8840677638b4a0b",
+      "passed": true,
+      "boot_timing": {
+        "capture_seconds": {
+          "efi_entry": 18.528,
+          "kernel_entry": 19.325,
+          "bash_banner": 81.358,
+          "bash_verified": 82.934
+        },
+        "efi_to_bash_seconds": 62.83,
+        "kernel_to_bash_seconds": 62.033,
+        "efi_to_verified_bash_seconds": 64.406
+      },
+      "benchmark_samples": [
+        {
+          "repeat": 1,
+          "elapsed_us": 3104267,
+          "jobs": 8,
+          "loops": 20000,
+          "verified": true
+        },
+        {
+          "repeat": 2,
+          "elapsed_us": 3625260,
+          "jobs": 8,
+          "loops": 20000,
+          "verified": true
+        },
+        {
+          "repeat": 3,
+          "elapsed_us": 2949542,
+          "jobs": 8,
+          "loops": 20000,
+          "verified": true
+        }
+      ],
+      "benchmark_verified": true
+    },
+    {
+      "report": "build/multicore/hardware-8-verified/report.json",
+      "cpus": 8,
+      "collection_sha256": "478bc50b5a64737bca0b52574f8b4a4b2e9e31753385d45bf8840677638b4a0b",
+      "passed": true,
+      "boot_timing": {
+        "capture_seconds": {
+          "efi_entry": 18.847,
+          "kernel_entry": 19.649,
+          "bash_banner": 83.484,
+          "bash_verified": 135.655
+        },
+        "efi_to_bash_seconds": 64.637,
+        "kernel_to_bash_seconds": 63.835,
+        "efi_to_verified_bash_seconds": 116.808
+      },
+      "benchmark_samples": [
+        {
+          "repeat": 1,
+          "elapsed_us": 5645464,
+          "jobs": 8,
+          "loops": 20000,
+          "verified": true
+        },
+        {
+          "repeat": 2,
+          "elapsed_us": 1962842,
+          "jobs": 8,
+          "loops": 20000,
+          "verified": true
+        },
+        {
+          "repeat": 3,
+          "elapsed_us": 3466249,
+          "jobs": 8,
+          "loops": 20000,
+          "verified": true
+        }
+      ],
+      "benchmark_verified": true
+    },
+    {
+      "report": "build/multicore/hardware-8-boot-repeat/report.json",
+      "cpus": 8,
+      "collection_sha256": "478bc50b5a64737bca0b52574f8b4a4b2e9e31753385d45bf8840677638b4a0b",
+      "passed": true,
+      "boot_timing": {
+        "capture_seconds": {
+          "efi_entry": 18.814,
+          "kernel_entry": 19.614,
+          "bash_banner": 65.839,
+          "bash_verified": 66.781
+        },
+        "efi_to_bash_seconds": 47.025,
+        "kernel_to_bash_seconds": 46.225,
+        "efi_to_verified_bash_seconds": 47.967
+      },
+      "benchmark_samples": [],
+      "benchmark_verified": false
+    }
+  ],
+  "offline_checks": {
+    "multicore_tests": "build/multicore/offline-tests.log",
+    "bridge_python_tests": 20,
+    "evidence_python_tests": 10,
+    "panic_backend_tests": 3,
+    "panic_test_log": "build/multicore/panic-tests.log",
+    "patch_replay": "build/multicore/patch-replay.json",
+    "patches_replayed": 23,
+    "kernel_source_files_identical": 10,
+    "source_snapshot": "build/multicore/source-snapshot.json",
+    "default_four_cpu_tests": "build/multicore/default-four-tests.log"
+  },
+  "default_startup_fastboot": {
+    "mode": "default-startup-fastboot",
+    "argv": [
+      "fastboot",
+      "-s",
+      "edk2-fastboot1",
+      "getvar",
+      "product"
+    ],
+    "returncode": 0,
+    "output": "product: sagit\nFinished. Total time: 0.001s\n",
+    "verified": true,
+    "elapsed_seconds": 0.198
+  },
+  "limitations": [
+    "Early boot has only the safely allocated 256 MiB window, rather than the full installed DRAM.",
+    "Existing APFS checkpoint ENOSPC is visible; disk layout and userland service policies were not changed.",
+    "No suspend/resume, CPU hotplug or per-cluster frequency/capacity tuning is claimed."
+  ],
+  "default_cpu_count": 4,
+  "default_payload": "build/multicore/bridge-4/XnuBridge.efi",
+  "default_policy": "Keep four cores enabled while tuning; full eight-core topology and explicit --cpus 8 remain available."
+}

@@ -1,0 +1,34 @@
+{
+  "go": {
+    "version": "1.27.2",
+    "url": "https://go.dev/dl/go1.27.2.linux-amd64.tar.gz",
+    "sha256": "ecbadb99091a3f46e31f5f934b068b1864eafa7995211b39eaddf76996045fe5"
+  },
+  "sources": {
+    "go-apfs": {
+      "url": "https://github.com/deploymenttheory/go-apfs-v2.git",
+      "commit": "f9b546ab72f388f26c2fcfd86d0a952f387fdbef",
+      "version": "v0.18.0",
+      "license": "MIT"
+    },
+    "apfsprogs": {
+      "url": "https://github.com/linux-apfs/apfsprogs.git",
+      "commit": "3721463ba7f539e532907bc1d10ed5b9a97d0449",
+      "license": "GPL-2.0"
+    }
+  },
+  "ipsw": {
+    "version": "3.1.710",
+    "url": "https://github.com/blacktop/ipsw/releases/download/v3.1.710/ipsw_3.1.710_linux_x86_64.tar.gz",
+    "archive_sha256": "79e0bd1cfcf4eb5786cad5ea4ffbc3a37489c32af55bf54f0d183c8a6ddc2dc4",
+    "binary_sha256": "0664017d3fc7b41fedd65c3fe75b2eaf61175eacca0f22614064c9ea5555afe9"
+  },
+  "patches": [
+    "go-apfs-raw-data.patch",
+    "go-apfs-layout-plan.patch",
+    "go-apfs-drec-order.patch",
+    "go-apfs-cow-update.patch",
+    "go-apfs-native-accounting.patch",
+    "go-apfs-writable-checkpoints.patch"
+  ]
+}

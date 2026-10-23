@@ -1,0 +1,200 @@
+{
+  "schema": "sagit-osm-tz-scm-audit-v1",
+  "scope": "Offline static evidence; no firmware modification or hardware access",
+  "firmware": {
+    "reference": "build/usb/firmware/stock/tz.mbn",
+    "sha256": "d2c417987bb4210eb774b11c3cd61aa5cd4b1260d1dd3313506490ee9026d911",
+    "architecture": "AArch64 ELF64 little-endian; no section headers required"
+  },
+  "verification": {
+    "command": "python3 scripts/audit-osm-tz.py",
+    "method": "Bounded ELF program-header mapping, whole-image SHA256, exact ordered allowlists and handler byte hashes",
+    "paired_initialization_audit": "The command also verifies osm-tz-initialization-audit.json function hashes, descriptor decoding, source-block hashes, v2 parameter values and OSMTZContract.h constants.",
+    "functions": {
+      "monitor_dispatcher": {
+        "address": "0x146820f8",
+        "size": 3832,
+        "sha256": "29abb6702515633265ec47c1ca8fe30b856640562d485da12a70f5c63a2b4561"
+      },
+      "write_handler": {
+        "address": "0x14683960",
+        "size": 96,
+        "sha256": "bd3ffa948c448c72082ebdbc986eb4852906349b13d82c0f322708c9588618ad"
+      },
+      "allowlist_handler": {
+        "address": "0x146839c0",
+        "size": 140,
+        "sha256": "474613dcd812750fa6c8ade880c933ced2568d0393cc70bbfc160791f354571b"
+      },
+      "read_handler": {
+        "address": "0x14683a4c",
+        "size": 56,
+        "sha256": "517c800b7ad57a654a3d6a8f0e03086feeaa655c557c16c62b4428808905800f"
+      },
+      "conditional_gate": {
+        "address": "0x14681314",
+        "size": 20,
+        "sha256": "6624de8a73fe64fa1a3a0fb1b03f692662ea1c22918a5d69dc99ea5b6d19b775"
+      }
+    }
+  },
+  "abi": {
+    "service": 5,
+    "read": {
+      "smc_id": "0x02000501",
+      "parameter_id": 1,
+      "arguments": "x2=physical address",
+      "return": "x0=0; x1=32-bit read value or zero if denied"
+    },
+    "write": {
+      "smc_id": "0x02000502",
+      "parameter_id": 2,
+      "arguments": "x2=physical address; low32(x3)=value",
+      "return": "x0=0 even if denied; denied writes do not access the target"
+    },
+    "function_id_mask": "0x3f00ffff in monitor dispatcher; atomic/64-bit flags do not change this allowlist",
+    "availability": "Service availability is independent of whether a particular register is permitted",
+    "dispatcher_evidence": [
+      "0x14682388..0x146823b4 selects WRITE and invokes 0x14683960",
+      "0x146823f8 stores zero to saved x0 after WRITE",
+      "0x14682400..0x1468240c invokes READ, truncates to 32 bits, stores x0=0/x1=value"
+    ]
+  },
+  "allowlist": {
+    "shared_by_read_and_write": true,
+    "fixed_table": {
+      "address": "0x1c0009c8",
+      "count": 40,
+      "addresses": [
+        "0x1fd3000",
+        "0x179d141c",
+        "0x179d1420",
+        "0x179d1424",
+        "0x179d1428",
+        "0x179d142c",
+        "0x179d1430",
+        "0x179d1434",
+        "0x179880b0",
+        "0x179880b8",
+        "0x179980b0",
+        "0x179980b8",
+        "0x179a80b0",
+        "0x179a80b8",
+        "0x179b80b0",
+        "0x179b80b8",
+        "0x178880b0",
+        "0x178880b8",
+        "0x178980b0",
+        "0x178980b8",
+        "0x178a80b0",
+        "0x178a80b8",
+        "0x178b80b0",
+        "0x178b80b8",
+        "0x179c0420",
+        "0x179c2420",
+        "0x179c0430",
+        "0x179c2430",
+        "0x179c03e4",
+        "0x179c03e8",
+        "0x179c033c",
+        "0x179c037c",
+        "0x179c23e4",
+        "0x179c23e8",
+        "0x179c233c",
+        "0x179c237c",
+        "0x179c0460",
+        "0x179c2460",
+        "0x179c0380",
+        "0x179c2380"
+      ]
+    },
+    "conditional_table": {
+      "address": "0x1c000a68",
+      "count": 10,
+      "addresses": [
+        "0x179c0304",
+        "0x179c0370",
+        "0x179c2304",
+        "0x179c2370",
+        "0x179c03bc",
+        "0x179c03c0",
+        "0x179c23bc",
+        "0x179c23c0",
+        "0x179c031c",
+        "0x179c231c"
+      ],
+      "gate": "((read32(0x01fc8000) >> 8) & 0xff) == 1",
+      "gate_evidence": "0x14681314..0x14681324 loads a word then extracts bits15:8; caller0x14683a04 compares to1",
+      "interpretation": "Exact hardware-version field branch; no board-ID condition appears in this handler"
+    },
+    "osm_fixed_seq": [
+      15,
+      31,
+      32,
+      57,
+      58,
+      72,
+      76,
+      88
+    ],
+    "osm_conditional_seq": [
+      1,
+      7,
+      28,
+      47,
+      48
+    ],
+    "osm_banks": [
+      "0x179c0000",
+      "0x179c2000"
+    ],
+    "seq_address_formula": "bank + 0x300 + 4 * sequence_number",
+    "other_write_special_case": "0x01fd3000 low-nibble-zero writes are suppressed when byte_1c006ba0 equals1; this does not involve OSM"
+  },
+  "denial_evidence": {
+    "read": "0x14683a68 branches around LDR W0,[X19]; denied path0x14683a74 sets W0=0",
+    "write": "0x14683980 branches around STR W19,[X20]; both paths reach MOV W0,WZR at0x146839b4",
+    "consequence": "SCM status success cannot establish address permission; readback of zero cannot prove a zero write occurred"
+  },
+  "osm_findings": {
+    "unreadable_old_firmware_marker_seq": [
+      0,
+      2,
+      3,
+      12,
+      13,
+      14,
+      16,
+      18,
+      33,
+      37,
+      49
+    ],
+    "old_marker_read_result": "All eleven markers are excluded from both tables; this firmware returns success/value0 for every marker",
+    "unwritable_lower_mem_acc_threshold_seq": [
+      55,
+      56
+    ],
+    "lower_threshold_write_result": "Silent no-op on both clusters; these writes in Xiaomi clock-osm.c do not prove this firmware accepts them",
+    "permitted_dynamic_writes": [
+      15,
+      31,
+      32,
+      57,
+      58,
+      72,
+      76,
+      88
+    ],
+    "safe_inference": "A rejected marker read cannot show that TZ omitted initialization",
+    "direct_mmio": "Not established by this SCM whitelist audit. Do not bypass it with direct nonsecure reads without separate xPU/access evidence.",
+    "initialization_evidence": "docs/power/osm-tz-initialization-audit.json reproduces v2 table selection, inherited values, descriptor contents and source-block hashes.",
+    "completion_limit": "The eight SCM-readable boot values precede fallible protected post-table setup. The original caller discards its failure return, so matching these values cannot distinguish partial initialization from full completion.",
+    "unreadable_tail_state": "Both banks' +0x404, +0x410 and +0x1050 are excluded from both SCM tables. +0x1050=0x179d4020 is written at the examined success tail, but direct nonsecure read permission has not been established.",
+    "retained_prerequisite": "Protected post-initialization success remains a stock-bootchain prerequisite; this offline profile and runtime boot-value match do not independently prove it."
+  },
+  "source_cross_reference": [
+    "docs/power/reference/xiaomi-clock-osm.c:2072-2092 issues SCM writes to55..58 and32 without checking per-address acceptance",
+    "build/usb/reference/bsp/trustzone_images/core/securemsm/trustzone/qsee/include/tz_syscall_pub.h:2313-2366 documents the IO service IDs/parameters; actual pinned firmware silently denies disallowed addresses"
+  ]
+}

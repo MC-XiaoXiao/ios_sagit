@@ -1,0 +1,42 @@
+{
+  "sensor_def_qcomdev.conf": {
+    "url": "https://raw.githubusercontent.com/TheMuppets/proprietary_vendor_xiaomi_sagit/lineage-22.2/proprietary/vendor/etc/sensors/sensor_def_qcomdev.conf",
+    "sha256": "9bde0af9006a15d53bd7faf96f80ee2262f78584981364227dc6118e3b508707"
+  },
+  "spi-qup.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/spi/spi-qup.c",
+    "sha256": "b4d6488d041981e33f65a4f0c4ab969924c9f40841d88e7e1eacd652cf92d7e5"
+  },
+  "lsm6dsm_reg.h": {
+    "url": "https://raw.githubusercontent.com/STMicroelectronics/lsm6dsm-pid/master/lsm6dsm_reg.h",
+    "sha256": "336485d24841810bf37035faeffdf5eb3d9bd1df8648631bf46d1ee176139452"
+  },
+  "lsm6dsm_reg.c": {
+    "url": "https://raw.githubusercontent.com/STMicroelectronics/lsm6dsm-pid/master/lsm6dsm_reg.c",
+    "sha256": "c5b0f52d4b6ee439e360f44f28ab5d1d6c5895b9aae0743fc7a9411845dfb794"
+  },
+  "IOHIDUsageTables.h": {
+    "url": "https://raw.githubusercontent.com/apple-oss-distributions/IOHIDFamily/main/IOHIDFamily/IOHIDUsageTables.h",
+    "sha256": "36827dca2966db230f67eb5a97007fc254c2ec68e2bc516c5a56d76359b78cb6"
+  },
+  "AppleHIDUsageTables.h": {
+    "url": "https://raw.githubusercontent.com/apple-oss-distributions/IOHIDFamily/main/IOHIDFamily/AppleHIDUsageTables.h",
+    "sha256": "9ea9d9b9f656ef95c4e54e66ce695189ce1a60d3d3483c4061e60c50fef3cc5e"
+  },
+  "inv_mpu_iio.h": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/iio/imu/inv_mpu6050/inv_mpu_iio.h",
+    "sha256": "76ff522acc20b29a69494ebb9c298d40d35f75b76c26f6650f6cf28db3de76df"
+  },
+  "inv_mpu_core.c": {
+    "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/iio/imu/inv_mpu6050/inv_mpu_core.c",
+    "sha256": "3370ff04d954888aa76a723e86628f5de6514378e4fe6c616d5533b3b8a891a0"
+  },
+  "IOHIDElementPrivate.cpp": {
+    "url": "https://raw.githubusercontent.com/apple-oss-distributions/IOHIDFamily/main/IOHIDFamily/IOHIDElementPrivate.cpp",
+    "sha256": "2d22e5d46af36066fe519002a6123be9de7478cba96325c193c4c07bd7063470"
+  },
+  "ST_LICENSE": {
+    "url": "https://raw.githubusercontent.com/STMicroelectronics/lsm6dsm-pid/master/LICENSE",
+    "sha256": "b54f36a43cf9b8f6292c8f0f3b4c267ebd59859587e0152c94305bc81dda68bc"
+  }
+}

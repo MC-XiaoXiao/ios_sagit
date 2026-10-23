@@ -1,0 +1,1128 @@
+--- a/config/MASTER.arm64.iPhoneOS
++++ b/config/MASTER.arm64.iPhoneOS
+@@ -61,7 +61,7 @@
+ #  LIBKERN_DEV =    [ LIBKERN_BASE iotracking ]
+ #  LIBKERN_DEBUG =  [ LIBKERN_BASE iotracking ]
+ 
+-#if SOC_IS_VIRTUALIZED
++#if SOC_IS_VIRTUALIZED || SOC_CONFIG_sdm835
+ #  CPU_COUNTERS_BASE = [ ]
+ #else /*!SOC_IS_VIRTUALIZED*/
+ #  CPU_COUNTERS_BASE = [ config_cpu_counters config_pervasive_cpi config_pervasive_energy ]
+--- a/makedefs/MakeInc.def
++++ b/makedefs/MakeInc.def
+@@ -29,7 +29,7 @@
+ else ifneq ($(findstring _host,$(RC_ProjectName)),)
+ SUPPORTED_ARM64_MACHINE_CONFIGS = NONE
+ else
+-SUPPORTED_ARM64_MACHINE_CONFIGS = T6000 T6020 T6030 T6031 T6041 T8101 T8103 T8112 T8122 T8132 VMAPPLE
++SUPPORTED_ARM64_MACHINE_CONFIGS = T6000 T6020 T6030 T6031 T6041 T8101 T8103 T8112 T8122 T8132 VMAPPLE SDM835
+ 
+ SPTM_ENABLED_SOCS_MacOSX = t6041 t8132
+ 
+@@ -52,7 +52,7 @@
+ endif
+ 
+ # Enable BTI by default for all ARM64 targets
+-BTI_BUILD = 1
++BTI_BUILD = $(if $(filter SDM835,$(CURRENT_MACHINE_CONFIG)),0,1)
+ 
+ 
+ # -mkernel contains BTI by default
+@@ -80,6 +80,7 @@
+ MACHINE_FLAGS_ARM64_T6041 = -DARM64_BOARD_CONFIG_T6041			-mcpu=apple-m4
+ MACHINE_FLAGS_ARM64_T8122 = -DARM64_BOARD_CONFIG_T8122_T8130		-mcpu=apple-m3
+ MACHINE_FLAGS_ARM64_T8132 = -DARM64_BOARD_CONFIG_T8132			-mcpu=apple-m4
++MACHINE_FLAGS_ARM64_SDM835 = -DARM64_BOARD_CONFIG_SDM835 -march=armv8-a+crc+crypto
+ MACHINE_FLAGS_ARM64_VMAPPLE = -DARM64_BOARD_CONFIG_VMAPPLE              -march=armv8.5a+sme2
+ 
+ 
+--- a/osfmk/arm/arm_init.c
++++ b/osfmk/arm/arm_init.c
+@@ -182,7 +182,7 @@
+ static SECURITY_READ_ONLY_LATE(bool) enable_sme = true;
+ #endif
+ 
+-#if APPLEVIRTUALPLATFORM
++#if APPLEVIRTUALPLATFORM || defined(ARM64_BOARD_CONFIG_SDM835)
+ SECURITY_READ_ONLY_LATE(vm_offset_t) reset_vector_vaddr = 0;
+ #endif /* APPLEVIRTUALPLATFORM */
+ 
+@@ -365,7 +365,7 @@
+ 	const_boot_args = *args;
+ 	BootArgs = args = &const_boot_args;
+ 
+-#if APPLEVIRTUALPLATFORM
++#if APPLEVIRTUALPLATFORM || defined(ARM64_BOARD_CONFIG_SDM835)
+ 	reset_vector_vaddr = (vm_offset_t) &LowResetVectorBase;
+ #endif /* APPLEVIRTUALPLATFORM */
+ 
+--- a/osfmk/arm/cpu_common.c
++++ b/osfmk/arm/cpu_common.c
+@@ -482,6 +482,11 @@
+ 		assert3u(os_atomic_load(&target_proc->cpu_flags, relaxed) & (InitState | StartedState),
+ 		    ==, InitState | StartedState);
+ 
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++		extern void pe_sdm835_send_ipi(uint32_t);
++		/* GIC SGIs have no deferred/retract service: send immediately. */
++		pe_sdm835_send_ipi(target_proc->cpu_phys_id);
++#else
+ 		if (defer) {
+ #if defined(HAS_IPI)
+ 			if (gFastIPI) {
+@@ -503,6 +508,8 @@
+ 			PE_cpu_signal(getCpuDatap()->cpu_id, target_proc->cpu_id);
+ #endif /* defined(HAS_IPI) */
+ 		}
++
++#endif /* SDM835 */
+ 	}
+ 
+ 	ml_set_interrupts_enabled(interruptible);
+@@ -533,6 +540,9 @@
+ 
+ 
+ 	if (!(current_signals & SIGPdisabled)) {
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++		/* The pending software signal is cleared above; an in-flight SGI may still arrive. */
++#else
+ #if defined(HAS_IPI)
+ 		if (gFastIPI) {
+ 			ml_cpu_signal_retract(target_proc->cpu_phys_id);
+@@ -542,6 +552,7 @@
+ #else
+ 		PE_cpu_signal_cancel(getCpuDatap()->cpu_id, target_proc->cpu_id);
+ #endif /* defined(HAS_IPI) */
++#endif /* SDM835 */
+ 	}
+ }
+ 
+@@ -695,6 +706,13 @@
+ 	PE_cpu_machine_init(cpu_data_ptr->cpu_id, !started);
+ 
+ 	ml_init_interrupt();
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++	/* XNU keeps SIGPdisabled set until the CPU handles its first IPI.
++	 * Queue a real self-SGI after StartedState and the IOCPU callback;
++	 * don't enable cross-calls by clearing the software bit directly. */
++	extern void pe_sdm835_send_ipi(uint32_t);
++	pe_sdm835_send_ipi(cpu_data_ptr->cpu_phys_id);
++#endif
+ }
+ 
+ processor_t
+--- a/osfmk/arm/machine_routines_common.c
++++ b/osfmk/arm/machine_routines_common.c
+@@ -48,7 +48,9 @@
+ #include <machine/monotonic.h>
+ #include <pexpert/pexpert.h>
+ #include <pexpert/device_tree.h>
++#if defined(APPLE_ARM64_ARCH_FAMILY)
+ #include <pexpert/arm64/apple_arm64_cpu.h>
++#endif
+ 
+ #include <mach/machine.h>
+ #include <mach/machine/sdt.h>
+--- a/osfmk/arm64/corecrypto/arm64_isa_compatibility.h
++++ b/osfmk/arm64/corecrypto/arm64_isa_compatibility.h
+@@ -37,7 +37,7 @@
+ // #include <Availability.h>
+ #include <sys/cdefs.h>
+ 
+-#if defined(__clang__) && ((defined(__apple_build_version__) && __apple_build_version__ > 5010000))
++#if defined(__clang__) && (!defined(__apple_build_version__) || __apple_build_version__ > 5010000)
+ #define __USES_V_CRYPTO_INTRINSICS 1
+ #else
+ #define __USES_V_CRYPTO_INTRINSICS 0
+@@ -67,19 +67,19 @@
+ 
+ #if __USES_V_CRYPTO_INTRINSICS == 1
+ .macro  AESE
+-aese.16b v$0, v$1
++aese v$0.16b, v$1.16b
+ .endm
+ 
+ .macro  AESD
+-aesd.16b v$0, v$1
++aesd v$0.16b, v$1.16b
+ .endm
+ 
+ .macro  AESMC
+-aesmc.16b v$0, v$1
++aesmc v$0.16b, v$1.16b
+ .endm
+ 
+ .macro  AESIMC
+-aesimc.16b v$0, v$1
++aesimc v$0.16b, v$1.16b
+ .endm
+ 
+ 
+--- a/osfmk/arm64/cpu.c
++++ b/osfmk/arm64/cpu.c
+@@ -94,7 +94,7 @@
+ extern void exc_vectors_table;
+ #endif /* __ARM_KERNEL_PROTECT__ */
+ 
+-#if APPLEVIRTUALPLATFORM
++#if APPLEVIRTUALPLATFORM || defined(ARM64_BOARD_CONFIG_SDM835)
+ extern vm_offset_t reset_vector_vaddr;
+ #endif /* APPLEVIRTUALPLATFORM */
+ 
+@@ -342,7 +342,10 @@
+ 
+ 	CleanPoC_Dcache();
+ 
+-#if USE_APPLEARMSMP
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++	extern void pe_sdm835_cpu_off(void);
++	pe_sdm835_cpu_off();
++#elif USE_APPLEARMSMP
+ 	if (ml_is_quiescing()) {
+ 		PE_cpu_machine_quiesce(cpu_data_ptr->cpu_id);
+ 	} else {
+@@ -578,7 +581,7 @@
+ #endif /* CONFIG_CPU_COUNTERS */
+ 
+ 	if (wfi) {
+-#if !defined(APPLE_ARM64_ARCH_FAMILY)
++#if !defined(APPLE_ARM64_ARCH_FAMILY) && !defined(ARM64_BOARD_CONFIG_SDM835)
+ 		platform_cache_idle_enter();
+ #endif
+ 
+@@ -942,7 +945,26 @@
+ #endif
+ #endif /* CONFIG_SPTM */
+ 
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++		extern int64_t pe_sdm835_cpu_on(uint32_t, uint64_t);
++		extern uint8_t bootstrap_pagetables[BOOTSTRAP_TABLE_SIZE];
++		extern boot_args const_boot_args;
++		/* The PSCI entry executes with the MMU/cache off. Publish every
++		 * mutable object read by LowResetVectorBase/start_cpu before it
++		 * enables the coherent kernel mapping. A DSB alone cannot clean
++		 * dirty boot-CPU cache lines for that physical-address reader. */
++		flush_dcache((vm_offset_t)&ResetHandlerData, sizeof(ResetHandlerData), FALSE);
++		flush_dcache((vm_offset_t)&const_boot_args, sizeof(const_boot_args), FALSE);
++		flush_dcache((vm_offset_t)&sysreg_restore, sizeof(sysreg_restore), FALSE);
++		flush_dcache((vm_offset_t)&cpu_ttep, sizeof(cpu_ttep), FALSE);
++		flush_dcache((vm_offset_t)bootstrap_pagetables, BOOTSTRAP_TABLE_SIZE, FALSE);
++		int64_t status = pe_sdm835_cpu_on(cpu_data_ptr->cpu_phys_id, ml_static_vtop(reset_vector_vaddr));
++		if (status != 0) {
++			panic("SDM835: PSCI CPU_ON failed for MPIDR 0x%x: %lld", cpu_data_ptr->cpu_phys_id, status);
++		}
++#else
+ 		PE_cpu_start_internal(cpu_data_ptr->cpu_id, (vm_offset_t)NULL, (vm_offset_t)NULL);
++#endif
+ 
+ 	}
+ }
+--- a/osfmk/arm64/pcb.c
++++ b/osfmk/arm64/pcb.c
+@@ -63,7 +63,9 @@
+ 
+ #include <IOKit/IOBSD.h>
+ 
++#if defined(APPLE_ARM64_ARCH_FAMILY)
+ #include <pexpert/arm64/apple_arm64_cpu.h>
++#endif
+ #include <pexpert/pexpert.h>
+ 
+ // fixme: rdar://114299113 tracks resolving the supportlib issue with hwtrace features
+--- a/osfmk/arm64/proc_reg.h
++++ b/osfmk/arm64/proc_reg.h
+@@ -226,6 +226,10 @@
+ 
+ /* D-Cache, 128KB for AppleH16 PCore, 8-way. 64KB for ECore, 8-way. */
+ #define MMU_CLINE   6                      /* cache line size is 1<<MMU_CLINE (64) */
++
++#elif defined (SDM835)
++#define MMU_I_CLINE 6
++#define MMU_CLINE   6
+ 
+ #elif defined (VMAPPLE)
+ 
+--- a/osfmk/arm64/sleh.c
++++ b/osfmk/arm64/sleh.c
+@@ -54,7 +54,9 @@
+ #include <machine/limits.h>
+ 
+ #include <pexpert/arm/protos.h>
++#if defined(APPLE_ARM64_ARCH_FAMILY)
+ #include <pexpert/arm64/apple_arm64_cpu.h>
++#endif
+ #include <pexpert/arm64/apple_arm64_regs.h>
+ #include <pexpert/arm64/board_config.h>
+ 
+@@ -2520,7 +2522,10 @@
+ 
+ 	sleh_interrupt_handler_prologue(state, DBG_INTR_TYPE_OTHER);
+ 
+-#if USE_APPLEARMSMP
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++	extern void pe_sdm835_handle_irq(void);
++	pe_sdm835_handle_irq();
++#elif USE_APPLEARMSMP
+ 	PE_handle_ext_interrupt();
+ #else
+ 	/* Run the registered interrupt handler. */
+--- a/osfmk/conf/files.arm64
++++ b/osfmk/conf/files.arm64
+@@ -116,3 +116,5 @@
+ osfmk/arm64/bti_telemetry.c optional config_bti_telemetry
+ 
+ osfmk/arm/counter.c	standard
++
++osfmk/arm64/sdm835.c standard
+--- a/pexpert/arm/pe_fiq.c
++++ b/pexpert/arm/pe_fiq.c
+@@ -12,7 +12,10 @@
+ #include <pexpert/arm64/board_config.h>
+ 
+ 
+-#if HAS_GIC_V3
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++extern void pe_sdm835_init_interrupts(void);
++void pe_init_fiq(void) { pe_sdm835_init_interrupts(); }
++#elif HAS_GIC_V3
+ #define GICR_WAKE_TIMEOUT_NS (1000000000ULL) // timeout for redistributor wakeup (default 1s)
+ MACHINE_TIMEOUT(gicr_wake_timeout_ns, "gicr-wake-timeout", GICR_WAKE_TIMEOUT_NS, MACHINE_TIMEOUT_UNIT_NSEC, NULL);
+ 
+--- a/pexpert/arm/pe_identify_machine.c
++++ b/pexpert/arm/pe_identify_machine.c
+@@ -42,15 +42,21 @@
+ 
+ 	(void)bootArgs;
+ 
++#if !defined(ARM64_BOARD_CONFIG_SDM835)
+ 	if (pe_arm_get_soc_base_phys() == 0) {
+ 		return;
+ 	}
++#endif
+ 
+ 	/* Clear the gPEClockFrequencyInfo struct */
+ 	bzero((void *)&gPEClockFrequencyInfo, sizeof(clock_frequency_info_t));
+ 
+ 	/* Start with default values. */
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++	gPEClockFrequencyInfo.timebase_frequency_hz = SDM835_TIMER_HZ;
++#else
+ 	gPEClockFrequencyInfo.timebase_frequency_hz = 24000000;
++#endif
+ 	gPEClockFrequencyInfo.bus_clock_rate_hz = 100000000;
+ 	gPEClockFrequencyInfo.cpu_clock_rate_hz = 400000000;
+ 
+@@ -235,9 +241,11 @@
+ 
+ 	/* Set up mappings for interrupt controller and possibly timers (if they haven't been set up already) */
+ 	if (args != NULL) {
++#if !defined(ARM64_BOARD_CONFIG_SDM835)
+ 		if (!pe_arm_map_interrupt_controller()) {
+ 			return 0;
+ 		}
++#endif
+ 	}
+ 
+ 	return pe_arm_init_timer(args);
+--- a/pexpert/arm/pe_serial.c
++++ b/pexpert/arm/pe_serial.c
+@@ -175,7 +175,7 @@
+ static inline void
+ serial_poll(void)
+ {
+-#if __arm64__
++#if __arm64__ && !defined(ARM64_BOARD_CONFIG_SDM835)
+ 	if (!uart_hibernation) {
+ 		__builtin_arm_wfe();
+ 	}
+@@ -796,10 +796,18 @@
+  * @brief This array maps "compatible" strings from the devicetree identifying
+  * different serial device drivers to their corresponding setup functions.
+  */
++#ifdef QCOM_UARTDM
++#include "pe_serial_uartdm.inc"
++#endif
++
+ static const struct {
+ 	const char *const compatible;
+ 	void(*const setup)(const DeviceTreeNode * const devicetree_node);
+ } driver_setup_functions[] = {
++#ifdef QCOM_UARTDM
++	{ .compatible = "qcom,msm-uartdm-v1.4", .setup = qcom_uartdm_setup },
++	{ .compatible = "qcom,msm-uartdm", .setup = qcom_uartdm_setup },
++#endif
+ #ifdef APPLE_UART
+ 	{ .compatible = "uart-1,samsung", .setup = apple_uart_setup },
+ #endif // APPLE_UART
+@@ -901,10 +909,14 @@
+ 
+ 	soc_base = pe_arm_get_soc_base_phys();
+ 
++#if !defined(ARM64_BOARD_CONFIG_SDM835)
+ 	if (soc_base == 0) {
+ 		uart_initted = true;
+ 		return 0;
+ 	}
++#else
++	(void)soc_base;
++#endif
+ 
+ 	PE_parse_boot_argn("disable-uart-irq", &disable_uart_irq, sizeof(disable_uart_irq));
+ 
+--- a/pexpert/pexpert/arm/protos.h
++++ b/pexpert/pexpert/arm/protos.h
+@@ -47,7 +47,8 @@
+ 	SERIAL_APPLE_UART=0x1,
+ 	SERIAL_DOCKCHANNEL=0x2,
+ 	SERIAL_PL011_UART=0x4,
+-	SERIAL_DCC_UART=0x8
++	SERIAL_DCC_UART=0x8,
++	SERIAL_QCOM_UARTDM=0x10
+ } serial_device_t;
+ 
+ kern_return_t serial_irq_enable(serial_device_t device);
+--- a/pexpert/pexpert/arm64/Makefile
++++ b/pexpert/pexpert/arm64/Makefile
+@@ -32,6 +32,9 @@
+ 	H14.h \
+ 	H15.h \
+ 	H16.h \
++	SDM835.h \
++	arm_smp.h \
++	qcom_uartdm.h \
+ 	VMAPPLE.h
+ 
+ 
+--- a/pexpert/pexpert/arm64/board_config.h
++++ b/pexpert/pexpert/arm64/board_config.h
+@@ -273,6 +273,14 @@
+ 
+ 
+ 
++#ifdef ARM64_BOARD_CONFIG_SDM835
++#include <pexpert/arm64/SDM835.h>
++#define MAX_L2_CLINE                   6
++#define MAX_CPUS                       8
++#define MAX_CPU_CLUSTERS               2
++#define NO_XNU_PLATFORM_ERROR_HANDLER  1
++#endif
++
+ #ifdef ARM64_BOARD_CONFIG_VMAPPLE
+ #include <pexpert/arm64/VMAPPLE.h>
+ 
+--- /dev/null
++++ b/pexpert/pexpert/arm64/SDM835.h
+@@ -0,0 +1,38 @@
++/* SDM835/MSM8998 Kryo 280 platform. Register data: docs/sdm835/sources.json. */
++#ifndef _PEXPERT_ARM64_SDM835_H
++#define _PEXPERT_ARM64_SDM835_H
++#define SDM835 1
++#define NO_MONITOR 1
++#define NO_CPU_OVRD 1
++/* Use native Clutch/Edge scheduling with cluster types from the device tree.
++ * CPU startup and IPIs remain on the generic PSCI/GIC backend. */
++#define __ARM_AMP__ 1
++#define __ARM_ARCH__ 8
++#define __ARM_VMSA__ 8
++#define __ARM_VFP__ 4
++#define __ARM_COHERENT_CACHE__ 1
++/* Peripheral DMA is noncoherent; keep __ARM_COHERENT_IO__ undefined. */
++#define __ARM_IC_NOALIAS_ICACHE__ 1
++#define __ARM_DEBUG__ 7
++#define __ARM_ENABLE_SWAP__ 1
++#define __ARM_V8_CRYPTO_EXTENSIONS__ 1
++#define ARM_ARCH_TIMER
++#define HAS_GIC_V3 1
++#define HAS_CLUSTER 1
++#define CORE_NCTRS 0 /* No platform PMU provider in this bring-up target. */
++#define BTI_ENFORCED 0
++/* No 16K/mixed pages, PAN, PAC, LSE, range TLBI, SME, AIC or Apple PMU. */
++#define SDM835_GICD_BASE 0x17a00000
++#define SDM835_GICD_SIZE 0x10000
++#define SDM835_GICR_BASE 0x17b00000
++#define SDM835_GICR_SIZE 0x100000
++#define SDM835_TIMER_HZ 19200000
++#define SDM835_VTIMER_INTID 19
++#define SDM835_IPI_INTID 0
++#define SDM835_UART_BASE 0x0c1b0000
++#define SDM835_UART_SIZE 0x1000
++#ifndef ASSEMBLER
++#define QCOM_UARTDM
++#define PLATFORM_PANIC_LOG_DISABLED
++#endif
++#endif
+--- /dev/null
++++ b/pexpert/pexpert/arm64/qcom_uartdm.h
+@@ -0,0 +1,34 @@
++/* UARTDM v1.4 register interface. Clocks and pinmux are owned by firmware. */
++#ifndef _PEXPERT_QCOM_UARTDM_H
++#define _PEXPERT_QCOM_UARTDM_H
++#define QUDM_MR1         0x00
++#define QUDM_MR2         0x04
++#define QUDM_SR          0x08
++#define QUDM_CR          0x10
++#define QUDM_IMR         0x14
++#define QUDM_ISR         0x14
++#define QUDM_IPR         0x18
++#define QUDM_TFWR        0x1c
++#define QUDM_RFWR        0x20
++#define QUDM_DMRX        0x34
++#define QUDM_RX_SNAP     0x38
++#define QUDM_DMEN        0x3c
++#define QUDM_NCF_TX      0x40
++#define QUDM_RXFS        0x50
++#define QUDM_FIFO        0x70
++#define QUDM_RX_READY    (1U << 0)
++#define QUDM_TX_READY    (1U << 2)
++#define QUDM_TX_EMPTY    (1U << 3)
++#define QUDM_OVERRUN     (1U << 4)
++#define QUDM_RX_STALE    (1U << 3)
++#define QUDM_RESET_RX    0x10
++#define QUDM_RESET_TX    0x20
++#define QUDM_RESET_ERR   0x30
++#define QUDM_RESET_STALE 0x80
++#define QUDM_FORCE_STALE 0x400
++#define QUDM_STALE_OFF   0x600
++#define QUDM_ENABLE      0x05
++#define QUDM_DISABLE     0x0a
++#define QUDM_8N1         0x34
++#define QUDM_RX_LIMIT    0xffffff
++#endif
+--- /dev/null
++++ b/pexpert/arm/pe_serial_uartdm.inc
+@@ -0,0 +1,184 @@
++/* Polled SDM835 console, included by pe_serial.c. No BAM or UART IRQs. */
++#include <pexpert/arm64/qcom_uartdm.h>
++#ifndef QCOM_UARTDM_RELAX
++#define QCOM_UARTDM_RELAX() __asm__ volatile("yield")
++#endif
++
++static vm_offset_t qcom_uartdm_base;
++static uint32_t qcom_uartdm_rx_word;
++static unsigned int qcom_uartdm_rx_count;
++static unsigned int qcom_uartdm_rx_consumed;
++static unsigned int qcom_uartdm_rx_remaining;
++static bool qcom_uartdm_stale_requested;
++static uint32_t qcom_uartdm_tx_lock;
++
++static uint32_t
++qcom_uartdm_read(unsigned int reg)
++{
++	return ml_io_read32(qcom_uartdm_base + reg);
++}
++
++static void
++qcom_uartdm_write(unsigned int reg, uint32_t value)
++{
++	ml_io_write32(qcom_uartdm_base + reg, value);
++	__builtin_arm_dsb(DSB_SY);
++}
++
++static void
++qcom_uartdm_init(void)
++{
++	/* Keep the firmware's CSR divisor, GCC clock and TLMM pinmux. */
++	qcom_uartdm_write(QUDM_IMR, 0);
++	qcom_uartdm_write(QUDM_DMEN, 0);
++	qcom_uartdm_write(QUDM_CR, QUDM_DISABLE);
++	qcom_uartdm_write(QUDM_CR, QUDM_RESET_RX);
++	qcom_uartdm_write(QUDM_CR, QUDM_RESET_TX);
++	qcom_uartdm_write(QUDM_CR, QUDM_RESET_ERR);
++	qcom_uartdm_write(QUDM_CR, QUDM_STALE_OFF);
++	qcom_uartdm_write(QUDM_CR, QUDM_RESET_STALE);
++	qcom_uartdm_write(QUDM_MR1, 0); /* No RTS/CTS dependency. */
++	qcom_uartdm_write(QUDM_MR2, QUDM_8N1);
++	qcom_uartdm_write(QUDM_IPR, 1);
++	qcom_uartdm_write(QUDM_RFWR, 0);
++	qcom_uartdm_write(QUDM_TFWR, 0);
++	qcom_uartdm_write(QUDM_DMRX, QUDM_RX_LIMIT);
++	qcom_uartdm_write(QUDM_CR, QUDM_ENABLE);
++	qcom_uartdm_rx_count = 0;
++	qcom_uartdm_rx_consumed = 0;
++	qcom_uartdm_rx_remaining = 0;
++	qcom_uartdm_stale_requested = false;
++}
++
++static unsigned int
++qcom_uartdm_transmit_ready(void)
++{
++	/* Each FIFO word is a separate one-byte transfer; don't overlap NCF_TX. */
++	return (qcom_uartdm_read(QUDM_SR) & QUDM_TX_EMPTY) != 0;
++}
++
++static void
++qcom_uartdm_transmit_data(uint8_t c)
++{
++	/* kprintf and the console have separate upstream locks. UARTDM's
++	 * count/status/FIFO sequence must still be one hardware transaction.
++	 * IRQ masking prevents a same-CPU interrupt from taking our lock. */
++	bool locked = kernel_debugger_entry_count == 0;
++	bool state = false;
++	if (locked) {
++		state = ml_set_interrupts_enabled(false);
++		while (__atomic_exchange_n(&qcom_uartdm_tx_lock, 1, __ATOMIC_ACQUIRE)) {
++			ml_set_interrupts_enabled(state);
++			QCOM_UARTDM_RELAX();
++			ml_set_interrupts_enabled(false);
++		}
++	}
++	/* transmit_ready was queried before taking the lock; recheck here. */
++	while (!(qcom_uartdm_read(QUDM_SR) & QUDM_TX_EMPTY)) {
++		QCOM_UARTDM_RELAX();
++	}
++	qcom_uartdm_write(QUDM_NCF_TX, 1);
++	(void)qcom_uartdm_read(QUDM_NCF_TX); /* Complete the count write. */
++	while (!(qcom_uartdm_read(QUDM_SR) & QUDM_TX_READY)) {
++		QCOM_UARTDM_RELAX();
++	}
++	qcom_uartdm_write(QUDM_FIFO, c);
++	if (locked) {
++		__atomic_store_n(&qcom_uartdm_tx_lock, 0, __ATOMIC_RELEASE);
++		ml_set_interrupts_enabled(state);
++	}
++}
++
++static unsigned int
++qcom_uartdm_receive_ready(void)
++{
++	if (qcom_uartdm_rx_count) {
++		return 1;
++	}
++	uint32_t status = qcom_uartdm_read(QUDM_SR);
++	if (status & QUDM_OVERRUN) {
++		qcom_uartdm_write(QUDM_CR, QUDM_RESET_ERR);
++	}
++	if (!qcom_uartdm_stale_requested && (status & QUDM_RX_READY)) {
++		qcom_uartdm_rx_word = qcom_uartdm_read(QUDM_FIFO);
++		qcom_uartdm_rx_count = 4;
++		qcom_uartdm_rx_consumed += 4;
++	} else {
++		/* RX_READY describes complete words. Flush a short packing buffer
++		 * explicitly so a single keystroke can be returned immediately. */
++		if (!qcom_uartdm_stale_requested) {
++			unsigned int packed = (qcom_uartdm_read(QUDM_RXFS) >> 7) & 7;
++			if (!packed) {
++				return 0;
++			}
++			qcom_uartdm_write(QUDM_CR, QUDM_FORCE_STALE);
++			qcom_uartdm_stale_requested = true;
++		}
++		/* Stale completion and the snapshot, rather than the earlier RXFS
++		 * sample, account for bytes arriving while the flush is in flight. */
++		if (!(qcom_uartdm_read(QUDM_ISR) & QUDM_RX_STALE)) {
++			return 0;
++		}
++		if (!qcom_uartdm_rx_remaining) {
++			uint32_t snapshot = qcom_uartdm_read(QUDM_RX_SNAP);
++			if (snapshot < qcom_uartdm_rx_consumed || snapshot > QUDM_RX_LIMIT) {
++				panic("UARTDM: invalid receive snapshot");
++			}
++			qcom_uartdm_rx_remaining = snapshot - qcom_uartdm_rx_consumed;
++		}
++		if (!qcom_uartdm_rx_remaining) {
++			qcom_uartdm_write(QUDM_CR, QUDM_RESET_STALE);
++			qcom_uartdm_write(QUDM_DMRX, QUDM_RX_LIMIT);
++			qcom_uartdm_rx_consumed = 0;
++			qcom_uartdm_stale_requested = false;
++			return 0;
++		}
++		qcom_uartdm_rx_word = qcom_uartdm_read(QUDM_FIFO);
++		qcom_uartdm_rx_count = qcom_uartdm_rx_remaining < 4 ? qcom_uartdm_rx_remaining : 4;
++		qcom_uartdm_rx_remaining -= qcom_uartdm_rx_count;
++		qcom_uartdm_rx_consumed += qcom_uartdm_rx_count;
++		if (!qcom_uartdm_rx_remaining) {
++			qcom_uartdm_write(QUDM_CR, QUDM_RESET_STALE);
++			qcom_uartdm_write(QUDM_DMRX, QUDM_RX_LIMIT);
++			qcom_uartdm_rx_consumed = 0;
++			qcom_uartdm_stale_requested = false;
++		}
++	}
++	return 1;
++}
++
++static uint8_t
++qcom_uartdm_receive_data(void)
++{
++	uint8_t c = (uint8_t)qcom_uartdm_rx_word;
++	qcom_uartdm_rx_word >>= 8;
++	qcom_uartdm_rx_count--;
++	return c;
++}
++
++SECURITY_READ_ONLY_LATE(static struct pe_serial_functions) qcom_uartdm_serial_functions = {
++	.init = qcom_uartdm_init,
++	.transmit_ready = qcom_uartdm_transmit_ready,
++	.transmit_data = qcom_uartdm_transmit_data,
++	.receive_ready = qcom_uartdm_receive_ready,
++	.receive_data = qcom_uartdm_receive_data,
++	.device = SERIAL_QCOM_UARTDM
++};
++
++static void
++qcom_uartdm_setup(const DeviceTreeNode *const node)
++{
++	const uint64_t *reg;
++	unsigned int size;
++	if (SecureDTGetProperty(node, "reg", (const void **)&reg, &size) != kSuccess ||
++	    size != 2 * sizeof(uint64_t) || reg[1] < QUDM_FIFO + sizeof(uint32_t) ||
++	    (reg[0] & 3) || reg[0] > UINT64_MAX - pe_arm_get_soc_base_phys() ||
++	    reg[1] > UINT64_MAX - (reg[0] + pe_arm_get_soc_base_phys())) {
++		panic("UARTDM requires a valid Apple DT reg {uint64 offset, uint64 size}");
++	}
++	qcom_uartdm_base = ml_io_map(pe_arm_get_soc_base_phys() + reg[0], reg[1]);
++	if (!qcom_uartdm_base) {
++		panic("Unable to map UARTDM registers");
++	}
++	register_serial_functions(&qcom_uartdm_serial_functions);
++}
+--- /dev/null
++++ b/osfmk/arm64/sdm835.c
+@@ -0,0 +1,238 @@
++/* SDM835 non-secure GICv3 bootstrap. Only timer/IPI sources are enabled. */
++#include <pexpert/arm64/board_config.h>
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++#include <stdint.h>
++#include <arm64/proc_reg.h>
++#include <kern/debug.h>
++#include <kern/clock.h>
++#include <arm/rtclock.h>
++#include <arm/cpu_data_internal.h>
++#include <arm/cpu_internal.h>
++#include <arm/machine_cpu.h>
++#include <machine/machine_routines.h>
++#include <pexpert/pexpert.h>
++#include <pexpert/arm64/arm_smp.h>
++#include <os/atomic_private.h>
++
++static vm_offset_t sdm835_gicr;
++static bool sdm835_gic_security_disabled;
++static int sdm835_timer_trace;
++static unsigned sdm835_boot_timer_ticks;
++static uint32_t sdm835_timer_cpus;
++static uint32_t sdm835_ipi_cpus;
++extern bool PE_dispatch_irq(unsigned int intid);
++static uint32_t
++sdm835_read32(void *base, uint32_t offset)
++{
++	return *(volatile uint32_t *)((uintptr_t)base + offset);
++}
++
++static uint64_t
++sdm835_read64(void *base, uint32_t offset)
++{
++	return *(volatile uint64_t *)((uintptr_t)base + offset);
++}
++
++static void
++sdm835_write32(void *base, uint32_t offset, uint32_t value)
++{
++	*(volatile uint32_t *)((uintptr_t)base + offset) = value;
++	__builtin_arm_dsb(DSB_SY);
++}
++
++static void
++sdm835_barrier(void *unused __unused)
++{
++	__builtin_arm_dsb(DSB_SY);
++}
++
++static uint64_t
++sdm835_counter(void *unused __unused)
++{
++	return __builtin_arm_rsr64("CNTVCT_EL0");
++}
++
++static void
++sdm835_relax(void *unused __unused)
++{
++	__asm__ volatile("yield");
++}
++
++void
++pe_sdm835_init_interrupts(void)
++{
++	/* Firmware must enable distributor ARE_NS and Group1NS forwarding.
++	 * Don't alter secure ownership or take over existing SPIs at EL1. */
++	vm_offset_t base = os_atomic_load(&sdm835_gicr, acquire);
++	if (!base) {
++		/* Only the boot CPU may allocate this shared mapping. All subsequent
++		 * CPU starts consume it after release/acquire publication. */
++		if (cpu_number() != master_cpu) {
++			panic("SDM835: secondary CPU reached GIC before bootstrap");
++		}
++		PE_parse_boot_argn("storage-trace", &sdm835_timer_trace, sizeof(sdm835_timer_trace));
++		vm_offset_t distributor = ml_io_map(SDM835_GICD_BASE, SDM835_GICD_SIZE);
++		if (!distributor) {
++			panic("SDM835: cannot map distributor");
++		}
++		uint32_t control = sdm835_read32((void *)distributor, 0);
++		if ((control & 0x12) != 0x12) {
++			panic("SDM835: firmware must enable affinity routing and Group1NS (0x%x)", control);
++		}
++		sdm835_gic_security_disabled = (control & 0x40) != 0;
++		base = ml_io_map(SDM835_GICR_BASE, SDM835_GICR_SIZE);
++		if (!base) {
++			panic("SDM835: cannot map redistributors");
++		}
++		os_atomic_store(&sdm835_gicr, base, release);
++	}
++	uint32_t affinity = __builtin_arm_rsr64("MPIDR_EL1") & 0xffffff;
++	if (!arm_smp_valid_affinity(affinity)) {
++		panic("SDM835: unsupported CPU affinity 0x%x", affinity);
++	}
++	struct arm_gic_io io = { (void *)base, sdm835_read32, sdm835_read64,
++	                        sdm835_write32, sdm835_barrier, sdm835_counter, sdm835_relax };
++	uint32_t local = 0;
++	enum arm_gic_result result = arm_gic_find_cpu(&io, SDM835_GICR_SIZE, affinity, &local);
++	if (result == ARM_GIC_OK) {
++		result = arm_gic_init_cpu(&io, local, SDM835_VTIMER_INTID,
++		    SDM835_IPI_INTID, SDM835_TIMER_HZ, sdm835_gic_security_disabled);
++	}
++	if (result != ARM_GIC_OK) {
++		panic("SDM835: CPU 0x%x local GIC initialization failed (%u)", affinity, result);
++	}
++	__builtin_arm_wsr64("ICC_SRE_EL1", __builtin_arm_rsr64("ICC_SRE_EL1") | 1);
++	__builtin_arm_isb(ISB_SY);
++	if (!(__builtin_arm_rsr64("ICC_SRE_EL1") & 1)) {
++		panic("SDM835: firmware did not permit GIC system registers");
++	}
++	__builtin_arm_wsr64("ICC_IGRPEN1_EL1", 0);
++	__builtin_arm_isb(ISB_SY);
++	__builtin_arm_wsr64("ICC_PMR_EL1", 0xff);
++	__builtin_arm_wsr64("ICC_BPR1_EL1", 0);
++	__builtin_arm_wsr64("ICC_CTLR_EL1", __builtin_arm_rsr64("ICC_CTLR_EL1") & ~2ULL);
++	__builtin_arm_wsr64("ICC_IGRPEN1_EL1", 1);
++	__builtin_arm_isb(ISB_SY);
++	kprintf("[ARM SMP] interrupts cpu=%u affinity=0x%x redistributor=0x%x\n",
++	    cpu_number(), affinity, local);
++	if (sdm835_timer_trace) {
++		kprintf("[SDM835 timer] group=%08x enable=%08x CTL=%llx TVAL=%llx\n",
++		    io.read32(io.context, local + ARM_GICR_IGROUPR0),
++		    io.read32(io.context, local + ARM_GICR_ISENABLER0),
++		    __builtin_arm_rsr64("CNTV_CTL_EL0"), __builtin_arm_rsr64("CNTV_TVAL_EL0"));
++	}
++}
++
++void
++pe_sdm835_handle_irq(void)
++{
++	uint64_t iar = __builtin_arm_rsr64("ICC_IAR1_EL1");
++	unsigned int id = iar & 0xffffff;
++	if (id >= 1020 && id <= 1023) {
++		return;
++	}
++	if (id == SDM835_VTIMER_INTID) {
++		uint32_t bit = 1U << cpu_number();
++		if (!(os_atomic_or_orig(&sdm835_timer_cpus, bit, relaxed) & bit)) {
++			kprintf("[ARM SMP] timer cpu=%u\n", cpu_number());
++		}
++		if(sdm835_timer_trace && !(__builtin_arm_rsr64("MPIDR_EL1")&0xffff) && sdm835_boot_timer_ticks++<3)kprintf("[SDM835 timer] IRQ%u tick %u\n",SDM835_VTIMER_INTID,sdm835_boot_timer_ticks);
++		getCpuDatap()->cpu_decrementer = -1;
++		rtclock_intr(TRUE);
++	} else if (id == SDM835_IPI_INTID) {
++		/* Retire this SGI before consuming the software signal mask so
++		 * another core can deliver a fresh SGI while we process it. */
++		__builtin_arm_wsr64("ICC_EOIR1_EL1", iar);
++		__builtin_arm_isb(ISB_SY);
++		cpu_signal_handler();
++		uint32_t bit = 1U << cpu_number();
++		if (!(os_atomic_or_orig(&sdm835_ipi_cpus, bit, relaxed) & bit)) {
++			kprintf("[ARM SMP] ipi cpu=%u\n", cpu_number());
++		}
++		return;
++	} else if (id >= 32 && id < 1020 && PE_dispatch_irq(id)) {
++		/* Apple PassthruInterruptController forwards the acknowledged INTID
++		 * to the IOKit GIC driver. Do not read IAR again in the child. */
++	} else {
++		panic("SDM835: unregistered GIC interrupt %u", id);
++	}
++	/* Complete peripheral writes before priority drop/deactivation. */
++	__builtin_arm_dsb(DSB_SY);
++	__builtin_arm_wsr64("ICC_EOIR1_EL1", iar);
++	__builtin_arm_isb(ISB_SY);
++}
++#endif
++
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++/* SMCCC 1.0: PSCI on MSM8998 uses SMC, not Apple's virtual HVC conduit. */
++static int64_t
++sdm835_psci(uint64_t function, uint64_t arg1, uint64_t arg2)
++{
++	register uint64_t x0 __asm__("x0") = function;
++	register uint64_t x1 __asm__("x1") = arg1;
++	register uint64_t x2 __asm__("x2") = arg2;
++	register uint64_t x3 __asm__("x3") = 0;
++	__asm__ volatile("smc #0" : "+r"(x0), "+r"(x1), "+r"(x2), "+r"(x3)
++	    : : "x4", "x5", "x6", "x7", "x8", "x9", "x10", "x11", "x12",
++	        "x13", "x14", "x15", "x16", "x17", "memory", "cc");
++	/* PSCI status/version results are signed 32-bit values, including the
++	 * SMC64 calls. Firmware need not sign-extend their upper word. */
++	return (int32_t)x0;
++}
++
++int64_t
++pe_sdm835_cpu_on(uint32_t mpidr, uint64_t entry)
++{
++	if (!arm_smp_valid_affinity(mpidr) || !entry || (entry & 3) || entry >= (1ULL << 40)) {
++		return -2; /* PSCI_INVALID_PARAMETERS; don't enter firmware on bad input. */
++	}
++	int64_t version = sdm835_psci(0x84000000, 0, 0);
++	if (version < 2) {
++		return -1; /* CPU_ON requires PSCI 0.2 or later. */
++	}
++	__builtin_arm_dsb(DSB_SY);
++	int64_t status = sdm835_psci(0xc4000003, mpidr, entry);
++	kprintf("[ARM SMP] CPU_ON affinity=0x%x entry=0x%llx status=%lld\n", mpidr, entry, status);
++	return status;
++}
++
++void
++pe_sdm835_cpu_off(void)
++{
++	int64_t status = sdm835_psci(0x84000002, 0, 0);
++	panic("SDM835: PSCI CPU_OFF returned %lld", status);
++}
++
++void
++pe_sdm835_send_ipi(uint32_t mpidr)
++{
++	uint64_t sgi;
++	if (!arm_smp_sgi(mpidr, SDM835_IPI_INTID, &sgi)) {
++		panic("SDM835: invalid IPI affinity 0x%x", mpidr);
++	}
++	__builtin_arm_dsb(DSB_ISHST);
++	__builtin_arm_wsr64("ICC_SGI1R_EL1", sgi);
++	__builtin_arm_isb(ISB_SY);
++}
++#endif
++
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++/* Only valid until arm_vm_init replaces the bootstrap identity map. */
++uint64_t sdm835_boot_uart_table[512] __attribute__((aligned(4096)));
++int sdm835_early_uart_active = 1;
++void
++sdm835_early_puts(const char *s)
++{
++    if (!sdm835_early_uart_active) return;
++    volatile uint32_t *uart = (void *)0x0c1b0000;
++    while (*s) {
++        unsigned int timeout = 1000000;
++        while (!(uart[2] & 8) && --timeout) __asm__ volatile("yield");
++        if (!timeout) return;
++        uart[0x40 / 4] = 1;
++        __builtin_arm_dsb(DSB_SY);
++        uart[0x70 / 4] = (unsigned char)*s++;
++        __builtin_arm_dsb(DSB_SY);
++    }
++}
++#endif
+--- /dev/null
++++ b/pexpert/pexpert/arm64/arm_smp.h
+@@ -0,0 +1,165 @@
++/* SPDX-License-Identifier: BSD-2-Clause
++ * ARMv8 GIC-500 local interrupt handoff. Shared by XNU and register-model tests.
++ */
++#ifndef _PEXPERT_ARM64_ARM_SMP_H
++#define _PEXPERT_ARM64_ARM_SMP_H
++#include <stdint.h>
++#include <stdbool.h>
++
++#define ARM_GICR_STRIDE       0x20000U
++#define ARM_GICR_TYPER        0x00008U
++#define ARM_GICR_CTLR         0x00000U
++#define ARM_GICR_WAKER        0x00014U
++#define ARM_GICR_IGROUPR0     0x10080U
++#define ARM_GICR_ISENABLER0   0x10100U
++#define ARM_GICR_ICENABLER0   0x10180U
++#define ARM_GICR_ICPENDR0     0x10280U
++#define ARM_GICR_ICACTIVER0   0x10380U
++#define ARM_GICR_IPRIORITYR0  0x10400U
++#define ARM_GICR_ICFGR1       0x10c04U
++#define ARM_GICR_IGRPMODR0    0x10d00U
++
++struct arm_gic_io {
++	void *context;
++	uint32_t (*read32)(void *, uint32_t);
++	uint64_t (*read64)(void *, uint32_t);
++	void (*write32)(void *, uint32_t, uint32_t);
++	void (*barrier)(void *);
++	uint64_t (*counter)(void *);
++	void (*relax)(void *);
++};
++
++enum arm_gic_result {
++	ARM_GIC_OK, ARM_GIC_BAD_LAYOUT, ARM_GIC_NO_CPU, ARM_GIC_DUPLICATE_CPU,
++	ARM_GIC_WAKE_TIMEOUT, ARM_GIC_WRITE_TIMEOUT, ARM_GIC_NOT_DELEGATED
++};
++
++static inline bool
++arm_smp_valid_affinity(uint32_t affinity)
++{
++	/* MSM8998: Aff1 0/1, Aff0 0..3; no Aff2/Aff3 CPUs. */
++	return (affinity & ~0x103U) == 0;
++}
++
++static inline uint32_t
++arm_smp_cpu_bit(uint32_t affinity)
++{
++	return arm_smp_valid_affinity(affinity) ?
++	       1U << (((affinity >> 8) * 4) + (affinity & 3)) : 0;
++}
++
++static inline bool
++arm_smp_sgi(uint32_t affinity, unsigned int interrupt, uint64_t *value)
++{
++	if (!value || !arm_smp_valid_affinity(affinity) || interrupt >= 16) {
++		return false;
++	}
++	*value = ((uint64_t)(affinity >> 8) << 16) |
++	    ((uint64_t)interrupt << 24) | (1ULL << (affinity & 3));
++	return true;
++}
++
++static inline enum arm_gic_result
++arm_gic_find_cpu(const struct arm_gic_io *io, uint32_t length,
++    uint32_t affinity, uint32_t *local)
++{
++	bool found = false;
++	if (!length || length % ARM_GICR_STRIDE) {
++		return ARM_GIC_BAD_LAYOUT;
++	}
++	for (uint32_t offset = 0; offset < length; offset += ARM_GICR_STRIDE) {
++		uint64_t typer = io->read64(io->context, offset + ARM_GICR_TYPER);
++		/* GIC-500 has no extra VLPI frames. Never guess their stride. */
++		if (typer & 2) {
++			return ARM_GIC_BAD_LAYOUT;
++		}
++		if ((uint32_t)(typer >> 32) == affinity) {
++			if (found) {
++				return ARM_GIC_DUPLICATE_CPU;
++			}
++			*local = offset;
++			found = true;
++		}
++		if (typer & 16) {
++			break;
++		}
++	}
++	return found ? ARM_GIC_OK : ARM_GIC_NO_CPU;
++}
++
++static inline bool
++arm_gic_wait_clear(const struct arm_gic_io *io, uint32_t offset,
++    uint32_t mask, uint64_t timeout_ticks)
++{
++	uint64_t start = io->counter(io->context);
++	/* The counter bounds elapsed time; the cap also handles a broken counter. */
++	for (unsigned int n = 0; n < 1000000; n++) {
++		if (!(io->read32(io->context, offset) & mask)) {
++			return true;
++		}
++		if (io->counter(io->context) - start >= timeout_ticks) {
++			break;
++		}
++		io->relax(io->context);
++	}
++	return false;
++}
++
++static inline enum arm_gic_result
++arm_gic_init_cpu(const struct arm_gic_io *io, uint32_t local,
++    unsigned int timer, unsigned int ipi, uint64_t timeout_ticks, bool security_disabled)
++{
++	if (timer < 16 || timer >= 32 || ipi >= 16 || !timeout_ticks) {
++		return ARM_GIC_BAD_LAYOUT;
++	}
++	uint32_t mask = (1U << timer) | (1U << ipi);
++	uint32_t value = io->read32(io->context, local + ARM_GICR_WAKER);
++	io->write32(io->context, local + ARM_GICR_WAKER, value & ~2U);
++	io->barrier(io->context);
++	if (!arm_gic_wait_clear(io, local + ARM_GICR_WAKER, 4, timeout_ticks)) {
++		return ARM_GIC_WAKE_TIMEOUT;
++	}
++	io->write32(io->context, local + ARM_GICR_ICENABLER0, mask);
++	io->barrier(io->context);
++	if (!arm_gic_wait_clear(io, local + ARM_GICR_CTLR, 8, timeout_ticks)) {
++		return ARM_GIC_WRITE_TIMEOUT;
++	}
++	/* With GICD_CTLR.DS=0, IGROUPR/IGRPMODR are Secure and RAZ/WI
++	 * from NS EL1. Only firmware can delegate those interrupts. When
++	 * DS=1, IGROUPR is writable and IGRPMODR is itself RAZ/WI. */
++	if (security_disabled) {
++		value = io->read32(io->context, local + ARM_GICR_IGROUPR0);
++		io->write32(io->context, local + ARM_GICR_IGROUPR0, value | mask);
++	}
++	/* No firmware pending/active state may survive into XNU's own sources. */
++	io->write32(io->context, local + ARM_GICR_ICPENDR0, mask);
++	io->write32(io->context, local + ARM_GICR_ICACTIVER0, mask);
++	unsigned int sources[2] = { ipi, timer };
++	for (unsigned int i = 0; i < 2; i++) {
++		uint32_t offset = local + ARM_GICR_IPRIORITYR0 + (sources[i] & ~3U);
++		unsigned int shift = (sources[i] & 3) * 8;
++		value = io->read32(io->context, offset);
++		io->write32(io->context, offset, (value & ~(0xffU << shift)) | (0x80U << shift));
++		if ((io->read32(io->context, offset) & (0xf8U << shift)) != (0x80U << shift)) {
++			return ARM_GIC_NOT_DELEGATED;
++		}
++	}
++	/* The architectural virtual timer is level sensitive. SGIs are fixed edge. */
++	value = io->read32(io->context, local + ARM_GICR_ICFGR1);
++	io->write32(io->context, local + ARM_GICR_ICFGR1,
++	    value & ~(2U << ((timer - 16) * 2)));
++	io->barrier(io->context);
++	if ((security_disabled &&
++	    (io->read32(io->context, local + ARM_GICR_IGROUPR0) & mask) != mask) ||
++	    (io->read32(io->context, local + ARM_GICR_ICFGR1) & (2U << ((timer - 16) * 2)))) {
++		return ARM_GIC_NOT_DELEGATED;
++	}
++	io->write32(io->context, local + ARM_GICR_ISENABLER0, mask);
++	io->barrier(io->context);
++	if (!arm_gic_wait_clear(io, local + ARM_GICR_CTLR, 8, timeout_ticks)) {
++		return ARM_GIC_WRITE_TIMEOUT;
++	}
++	return (io->read32(io->context, local + ARM_GICR_ISENABLER0) & mask) == mask ?
++	       ARM_GIC_OK : ARM_GIC_NOT_DELEGATED;
++}
++#endif
+
+--- a/pexpert/arm/pe_kprintf.c
++++ b/pexpert/arm/pe_kprintf.c
+@@ -93,6 +93,37 @@
+ 
+ static int      cpu_last_locked = 0;
+ 
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++/* Console ring drains and kprintf share the physical UART. Serialize whole
++ * kprintf records with bounded console chunks, preserving panic's unbuffered
++ * path when another CPU might have stopped while holding this lock. */
++boolean_t pe_serial_output_lock(void);
++void pe_serial_output_unlock(boolean_t state);
++
++boolean_t
++pe_serial_output_lock(void)
++{
++	boolean_t state = ml_set_interrupts_enabled(FALSE);
++	while (!simple_lock_try(&kprintf_lock, LCK_GRP_NULL)) {
++		ml_set_interrupts_enabled(state);
++		ml_set_interrupts_enabled(FALSE);
++	}
++	return state;
++}
++
++void
++pe_serial_output_unlock(boolean_t state)
++{
++	simple_unlock(&kprintf_lock);
++#if SCHED_HYGIENE_DEBUG
++	if (state) {
++		ml_spin_debug_clear_self();
++	}
++#endif
++	ml_set_interrupts_enabled(state);
++}
++#endif
++
+ __attribute__((noinline, not_tail_called))
+ void
+ kprintf(const char *fmt, ...)

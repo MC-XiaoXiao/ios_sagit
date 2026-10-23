@@ -1,0 +1,86 @@
+{
+  "version": 1,
+  "date": "2026-10-20",
+  "scope": "retained-running ADSP, v12 host-private SMEM, retained calibrated MI2S/COPP route",
+  "hardware_tested": false,
+  "device_installed": false,
+  "native_audio_service_tested": false,
+  "implemented": {
+    "concrete_iokit_backend": "QcomADSP",
+    "apple_frontend": "QcomAudio / native IOAudio2Device",
+    "glink": "v1, apr_audio_svc, 8 receive intents, reuse negotiation, fragments and backpressure",
+    "apr": "v2, strict service/domain/port/token matching; published timeout quarantines epoch",
+    "pcm": "48kHz signed16 stereo interleaved, shared host ring to explicit reserved DSP window",
+    "asm": "MAP/OPEN/PCM format/RUN/WRITE/PAUSE/FLUSH/CLOSE/UNMAP",
+    "adm": "matrix mapping to a retained COPP",
+    "position": "GET_SESSIONTIME_V3 rendering time; host APR-reply observation timestamp"
+  },
+  "handoff": {
+    "property": "qcom,adsp-handoff",
+    "encoding": "opaque little-endian binary",
+    "bytes": 72,
+    "magic": "0x50534441",
+    "version": 1,
+    "transport_flags": "0x0f",
+    "output_flags": "0x7f",
+    "host_pid": 0,
+    "remote_pid": 2,
+    "required_memory_map": [
+      "/chosen/memory-map/QcomSMEM",
+      "/chosen/memory-map/ADSPFirmware",
+      "/chosen/memory-map/ADSPPCM (output only)"
+    ],
+    "actual_producer_implemented": false
+  },
+  "smem": {
+    "owner_service": "QcomSMEM",
+    "protocol": "QcomSMEMRequest; Snapshot then read-only Lookup; caller retains and opens service",
+    "mapping": "borrow the sole owner's mapping; no separate ADSP alias or hardware-lock owner",
+    "base": "0x86000000",
+    "bytes": "0x200000",
+    "descriptor_item": 478,
+    "tx_item": 479,
+    "rx_item": 480,
+    "smp2p_inbound_item": 429,
+    "smp2p_structure_bytes": 340,
+    "glink_partition": "AP 0 / ADSP 2 private partition; no global fallback",
+    "smp2p_partition": "AP 0 / ADSP 2 preferred, global 0xfffe fallback",
+    "global_v11_heap_accepted": false,
+    "tcsr_mutex": 3
+  },
+  "mailbox": {
+    "base": "0x17911000",
+    "doorbell_offset": 8,
+    "doorbell_bit": 9,
+    "glink_spi": 157,
+    "apple_interrupt": 189
+  },
+  "device_registers": {
+    "transport": ["APCS mailbox"],
+    "output": ["APCS mailbox", "reserved PCM window"],
+    "shared_service": ["SMEM", "TCSR mutex"]
+  },
+  "output": {
+    "ring_frames": 4096,
+    "period_frames": 512,
+    "max_prefetch_frames": 2048,
+    "safety_offset_frames": 2048,
+    "reserved_window_bytes": 16384,
+    "afe_port": "0x1006",
+    "session_range": [
+      1,
+      8
+    ]
+  },
+  "remaining": [
+    "ADSP PAS cold firmware load/authentication and resources",
+    "real retained-resource handoff producer",
+    "AFE/MI2S cold initialization and board clock/pinctrl producer",
+    "TFA98xx firmware/calibration producer",
+    "exact AVTimer-to-mach correlation",
+    "native Core Audio/media-service runtime and physical playback validation"
+  ],
+  "default_device_tree_enabled": false,
+  "automatic_reset_recovery": false,
+  "deep_suspend_supported": false
+}

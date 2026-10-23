@@ -1,0 +1,181 @@
+{
+  "date": "2026-10-17",
+  "status": "offline-passed",
+  "hardware_tested": false,
+  "device_commands_executed": false,
+  "driver": "org.darwin.driver.PMI8998WLED",
+  "framework": "original iOS 18 IOMobileFramebufferLegacy hardware power callback and native IOHID button policy",
+  "scope": {
+    "implemented": [
+      "read-only firmware brightness adoption",
+      "12-bit PMI8998 WLED brightness control",
+      "real backlight off on native display/controller off",
+      "remember brightness changes while off without lighting",
+      "restore brightness on wake",
+      "pause local presentation/IRQs and abort in-flight swap while dark",
+      "fresh IRQ status on wake",
+      "exclusive backlight and retained SPMI bus leases"
+    ],
+    "retained": [
+      "LCD panel power",
+      "DPU/DSI raster and clocks",
+      "firmware boost/current-limit/CABC configuration"
+    ],
+    "not_verified": [
+      "physical backlight response",
+      "native lock-button and automatic display-off/wake end-to-end"
+    ],
+    "not_implemented": [
+      "deep system suspend",
+      "panel cold power cycle",
+      "native brightness slider/curve or automatic brightness"
+    ]
+  },
+  "checks": {
+    "arm64_kext_build_and_abi": {
+      "status": "passed",
+      "bundles": 20,
+      "report": "build/display-backlight/verification-drivers.json"
+    },
+    "collection": {
+      "status": "passed",
+      "bundles": 68,
+      "path": "build/display-backlight/kernelcache.input-runtime",
+      "sha256": "9f1499b53aa6c06b925dfcccb98e382bd8498c4677f8bd2903c6bc2a1bd0b04e",
+      "report": "build/display-backlight/kernelcache.input-runtime.verification.json"
+    },
+    "independent_collection_reverification": {
+      "status": "passed",
+      "log": "build/display-backlight-collection-verify.log"
+    },
+    "efi_build": {
+      "status": "passed",
+      "path": "build/display-backlight/bridge/XnuBridge.efi",
+      "sha256": "cd2f46afaba217f1132a2bb8e9fbfd2c4600b5c65c95d6df12eb2d2915439d3c",
+      "scope": "compile/link and uncommitted DT only; this smoke-build image has no APFS runtime profile and is not a device-tested replacement for the previous boot image"
+    },
+    "host_models": {
+      "status": "passed",
+      "tests": [
+        "display",
+        "mipi-dsi",
+        "rtc",
+        "power",
+        "pmic-input",
+        "buttons",
+        "gpio",
+        "fingerprint-home"
+      ],
+      "log": "build/display-backlight-host-tests.log",
+      "input_models_also_run_by_collection": true
+    },
+    "asan_ubsan": {
+      "status": "passed",
+      "tests": [
+        "display",
+        "mipi-dsi",
+        "rtc",
+        "power",
+        "pmic-input",
+        "buttons"
+      ],
+      "log": "build/display-backlight-sanitized-tests.log"
+    },
+    "bridge_unittests": {
+      "status": "passed",
+      "tests": 47,
+      "log": "build/display-backlight-bridge-tests.log"
+    },
+    "toolchain_unittests": {
+      "status": "passed",
+      "tests": 15,
+      "log": "build/display-backlight-toolchain-tests.log"
+    },
+    "linker_ctest": {
+      "status": "passed",
+      "tests": 5,
+      "log": "build/display-backlight-collection.log"
+    }
+  },
+  "drivers": [
+    {
+      "identifier": "org.darwin.driver.QcomSPMI",
+      "sha256": "3a7ab21a50505fc90f2a91c7a2a4612bd3a5d71d4cdd62fa5376b32dba6ce779",
+      "bytes": 95232,
+      "architecture": "arm64",
+      "filetype": "MH_KEXT_BUNDLE"
+    },
+    {
+      "identifier": "org.darwin.driver.PMI8998WLED",
+      "sha256": "d69e0bbbf59de3b33dad3974a5b5cb5117a576cfa52b1aa5c3212382b84449f8",
+      "bytes": 87480,
+      "architecture": "arm64",
+      "filetype": "MH_KEXT_BUNDLE"
+    },
+    {
+      "identifier": "org.darwin.driver.QcomDisplay",
+      "sha256": "21e9fa65a6654fd7c019621d6c96247a1aee1d517a6cc2bdcb40c54b327ad166",
+      "bytes": 128840,
+      "architecture": "arm64",
+      "filetype": "MH_KEXT_BUNDLE"
+    }
+  ],
+  "sources": {
+    "drivers/display/PMI8998WLED/Info.plist": "294b3e0bccad315d9a197ecac5c0082bf9e0d77a706a407643290d0baed26503",
+    "drivers/display/PMI8998WLED/PMI8998WLED.cpp": "6653eea115871db8ef51c872bda40ffbd349c896cfcf261863dbc04b5c06a137",
+    "drivers/display/PMI8998WLED/PMI8998WLED.h": "42a88ac00e48f577223472bf6489301ce88d2fa8264a9931117d040eafda35a8",
+    "drivers/display/PMI8998WLED/PMI8998WLEDHardware.h": "99f58c52913d6454c637922ebc21e314683ac48555f88b0bce25c3f7e9c06bf4",
+    "drivers/include/DisplayBacklight.h": "8ebfbf0acec8e09bbbb16084be154cba9d4ff7ad93268fc0523897855804dc5e",
+    "drivers/display/QcomDisplay/QcomDisplay.cpp": "daa5673f97f0dc3b8c93dcdc00adcb942130054f9f078b79518f1986ea4a9feb",
+    "drivers/display/QcomDisplay/QcomDisplay.h": "f0b3936e0f2222c805a7530b55ad7f537e37cb9a234958f4c530e5ce02c140a8",
+    "drivers/display/QcomDisplay/Info.plist": "641ce2238a839b61e2b1759f7af882aa66ec4875a516e479573b7cdd121a8416",
+    "drivers/bus/QcomSPMI/QcomSPMI.cpp": "be6d58a20e45d7ed50f502796cd0b704b03f8c30cf58aba4611cb64b9999b8eb",
+    "drivers/bus/QcomSPMI/QcomSPMI.h": "492943ee1f646bfcc923b372070a4b85a6acb4a6f9e0dd2743cb48efd5abe5c0",
+    "drivers/bus/QcomSPMI/Info.plist": "24e871d696fde1a952948a3c6c9f2c18e6d2b75740c71bf7ecff112301ba2c10",
+    "scripts/build-bridge.py": "68d7d25bcf0c4dc95418c9929738264a38ae6f8efeabd8c50c4ca6ab25a6baf1",
+    "boot/bridge/display_handoff.c": "dac261e4297656f6134ebec0502363c684223568942cd5e9f9c49f1cdfeaec27",
+    "tools/display-handoff.json": "d2680921fca2a30307fc3a95c743e66388ba6e68f8877ee40b1e43e2f16f8113",
+    "drivers/Build.json": "6a7db27ac4ea141857ebde4fe547fd1a5444a9547af87bd6ce01c822b23e13dd",
+    "tests/display_test.cpp": "1ec57b4d35aa066f27fa91242d3d838e716e21f9953f1f65d419a39b20ff1e80",
+    "tests/test_boot_bridge.py": "3c3e7d13f2c00edc9fd3037de70bf801bec7af85fca8de7ab94254f0b10609f8"
+  },
+  "cleanup": {
+    "temporary_baseline_removed": true,
+    "temporary_test_and_superseded_build_outputs_removed": [
+      "build/test-display",
+      "build/test-display-sanitized",
+      "build/test-mipi-dsi",
+      "build/test-mipi-dsi-sanitized",
+      "build/test-rtc",
+      "build/test-rtc-sanitized",
+      "build/test-power",
+      "build/test-power-sanitized",
+      "build/test-pmic-input",
+      "build/test-pmic-input-sanitized",
+      "build/test-buttons",
+      "build/test-buttons-sanitized",
+      "build/test-gpio",
+      "build/test-fingerprint-home",
+      "build/collections/input-runtime-bj2ajnr9",
+      "build/display-backlight/bridge/payload.S",
+      "build/display-backlight/bridge/raw-payload.S",
+      "build/display-backlight/bridge/bridge.elf",
+      "build/display-backlight/bridge/core.obj",
+      "build/display-backlight/bridge/platform.obj",
+      "build/display-backlight/bridge/uefi.obj",
+      "build/display-backlight/bridge/enter.obj",
+      "build/display-backlight/bridge/payload.obj",
+      "build/display-backlight/bridge/display_handoff.obj",
+      "build/display-backlight/bridge/raw-core.o",
+      "build/display-backlight/bridge/raw-platform.o",
+      "build/display-backlight/bridge/raw-fdt.o",
+      "build/display-backlight/bridge/raw-raw.o",
+      "build/display-backlight/bridge/raw-enter.o",
+      "build/display-backlight/bridge/raw-raw-entry.o",
+      "build/display-backlight/bridge/raw-raw-payload.o"
+    ],
+    "one_off_test_scripts_created": false,
+    "existing_regression_sources_retained": true,
+    "current_collection_input_snapshots_retained": "required by the manifest and independent verifier"
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "schema": 1,
+  "source_version": "iOS18.7.10 /22H374 arm64",
+  "native_metal_sha256": "ac1943c7df8c41618c07befce2931d4bec8012b16feb5133b5f78759adcf2d67",
+  "native_methods": [
+    {
+      "method": "-[MTLNamedConstantValue name]",
+      "address": "0x1824f7694",
+      "types": "@16@0:8"
+    },
+    {
+      "method": "-[MTLNamedConstantValue data]",
+      "address": "0x1824f76a4",
+      "types": "^v16@0:8"
+    },
+    {
+      "method": "-[MTLIndexedConstantValue index]",
+      "address": "0x1824f7960",
+      "types": "Q16@0:8"
+    },
+    {
+      "method": "-[MTLIndexedConstantValue dataType]",
+      "address": "0x1824f7968",
+      "types": "Q16@0:8"
+    },
+    {
+      "method": "-[MTLIndexedConstantValue data]",
+      "address": "0x1824f7970",
+      "types": "^v16@0:8"
+    },
+    {
+      "method": "-[MTLFunctionConstantValuesInternal newIndexedConstantArray]",
+      "address": "0x1824f8ab8",
+      "types": "@16@0:8"
+    },
+    {
+      "method": "-[MTLFunctionConstantValuesInternal newNamedConstantArray]",
+      "address": "0x1824f8aa8",
+      "types": "@16@0:8"
+    },
+    {
+      "method": "-[MTLFunctionConstantInternal initWithName:type:index:required:]",
+      "address": "0x18244de7c",
+      "types": "@44@0:8@16Q24Q32B40"
+    }
+  ],
+  "private_storage_access": false,
+  "value_snapshot": "copy original MTLFunctionConstantValues; original newIndexedConstantArray/newNamedConstantArray; read original value objects through audited getters",
+  "reflection": "original Metal MTLFunctionConstantInternal objects returned by driver nonspecialized MTLFunction.functionConstantsDictionary",
+  "matching": "index before name; matching type required; missing required constant is an error; unrelated constants ignored",
+  "scope": "scalar/vector AIR function constants in MTLB/FAT. MSL function-constant source syntax remains unsupported; half shader support is described separately by native-fragment-profile.json.",
+  "constant_metadata": "air.function_constants: global,type-name,name,index,required",
+  "conditional_interface": "air.function_constant descriptor references boolean predicate; undefined or false means absent",
+  "supported_types": [
+    "bool",
+    "char/uchar",
+    "short/ushort",
+    "int/uint",
+    "long/ulong",
+    "half/float",
+    "vectors2..4"
+  ],
+  "packing": "Metal function-constant values are tightly packed; float3=12 bytes, half3=6 bytes; bool lanes normalized in cache keys",
+  "limits": {
+    "module_constants": 256,
+    "input_values": 4096,
+    "index_range": [
+      0,
+      65535
+    ],
+    "static_initializer_instructions": 8192
+  },
+  "static_initialization": "bounded LLVM IR evaluation of constant-address-space globals and aggregate fields (at most4096 bytes/object), supported pure operations and bounded control flow; no native CPU JIT or process memory writes",
+  "compiler": "shared AIRSpecialization.h in host C++ frontend and runtime LLVM C API frontend; typed AIR any/all boolean reductions exposed as LLVM values; SCCP and ADCE precede InstCombine, then SimplifyCFG and ADCE, to remove inactive native placeholder/helper paths before instruction combining",
+  "cache": "canonical effective typed values after resolving names/indices, excluding unrelated values; absent differs from supplied zero",
+  "native_shader": {
+    "source": "original QuartzCore default.metallib, fixed_vert_lpf_spc",
+    "air": "build/drivers/gpu-function-constants/fixed_vert_lpf_spc.air",
+    "air_sha256": "7e84720638682b67160675b468ba9a0c7509c9a2947dd8e91730436ef1e577e3",
+    "metadata": "build/drivers/gpu-function-constants/native-constants.json",
+    "values": "build/drivers/gpu-function-constants/native-values.json",
+    "runtime_compiler": "build/drivers/gpu-function-constants/native-runtime.json",
+    "profile": "position MVP, texture transform, color; buffers2/3, attributes0/1/3, two varying outputs",
+    "target_execution_verified": false
+  },
+  "trusted_service_admission": "administrator or actual signed com.apple.backboardd role; current task checked on registration/deletion; original task/resource/IOSurface checks and quotas retained",
+  "runtime_metal_objects_executed": false,
+  "hardware_tested": false,
+  "remaining": [
+    "remaining native CoreAnimation fragment profiles and operations; fixed color/texture/source-over profiles described in native-fragment-profile.json",
+    "MSL function-constant source syntax",
+    "pipeline/function descriptor SPI and priority variants",
+    "native display shared fence/scanout",
+    "system loading and target UI verification",
+    "half shared memory and MSL half syntax; see native-fragment-profile.json"
+  ],
+  "references": [
+    "https://developer.apple.com/documentation/metal/mtlfunctionconstant/required",
+    "https://developer.apple.com/documentation/metal/mtlfunctionconstantvalues",
+    "https://developer.apple.com/metal/Metal-Shading-Language-Specification.pdf"
+  ],
+  "metal_sl_sha256": "41538b30d2f1140a5b2a0c84ce0a9f7b67bf0c707e224cfea0bfe5a44aa26cf5"
+}

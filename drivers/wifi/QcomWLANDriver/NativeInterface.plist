@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleIdentifier</key>
+	<string>org.darwin.driver.QcomWLANDriver</string>
+	<key>CFBundleIdentifierKernel</key>
+	<string>com.apple.iokit.IOSkywalkFamily</string>
+	<key>IOClass</key>
+	<string>IOUserNetworkWLAN</string>
+	<key>IOProviderClass</key>
+	<string>IOUserService</string>
+	<key>IOUserClass</key>
+	<string>QcomWLANInterface</string>
+	<key>IO80211InterfaceRole</key>
+	<string>Infrastructure</string>
+	<key>IOPropertyMatch</key>
+	<dict>
+		<key>IOUserClass</key>
+		<string>QcomWLANDriver</string>
+	</dict>
+</dict>
+</plist>

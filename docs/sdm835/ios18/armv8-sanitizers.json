@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "same_output_sha256": "2f1b3d935a7926e0232e7f1aa2a2c19d3d7d4e986dc4f7349b70b08c42afc9ca",
+  "sanitizers": [
+    "AddressSanitizer",
+    "UndefinedBehaviorSanitizer"
+  ],
+  "leak_check": false
+}

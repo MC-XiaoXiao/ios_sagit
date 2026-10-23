@@ -1,0 +1,51 @@
+{
+  "status": "passed",
+  "count": 9,
+  "tests": [
+    {
+      "test": "patch site cannot become NOP",
+      "status": "passed",
+      "rejected_for": "ARMv8 patch branch differs from manifest"
+    },
+    {
+      "test": "helper body cannot become NOP",
+      "status": "passed",
+      "rejected_for": "ARMv8 helper bytes differ from regenerated semantics"
+    },
+    {
+      "test": "helper return cannot jump elsewhere",
+      "status": "passed",
+      "rejected_for": "ARMv8 helper bytes differ from regenerated semantics"
+    },
+    {
+      "test": "deleted manifest record",
+      "status": "passed",
+      "rejected_for": "unaccounted/empty ARMv8 helper code"
+    },
+    {
+      "test": "forged original opcode with consistent helper",
+      "status": "passed",
+      "rejected_for": "com.apple.kec.corecrypto: source ISA extension lacks matching static patch at 0xfffffff006f31578"
+    },
+    {
+      "test": "missing native segment mapping capability",
+      "status": "passed",
+      "rejected_for": "native kernel lacks ARMv8 AOT mapping support"
+    },
+    {
+      "test": "unimplemented SM4 instruction in Kext",
+      "status": "passed",
+      "rejected_for": "com.apple.kec.corecrypto: unsupported ISA lowering at 0xfffffff006f31578: sm4e\tv0.4s, v1.4s"
+    },
+    {
+      "test": "undecodable Kext instruction",
+      "status": "passed",
+      "rejected_for": "com.apple.kec.corecrypto: undecodable executable word 0xffffffff at 0xfffffff006f31578"
+    },
+    {
+      "test": "stripped helper segment with branches left behind",
+      "status": "passed",
+      "rejected_for": "kernel: native bytes changed: __TEXT at file 0x1480; expected=00000000000000000000000000000000 actual=19000000e80000005f5f41524d56385f"
+    }
+  ]
+}

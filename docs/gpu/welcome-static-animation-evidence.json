@@ -1,0 +1,2138 @@
+{
+  "springboard": {
+    "components": {
+      "addr": "0x1d2befa50",
+      "code": "// local variable allocation has failed, the output may be wrong!\nvoid __cdecl sub_1D2BEFA50(SBDashBoardSetupView *self, SEL a2, unsigned __int64 a3, bool a4, id a5)\n{\n  _BOOL4 v5; // w20\n  __int64 v8; // x0\n  __int64 v9; // x19\n  __int64 v10; // x0\n  SBCursiveTextView *cursiveTextView; // x23\n  UIView *childIconView; // x23\n  __int64 v13; // [xsp+8h] [xbp-48h]\n\n  v5 = a4; /*0x1d2befa6c*/\n  v8 = MEMORY[0x1D39B6328](a1: self, a2, a3, a4, a5); /*0x1d2befa78*/\n  if ( a3 == 0 ) /*0x1d2befa7c*/\n  {\n    if ( v8 != 0 ) /*0x1d2befaec*/\n      (*(void (**)(void))(v8 + 16))(); /*0x1d2befaf8*/\nLABEL_28:\n    JUMPOUT(0x1D39B616CLL); /*0x1d39b616c*/\n  }\n  v13 = v8; /*0x1d2befa80*/\n  v9 = sub_1D2DAB7DC(); /*0x1d2befa88*/\n  if ( (a3 & 1) != 0 ) /*0x1d2befa8c*/\n  {\n    if ( self->_titleLabel != nullptr ) /*0x1d2befa9c*/\n      sub_1D3194120(a1: self); /*0x1d2befaac*/\n    if ( self->_cursiveTextView != nullptr ) /*0x1d2befabc*/\n    {\n      if ( v5 ) /*0x1d2befac4*/\n      {\n        v10 = sub_1D3193DA0(a1: self); /*0x1d2befac8*/\n        if ( self->_activationLocked ) /*0x1d2befad4*/\n          MEMORY[0x1D39B31FC](a1: v10); /*0x1d2befae0*/\n        cursiveTextView = self->_cursiveTextView; /*0x1d2befbac*/\n        sub_1D31AA1E0(a1: self); /*0x1d2befbb4*/\n        sub_1D32464E0(a1: cursiveTextView); /*0x1d2befbc4*/\n        childIconView = self->_childIconView; /*0x1d2befbd0*/\n        sub_1D31AA1E0(a1: self); /*0x1d2befbd8*/\n        sub_1D32464E0(a1: childIconView); /*0x1d2befbe8*/\n        sub_1D319B580(a1: self); /*0x1d2befbf0*/\n        sub_1D3194120(a1: self); /*0x1d2befc04*/\n        if ( (a3 & 8) != 0 ) /*0x1d2befc08*/\n        {\nLABEL_23:\n          sub_1D3194120(a1: self); /*0x1d2befc0c*/\n          if ( (a3 & 0x10) != 0 ) /*0x1d2befc28*/\n          {\nLABEL_24:\n            sub_1D3194120(a1: self); /*0x1d2befc2c*/\n            if ( (a3 & 2) != 0 ) /*0x1d2befc48*/\n            {\nLABEL_25:\n              sub_1D3193E80(a1: self); /*0x1d2befc4c*/\n              sub_1D3193E40(a1: self); /*0x1d2befc68*/\n              if ( (a3 & 4) != 0 ) /*0x1d2befc6c*/\n              {\nLABEL_26:\n                sub_1D3193E60(a1: self); /*0x1d2befc70*/\n                if ( (a3 & 0x20) == 0 ) /*0x1d2befc80*/\n                  goto LABEL_18; /*0x1d2befc80*/\n                goto LABEL_17; /*0x1d2befc80*/\n              }\nLABEL_16:\n              if ( (a3 & 0x20) == 0 ) /*0x1d2befb48*/\n              {\nLABEL_18:\n                if ( v13 != 0 ) /*0x1d2befb6c*/\n                  sub_1D2DAB800(a1: v9, a2: MEMORY[0x1E5E8B998], a3: v13); /*0x1d2befb80*/\n                MEMORY[0x1D39B6190](); /*0x1d2befb84*/\n                goto LABEL_28; /*0x1d2befb84*/\n              }\nLABEL_17:\n              sub_1D3194120(a1: self); /*0x1d2befb4c*/\n              goto LABEL_18; /*0x1d2befb64*/\n            }\nLABEL_15:\n            if ( (a3 & 4) != 0 ) /*0x1d2befb44*/\n              goto LABEL_26; /*0x1d2befb44*/\n            goto LABEL_16; /*0x1d2befb44*/\n          }\nLABEL_14:\n          if ( (a3 & 2) != 0 ) /*0x1d2befb40*/\n            goto LABEL_25; /*0x1d2befb40*/\n          goto LABEL_15; /*0x1d2befb40*/\n        }\nLABEL_13:\n        if ( (a3 & 0x10) != 0 ) /*0x1d2befb3c*/\n          goto LABEL_24; /*0x1d2befb3c*/\n        goto LABEL_14; /*0x1d2befb3c*/\n      }\n      sub_1D31B61C0(a1: self); /*0x1d2befb00*/\n      sub_1D3194120(a1: self); /*0x1d2befb14*/\n      sub_1D32464E0(a1: self->_cursiveTextView); /*0x1d2befb20*/\n      sub_1D32464E0(a1: self->_childIconView); /*0x1d2befb34*/\n    }\n  }\n  if ( (a3 & 8) != 0 ) /*0x1d2befb38*/\n    goto LABEL_23; /*0x1d2befb38*/\n  goto LABEL_13; /*0x1d2befb38*/\n}",
+      "refs": [
+        {
+          "addr": "0x1d2dab7dc",
+          "name": "sub_1D2DAB7DC"
+        },
+        {
+          "addr": "0x1d3194120",
+          "name": "sub_1D3194120"
+        },
+        {
+          "addr": "0x1d3193da0",
+          "name": "sub_1D3193DA0"
+        },
+        {
+          "addr": "0x1d31aa1e0",
+          "name": "sub_1D31AA1E0"
+        },
+        {
+          "addr": "0x1d32464e0",
+          "name": "sub_1D32464E0"
+        },
+        {
+          "addr": "0x1d319b580",
+          "name": "sub_1D319B580"
+        },
+        {
+          "addr": "0x1d3193e80",
+          "name": "sub_1D3193E80"
+        },
+        {
+          "addr": "0x1d3193e40",
+          "name": "sub_1D3193E40"
+        },
+        {
+          "addr": "0x1d3193e60",
+          "name": "sub_1D3193E60"
+        },
+        {
+          "addr": "0x1d2dab800",
+          "name": "sub_1D2DAB800"
+        },
+        {
+          "addr": "0x1d31b61c0",
+          "name": "sub_1D31B61C0"
+        }
+      ]
+    },
+    "view_fade": {
+      "addr": "0x1d2bf2390",
+      "code": "// local variable allocation has failed, the output may be wrong!\nvoid __cdecl sub_1D2BF2390(SBDashBoardSetupView *self, SEL a2, id a3, bool a4, id a5)\n{\n  _BOOL4 v5; // w22\n  __int64 v8; // x19\n  __int64 v9; // x0\n  __int64 v10; // x0\n  __int64 v11; // x20\n  __int64 v12; // x0\n  __int64 v13; // x22\n  __int64 v14; // x23\n  __int64 v15; // x0\n  __int64 v16; // x0\n  __int64 v17; // x0\n  __int64 v18; // x0\n  __int64 v19; // x0\n  __int64 v20; // x0\n  __int64 v21; // x0\n  __int64 v22; // x0\n  __int64 v23; // x0\n  __int64 v24; // x0\n  __int64 v25; // x0\n  SBDashBoardSetupView *v26; // x0\n  SEL v27; // x1\n  bool v28; // w2\n  id v29; // x3\n  __int64 v30; // [xsp+28h] [xbp-38h]\n\n  v5 = a4; /*0x1d2bf23a8*/\n  v30 = *MEMORY[0x1E5E8C7D0]; /*0x1d2bf23c0*/\n  v8 = MEMORY[0x1D39B6328](a1: self, a2, a3, a4, a5); /*0x1d2bf23c8*/\n  v9 = sub_1D3218160(a1: a3); /*0x1d2bf23d0*/\n  v10 = MEMORY[0x1D39B6070](a1: v9); /*0x1d2bf23d4*/\n  v11 = v10; /*0x1d2bf23d8*/\n  if ( v10 != 0 ) /*0x1d2bf23dc*/\n  {\n    if ( v5 ) /*0x1d2bf23e0*/\n    {\n      sub_1D2DAB7E8(a1: v8); /*0x1d2bf23e8*/\n      sub_1D31B6800(a1: self); /*0x1d2bf2400*/\n      sub_1D31B6520(a1: self); /*0x1d2bf2410*/\n      v12 = sub_1D31D6200(a1: MEMORY[0x1E5D63150]); /*0x1d2bf2420*/\n      v13 = MEMORY[0x1D39B6070](a1: v12); /*0x1d2bf2428*/\n      sub_1D3249240(); /*0x1d2bf2434*/\n      v14 = MEMORY[0x1E5D42908]; /*0x1d2bf243c*/\n      sub_1D32229C0(a1: v11); /*0x1d2bf2444*/\n      v15 = sub_1D32219C0(a1: v14); /*0x1d2bf244c*/\n      MEMORY[0x1D39B6070](a1: v15); /*0x1d2bf2450*/\n      v16 = sub_1D31D8FE0(a1: MEMORY[0x1E5D273A8]); /*0x1d2bf2480*/\n      MEMORY[0x1D39B6070](a1: v16); /*0x1d2bf2484*/\n      v17 = sub_1D3259800(a1: v13); /*0x1d2bf2494*/\n      v18 = MEMORY[0x1D39B61D8](a1: v17); /*0x1d2bf2498*/\n      MEMORY[0x1D39B61CC](a1: v18); /*0x1d2bf249c*/\n      sub_1D323E460(a1: v13); /*0x1d2bf24ac*/\n      sub_1D3243520(a1: v13, a2: self->_customDelayDuration); /*0x1d2bf24c0*/\n      sub_1D3241C60(a1: v13); /*0x1d2bf24cc*/\n      sub_1D3259720(a1: v13); /*0x1d2bf24e0*/\n      v19 = sub_1D32168A0(a1: v13); /*0x1d2bf24e8*/\n      MEMORY[0x1D39B6070](a1: v19); /*0x1d2bf24ec*/\n      v20 = sub_1D3263500(a1: &stru_1EE1A3A90); /*0x1d2bf2508*/\n      MEMORY[0x1D39B6070](a1: v20); /*0x1d2bf250c*/\n      v21 = sub_1D31D1840(a1: v11); /*0x1d2bf2520*/\n      v22 = MEMORY[0x1D39B61CC](a1: v21); /*0x1d2bf2524*/\n      MEMORY[0x1D39B61B4](a1: v22); /*0x1d2bf2528*/\n      v23 = sub_1D324D1C0(a1: v11, a2: 0.0); /*0x1d2bf2534*/\n      v10 = MEMORY[0x1D39B61C0](a1: v23); /*0x1d2bf2538*/\n    }\n    else\n    {\n      sub_1D31928A0(a1: self); /*0x1d2bf2554*/\n      v10 = sub_1D324D1C0(a1: v11, a2: 1.0); /*0x1d2bf2560*/\n    }\n  }\n  v24 = MEMORY[0x1D39B61A8](a1: v10); /*0x1d2bf2564*/\n  v25 = MEMORY[0x1D39B6190](a1: v24); /*0x1d2bf2568*/\n  if ( *MEMORY[0x1E5E8C7D0] != v30 ) /*0x1d2bf2580*/\n  {\n    v26 = (SBDashBoardSetupView *)MEMORY[0x1D39B5A94](a1: v25); /*0x1d2bf259c*/\n    sub_1D2BF25A0(self: v26, a2: v27, a3: v28, a4: v29); /*0x1d2bf259d*/\n  }\n}",
+      "refs": [
+        {
+          "addr": "0x1d3218160",
+          "name": "sub_1D3218160"
+        },
+        {
+          "addr": "0x1d2dab7e8",
+          "name": "sub_1D2DAB7E8"
+        },
+        {
+          "addr": "0x1d31b6800",
+          "name": "sub_1D31B6800"
+        },
+        {
+          "addr": "0x1d31b6520",
+          "name": "sub_1D31B6520"
+        },
+        {
+          "addr": "0x1d31d6200",
+          "name": "sub_1D31D6200"
+        },
+        {
+          "addr": "0x1d3249240",
+          "name": "sub_1D3249240"
+        },
+        {
+          "addr": "0x1d32229c0",
+          "name": "sub_1D32229C0"
+        },
+        {
+          "addr": "0x1d32219c0",
+          "name": "sub_1D32219C0"
+        },
+        {
+          "addr": "0x1d31d8fe0",
+          "name": "sub_1D31D8FE0"
+        },
+        {
+          "addr": "0x1d3259800",
+          "name": "sub_1D3259800"
+        },
+        {
+          "addr": "0x1d323e460",
+          "name": "sub_1D323E460"
+        },
+        {
+          "addr": "0x1d3243520",
+          "name": "sub_1D3243520"
+        },
+        {
+          "addr": "0x1d3241c60",
+          "name": "sub_1D3241C60"
+        },
+        {
+          "addr": "0x1d3259720",
+          "name": "sub_1D3259720"
+        },
+        {
+          "addr": "0x1d32168a0",
+          "name": "sub_1D32168A0"
+        },
+        {
+          "addr": "0x1d3263500",
+          "name": "sub_1D3263500"
+        },
+        {
+          "addr": "0x1ee1a3a90",
+          "name": "stru_1EE1A3A90"
+        },
+        {
+          "addr": "0x1d31d1840",
+          "name": "sub_1D31D1840"
+        },
+        {
+          "addr": "0x1d324d1c0",
+          "name": "sub_1D324D1C0"
+        },
+        {
+          "addr": "0x1d31928a0",
+          "name": "sub_1D31928A0"
+        },
+        {
+          "addr": "0x1d2bf25a0",
+          "name": "sub_1D2BF25A0"
+        }
+      ]
+    },
+    "home_button": {
+      "addr": "0x1d2bf25a0",
+      "code": "// local variable allocation has failed, the output may be wrong!\nvoid __cdecl sub_1D2BF25A0(SBDashBoardSetupView *self, SEL a2, bool a3, id a4)\n{\n  _BOOL4 v4; // w21\n  __int64 v6; // x0\n  __int64 v7; // x19\n  __int64 v8; // x0\n  SBUICallToActionLabel *homeButtonCallToActionLabel; // x22\n  __int64 v10; // x24\n  __int64 v11; // x0\n  OS_dispatch_source *homeButtonCallToActionTimer; // x22\n  __int64 v13; // x0\n  __int64 v14; // x0\n  OS_dispatch_source *v15; // x22\n  __int64 v16; // x0\n  __int64 v17; // x0\n  __int64 v18; // x0\n  __int64 v19; // x0\n  __int64 v20; // x0\n  SBUICallToActionLabel *v21; // x20\n  _QWORD v22[5]; // [xsp+28h] [xbp-E8h] BYREF\n  _QWORD v23[5]; // [xsp+50h] [xbp-C0h] BYREF\n  __int64 v24; // [xsp+78h] [xbp-98h] BYREF\n  _BYTE v25[8]; // [xsp+80h] [xbp-90h] BYREF\n  __int64 v26; // [xsp+88h] [xbp-88h]\n  __int64 v27; // [xsp+90h] [xbp-80h]\n  __int64 (__fastcall *v28)(); // [xsp+98h] [xbp-78h]\n  void *v29; // [xsp+A0h] [xbp-70h]\n  __int64 v30; // [xsp+A8h] [xbp-68h]\n\n  v4 = a3; /*0x1d2bf25c4*/\n  v6 = MEMORY[0x1D39B631C](a1: self, a2, a3, a4); /*0x1d2bf25cc*/\n  v7 = v6; /*0x1d2bf25d0*/\n  if ( self->_homeButtonCallToActionLabel != nullptr ) /*0x1d2bf25e0*/\n  {\n    if ( v4 ) /*0x1d2bf25e4*/\n    {\n      sub_1D2DAB7E8(a1: v6); /*0x1d2bf25ec*/\n      v8 = sub_1D2DAB7E8(a1: v7); /*0x1d2bf25f4*/\n      homeButtonCallToActionLabel = self->_homeButtonCallToActionLabel; /*0x1d2bf25f8*/\n      v10 = MEMORY[0x1E5E8C6D0]; /*0x1d2bf2600*/\n      v26 = MEMORY[0x1E5E8C6D0]; /*0x1d2bf2604*/\n      v27 = 3221225472LL; /*0x1d2bf2610*/\n      v28 = sub_1D2BF2810; /*0x1d2bf2624*/\n      v29 = &unk_1EE11A918; /*0x1d2bf2624*/\n      v30 = MEMORY[0x1D39B6298](a1: v8); /*0x1d2bf2638*/\n      sub_1D31F4300(a1: homeButtonCallToActionLabel); /*0x1d2bf2648*/\n      MEMORY[0x1D39B60F4](a1: v25, a2: self); /*0x1d2bf2654*/\n      self->_homeButtonCallToActionTimer = (OS_dispatch_source *)sub_1D2DAB8B4( /*0x1d2bf2680*/\n                                                                   a1: MEMORY[0x1E5E8BA30],\n                                                                   a2: 0,\n                                                                   a3: 0,\n                                                                   a4: MEMORY[0x1E5E8B998]);\n      MEMORY[0x1D39B6220](); /*0x1d2bf2684*/\n      v11 = sub_1D2DAB908(a1: 0, a2: (__int64)((self->_customDelayDuration + -1.0) * 1000000000.0)); /*0x1d2bf26b0*/\n      sub_1D2DAB8E4(a1: self->_homeButtonCallToActionTimer, a2: v11, a3: -1, a4: 0); /*0x1d2bf26c4*/\n      homeButtonCallToActionTimer = self->_homeButtonCallToActionTimer; /*0x1d2bf26c8*/\n      v23[0] = v10; /*0x1d2bf26cc*/\n      v23[1] = 3221225472LL; /*0x1d2bf26d8*/\n      v23[2] = sub_1D2BF2818; /*0x1d2bf26e4*/\n      v23[3] = &unk_1EE11BE08; /*0x1d2bf26e4*/\n      v13 = MEMORY[0x1D39B6088](a1: &v24, a2: v25); /*0x1d2bf26f4*/\n      v23[4] = MEMORY[0x1D39B62BC](a1: v13); /*0x1d2bf2700*/\n      v14 = sub_1D2DAB8D8(a1: homeButtonCallToActionTimer, a2: v23); /*0x1d2bf270c*/\n      v15 = self->_homeButtonCallToActionTimer; /*0x1d2bf2710*/\n      v22[0] = v10; /*0x1d2bf2714*/\n      v22[1] = 3221225472LL; /*0x1d2bf2718*/\n      v22[2] = sub_1D2BF28D0; /*0x1d2bf2724*/\n      v22[3] = &unk_1EE11A918; /*0x1d2bf2724*/\n      v22[4] = MEMORY[0x1D39B62BC](a1: v14); /*0x1d2bf272c*/\n      sub_1D2DAB8CC(a1: v15, a2: v22); /*0x1d2bf2738*/\n      v16 = sub_1D2DAB878(a1: self->_homeButtonCallToActionTimer); /*0x1d2bf2740*/\n      v17 = MEMORY[0x1D39B6220](a1: v16); /*0x1d2bf2748*/\n      MEMORY[0x1D39B6220](a1: v17); /*0x1d2bf2750*/\n      MEMORY[0x1D39B6094](a1: &v24); /*0x1d2bf2758*/\n      v18 = MEMORY[0x1D39B6094](a1: v25); /*0x1d2bf2760*/\n    }\n    else\n    {\n      if ( self->_homeButtonCallToActionTimer != nullptr ) /*0x1d2bf2774*/\n      {\n        v19 = sub_1D2DAB8A8(); /*0x1d2bf2778*/\n        self->_homeButtonCallToActionTimer = nullptr; /*0x1d2bf2780*/\n        MEMORY[0x1D39B6220](a1: v19); /*0x1d2bf2784*/\n      }\n      v20 = sub_1D2DAB7E8(a1: v7); /*0x1d2bf278c*/\n      v21 = self->_homeButtonCallToActionLabel; /*0x1d2bf2790*/\n      MEMORY[0x1D39B6298](a1: v20); /*0x1d2bf27c8*/\n      v18 = sub_1D31F4420(a1: v21, a2: 0.0); /*0x1d2bf27dc*/\n    }\n    MEMORY[0x1D39B6220](a1: v18); /*0x1d2bf27e4*/\n  }\n  MEMORY[0x1D39B6190](); /*0x1d2bf27e8*/\n}",
+      "refs": [
+        {
+          "addr": "0x1d2dab7e8",
+          "name": "sub_1D2DAB7E8"
+        },
+        {
+          "addr": "0x1d2bf2810",
+          "name": "sub_1D2BF2810"
+        },
+        {
+          "addr": "0x1ee11a918",
+          "name": "unk_1EE11A918"
+        },
+        {
+          "addr": "0x1d31f4300",
+          "name": "sub_1D31F4300"
+        },
+        {
+          "addr": "0x1d2dab8b4",
+          "name": "sub_1D2DAB8B4"
+        },
+        {
+          "addr": "0x1d2dab908",
+          "name": "sub_1D2DAB908"
+        },
+        {
+          "addr": "0x1d2dab8e4",
+          "name": "sub_1D2DAB8E4"
+        },
+        {
+          "addr": "0x1d2bf2818",
+          "name": "sub_1D2BF2818"
+        },
+        {
+          "addr": "0x1ee11be08",
+          "name": "unk_1EE11BE08"
+        },
+        {
+          "addr": "0x1d2dab8d8",
+          "name": "sub_1D2DAB8D8"
+        },
+        {
+          "addr": "0x1d2bf28d0",
+          "name": "sub_1D2BF28D0"
+        },
+        {
+          "addr": "0x1d2dab8cc",
+          "name": "sub_1D2DAB8CC"
+        },
+        {
+          "addr": "0x1d2dab878",
+          "name": "sub_1D2DAB878"
+        },
+        {
+          "addr": "0x1d2dab8a8",
+          "name": "sub_1D2DAB8A8"
+        },
+        {
+          "addr": "0x1d31f4420",
+          "name": "sub_1D31F4420"
+        }
+      ]
+    },
+    "home_affordance_text": {
+      "addr": "0x1d2bf28e0",
+      "code": "// local variable allocation has failed, the output may be wrong!\nvoid __cdecl sub_1D2BF28E0(SBDashBoardSetupView *self, SEL a2, bool a3, id a4)\n{\n  _BOOL4 v4; // w22\n  __int64 v6; // x19\n  __int64 v7; // x0\n  __int64 v8; // x0\n  __int64 v9; // x20\n  __int64 v10; // x0\n  __int64 v11; // x22\n  __int64 v12; // x0\n  double v13; // d0\n  __int64 v14; // x0\n  __int64 v15; // x0\n  __int64 v16; // x0\n  __int64 v17; // x0\n  __int64 v18; // x0\n  __int64 v19; // x27\n  __int64 v20; // x0\n  __int64 v21; // x0\n  __int64 v22; // x0\n  __int64 v23; // x0\n  __int64 v24; // x0\n  __int64 v25; // x0\n  __int64 v26; // x0\n  __int64 v27; // x0\n  __int64 v28; // x0\n  __int64 v29; // x0\n  __int64 v30; // x0\n  __int64 v31; // x0\n  __int64 v32; // x0\n  double v33; // d0\n  __int64 v34; // x0\n  __int64 v35; // x0\n  __int64 v36; // x0\n  __int64 v37; // x0\n  __int64 v38; // x0\n  __int64 v39; // x0\n  __int64 v40; // x0\n  __int64 v41; // x0\n  SBDashBoardSetupView *v42; // x0\n  SEL v43; // x1\n  bool v44; // w2\n  id v45; // x3\n  __int64 v46; // [xsp+48h] [xbp-68h]\n\n  v4 = a3; /*0x1d2bf2904*/\n  v46 = *MEMORY[0x1E5E8C7D0]; /*0x1d2bf2918*/\n  v6 = MEMORY[0x1D39B631C](a1: self, a2, a3, a4); /*0x1d2bf2920*/\n  v7 = sub_1D3218160(a1: self->_homeAffordanceCallToActionContainer); /*0x1d2bf2930*/\n  v8 = MEMORY[0x1D39B6070](a1: v7); /*0x1d2bf2934*/\n  v9 = v8; /*0x1d2bf2938*/\n  if ( v8 != 0 ) /*0x1d2bf293c*/\n  {\n    if ( v4 ) /*0x1d2bf2940*/\n    {\n      sub_1D2DAB7E8(a1: v6); /*0x1d2bf2948*/\n      sub_1D2DAB7E8(a1: v6); /*0x1d2bf2950*/\n      sub_1D31B6800(a1: self); /*0x1d2bf2968*/\n      sub_1D31B6520(a1: self); /*0x1d2bf2978*/\n      sub_1D31B6800(a1: self); /*0x1d2bf2990*/\n      sub_1D31B6520(a1: self); /*0x1d2bf29a0*/\n      v10 = sub_1D31D6200(a1: MEMORY[0x1E5D63150]); /*0x1d2bf29b0*/\n      v11 = MEMORY[0x1D39B6070](a1: v10); /*0x1d2bf29b8*/\n      ((void (*)(void))sub_1D3249240)(); /*0x1d2bf29c4*/\n      sub_1D3259800(a1: v11); /*0x1d2bf29d4*/\n      v12 = sub_1D323E460(a1: v11); /*0x1d2bf29e4*/\n      v13 = MEMORY[0x1D39B322C](a1: v12); /*0x1d2bf29e8*/\n      sub_1D323D9A0(a1: v11, a2: v13 + 1.0); /*0x1d2bf29f8*/\n      sub_1D3243520(a1: v11, a2: self->_customDelayDuration); /*0x1d2bf2a10*/\n      sub_1D3241C60(a1: v11); /*0x1d2bf2a1c*/\n      sub_1D3259720(a1: v11); /*0x1d2bf2a30*/\n      v14 = sub_1D32168A0(a1: v11); /*0x1d2bf2a38*/\n      MEMORY[0x1D39B6070](a1: v14); /*0x1d2bf2a3c*/\n      v15 = sub_1D3263500(a1: &stru_1EE1A3A90); /*0x1d2bf2a58*/\n      MEMORY[0x1D39B6070](a1: v15); /*0x1d2bf2a5c*/\n      v16 = sub_1D31D1840(a1: v9); /*0x1d2bf2a70*/\n      v17 = MEMORY[0x1D39B6208](a1: v16); /*0x1d2bf2a74*/\n      MEMORY[0x1D39B61CC](a1: v17); /*0x1d2bf2a78*/\n      v18 = sub_1D31D6200(a1: MEMORY[0x1E5D63150]); /*0x1d2bf2a84*/\n      v19 = MEMORY[0x1D39B6070](a1: v18); /*0x1d2bf2a8c*/\n      sub_1D3249240(a1: v19); /*0x1d2bf2a98*/\n      v20 = sub_1D32219A0(a1: MEMORY[0x1E5D42908], a2: 0.0); /*0x1d2bf2aa8*/\n      MEMORY[0x1D39B6070](a1: v20); /*0x1d2bf2aac*/\n      v21 = sub_1D32219A0(a1: MEMORY[0x1E5D42908], a2: -16.0); /*0x1d2bf2ac0*/\n      MEMORY[0x1D39B6070](a1: v21); /*0x1d2bf2ac4*/\n      v22 = sub_1D32219A0(a1: MEMORY[0x1E5D42908], a2: -30.0); /*0x1d2bf2ad8*/\n      MEMORY[0x1D39B6070](a1: v22); /*0x1d2bf2adc*/\n      v23 = sub_1D32219A0(a1: MEMORY[0x1E5D42908], a2: -33.0); /*0x1d2bf2af8*/\n      MEMORY[0x1D39B6070](a1: v23); /*0x1d2bf2afc*/\n      v24 = sub_1D32219A0(a1: MEMORY[0x1E5D42908], a2: -33.0); /*0x1d2bf2b10*/\n      MEMORY[0x1D39B6070](a1: v24); /*0x1d2bf2b14*/\n      v25 = sub_1D31D8FE0(a1: MEMORY[0x1E5D273A8]); /*0x1d2bf2b30*/\n      MEMORY[0x1D39B6070](a1: v25); /*0x1d2bf2b34*/\n      v26 = sub_1D3259800(a1: v19); /*0x1d2bf2b44*/\n      v27 = MEMORY[0x1D39B6208](a1: v26); /*0x1d2bf2b48*/\n      v28 = MEMORY[0x1D39B61F0](a1: v27); /*0x1d2bf2b4c*/\n      v29 = MEMORY[0x1D39B61E4](a1: v28); /*0x1d2bf2b50*/\n      v30 = MEMORY[0x1D39B61D8](a1: v29); /*0x1d2bf2b54*/\n      v31 = MEMORY[0x1D39B61CC](a1: v30); /*0x1d2bf2b58*/\n      MEMORY[0x1D39B6220](a1: v31); /*0x1d2bf2b60*/\n      v32 = sub_1D323E460(a1: v19); /*0x1d2bf2b70*/\n      v33 = MEMORY[0x1D39B322C](a1: v32); /*0x1d2bf2b74*/\n      sub_1D323D9A0(a1: v19, a2: v33 + 1.0); /*0x1d2bf2b80*/\n      sub_1D3243520(a1: v19, a2: self->_customDelayDuration); /*0x1d2bf2b90*/\n      sub_1D323AE20(a1: v19); /*0x1d2bf2b9c*/\n      sub_1D3241C60(a1: v19); /*0x1d2bf2ba8*/\n      sub_1D3259720(a1: v19); /*0x1d2bf2bbc*/\n      v34 = sub_1D32168A0(a1: v19); /*0x1d2bf2bc4*/\n      MEMORY[0x1D39B6070](a1: v34); /*0x1d2bf2bc8*/\n      v35 = sub_1D3263500(a1: &stru_1EE1A3A90); /*0x1d2bf2be4*/\n      MEMORY[0x1D39B6070](a1: v35); /*0x1d2bf2be8*/\n      v36 = sub_1D31D1840(a1: v9); /*0x1d2bf2bfc*/\n      v37 = MEMORY[0x1D39B61CC](a1: v36); /*0x1d2bf2c00*/\n      v38 = MEMORY[0x1D39B61B4](a1: v37); /*0x1d2bf2c04*/\n      v39 = MEMORY[0x1D39B61FC](a1: v38); /*0x1d2bf2c08*/\n      v8 = MEMORY[0x1D39B61C0](a1: v39); /*0x1d2bf2c0c*/\n    }\n    else\n    {\n      sub_1D31928A0(a1: self); /*0x1d2bf2c28*/\n      v8 = sub_1D31928A0(a1: self); /*0x1d2bf2c40*/\n    }\n  }\n  v40 = MEMORY[0x1D39B61A8](a1: v8); /*0x1d2bf2c44*/\n  v41 = MEMORY[0x1D39B6190](a1: v40); /*0x1d2bf2c48*/\n  if ( *MEMORY[0x1E5E8C7D0] != v46 ) /*0x1d2bf2c60*/\n  {\n    v42 = (SBDashBoardSetupView *)MEMORY[0x1D39B5A94](a1: v41); /*0x1d2bf2c88*/\n    sub_1D2BF2C8C(self: v42, a2: v43, a3: v44, a4: v45); /*0x1d2bf2c89*/\n  }\n}",
+      "refs": [
+        {
+          "addr": "0x1d3218160",
+          "name": "sub_1D3218160"
+        },
+        {
+          "addr": "0x1d2dab7e8",
+          "name": "sub_1D2DAB7E8"
+        },
+        {
+          "addr": "0x1d31b6800",
+          "name": "sub_1D31B6800"
+        },
+        {
+          "addr": "0x1d31b6520",
+          "name": "sub_1D31B6520"
+        },
+        {
+          "addr": "0x1d31d6200",
+          "name": "sub_1D31D6200"
+        },
+        {
+          "addr": "0x1d3249240",
+          "name": "sub_1D3249240"
+        },
+        {
+          "addr": "0x1d3259800",
+          "name": "sub_1D3259800"
+        },
+        {
+          "addr": "0x1d323e460",
+          "name": "sub_1D323E460"
+        },
+        {
+          "addr": "0x1d323d9a0",
+          "name": "sub_1D323D9A0"
+        },
+        {
+          "addr": "0x1d3243520",
+          "name": "sub_1D3243520"
+        },
+        {
+          "addr": "0x1d3241c60",
+          "name": "sub_1D3241C60"
+        },
+        {
+          "addr": "0x1d3259720",
+          "name": "sub_1D3259720"
+        },
+        {
+          "addr": "0x1d32168a0",
+          "name": "sub_1D32168A0"
+        },
+        {
+          "addr": "0x1d3263500",
+          "name": "sub_1D3263500"
+        },
+        {
+          "addr": "0x1ee1a3a90",
+          "name": "stru_1EE1A3A90"
+        },
+        {
+          "addr": "0x1d31d1840",
+          "name": "sub_1D31D1840"
+        },
+        {
+          "addr": "0x1d32219a0",
+          "name": "sub_1D32219A0"
+        },
+        {
+          "addr": "0x1d31d8fe0",
+          "name": "sub_1D31D8FE0"
+        },
+        {
+          "addr": "0x1d323ae20",
+          "name": "sub_1D323AE20"
+        },
+        {
+          "addr": "0x1d31928a0",
+          "name": "sub_1D31928A0"
+        },
+        {
+          "addr": "0x1d2bf2c8c",
+          "name": "sub_1D2BF2C8C"
+        }
+      ]
+    },
+    "add_reset": {
+      "addr": "0x1d2bf2f0c",
+      "code": "void __cdecl __noreturn sub_1D2BF2F0C(SBDashBoardSetupView *self, SEL a2, id a3, id a4, id a5)\n{\n  __int64 v6; // x19\n  __int64 v7; // x20\n  __int64 v8; // x0\n  __int64 v9; // x0\n  double v10; // d8\n  __int64 v11; // x0\n  __int64 v12; // x0\n  double v13; // d9\n  __int64 v14; // x0\n  __int64 v15; // x21\n  __int64 v16; // x0\n  __int64 v17; // x0\n  __int64 v18; // x0\n  __int64 v19; // x0\n  __int64 v20; // x0\n  __int64 v21; // x0\n  __int64 v22; // x0\n  __int64 v23; // x0\n  __int64 v24; // x0\n  __int64 v25; // x0\n  __int64 v26; // x0\n\n  MEMORY[0x1D39B62A4](a1: self, a2, a3); /*0x1d2bf2f34*/\n  v6 = MEMORY[0x1D39B6298](); /*0x1d2bf2f40*/\n  v7 = MEMORY[0x1D39B62B0](); /*0x1d2bf2f48*/\n  v8 = sub_1D322A780(a1: v6); /*0x1d2bf2f50*/\n  MEMORY[0x1D39B6070](a1: v8); /*0x1d2bf2f54*/\n  v9 = ((__int64 (*)(void))sub_1D326FAC0)(); /*0x1d2bf2f60*/\n  MEMORY[0x1D39B6070](a1: v9); /*0x1d2bf2f64*/\n  v10 = sub_1D31EF9A0(); /*0x1d2bf2f70*/\n  v11 = MEMORY[0x1D39B61CC](); /*0x1d2bf2f74*/\n  MEMORY[0x1D39B61C0](a1: v11); /*0x1d2bf2f78*/\n  v12 = sub_1D326FAC0(a1: v6); /*0x1d2bf2f84*/\n  MEMORY[0x1D39B6070](a1: v12); /*0x1d2bf2f88*/\n  v13 = sub_1D31EF9A0(); /*0x1d2bf2f94*/\n  MEMORY[0x1D39B61C0](); /*0x1d2bf2f98*/\n  if ( v7 != 0 ) /*0x1d2bf2f9c*/\n    sub_1D2DAB7E8(a1: v7); /*0x1d2bf2fa4*/\n  sub_1D31B6520(a1: self); /*0x1d2bf2fb4*/\n  v14 = sub_1D31D6200(a1: MEMORY[0x1E5D630C8]); /*0x1d2bf2fc4*/\n  v15 = MEMORY[0x1D39B6070](a1: v14); /*0x1d2bf2fcc*/\n  sub_1D3243520(a1: v15, a2: 0.25); /*0x1d2bf2fd4*/\n  v16 = sub_1D31F77C0(a1: MEMORY[0x1E5D63188]); /*0x1d2bf2fec*/\n  MEMORY[0x1D39B6070](a1: v16); /*0x1d2bf2ff0*/\n  v17 = sub_1D3257AE0(a1: v15); /*0x1d2bf3000*/\n  MEMORY[0x1D39B61C0](a1: v17); /*0x1d2bf3004*/\n  v18 = sub_1D32219A0(a1: MEMORY[0x1E5D42908], a2: v10); /*0x1d2bf3014*/\n  MEMORY[0x1D39B6070](a1: v18); /*0x1d2bf3018*/\n  v19 = sub_1D32455E0(a1: v15); /*0x1d2bf3028*/\n  MEMORY[0x1D39B61C0](a1: v19); /*0x1d2bf302c*/\n  v20 = sub_1D32219A0(a1: MEMORY[0x1E5D42908], a2: v13); /*0x1d2bf3038*/\n  MEMORY[0x1D39B6070](a1: v20); /*0x1d2bf303c*/\n  v21 = sub_1D3258160(a1: v15); /*0x1d2bf304c*/\n  MEMORY[0x1D39B61C0](a1: v21); /*0x1d2bf3050*/\n  sub_1D3259720(a1: v15); /*0x1d2bf3064*/\n  v22 = sub_1D3263500(a1: &stru_1EE1A3AB0); /*0x1d2bf3080*/\n  MEMORY[0x1D39B6070](a1: v22); /*0x1d2bf3084*/\n  v23 = sub_1D31D1840(a1: v6); /*0x1d2bf3098*/\n  v24 = MEMORY[0x1D39B61C0](a1: v23); /*0x1d2bf309c*/\n  v25 = MEMORY[0x1D39B61B4](a1: v24); /*0x1d2bf30a0*/\n  v26 = MEMORY[0x1D39B61A8](a1: v25); /*0x1d2bf30a4*/\n  MEMORY[0x1D39B6190](a1: v26); /*0x1d2bf30a8*/\n  JUMPOUT(0x1D39B616CLL); /*0x1d39b616c*/\n}",
+      "refs": [
+        {
+          "addr": "0x1d322a780",
+          "name": "sub_1D322A780"
+        },
+        {
+          "addr": "0x1d326fac0",
+          "name": "sub_1D326FAC0"
+        },
+        {
+          "addr": "0x1d31ef9a0",
+          "name": "sub_1D31EF9A0"
+        },
+        {
+          "addr": "0x1d2dab7e8",
+          "name": "sub_1D2DAB7E8"
+        },
+        {
+          "addr": "0x1d31b6520",
+          "name": "sub_1D31B6520"
+        },
+        {
+          "addr": "0x1d31d6200",
+          "name": "sub_1D31D6200"
+        },
+        {
+          "addr": "0x1d3243520",
+          "name": "sub_1D3243520"
+        },
+        {
+          "addr": "0x1d31f77c0",
+          "name": "sub_1D31F77C0"
+        },
+        {
+          "addr": "0x1d3257ae0",
+          "name": "sub_1D3257AE0"
+        },
+        {
+          "addr": "0x1d32219a0",
+          "name": "sub_1D32219A0"
+        },
+        {
+          "addr": "0x1d32455e0",
+          "name": "sub_1D32455E0"
+        },
+        {
+          "addr": "0x1d3258160",
+          "name": "sub_1D3258160"
+        },
+        {
+          "addr": "0x1d3259720",
+          "name": "sub_1D3259720"
+        },
+        {
+          "addr": "0x1d3263500",
+          "name": "sub_1D3263500"
+        },
+        {
+          "addr": "0x1ee1a3ab0",
+          "name": "stru_1EE1A3AB0"
+        },
+        {
+          "addr": "0x1d31d1840",
+          "name": "sub_1D31D1840"
+        }
+      ]
+    },
+    "animation_stop": {
+      "addr": "0x1d2befd90",
+      "code": "// local variable allocation has failed, the output may be wrong!\nvoid __cdecl __noreturn sub_1D2BEFD90(SBDashBoardSetupView *self, SEL a2, id a3, bool a4)\n{\n  __int64 v4; // x0\n\n  v4 = sub_1D326FAA0(a1: a3, a2, a3: &stru_1EE1A3AD0, a4); /*0x1d2befda8*/\n  if ( MEMORY[0x1D39B6070](a1: v4) != 0 ) /*0x1d2befdb0*/\n    sub_1D2DAB7F4(); /*0x1d2befdb8*/\n  JUMPOUT(0x1D39B616CLL); /*0x1d39b616c*/\n}",
+      "refs": [
+        {
+          "addr": "0x1d326faa0",
+          "name": "sub_1D326FAA0"
+        },
+        {
+          "addr": "0x1ee1a3ad0",
+          "name": "stru_1EE1A3AD0"
+        },
+        {
+          "addr": "0x1d2dab7f4",
+          "name": "sub_1D2DAB7F4"
+        }
+      ]
+    },
+    "add_home_label": {
+      "addr": "0x1d2bf1208",
+      "code": "void __cdecl sub_1D2BF1208(SBDashBoardSetupView *self, SEL a2)\n{\n  SBUICallToActionLabel *homeButtonCallToActionLabel; // x20\n  __int64 v4; // x0\n  __int64 v5; // x0\n\n  self->_homeButtonCallToActionLabel = (SBUICallToActionLabel *)MEMORY[0x1D39B601C](a1: MEMORY[0x1E5E40370], a2); /*0x1d2bf1234*/\n  MEMORY[0x1D39B6220](); /*0x1d2bf1238*/\n  if ( (unsigned int)MEMORY[0x1D39B5AE8](a1: \"SpringBoard\", a2: \"CursiveHello\") != 0 ) /*0x1d2bf1250*/\n  {\n    homeButtonCallToActionLabel = self->_homeButtonCallToActionLabel; /*0x1d2bf1254*/\n    v4 = sub_1D322B880(a1: self->_legibilitySettings); /*0x1d2bf1264*/\n    MEMORY[0x1D39B6070](a1: v4); /*0x1d2bf1268*/\n    v5 = sub_1D3257B00(a1: homeButtonCallToActionLabel); /*0x1d2bf1278*/\n    MEMORY[0x1D39B61B4](a1: v5); /*0x1d2bf127c*/\n  }\n  sub_1D31DD720(a1: self->_homeButtonCallToActionLabel); /*0x1d2bf1288*/\n  sub_1D3259EE0(a1: self->_homeButtonCallToActionLabel); /*0x1d2bf1298*/\n  sub_1D31D33A0(a1: self); /*0x1d2bf12b0*/\n}",
+      "refs": [
+        {
+          "addr": "0x1d322b880",
+          "name": "sub_1D322B880"
+        },
+        {
+          "addr": "0x1d3257b00",
+          "name": "sub_1D3257B00"
+        },
+        {
+          "addr": "0x1d2ec42b6",
+          "name": "aSpringboard",
+          "string": "SpringBoard"
+        },
+        {
+          "addr": "0x1d2ed371c",
+          "name": "aCursivehello",
+          "string": "CursiveHello"
+        },
+        {
+          "addr": "0x1d31dd720",
+          "name": "sub_1D31DD720"
+        },
+        {
+          "addr": "0x1d3259ee0",
+          "name": "sub_1D3259EE0"
+        },
+        {
+          "addr": "0x1d31d33a0",
+          "name": "sub_1D31D33A0"
+        }
+      ]
+    },
+    "set_prompt": {
+      "addr": "0x1d2bef4e4",
+      "code": "void __cdecl __noreturn sub_1D2BEF4E4(SBDashBoardSetupView *self, SEL a2, id a3, id a4)\n{\n  __int64 v5; // x20\n  __int64 v6; // x0\n  __int64 v7; // x0\n  __int64 v8; // x21\n  __int64 v9; // x0\n  __int64 v10; // x0\n  __int64 v11; // x0\n  __int64 v12; // x0\n  __int64 v13; // [xsp+8h] [xbp-38h]\n\n  v13 = MEMORY[0x1D39B62A4](a1: self, a2, a3); /*0x1d2bef508*/\n  v5 = MEMORY[0x1D39B62B0](); /*0x1d2bef510*/\n  v6 = sub_1D3219340(a1: v13); /*0x1d2bef518*/\n  if ( v6 != 0 ) /*0x1d2bef51c*/\n  {\n    if ( self->_homeAffordanceCallToActionLabel != nullptr ) /*0x1d2bef52c*/\n    {\n      v7 = MEMORY[0x1D39B6010](a1: MEMORY[0x1E5D428A0]); /*0x1d2bef538*/\n      v8 = sub_1D3209460(a1: v7); /*0x1d2bef544*/\n      if ( sub_1D3219340(a1: v5) != 0 ) /*0x1d2bef550*/\n      {\n        v9 = sub_1D32634C0(a1: v8); /*0x1d2bef558*/\n        v10 = MEMORY[0x1D39B6070](a1: v9); /*0x1d2bef55c*/\n        sub_1D3219340(a1: v10); /*0x1d2bef564*/\n        v11 = sub_1D31D1AE0(a1: v8); /*0x1d2bef580*/\n        MEMORY[0x1D39B61C0](a1: v11); /*0x1d2bef584*/\n      }\n      v12 = sub_1D323CC60(a1: self->_homeAffordanceCallToActionLabel); /*0x1d2bef590*/\n      MEMORY[0x1D39B61B4](a1: v12); /*0x1d2bef594*/\n    }\n    else\n    {\n      sub_1D3257840(a1: self->_homeButtonCallToActionLabel); /*0x1d2bef5b4*/\n    }\n    v6 = sub_1D324C4E0(a1: self); /*0x1d2bef5bc*/\n  }\n  MEMORY[0x1D39B61A8](a1: v6); /*0x1d2bef5c0*/\n  JUMPOUT(0x1D39B616CLL); /*0x1d39b616c*/\n}",
+      "refs": [
+        {
+          "addr": "0x1d3219340",
+          "name": "sub_1D3219340"
+        },
+        {
+          "addr": "0x1d3209460",
+          "name": "sub_1D3209460"
+        },
+        {
+          "addr": "0x1d32634c0",
+          "name": "sub_1D32634C0"
+        },
+        {
+          "addr": "0x1d31d1ae0",
+          "name": "sub_1D31D1AE0"
+        },
+        {
+          "addr": "0x1d323cc60",
+          "name": "sub_1D323CC60"
+        },
+        {
+          "addr": "0x1d3257840",
+          "name": "sub_1D3257840"
+        },
+        {
+          "addr": "0x1d324c4e0",
+          "name": "sub_1D324C4E0"
+        }
+      ]
+    },
+    "home_timer_fired": {
+      "addr": "0x1d2bf2818",
+      "code": "__int64 __fastcall sub_1D2BF2818(__int64 a1)\n{\n  __int64 v1; // x0\n  __int64 v2; // x19\n  __int64 v3; // x0\n  __int64 v4; // x21\n  __int64 v5; // x0\n\n  v1 = MEMORY[0x1D39B6100](a1: a1 + 40); /*0x1d2bf2834*/\n  v2 = v1; /*0x1d2bf2838*/\n  if ( v1 != 0 ) /*0x1d2bf283c*/\n  {\n    *(_QWORD *)(v1 + 528) = 0; /*0x1d2bf284c*/\n    v3 = MEMORY[0x1D39B622C](); /*0x1d2bf2850*/\n    v4 = *(_QWORD *)(v2 + 520); /*0x1d2bf285c*/\n    MEMORY[0x1D39B6358](a1: v3); /*0x1d2bf2890*/\n    v5 = sub_1D31F4420(a1: v4, a2: 1.0); /*0x1d2bf28a4*/\n    v1 = MEMORY[0x1D39B6220](a1: v5); /*0x1d2bf28ac*/\n  }\n  return MEMORY[0x1D39B6190](a1: v1); /*0x1d2bf28c4*/\n}",
+      "refs": [
+        {
+          "addr": "0x1d31f4420",
+          "name": "sub_1D31F4420"
+        }
+      ]
+    },
+    "home_affordance": {
+      "addr": "0x1d2bf2c8c",
+      "code": "// local variable allocation has failed, the output may be wrong!\nvoid __cdecl sub_1D2BF2C8C(SBDashBoardSetupView *self, SEL a2, bool a3, id a4)\n{\n  _BOOL4 v4; // w22\n  __int64 v6; // x19\n  __int64 v7; // x0\n  __int64 v8; // x0\n  __int64 v9; // x20\n  __int64 v10; // x0\n  __int64 v11; // x22\n  __int64 v12; // x0\n  __int64 v13; // x0\n  __int64 v14; // x0\n  __int64 v15; // x0\n  __int64 v16; // x0\n  __int64 v17; // x0\n  __int64 v18; // x0\n  __int64 v19; // x0\n  __int64 v20; // x0\n  __int64 v21; // x0\n  __int64 v22; // x0\n  __int64 v23; // x0\n  __int64 v24; // x0\n  double v25; // d0\n  __int64 v26; // x0\n  __int64 v27; // x0\n  __int64 v28; // x0\n  __int64 v29; // x0\n  __int64 v30; // x0\n  __int64 v31; // x0\n  __int64 v32; // x0\n  SBDashBoardSetupView *v33; // x0\n  SEL v34; // x1\n  id v35; // x2\n  id v36; // x3\n  id v37; // x4\n  __int64 v38; // [xsp+38h] [xbp-58h]\n\n  v4 = a3; /*0x1d2bf2cac*/\n  v38 = *MEMORY[0x1E5E8C7D0]; /*0x1d2bf2cc0*/\n  v6 = MEMORY[0x1D39B631C](a1: self, a2, a3, a4); /*0x1d2bf2cc8*/\n  v7 = sub_1D3218160(a1: self->_homeAffordanceContainer); /*0x1d2bf2cd8*/\n  v8 = MEMORY[0x1D39B6070](a1: v7); /*0x1d2bf2cdc*/\n  v9 = v8; /*0x1d2bf2ce0*/\n  if ( v8 != 0 ) /*0x1d2bf2ce4*/\n  {\n    if ( v4 ) /*0x1d2bf2ce8*/\n    {\n      sub_1D2DAB7E8(a1: v6); /*0x1d2bf2cf0*/\n      sub_1D31B6800(a1: self); /*0x1d2bf2d08*/\n      sub_1D31B6520(a1: self); /*0x1d2bf2d18*/\n      v10 = sub_1D31D6200(a1: MEMORY[0x1E5D63150]); /*0x1d2bf2d28*/\n      v11 = MEMORY[0x1D39B6070](a1: v10); /*0x1d2bf2d30*/\n      sub_1D3249240(a1: v11); /*0x1d2bf2d3c*/\n      v12 = sub_1D32219A0(a1: MEMORY[0x1E5D42908], a2: 0.0); /*0x1d2bf2d4c*/\n      MEMORY[0x1D39B6070](a1: v12); /*0x1d2bf2d50*/\n      v13 = sub_1D32219A0(a1: MEMORY[0x1E5D42908], a2: -5.0); /*0x1d2bf2d64*/\n      MEMORY[0x1D39B6070](a1: v13); /*0x1d2bf2d68*/\n      v14 = sub_1D32219A0(a1: MEMORY[0x1E5D42908], a2: -15.0); /*0x1d2bf2d7c*/\n      MEMORY[0x1D39B6070](a1: v14); /*0x1d2bf2d80*/\n      v15 = sub_1D32219A0(a1: MEMORY[0x1E5D42908], a2: -2.0); /*0x1d2bf2d94*/\n      MEMORY[0x1D39B6070](a1: v15); /*0x1d2bf2d98*/\n      v16 = sub_1D32219A0(a1: MEMORY[0x1E5D42908], a2: 0.0); /*0x1d2bf2dac*/\n      MEMORY[0x1D39B6070](a1: v16); /*0x1d2bf2db0*/\n      v17 = sub_1D31D8FE0(a1: MEMORY[0x1E5D273A8]); /*0x1d2bf2dcc*/\n      MEMORY[0x1D39B6070](a1: v17); /*0x1d2bf2dd0*/\n      v18 = sub_1D3259800(a1: v11); /*0x1d2bf2de0*/\n      v19 = MEMORY[0x1D39B6208](a1: v18); /*0x1d2bf2de4*/\n      v20 = MEMORY[0x1D39B61FC](a1: v19); /*0x1d2bf2de8*/\n      v21 = MEMORY[0x1D39B61F0](a1: v20); /*0x1d2bf2dec*/\n      v22 = MEMORY[0x1D39B61E4](a1: v21); /*0x1d2bf2df0*/\n      v23 = MEMORY[0x1D39B61D8](a1: v22); /*0x1d2bf2df4*/\n      MEMORY[0x1D39B61CC](a1: v23); /*0x1d2bf2df8*/\n      v24 = sub_1D323E460(a1: v11); /*0x1d2bf2e08*/\n      v25 = MEMORY[0x1D39B322C](a1: v24); /*0x1d2bf2e0c*/\n      sub_1D323D9A0(a1: v11, a2: v25 + 1.0); /*0x1d2bf2e1c*/\n      sub_1D3243520(a1: v11, a2: self->_customDelayDuration); /*0x1d2bf2e30*/\n      sub_1D323AE20(a1: v11); /*0x1d2bf2e3c*/\n      sub_1D3241C60(a1: v11); /*0x1d2bf2e48*/\n      sub_1D3259720(a1: v11); /*0x1d2bf2e5c*/\n      v26 = sub_1D32168A0(a1: v11); /*0x1d2bf2e64*/\n      MEMORY[0x1D39B6070](a1: v26); /*0x1d2bf2e68*/\n      v27 = sub_1D3263500(a1: &stru_1EE1A3A90); /*0x1d2bf2e84*/\n      MEMORY[0x1D39B6070](a1: v27); /*0x1d2bf2e88*/\n      v28 = sub_1D31D1840(a1: v9); /*0x1d2bf2e9c*/\n      v29 = MEMORY[0x1D39B61CC](a1: v28); /*0x1d2bf2ea0*/\n      v30 = MEMORY[0x1D39B61B4](a1: v29); /*0x1d2bf2ea4*/\n      v8 = MEMORY[0x1D39B61C0](a1: v30); /*0x1d2bf2ea8*/\n    }\n    else\n    {\n      v8 = sub_1D31928A0(a1: self); /*0x1d2bf2ec4*/\n    }\n  }\n  v31 = MEMORY[0x1D39B61A8](a1: v8); /*0x1d2bf2ec8*/\n  v32 = MEMORY[0x1D39B6190](a1: v31); /*0x1d2bf2ecc*/\n  if ( *MEMORY[0x1E5E8C7D0] != v38 ) /*0x1d2bf2ee4*/\n  {\n    v33 = (SBDashBoardSetupView *)MEMORY[0x1D39B5A94](a1: v32); /*0x1d2bf2f08*/\n    sub_1D2BF2F0C(self: v33, a2: v34, a3: v35, a4: v36, a5: v37); /*0x1d2bf2f09*/\n  }\n}",
+      "refs": [
+        {
+          "addr": "0x1d3218160",
+          "name": "sub_1D3218160"
+        },
+        {
+          "addr": "0x1d2dab7e8",
+          "name": "sub_1D2DAB7E8"
+        },
+        {
+          "addr": "0x1d31b6800",
+          "name": "sub_1D31B6800"
+        },
+        {
+          "addr": "0x1d31b6520",
+          "name": "sub_1D31B6520"
+        },
+        {
+          "addr": "0x1d31d6200",
+          "name": "sub_1D31D6200"
+        },
+        {
+          "addr": "0x1d3249240",
+          "name": "sub_1D3249240"
+        },
+        {
+          "addr": "0x1d32219a0",
+          "name": "sub_1D32219A0"
+        },
+        {
+          "addr": "0x1d31d8fe0",
+          "name": "sub_1D31D8FE0"
+        },
+        {
+          "addr": "0x1d3259800",
+          "name": "sub_1D3259800"
+        },
+        {
+          "addr": "0x1d323e460",
+          "name": "sub_1D323E460"
+        },
+        {
+          "addr": "0x1d323d9a0",
+          "name": "sub_1D323D9A0"
+        },
+        {
+          "addr": "0x1d3243520",
+          "name": "sub_1D3243520"
+        },
+        {
+          "addr": "0x1d323ae20",
+          "name": "sub_1D323AE20"
+        },
+        {
+          "addr": "0x1d3241c60",
+          "name": "sub_1D3241C60"
+        },
+        {
+          "addr": "0x1d3259720",
+          "name": "sub_1D3259720"
+        },
+        {
+          "addr": "0x1d32168a0",
+          "name": "sub_1D32168A0"
+        },
+        {
+          "addr": "0x1d3263500",
+          "name": "sub_1D3263500"
+        },
+        {
+          "addr": "0x1ee1a3a90",
+          "name": "stru_1EE1A3A90"
+        },
+        {
+          "addr": "0x1d31d1840",
+          "name": "sub_1D31D1840"
+        },
+        {
+          "addr": "0x1d31928a0",
+          "name": "sub_1D31928A0"
+        },
+        {
+          "addr": "0x1d2bf2f0c",
+          "name": "sub_1D2BF2F0C"
+        }
+      ]
+    },
+    "remove_reset": {
+      "addr": "0x1d2bf30cc",
+      "code": "void __cdecl __noreturn sub_1D2BF30CC(SBDashBoardSetupView *self, SEL a2, id a3, id a4)\n{\n  __int64 v4; // x20\n  __int64 v5; // x0\n  __int64 v6; // x0\n\n  v4 = MEMORY[0x1D39B631C](a1: self, a2, a3, a4); /*0x1d2bf30e4*/\n  v5 = sub_1D3263500(a1: &stru_1EE1A3AB0); /*0x1d2bf30fc*/\n  MEMORY[0x1D39B6070](a1: v5); /*0x1d2bf3100*/\n  v6 = sub_1D3230260(a1: v4); /*0x1d2bf3110*/\n  MEMORY[0x1D39B61A8](a1: v6); /*0x1d2bf3114*/\n  JUMPOUT(0x1D39B616CLL); /*0x1d39b616c*/\n}",
+      "refs": [
+        {
+          "addr": "0x1d3263500",
+          "name": "sub_1D3263500"
+        },
+        {
+          "addr": "0x1ee1a3ab0",
+          "name": "stru_1EE1A3AB0"
+        },
+        {
+          "addr": "0x1d3230260",
+          "name": "sub_1D3230260"
+        }
+      ]
+    },
+    "remove_normal": {
+      "addr": "0x1d2bf312c",
+      "code": "void __cdecl __noreturn sub_1D2BF312C(SBDashBoardSetupView *self, SEL a2, id a3, id a4)\n{\n  __int64 v4; // x20\n  __int64 v5; // x0\n  __int64 v6; // x0\n\n  v4 = MEMORY[0x1D39B631C](a1: self, a2, a3, a4); /*0x1d2bf3144*/\n  v5 = sub_1D3263500(a1: &stru_1EE1A3A90); /*0x1d2bf315c*/\n  MEMORY[0x1D39B6070](a1: v5); /*0x1d2bf3160*/\n  v6 = sub_1D3230260(a1: v4); /*0x1d2bf3170*/\n  MEMORY[0x1D39B61A8](a1: v6); /*0x1d2bf3174*/\n  JUMPOUT(0x1D39B616CLL); /*0x1d39b616c*/\n}",
+      "refs": [
+        {
+          "addr": "0x1d3263500",
+          "name": "sub_1D3263500"
+        },
+        {
+          "addr": "0x1ee1a3a90",
+          "name": "stru_1EE1A3A90"
+        },
+        {
+          "addr": "0x1d3230260",
+          "name": "sub_1D3230260"
+        }
+      ]
+    },
+    "cycle": {
+      "addr": "0x1d2682cec",
+      "code": "void __cdecl sub_1D2682CEC(SBDashBoardSetupViewController *self, SEL a2)\n{\n  char v3; // w21\n  __int64 v4; // x0\n  __int64 v5; // x0\n  __int64 v6; // x20\n  __int64 v7; // x0\n  int v8; // w0\n  unsigned __int64 componentsToCycle; // x8\n  __int64 v10; // x0\n  __int64 v11; // x20\n  __int64 v12; // x0\n  __int64 v13; // [xsp+20h] [xbp-30h] BYREF\n  _BYTE v14[8]; // [xsp+28h] [xbp-28h] BYREF\n\n  MEMORY[0x1D39B6100](a1: &self->_coverSheetViewController, a2); /*0x1d2682d10*/\n  v3 = sub_1D32116E0(); /*0x1d2682d1c*/\n  MEMORY[0x1D39B61A8](); /*0x1d2682d20*/\n  v4 = sub_1D3270160(a1: self); /*0x1d2682d28*/\n  MEMORY[0x1D39B6070](a1: v4); /*0x1d2682d2c*/\n  v5 = sub_1D3272C60(); /*0x1d2682d34*/\n  v6 = MEMORY[0x1D39B6070](a1: v5); /*0x1d2682d3c*/\n  v7 = MEMORY[0x1D39B61A8](); /*0x1d2682d40*/\n  MEMORY[0x1D39B61C0](a1: v7); /*0x1d2682d44*/\n  v8 = sub_1D3194BC0(a1: self); /*0x1d2682d4c*/\n  if ( (v3 & 1) == 0 && v6 != 0 && v8 == 2 ) /*0x1d2682d5c*/\n  {\n    componentsToCycle = self->_componentsToCycle; /*0x1d2682d68*/\n    self->_isCyclingComponents = componentsToCycle != 0; /*0x1d2682d7c*/\n    if ( componentsToCycle != 0 ) /*0x1d2682d80*/\n    {\n      MEMORY[0x1D39B60F4](a1: v14, a2: self); /*0x1d2682d8c*/\n      sub_1D31C82C0(a1: self); /*0x1d2682d94*/\n      v10 = sub_1D325B980(a1: self); /*0x1d2682d9c*/\n      v11 = MEMORY[0x1D39B6070](a1: v10); /*0x1d2682da4*/\n      MEMORY[0x1D39B6088](a1: &v13, a2: v14); /*0x1d2682de4*/\n      v12 = sub_1D31D5880(a1: v11); /*0x1d2682df8*/\n      MEMORY[0x1D39B61A8](a1: v12); /*0x1d2682dfc*/\n      MEMORY[0x1D39B6094](a1: &v13); /*0x1d2682e04*/\n      MEMORY[0x1D39B6094](a1: v14); /*0x1d2682e0c*/\n    }\n  }\n  else\n  {\n    self->_isCyclingComponents = false; /*0x1d2682e1c*/\n  }\n}",
+      "refs": [
+        {
+          "addr": "0x1d32116e0",
+          "name": "sub_1D32116E0"
+        },
+        {
+          "addr": "0x1d3270160",
+          "name": "sub_1D3270160"
+        },
+        {
+          "addr": "0x1d3272c60",
+          "name": "sub_1D3272C60"
+        },
+        {
+          "addr": "0x1d3194bc0",
+          "name": "sub_1D3194BC0"
+        },
+        {
+          "addr": "0x1d31c82c0",
+          "name": "sub_1D31C82C0"
+        },
+        {
+          "addr": "0x1d325b980",
+          "name": "sub_1D325B980"
+        },
+        {
+          "addr": "0x1d31d5880",
+          "name": "sub_1D31D5880"
+        }
+      ]
+    },
+    "cycle_complete": {
+      "addr": "0x1d2682e58",
+      "code": "void __fastcall __noreturn sub_1D2682E58(__int64 a1)\n{\n  __int64 v1; // x0\n  __int64 v2; // [xsp+8h] [xbp-8h]\n\n  v1 = MEMORY[0x1D39B6100](a1: a1 + 32); /*0x1d2682e68*/\n  if ( v1 != 0 ) /*0x1d2682e6c*/\n  {\n    v2 = v1; /*0x1d2682e70*/\n    sub_1D31A60E0(); /*0x1d2682e74*/\n    sub_1D322D9A0(a1: v2); /*0x1d2682e7c*/\n    sub_1D3193D80(a1: v2); /*0x1d2682e84*/\n  }\n  JUMPOUT(0x1D39B616CLL); /*0x1d39b616c*/\n}",
+      "refs": [
+        {
+          "addr": "0x1d31a60e0",
+          "name": "sub_1D31A60E0"
+        },
+        {
+          "addr": "0x1d322d9a0",
+          "name": "sub_1D322D9A0"
+        },
+        {
+          "addr": "0x1d3193d80",
+          "name": "sub_1D3193D80"
+        }
+      ]
+    }
+  },
+  "cta": {
+    "fadeIn": {
+      "addr": "0x1a6160fec",
+      "code": "// local variable allocation has failed, the output may be wrong!\nvoid __cdecl __noreturn sub_1A6160FEC(SBUICallToActionLabel *self, SEL a2, bool a3, id a4)\n{\n  __int64 v5; // x0\n  __int64 v6; // [xsp+8h] [xbp-18h]\n\n  v6 = MEMORY[0x1A8222CBC](a1: self, a2, a3, a4); /*0x1a6161008*/\n  v5 = sub_1A61D0460(a1: self); /*0x1a6161010*/\n  if ( v5 > 1 ) /*0x1a6161018*/\n  {\n    if ( v5 == 2 ) /*0x1a616103c*/\n    {\n      if ( v6 != 0 ) /*0x1a6161088*/\n        (*(void (__fastcall **)(__int64))(v6 + 16))(a1: v6); /*0x1a6161094*/\n    }\n    else if ( v5 == 3 ) /*0x1a6161048*/\n    {\n      sub_1A61C0A80(a1: self, a2: 0.4); /*0x1a6161060*/\n    }\n  }\n  else if ( v5 != 0 ) /*0x1a616101c*/\n  {\n    if ( v5 == 1 ) /*0x1a6161028*/\n      sub_1A61BDDE0(a1: self); /*0x1a6161030*/\n  }\n  else\n  {\n    sub_1A61BDDE0(a1: self); /*0x1a6161070*/\n    sub_1A61C0AA0(a1: self); /*0x1a616107c*/\n  }\n  JUMPOUT(0x1A8222B54LL); /*0x1a8222b54*/\n}",
+      "refs": [
+        {
+          "addr": "0x1a61d0460",
+          "name": "sub_1A61D0460"
+        },
+        {
+          "addr": "0x1a61c0a80",
+          "name": "sub_1A61C0A80"
+        },
+        {
+          "addr": "0x1a61bdde0",
+          "name": "sub_1A61BDDE0"
+        },
+        {
+          "addr": "0x1a61c0aa0",
+          "name": "sub_1A61C0AA0"
+        }
+      ]
+    },
+    "fadeOut": {
+      "addr": "0x1a61610bc",
+      "code": "void __cdecl __noreturn sub_1A61610BC(SBUICallToActionLabel *self, SEL a2, double a3, id a4)\n{\n  __int64 v6; // x0\n  __int64 v7; // [xsp+8h] [xbp-28h]\n\n  v7 = MEMORY[0x1A8222C44](a1: self, a2, a3: a4); /*0x1a61610dc*/\n  v6 = sub_1A61D0460(a1: self); /*0x1a61610e4*/\n  if ( (unsigned __int64)(v6 - 1) < 2 ) /*0x1a61610f0*/\n  {\n    sub_1A61C0A80(a1: self, a2: a3); /*0x1a6161148*/\n  }\n  else if ( v6 == 0 || v6 == 3 ) /*0x1a61610fc*/\n  {\n    sub_1A61BF4C0(a1: self); /*0x1a6161104*/\n    sub_1A61CB240(a1: self->_gradientLayer); /*0x1a616111c*/\n    if ( v7 != 0 ) /*0x1a6161124*/\n      (*(void (**)(void))(v7 + 16))(); /*0x1a6161130*/\n  }\n  JUMPOUT(0x1A8222B24LL); /*0x1a8222b24*/\n}",
+      "refs": [
+        {
+          "addr": "0x1a61d0460",
+          "name": "sub_1A61D0460"
+        },
+        {
+          "addr": "0x1a61c0a80",
+          "name": "sub_1A61C0A80"
+        },
+        {
+          "addr": "0x1a61bf4c0",
+          "name": "sub_1A61BF4C0"
+        },
+        {
+          "addr": "0x1a61cb240",
+          "name": "sub_1A61CB240"
+        }
+      ]
+    },
+    "createGradient": {
+      "addr": "0x1a6161bdc",
+      "code": "void __cdecl sub_1A6161BDC(SBUICallToActionLabel *self, SEL a2)\n{\n  __int64 v3; // x19\n  __int64 v4; // x0\n  __int64 v5; // x0\n  __int64 v6; // x0\n  __int64 v7; // x0\n  __int64 v8; // x0\n  __int64 v9; // x0\n  __int64 v10; // x0\n  __int64 v11; // x0\n  __int64 v12; // x0\n  __int64 v13; // x0\n  __int64 v14; // x0\n  __int64 v15; // x0\n  __int64 v16; // x0\n  __int64 v17; // x0\n  __int64 v18; // x0\n  __int64 v19; // x0\n  __int64 v20; // x0\n  SBUICallToActionLabel *v21; // x0\n  SEL v22; // x1\n  id v23; // x2\n  __int64 v24; // [xsp+18h] [xbp-38h]\n\n  v24 = *MEMORY[0x1E5E8C7D0]; /*0x1a6161c04*/\n  v3 = MEMORY[0x1A8222A28](a1: MEMORY[0x1E5D63148], a2); /*0x1a6161c14*/\n  sub_1A61CF640(); /*0x1a6161c24*/\n  sub_1A61CEEC0(a1: v3, a2: 0.5, a3: 0.5); /*0x1a6161c34*/\n  sub_1A61CD400(a1: v3, a2: 1.0, a3: 1.0); /*0x1a6161c44*/\n  v4 = sub_1A61D1D20(a1: MEMORY[0x1E5E58C38]); /*0x1a6161c50*/\n  MEMORY[0x1A8222A64](a1: v4); /*0x1a6161c54*/\n  v5 = MEMORY[0x1A8222BFC](); /*0x1a6161c5c*/\n  sub_1A61BD440(a1: v5); /*0x1a6161c60*/\n  v6 = sub_1A61C4240(a1: MEMORY[0x1E5E58C38]); /*0x1a6161c6c*/\n  MEMORY[0x1A8222A64](a1: v6); /*0x1a6161c70*/\n  v7 = MEMORY[0x1A8222BFC](); /*0x1a6161c78*/\n  sub_1A61BD440(a1: v7); /*0x1a6161c7c*/\n  v8 = sub_1A61C3360(a1: MEMORY[0x1E5D273A8]); /*0x1a6161c94*/\n  MEMORY[0x1A8222A64](a1: v8); /*0x1a6161c98*/\n  v9 = sub_1A61CCB00(a1: v3); /*0x1a6161ca8*/\n  v10 = MEMORY[0x1A8222B84](a1: v9); /*0x1a6161cac*/\n  v11 = MEMORY[0x1A8222B78](a1: v10); /*0x1a6161cb0*/\n  MEMORY[0x1A8222B6C](a1: v11); /*0x1a6161cb4*/\n  sub_1A61C0940(a1: self); /*0x1a6161cc0*/\n  v12 = sub_1A61C89E0(a1: self); /*0x1a6161cc8*/\n  MEMORY[0x1A8222A64](a1: v12); /*0x1a6161ccc*/\n  v13 = sub_1A61C2A20(); /*0x1a6161cd8*/\n  MEMORY[0x1A8222B6C](a1: v13); /*0x1a6161cdc*/\n  sub_1A61CD720(a1: self); /*0x1a6161ce8*/\n  v14 = sub_1A61C88E0(a1: self); /*0x1a6161cf0*/\n  v15 = MEMORY[0x1A8222A64](a1: v14); /*0x1a6161cf4*/\n  v16 = sub_1A61C89E0(a1: v15); /*0x1a6161cfc*/\n  MEMORY[0x1A8222A64](a1: v16); /*0x1a6161d00*/\n  v17 = sub_1A61CDF60(); /*0x1a6161d0c*/\n  v18 = MEMORY[0x1A8222B6C](a1: v17); /*0x1a6161d10*/\n  v19 = MEMORY[0x1A8222B60](a1: v18); /*0x1a6161d14*/\n  v20 = MEMORY[0x1A8222B48](a1: v19); /*0x1a6161d18*/\n  if ( *MEMORY[0x1E5E8C7D0] != v24 ) /*0x1a6161d30*/\n  {\n    v21 = (SBUICallToActionLabel *)MEMORY[0x1A8222860](a1: v20); /*0x1a6161d4c*/\n    sub_1A6161D50(self: v21, a2: v22, a3: v23); /*0x1a6161d4d*/\n  }\n}",
+      "refs": [
+        {
+          "addr": "0x1a61cf640",
+          "name": "sub_1A61CF640"
+        },
+        {
+          "addr": "0x1a61ceec0",
+          "name": "sub_1A61CEEC0"
+        },
+        {
+          "addr": "0x1a61cd400",
+          "name": "sub_1A61CD400"
+        },
+        {
+          "addr": "0x1a61d1d20",
+          "name": "sub_1A61D1D20"
+        },
+        {
+          "addr": "0x1a61bd440",
+          "name": "sub_1A61BD440"
+        },
+        {
+          "addr": "0x1a61c4240",
+          "name": "sub_1A61C4240"
+        },
+        {
+          "addr": "0x1a61c3360",
+          "name": "sub_1A61C3360"
+        },
+        {
+          "addr": "0x1a61ccb00",
+          "name": "sub_1A61CCB00"
+        },
+        {
+          "addr": "0x1a61c0940",
+          "name": "sub_1A61C0940"
+        },
+        {
+          "addr": "0x1a61c89e0",
+          "name": "sub_1A61C89E0"
+        },
+        {
+          "addr": "0x1a61c2a20",
+          "name": "sub_1A61C2A20"
+        },
+        {
+          "addr": "0x1a61cd720",
+          "name": "sub_1A61CD720"
+        },
+        {
+          "addr": "0x1a61c88e0",
+          "name": "sub_1A61C88E0"
+        },
+        {
+          "addr": "0x1a61cdf60",
+          "name": "sub_1A61CDF60"
+        },
+        {
+          "addr": "0x1a6161d50",
+          "name": "sub_1A6161D50"
+        }
+      ]
+    },
+    "runGradient": {
+      "addr": "0x1a6161da4",
+      "code": "void __cdecl sub_1A6161DA4(SBUICallToActionLabel *self, SEL a2, bool a3)\n{\n  __int64 v4; // x0\n  __int64 v5; // x0\n  __int64 v6; // x20\n  __int64 v7; // x0\n  __int64 v8; // x20\n  __int64 v9; // x0\n  __int64 v10; // x0\n  __int64 v11; // x20\n  __int64 v12; // x0\n  __int64 v13; // x0\n\n  if ( a3 ) /*0x1a6161db4*/\n  {\n    v4 = sub_1A61BF4C0(a1: self); /*0x1a6161db8*/\n    v5 = MEMORY[0x1A822259C](a1: v4); /*0x1a6161dbc*/\n    v6 = MEMORY[0x1A8222A64](a1: v5); /*0x1a6161dc4*/\n    if ( (unsigned int)MEMORY[0x1A8222D7C](a1: v6, a2: 2) != 0 ) /*0x1a6161dd0*/\n      sub_1A61737D8(a1: self, a2: v6); /*0x1a6161e64*/\n    MEMORY[0x1A8222B60](); /*0x1a6161dd4*/\n    sub_1A61BDDC0(a1: self); /*0x1a6161ddc*/\n  }\n  else\n  {\n    v7 = sub_1A61C2F80(a1: self, a2); /*0x1a6161de4*/\n    v8 = MEMORY[0x1A8222A64](a1: v7); /*0x1a6161dec*/\n    v9 = MEMORY[0x1A8222B60](); /*0x1a6161df0*/\n    if ( v8 == 0 ) /*0x1a6161df4*/\n    {\n      v10 = MEMORY[0x1A822259C](a1: v9); /*0x1a6161df8*/\n      v11 = MEMORY[0x1A8222A64](a1: v10); /*0x1a6161e00*/\n      if ( (unsigned int)MEMORY[0x1A8222D7C](a1: v11, a2: 2) != 0 ) /*0x1a6161e0c*/\n        sub_1A6173778(a1: self, a2: v11); /*0x1a6161e74*/\n      MEMORY[0x1A8222B60](); /*0x1a6161e10*/\n      v12 = sub_1A61CBCE0(a1: MEMORY[0x1E5D27518], a2: 4.0); /*0x1a6161e34*/\n      MEMORY[0x1A8222A64](a1: v12); /*0x1a6161e38*/\n      v13 = sub_1A61CC340(a1: self); /*0x1a6161e48*/\n      MEMORY[0x1A8222B60](a1: v13); /*0x1a6161e4c*/\n    }\n  }\n}",
+      "refs": [
+        {
+          "addr": "0x1a61bf4c0",
+          "name": "sub_1A61BF4C0"
+        },
+        {
+          "addr": "0x1a61737d8",
+          "name": "sub_1A61737D8"
+        },
+        {
+          "addr": "0x1a61bddc0",
+          "name": "sub_1A61BDDC0"
+        },
+        {
+          "addr": "0x1a61c2f80",
+          "name": "sub_1A61C2F80"
+        },
+        {
+          "addr": "0x1a6173778",
+          "name": "sub_1A6173778"
+        },
+        {
+          "addr": "0x1a61cbce0",
+          "name": "sub_1A61CBCE0"
+        },
+        {
+          "addr": "0x1a61cc340",
+          "name": "sub_1A61CC340"
+        }
+      ]
+    },
+    "actualGradient": {
+      "addr": "0x1a6161f40",
+      "code": "void __cdecl sub_1A6161F40(SBUICallToActionLabel *self, SEL a2)\n{\n  __int64 v3; // x0\n  __int64 v4; // x19\n  __int64 v5; // x0\n  __int64 v6; // x0\n  __int64 v7; // x1\n  __int64 v8; // x0\n  __int64 v9; // x21\n  __int64 v10; // x0\n  __int64 v11; // x0\n  __int64 v12; // x0\n  __int64 v13; // x23\n  __int64 v14; // x0\n  __int64 v15; // x0\n  __int64 v16; // x0\n  __int64 v17; // x0\n  __int64 v18; // x22\n  __int64 v19; // x0\n  __int64 v20; // x0\n  __int64 v21; // x0\n  __int64 v22; // x0\n  SBUICallToActionLabel *v23; // x0\n  SEL v24; // x1\n  bool v25; // w2\n  id v26; // x3\n  double v27; // d0\n  __int64 v28; // [xsp+18h] [xbp-58h]\n\n  v28 = *MEMORY[0x1E5E8C7D0]; /*0x1a6161f70*/\n  v3 = sub_1A61C2FA0(a1: MEMORY[0x1E5D630C8], a2, a3: &stru_1E9ED7B68); /*0x1a6161f84*/\n  v4 = MEMORY[0x1A8222A64](a1: v3); /*0x1a6161f8c*/\n  sub_1A61CD6A0(); /*0x1a6161f98*/\n  sub_1A61CF4E0(a1: v4); /*0x1a6161fa8*/\n  sub_1A61CD240(a1: v4, a2: 0.6); /*0x1a6161fbc*/\n  v5 = sub_1A61C63A0(a1: MEMORY[0x1E5D63188], a2: 0.05, a3: 0.0, a4: 0.15, a5: 1.0); /*0x1a6161fe8*/\n  MEMORY[0x1A8222A64](a1: v5); /*0x1a6161fec*/\n  v6 = sub_1A61CF400(a1: v4); /*0x1a6161ffc*/\n  MEMORY[0x1A8222B6C](a1: v6); /*0x1a6162000*/\n  sub_1A61CD580(a1: v4); /*0x1a6162018*/\n  v8 = sub_1A61C2FA0(a1: MEMORY[0x1E5D630C8], a2: v7, a3: &stru_1E9ED65E8); /*0x1a6162028*/\n  v9 = MEMORY[0x1A8222A64](a1: v8); /*0x1a6162030*/\n  sub_1A61CD6A0(); /*0x1a616203c*/\n  sub_1A61CF4E0(a1: v9); /*0x1a616204c*/\n  sub_1A61CD240(a1: v9, a2: 0.6); /*0x1a6162058*/\n  v10 = sub_1A61C63A0(a1: MEMORY[0x1E5D63188], a2: 0.05, a3: 0.0, a4: 0.15, a5: 1.0); /*0x1a6162070*/\n  MEMORY[0x1A8222A64](a1: v10); /*0x1a6162074*/\n  v11 = sub_1A61CF400(a1: v9); /*0x1a6162084*/\n  MEMORY[0x1A8222B84](a1: v11); /*0x1a6162088*/\n  sub_1A61CD580(a1: v9); /*0x1a6162094*/\n  v12 = sub_1A61C2EC0(a1: MEMORY[0x1E5D630B8]); /*0x1a61620a0*/\n  v13 = MEMORY[0x1A8222A64](a1: v12); /*0x1a61620a8*/\n  sub_1A61CD240(a1: v13, a2: 0.6); /*0x1a61620b0*/\n  v14 = sub_1A61C3360(a1: MEMORY[0x1E5D273A8]); /*0x1a61620c8*/\n  MEMORY[0x1A8222A64](a1: v14); /*0x1a61620cc*/\n  v15 = sub_1A61CC360(a1: v13); /*0x1a61620dc*/\n  MEMORY[0x1A8222B90](a1: v15); /*0x1a61620e0*/\n  sub_1A61CD580(a1: v13); /*0x1a61620ec*/\n  sub_1A61CCFA0(a1: v13); /*0x1a61620f8*/\n  v16 = sub_1A61CB200(a1: self->_gradientLayer); /*0x1a6162108*/\n  v17 = MEMORY[0x1A822259C](a1: v16); /*0x1a616210c*/\n  v18 = MEMORY[0x1A8222A64](a1: v17); /*0x1a6162114*/\n  if ( (unsigned int)MEMORY[0x1A8222D7C](a1: v18, a2: 2) != 0 ) /*0x1a6162120*/\n    sub_1A61738F8(a1: self, a2: v13, a3: v18); /*0x1a61621a0*/\n  MEMORY[0x1A8222B78](); /*0x1a6162124*/\n  sub_1A61C2780(a1: self->_gradientLayer); /*0x1a6162138*/\n  sub_1A61C0940(a1: self); /*0x1a6162144*/\n  v19 = sub_1A61BF4C0(a1: self); /*0x1a616214c*/\n  v20 = MEMORY[0x1A8222B84](a1: v19); /*0x1a6162150*/\n  v21 = MEMORY[0x1A8222B6C](a1: v20); /*0x1a6162154*/\n  v22 = MEMORY[0x1A8222B48](a1: v21); /*0x1a6162158*/\n  if ( *MEMORY[0x1E5E8C7D0] != v28 ) /*0x1a6162170*/\n  {\n    v23 = (SBUICallToActionLabel *)MEMORY[0x1A8222860](a1: v22); /*0x1a61621a8*/\n    sub_1A61621AC(self: v23, a2: v24, a3: v25, a4: v27, a5: v26); /*0x1a61621a9*/\n  }\n}",
+      "refs": [
+        {
+          "addr": "0x1a61c2fa0",
+          "name": "sub_1A61C2FA0"
+        },
+        {
+          "addr": "0x1e9ed7b68",
+          "name": "stru_1E9ED7B68"
+        },
+        {
+          "addr": "0x1a61cd6a0",
+          "name": "sub_1A61CD6A0"
+        },
+        {
+          "addr": "0x1a61cf4e0",
+          "name": "sub_1A61CF4E0"
+        },
+        {
+          "addr": "0x1a61cd240",
+          "name": "sub_1A61CD240"
+        },
+        {
+          "addr": "0x1a61c63a0",
+          "name": "sub_1A61C63A0"
+        },
+        {
+          "addr": "0x1a61cf400",
+          "name": "sub_1A61CF400"
+        },
+        {
+          "addr": "0x1a61cd580",
+          "name": "sub_1A61CD580"
+        },
+        {
+          "addr": "0x1e9ed65e8",
+          "name": "stru_1E9ED65E8"
+        },
+        {
+          "addr": "0x1a61c2ec0",
+          "name": "sub_1A61C2EC0"
+        },
+        {
+          "addr": "0x1a61c3360",
+          "name": "sub_1A61C3360"
+        },
+        {
+          "addr": "0x1a61cc360",
+          "name": "sub_1A61CC360"
+        },
+        {
+          "addr": "0x1a61ccfa0",
+          "name": "sub_1A61CCFA0"
+        },
+        {
+          "addr": "0x1a61cb200",
+          "name": "sub_1A61CB200"
+        },
+        {
+          "addr": "0x1a61738f8",
+          "name": "sub_1A61738F8"
+        },
+        {
+          "addr": "0x1a61c2780",
+          "name": "sub_1A61C2780"
+        },
+        {
+          "addr": "0x1a61c0940",
+          "name": "sub_1A61C0940"
+        },
+        {
+          "addr": "0x1a61bf4c0",
+          "name": "sub_1A61BF4C0"
+        },
+        {
+          "addr": "0x1a61621ac",
+          "name": "sub_1A61621AC"
+        }
+      ]
+    },
+    "fadeAnimation": {
+      "addr": "0x1a61621ac",
+      "code": "void __cdecl sub_1A61621AC(SBUICallToActionLabel *self, SEL a2, bool a3, double a4, id a5)\n{\n  __int64 v7; // x0\n\n  MEMORY[0x1A8222CBC](a1: self, a2); /*0x1a61621dc*/\n  sub_1A61CEEE0(a1: self); /*0x1a61621ec*/\n  sub_1A61BF4C0(a1: self); /*0x1a61621f4*/\n  sub_1A61CB240(a1: self->_gradientLayer); /*0x1a616220c*/\n  v7 = sub_1A61BDDE0(a1: self); /*0x1a6162218*/\n  MEMORY[0x1A8222B78](a1: v7); /*0x1a616221c*/\n  sub_1A61C2E00(a1: MEMORY[0x1E5E59668], a2: a4, a3: 0.0); /*0x1a6162294*/\n}",
+      "refs": [
+        {
+          "addr": "0x1a61ceee0",
+          "name": "sub_1A61CEEE0"
+        },
+        {
+          "addr": "0x1a61bf4c0",
+          "name": "sub_1A61BF4C0"
+        },
+        {
+          "addr": "0x1a61cb240",
+          "name": "sub_1A61CB240"
+        },
+        {
+          "addr": "0x1a61bdde0",
+          "name": "sub_1A61BDDE0"
+        },
+        {
+          "addr": "0x1a61c2e00",
+          "name": "sub_1A61C2E00"
+        }
+      ]
+    },
+    "resetGradient": {
+      "addr": "0x1a6162320",
+      "code": "void __cdecl sub_1A6162320(SBUICallToActionLabel *self, SEL a2, bool a3)\n{\n  _BOOL4 v3; // w20\n  __int64 v5; // x0\n  __n128 v6; // q0\n  __n128 v7; // q1\n  CAGradientLayer *gradientLayer; // x19\n  _QWORD v9[16]; // [xsp+0h] [xbp-A0h] BYREF\n\n  v3 = a3; /*0x1a6162334*/\n  sub_1A61C3780(a1: MEMORY[0x1E5D63268], a2); /*0x1a6162344*/\n  sub_1A61CD0A0(a1: MEMORY[0x1E5D63268]); /*0x1a6162350*/\n  sub_1A61CC220(a1: self->_label, a2: 1.0); /*0x1a6162364*/\n  v5 = sub_1A61CDF00(a1: self->_gradientLayer); /*0x1a6162380*/\n  gradientLayer = self->_gradientLayer; /*0x1a6162384*/\n  if ( v3 ) /*0x1a6162374*/\n  {\n    v6.n128_u64[0] = 0; /*0x1a616238c*/\n    v7.n128_u64[0] = 0; /*0x1a6162390*/\n  }\n  else\n  {\n    v6.n128_u64[0] = 1.0; /*0x1a61623ac*/\n    v7.n128_u64[0] = 1.0; /*0x1a61623b0*/\n  }\n  MEMORY[0x1A8221F9C](a1: v9, a2: v5, a3: v6, a4: v7, a5: 1.0); /*0x1a61623b8*/\n  sub_1A61CF560(a1: gradientLayer); /*0x1a61623c4*/\n  sub_1A61C4440(a1: MEMORY[0x1E5D63268]); /*0x1a61623cc*/\n}",
+      "refs": [
+        {
+          "addr": "0x1a61c3780",
+          "name": "sub_1A61C3780"
+        },
+        {
+          "addr": "0x1a61cd0a0",
+          "name": "sub_1A61CD0A0"
+        },
+        {
+          "addr": "0x1a61cc220",
+          "name": "sub_1A61CC220"
+        },
+        {
+          "addr": "0x1a61cdf00",
+          "name": "sub_1A61CDF00"
+        },
+        {
+          "addr": "0x1a61cf560",
+          "name": "sub_1A61CF560"
+        },
+        {
+          "addr": "0x1a61c4440",
+          "name": "sub_1A61C4440"
+        }
+      ]
+    },
+    "updateText": {
+      "addr": "0x1a6161628",
+      "code": "void __cdecl __noreturn sub_1A6161628(SBUICallToActionLabel *self, SEL a2, id a3)\n{\n  __int64 v4; // x0\n  __int64 v5; // x19\n  __int64 v6; // x0\n  __int64 v7; // x0\n  __int64 v8; // x21\n  __int64 v9; // x0\n  __int64 v10; // x0\n  __int64 v11; // x0\n  __int64 v12; // x0\n  __int64 v13; // x0\n  __int64 v14; // [xsp+8h] [xbp-28h]\n\n  v14 = MEMORY[0x1A8222C44](a1: self, a2, a3); /*0x1a6161644*/\n  v4 = sub_1A61C88E0(a1: self); /*0x1a616164c*/\n  v5 = MEMORY[0x1A8222A64](a1: v4); /*0x1a6161654*/\n  v6 = MEMORY[0x1A8222818](a1: self->_text, a2: v5); /*0x1a6161668*/\n  if ( MEMORY[0x1A8222A64](a1: v6) != 0 ) /*0x1a6161674*/\n  {\n    v7 = MEMORY[0x1A8222A1C](a1: MEMORY[0x1E5D428A0]); /*0x1a6161680*/\n    v8 = sub_1A61C7BC0(a1: v7); /*0x1a616168c*/\n    if ( v14 != 0 ) /*0x1a6161694*/\n    {\n      v9 = sub_1A61D0680(a1: v8); /*0x1a616169c*/\n      MEMORY[0x1A8222A64](a1: v9); /*0x1a61616a0*/\n      sub_1A61C8BC0(); /*0x1a61616a8*/\n      v10 = sub_1A61C27A0(a1: v8); /*0x1a61616c4*/\n      MEMORY[0x1A8222B78](a1: v10); /*0x1a61616c8*/\n    }\n  }\n  sub_1A61CC420(a1: v5); /*0x1a61616dc*/\n  v11 = sub_1A61CE220(a1: v5); /*0x1a61616e8*/\n  v12 = MEMORY[0x1A8222B60](a1: v11); /*0x1a61616ec*/\n  v13 = MEMORY[0x1A8222B48](a1: v12); /*0x1a61616f0*/\n  MEMORY[0x1A8222B6C](a1: v13); /*0x1a61616f4*/\n  JUMPOUT(0x1A8222B24LL); /*0x1a8222b24*/\n}",
+      "refs": [
+        {
+          "addr": "0x1a61c88e0",
+          "name": "sub_1A61C88E0"
+        },
+        {
+          "addr": "0x1a61c7bc0",
+          "name": "sub_1A61C7BC0"
+        },
+        {
+          "addr": "0x1a61d0680",
+          "name": "sub_1A61D0680"
+        },
+        {
+          "addr": "0x1a61c8bc0",
+          "name": "sub_1A61C8BC0"
+        },
+        {
+          "addr": "0x1a61c27a0",
+          "name": "sub_1A61C27A0"
+        },
+        {
+          "addr": "0x1a61cc420",
+          "name": "sub_1A61CC420"
+        },
+        {
+          "addr": "0x1a61ce220",
+          "name": "sub_1A61CE220"
+        }
+      ]
+    },
+    "setText": {
+      "addr": "0x1a61611fc",
+      "code": "// local variable allocation has failed, the output may be wrong!\nvoid __cdecl sub_1A61611FC(SBUICallToActionLabel *self, SEL a2, id a3, id a4, bool a5)\n{\n  _QWORD *v5; // x23\n  _BOOL8 v6; // x22\n  __int64 v8; // x19\n  __int64 v9; // x0\n  __int64 v10; // x0\n  __int64 v11; // x0\n  __int64 v12; // x0\n  NSString *text; // x25\n  __int64 v14; // x0\n  __int64 v15; // x0\n  unsigned __int64 v16; // x8\n  __CFString *v17; // x8\n  __int64 v18; // x0\n  __int64 v19; // x0\n  __int64 v20; // x22\n  __int64 v21; // x0\n  __int64 v22; // x0\n  __int64 v23; // x0\n  __int64 v24; // x0\n  __int64 v25; // x19\n  __int64 v26; // x0\n  _QWORD v27[5]; // [xsp+0h] [xbp-A0h] BYREF\n  __int64 v28; // [xsp+28h] [xbp-78h] BYREF\n  int v29; // [xsp+30h] [xbp-70h] BYREF\n  NSString *v30; // [xsp+34h] [xbp-6Ch]\n  __int16 v31; // [xsp+3Ch] [xbp-64h]\n  __int64 v32; // [xsp+3Eh] [xbp-62h]\n  __int16 v33; // [xsp+46h] [xbp-5Ah]\n  __CFString *v34; // [xsp+48h] [xbp-58h]\n  __int64 v35; // [xsp+58h] [xbp-48h]\n\n  v6 = a5; /*0x1a6161218*/\n  v35 = *MEMORY[0x1E5E8C7D0]; /*0x1a6161230*/\n  v8 = MEMORY[0x1A8222C44](a1: self, a2, a3); /*0x1a6161238*/\n  MEMORY[0x1A8222C50](); /*0x1a616123c*/\n  if ( self->_text == nullptr || ((v9 = sub_1A61C83A0(a1: v8)) & 1) == 0 )\n  {\n    self->_text = (NSString *)sub_1A61C4C20(a1: v8); /*0x1a616126c*/\n    v10 = MEMORY[0x1A8222BD8](); /*0x1a6161270*/\n    v11 = MEMORY[0x1A822259C](a1: v10); /*0x1a6161274*/\n    v5 = (_QWORD *)MEMORY[0x1A8222A64](a1: v11); /*0x1a616127c*/\n    v12 = MEMORY[0x1A8222D7C](a1: v5, a2: 1); /*0x1a6161284*/\n    if ( (_DWORD)v12 != 0 )\n    {\n      text = self->_text; /*0x1a616128c*/\n      v14 = MEMORY[0x1A8221F3C](a1: v6); /*0x1a6161294*/\n      v15 = MEMORY[0x1A8222A64](a1: v14); /*0x1a6161298*/\n      v16 = self->_state - 1; /*0x1a61612ac*/\n      if ( v16 > 2 ) /*0x1a61612b4*/\n        v17 = &stru_1E9ED9E88; /*0x1a61612c8*/\n      else\n        v17 = (__CFString *)qword_1E9ED1678[v16]; /*0x1a61612c0*/\n      v29 = 138412802; /*0x1a61612d8*/\n      v30 = text; /*0x1a61612dc*/\n      v31 = 2112; /*0x1a61612e4*/\n      v32 = v15; /*0x1a61612e8*/\n      v33 = 2114; /*0x1a61612f0*/\n      v34 = v17; /*0x1a61612f4*/\n      v18 = MEMORY[0x1A82228A8](\n              a1: &dword_1A60EE000,\n              a2: v5,\n              a3: 1,\n              a4: \"Changing call to action text: %@ (animated: %@, current state: %{public}@)\",\n              &v29,\n              32);\n      v12 = MEMORY[0x1A8222B90](a1: v18); /*0x1a616131c*/\n    }\n    MEMORY[0x1A8222B84](a1: v12); /*0x1a6161320*/\n    if ( v6 ) /*0x1a6161324*/\n    {\n      MEMORY[0x1A8222AC4](a1: &v29, a2: self); /*0x1a6161330*/\n      v27[0] = MEMORY[0x1E5E8C6D0]; /*0x1a616133c*/\n      v27[1] = 3221225472LL; /*0x1a6161350*/\n      v27[2] = sub_1A616146C; /*0x1a616135c*/\n      v27[3] = &unk_1E9ED1618; /*0x1a616135c*/\n      v5 = v27; /*0x1a6161360*/\n      v19 = MEMORY[0x1A8222A70](a1: &v28, a2: &v29); /*0x1a616136c*/\n      v27[4] = MEMORY[0x1A8222C50](a1: v19); /*0x1a6161374*/\n      v20 = MEMORY[0x1A8222C20](a1: v27); /*0x1a6161380*/\n      v21 = sub_1A61D0460(a1: self); /*0x1a6161388*/\n      if ( (unsigned __int64)(v21 - 1) < 2 ) /*0x1a6161394*/\n      {\n        v21 = sub_1A61C0A80(a1: self, a2: 0.4); /*0x1a61613d8*/\n      }\n      else if ( v21 != 0 ) /*0x1a6161398*/\n      {\n        if ( v21 == 3 ) /*0x1a61613a0*/\n          v21 = sub_1A61BDDE0(a1: self); /*0x1a61613ac*/\n      }\n      else\n      {\n        v21 = (*(__int64 (__fastcall **)(__int64))(v20 + 16))(a1: v20); /*0x1a61613e8*/\n      }\n      v22 = MEMORY[0x1A8222B78](a1: v21); /*0x1a61613ec*/\n      MEMORY[0x1A8222BD8](a1: v22); /*0x1a61613f4*/\n      MEMORY[0x1A8222A7C](a1: &v28); /*0x1a61613fc*/\n      v9 = MEMORY[0x1A8222A7C](a1: &v29); /*0x1a6161404*/\n    }\n    else\n    {\n      v9 = sub_1A61C1F60(a1: self); /*0x1a61613bc*/\n    }\n  }\n  v23 = MEMORY[0x1A8222B60](a1: v9); /*0x1a6161408*/\n  v24 = MEMORY[0x1A8222B48](a1: v23); /*0x1a616140c*/\n  if ( *MEMORY[0x1E5E8C7D0] != v35 ) /*0x1a6161424*/\n  {\n    v25 = MEMORY[0x1A8222860](a1: v24); /*0x1a6161448*/\n    MEMORY[0x1A8222A7C](a1: v5 + 5); /*0x1a6161450*/\n    MEMORY[0x1A8222A7C](a1: &v29); /*0x1a6161458*/\n    v26 = MEMORY[0x1A8222830](a1: v25); /*0x1a6161468*/\n    sub_1A616146C(a1: v26); /*0x1a6161469*/\n  }\n}",
+      "refs": [
+        {
+          "addr": "0x1a61c4c20",
+          "name": "sub_1A61C4C20"
+        },
+        {
+          "addr": "0x1e9ed9e88",
+          "name": "stru_1E9ED9E88"
+        },
+        {
+          "addr": "0x1e9ed1678",
+          "name": "qword_1E9ED1678"
+        },
+        {
+          "addr": "0x1a60ee000",
+          "name": "dword_1A60EE000"
+        },
+        {
+          "addr": "0x1a61913d0",
+          "name": "aChangingCallTo",
+          "string": "Changing call to action text: %@ (animated: %@, current state: %{public}@)"
+        },
+        {
+          "addr": "0x1a616146c",
+          "name": "sub_1A616146C"
+        },
+        {
+          "addr": "0x1e9ed1618",
+          "name": "unk_1E9ED1618"
+        },
+        {
+          "addr": "0x1a61d0460",
+          "name": "sub_1A61D0460"
+        },
+        {
+          "addr": "0x1a61c0a80",
+          "name": "sub_1A61C0A80"
+        },
+        {
+          "addr": "0x1a61bdde0",
+          "name": "sub_1A61BDDE0"
+        },
+        {
+          "addr": "0x1a61c1f60",
+          "name": "sub_1A61C1F60"
+        },
+        {
+          "addr": "0x1a61c83a0",
+          "name": "sub_1A61C83A0"
+        }
+      ]
+    },
+    "gradient_stop": {
+      "addr": "0x1a6162550",
+      "code": "void __cdecl sub_1A6162550(SBUICallToActionLabel *self, SEL a2, id a3, bool a4)\n{\n  _BOOL4 v4; // w20\n  __int64 v6; // x0\n  __int64 v7; // x21\n\n  v4 = a4; /*0x1a6162560*/\n  v6 = MEMORY[0x1A822259C](a1: self, a2, a3); /*0x1a6162568*/\n  v7 = MEMORY[0x1A8222A64](a1: v6); /*0x1a6162570*/\n  if ( (unsigned int)MEMORY[0x1A8222D7C](a1: v7, a2: 2) != 0 ) /*0x1a616257c*/\n    sub_1A6173974(a1: self, a2: v7); /*0x1a61625c4*/\n  MEMORY[0x1A8222B6C](); /*0x1a6162580*/\n  if ( v4 && sub_1A61D0460(a1: self) == 1 ) /*0x1a6162594*/\n  {\n    sub_1A61CEEE0(a1: self); /*0x1a61625a0*/\n    sub_1A61BEDE0(a1: self); /*0x1a61625a8*/\n  }\n}",
+      "refs": [
+        {
+          "addr": "0x1a6173974",
+          "name": "sub_1A6173974"
+        },
+        {
+          "addr": "0x1a61ceee0",
+          "name": "sub_1A61CEEE0"
+        },
+        {
+          "addr": "0x1a61bede0",
+          "name": "sub_1A61BEDE0"
+        },
+        {
+          "addr": "0x1a61d0460",
+          "name": "sub_1A61D0460"
+        }
+      ]
+    },
+    "timer": {
+      "addr": "0x1a6161ef0",
+      "code": "void __cdecl sub_1A6161EF0(SBUICallToActionLabel *self, SEL a2)\n{\n  __int64 v3; // x0\n  __int64 v4; // x20\n\n  v3 = MEMORY[0x1A822259C](a1: self, a2); /*0x1a6161f00*/\n  v4 = MEMORY[0x1A8222A64](a1: v3); /*0x1a6161f08*/\n  if ( (unsigned int)MEMORY[0x1A8222D7C](a1: v4, a2: 2) != 0 ) /*0x1a6161f14*/\n    sub_1A6173898(a1: self, a2: v4); /*0x1a6161f38*/\n  MEMORY[0x1A8222B60](); /*0x1a6161f18*/\n  sub_1A61BDDC0(a1: self); /*0x1a6161f20*/\n}",
+      "refs": [
+        {
+          "addr": "0x1a6173898",
+          "name": "sub_1A6173898"
+        },
+        {
+          "addr": "0x1a61bddc0",
+          "name": "sub_1A61BDDC0"
+        }
+      ]
+    },
+    "fade_block": {
+      "addr": "0x1a61622b0",
+      "code": "__int64 __fastcall sub_1A61622B0(__int64 a1)\n{\n  double v1; // d0\n\n  v1 = 1.0; /*0x1a61622c8*/\n  if ( *(_BYTE *)(a1 + 40) != 0 ) /*0x1a61622d0*/\n    v1 = 0.0; /*0x1a61622d0*/\n  return sub_1A61CC220(a1: *(_QWORD *)(*(_QWORD *)(a1 + 32) + 408LL), a2: v1);\n}",
+      "refs": [
+        {
+          "addr": "0x1a61cc220",
+          "name": "sub_1A61CC220"
+        }
+      ]
+    },
+    "fade_finish": {
+      "addr": "0x1a61622dc",
+      "code": "__int64 __fastcall sub_1A61622DC(__int64 a1)\n{\n  if ( *(_BYTE *)(a1 + 40) == 1 ) /*0x1a61622f4*/\n  {\n    sub_1A61CEEE0(a1: *(_QWORD *)(a1 + 32)); /*0x1a6162300*/\n    sub_1A61C0940(a1: *(_QWORD *)(a1 + 32)); /*0x1a616230c*/\n  }\n  return sub_1A61BEDE0(a1: *(_QWORD *)(a1 + 32));\n}",
+      "refs": [
+        {
+          "addr": "0x1a61ceee0",
+          "name": "sub_1A61CEEE0"
+        },
+        {
+          "addr": "0x1a61c0940",
+          "name": "sub_1A61C0940"
+        },
+        {
+          "addr": "0x1a61bede0",
+          "name": "sub_1A61BEDE0"
+        }
+      ]
+    },
+    "layout": {
+      "addr": "0x1a6160db0",
+      "code": "void __cdecl sub_1A6160DB0(SBUICallToActionLabel *self, SEL a2)\n{\n  double v3; // d9\n  double v4; // d1\n  double v5; // d10\n  double v6; // d2\n  double v7; // d11\n  double v8; // d3\n  double v9; // d12\n  double v10; // d8\n  double v11; // d13\n  double v12; // d2\n  double v13; // d9\n  double v14; // d3\n  double v15; // d2\n  _QWORD v16[2]; // [xsp+0h] [xbp-50h] BYREF\n\n  v16[0] = self; /*0x1a6160dd8*/\n  v16[1] = classRef_SBUICallToActionLabel; /*0x1a6160dd8*/\n  MEMORY[0x1A8222ADC](a1: v16, a2: 0x1FB459AF8uLL); /*0x1a6160de8*/\n  v3 = sub_1A61C3A80(a1: self); /*0x1a6160df4*/\n  v5 = v4; /*0x1a6160df8*/\n  v7 = v6; /*0x1a6160dfc*/\n  v9 = v8; /*0x1a6160e00*/\n  v10 = MEMORY[0x1A8222284](); /*0x1a6160e08*/\n  v11 = MEMORY[0x1A8222290](a1: v3, a2: v5, a3: v7, a4: v9); /*0x1a6160e20*/\n  sub_1A61CD660(a1: self->_label, a2: v3, a3: v5, a4: v7, a5: v9); /*0x1a6160e40*/\n  sub_1A61CC9C0(a1: self->_label, a2: v10, a3: v11); /*0x1a6160e50*/\n  sub_1A61C6340(a1: self->_label); /*0x1a6160e58*/\n  v13 = v12; /*0x1a6160e5c*/\n  sub_1A61C6340(a1: self->_label); /*0x1a6160e64*/\n  v15 = fmax(MEMORY[0x1A82229BC](a1: v13, a2: v14) * 2.0 + 32.0, 364.0); /*0x1a6160e8c*/\n  sub_1A61CC820(a1: self->_gradientLayer, a2: 0.0, a3: 0.0, a4: v15, a5: v15); /*0x1a6160ea8*/\n  sub_1A61CE500(a1: self->_gradientLayer, a2: v10, a3: v11 + 32.0); /*0x1a6160eb8*/\n}",
+      "refs": [
+        {
+          "addr": "0x1e9f09380",
+          "name": "classRef_SBUICallToActionLabel"
+        },
+        {
+          "addr": "0x1a61c3a80",
+          "name": "sub_1A61C3A80"
+        },
+        {
+          "addr": "0x1a61cd660",
+          "name": "sub_1A61CD660"
+        },
+        {
+          "addr": "0x1a61cc9c0",
+          "name": "sub_1A61CC9C0"
+        },
+        {
+          "addr": "0x1a61c6340",
+          "name": "sub_1A61C6340"
+        },
+        {
+          "addr": "0x1a61cc820",
+          "name": "sub_1A61CC820"
+        },
+        {
+          "addr": "0x1a61ce500",
+          "name": "sub_1A61CE500"
+        }
+      ]
+    }
+  },
+  "analysis_only": true,
+  "device_tests_performed": false,
+  "source_firmware": "iOS18.7.10 /22H374 arm64",
+  "selectors": {
+    "0x1d3194120": {
+      "selref": "0x1ee3f4e18",
+      "selector": "_animateView:toActive:withDispatchGroup:"
+    },
+    "0x1d3193da0": {
+      "selref": "0x1ee3f4d38",
+      "selector": "_animateCursiveForTimePassed"
+    },
+    "0x1d31aa1e0": {
+      "selref": "0x1ee3fa648",
+      "selector": "_isShowingModalTakeoverUI"
+    },
+    "0x1d32464e0": {
+      "selref": "0x1ee421708",
+      "selector": "setHidden:"
+    },
+    "0x1d319b580": {
+      "selref": "0x1ee3f6b30",
+      "selector": "_createDisplayLink"
+    },
+    "0x1d3193e80": {
+      "selref": "0x1ee3f4d70",
+      "selector": "_animateHomeButtonCallToActionToActive:withDispatchGroup:"
+    },
+    "0x1d3193e40": {
+      "selref": "0x1ee3f4d60",
+      "selector": "_animateHomeAffordanceCallToActionToActive:withDispatchGroup:"
+    },
+    "0x1d3193e60": {
+      "selref": "0x1ee3f4d68",
+      "selector": "_animateHomeAffordanceToActive:withDispatchGroup:"
+    },
+    "0x1d31b61c0": {
+      "selref": "0x1ee3fd640",
+      "selector": "_removeDisplayLink"
+    },
+    "0x1d3218160": {
+      "selref": "0x1ee415e28",
+      "selector": "layer"
+    },
+    "0x1d31b6800": {
+      "selref": "0x1ee3fd7d0",
+      "selector": "_removeResetAnimationForKeyPath:onLayer:"
+    },
+    "0x1d31b6520": {
+      "selref": "0x1ee3fd718",
+      "selector": "_removeNormalAnimationForKeyPath:onLayer:"
+    },
+    "0x1d31d6200": {
+      "selref": "0x1ee405650",
+      "selector": "animationWithKeyPath:"
+    },
+    "0x1d3249240": {
+      "selref": "0x1ee422260",
+      "selector": "setKeyTimes:"
+    },
+    "0x1d32229c0": {
+      "selref": "0x1ee418840",
+      "selector": "opacity"
+    },
+    "0x1d32219c0": {
+      "selref": "0x1ee418440",
+      "selector": "numberWithFloat:"
+    },
+    "0x1d31d8fe0": {
+      "selref": "0x1ee4061c8",
+      "selector": "arrayWithObjects:count:"
+    },
+    "0x1d3259800": {
+      "selref": "0x1ee4263d0",
+      "selector": "setValues:"
+    },
+    "0x1d323e460": {
+      "selref": "0x1ee41f6e8",
+      "selector": "setCalculationMode:"
+    },
+    "0x1d3243520": {
+      "selref": "0x1ee420b18",
+      "selector": "setDuration:"
+    },
+    "0x1d3241c60": {
+      "selref": "0x1ee4204e8",
+      "selector": "setDelegate:"
+    },
+    "0x1d3259720": {
+      "selref": "0x1ee426398",
+      "selector": "setValue:forKey:"
+    },
+    "0x1d32168a0": {
+      "selref": "0x1ee4157f8",
+      "selector": "keyPath"
+    },
+    "0x1d3263500": {
+      "selref": "0x1ee428b10",
+      "selector": "stringByAppendingFormat:"
+    },
+    "0x1d31d1840": {
+      "selref": "0x1ee4043e0",
+      "selector": "addAnimation:forKey:"
+    },
+    "0x1d324d1c0": {
+      "selref": "0x1ee423240",
+      "selector": "setOpacity:"
+    },
+    "0x1d31928a0": {
+      "selref": "0x1ee3f47f8",
+      "selector": "_addResetAnimationForKeyPath:onLayer:dispatchGroup:"
+    },
+    "0x1d31f4300": {
+      "selref": "0x1ee40ce90",
+      "selector": "fadeInImmediately:completion:"
+    },
+    "0x1d31f4420": {
+      "selref": "0x1ee40ced8",
+      "selector": "fadeOutWithDuration:completion:"
+    },
+    "0x1d323d9a0": {
+      "selref": "0x1ee41f438",
+      "selector": "setBeginTime:"
+    },
+    "0x1d32219a0": {
+      "selref": "0x1ee418438",
+      "selector": "numberWithDouble:"
+    },
+    "0x1d323ae20": {
+      "selref": "0x1ee41e958",
+      "selector": "setAdditive:"
+    },
+    "0x1d322a780": {
+      "selref": "0x1ee41a7b0",
+      "selector": "presentationLayer"
+    },
+    "0x1d326fac0": {
+      "selref": "0x1ee42bc80",
+      "selector": "valueForKeyPath:"
+    },
+    "0x1d31ef9a0": {
+      "selref": "0x1ee40bc38",
+      "selector": "doubleValue"
+    },
+    "0x1d31f77c0": {
+      "selref": "0x1ee40dbc0",
+      "selector": "functionWithName:"
+    },
+    "0x1d3257ae0": {
+      "selref": "0x1ee425c88",
+      "selector": "setTimingFunction:"
+    },
+    "0x1d32455e0": {
+      "selref": "0x1ee421348",
+      "selector": "setFromValue:"
+    },
+    "0x1d3258160": {
+      "selref": "0x1ee425e28",
+      "selector": "setToValue:"
+    },
+    "0x1d326faa0": {
+      "selref": "0x1ee42bc78",
+      "selector": "valueForKey:"
+    },
+    "0x1d322b880": {
+      "selref": "0x1ee41abf0",
+      "selector": "primaryColor"
+    },
+    "0x1d3257b00": {
+      "selref": "0x1ee425c90",
+      "selector": "setTintColor:"
+    },
+    "0x1d31dd720": {
+      "selref": "0x1ee407398",
+      "selector": "bs_setHitTestingDisabled:"
+    },
+    "0x1d3259ee0": {
+      "selref": "0x1ee426588",
+      "selector": "setVisible:animated:"
+    },
+    "0x1d31d33a0": {
+      "selref": "0x1ee404ab8",
+      "selector": "addSubview:"
+    },
+    "0x1d3219340": {
+      "selref": "0x1ee4162a0",
+      "selector": "length"
+    },
+    "0x1d3209460": {
+      "selref": "0x1ee4122e8",
+      "selector": "initWithString:"
+    },
+    "0x1d32634c0": {
+      "selref": "0x1ee428b00",
+      "selector": "string"
+    },
+    "0x1d31d1ae0": {
+      "selref": "0x1ee404488",
+      "selector": "addAttribute:value:range:"
+    },
+    "0x1d323cc60": {
+      "selref": "0x1ee41f0e8",
+      "selector": "setAttributedText:"
+    },
+    "0x1d3257840": {
+      "selref": "0x1ee425be0",
+      "selector": "setText:forLanguage:animated:"
+    },
+    "0x1d324c4e0": {
+      "selref": "0x1ee422f08",
+      "selector": "setNeedsLayout"
+    },
+    "0x1d3230260": {
+      "selref": "0x1ee41be68",
+      "selector": "removeAnimationForKey:"
+    },
+    "0x1d32116e0": {
+      "selref": "0x1ee414388",
+      "selector": "isInScreenOffMode"
+    },
+    "0x1d3270160": {
+      "selref": "0x1ee42be28",
+      "selector": "view"
+    },
+    "0x1d3272c60": {
+      "selref": "0x1ee42c8e8",
+      "selector": "window"
+    },
+    "0x1d3194bc0": {
+      "selref": "0x1ee3f50c0",
+      "selector": "_appearState"
+    },
+    "0x1d31c82c0": {
+      "selref": "0x1ee401e80",
+      "selector": "_updateDisplayedStrings"
+    },
+    "0x1d325b980": {
+      "selref": "0x1ee426c30",
+      "selector": "setupView"
+    },
+    "0x1d31d5880": {
+      "selref": "0x1ee4053f0",
+      "selector": "animateComponents:toActive:withCompletion:"
+    },
+    "0x1d31a60e0": {
+      "selref": "0x1ee3f9608",
+      "selector": "_incrementLocalizedStringsForNewCycle"
+    },
+    "0x1d322d9a0": {
+      "selref": "0x1ee41b438",
+      "selector": "rebuildAppearance"
+    },
+    "0x1d3193d80": {
+      "selref": "0x1ee3f4d30",
+      "selector": "_animateComponentsForNewCycle"
+    },
+    "0x1a61d0460": {
+      "selref": "0x1e9f06a28",
+      "selector": "state"
+    },
+    "0x1a61c0a80": {
+      "selref": "0x1e9f02bb0",
+      "selector": "_runFadeAnimationForFadingOut:duration:completion:"
+    },
+    "0x1a61bdde0": {
+      "selref": "0x1e9f02088",
+      "selector": "_addAnimationCompletionBlockIfNecessary:"
+    },
+    "0x1a61c0aa0": {
+      "selref": "0x1e9f02bb8",
+      "selector": "_runGradientAnimation:"
+    },
+    "0x1a61bf4c0": {
+      "selref": "0x1e9f02640",
+      "selector": "_invalidateGradientAnimationTimer"
+    },
+    "0x1a61cb240": {
+      "selref": "0x1e9f055a0",
+      "selector": "removeAnimationForKey:"
+    },
+    "0x1a61cf640": {
+      "selref": "0x1e9f066a0",
+      "selector": "setType:"
+    },
+    "0x1a61ceec0": {
+      "selref": "0x1e9f064c0",
+      "selector": "setStartPoint:"
+    },
+    "0x1a61cd400": {
+      "selref": "0x1e9f05e10",
+      "selector": "setEndPoint:"
+    },
+    "0x1a61d1d20": {
+      "selref": "0x1e9f07058",
+      "selector": "whiteColor"
+    },
+    "0x1a61bd440": {
+      "selref": "0x1e9f01e20",
+      "selector": "CGColor"
+    },
+    "0x1a61c4240": {
+      "selref": "0x1e9f039a0",
+      "selector": "clearColor"
+    },
+    "0x1a61c3360": {
+      "selref": "0x1e9f035e8",
+      "selector": "arrayWithObjects:count:"
+    },
+    "0x1a61ccb00": {
+      "selref": "0x1e9f05bd0",
+      "selector": "setColors:"
+    },
+    "0x1a61c0940": {
+      "selref": "0x1e9f02b60",
+      "selector": "_resetGradientAndLabelBefore:"
+    },
+    "0x1a61c89e0": {
+      "selref": "0x1e9f04b88",
+      "selector": "layer"
+    },
+    "0x1a61c2a20": {
+      "selref": "0x1e9f03398",
+      "selector": "addSublayer:"
+    },
+    "0x1a61cd720": {
+      "selref": "0x1e9f05ed8",
+      "selector": "setGradientLayer:"
+    },
+    "0x1a61c88e0": {
+      "selref": "0x1e9f04b48",
+      "selector": "label"
+    },
+    "0x1a61cdf60": {
+      "selref": "0x1e9f060e8",
+      "selector": "setMask:"
+    },
+    "0x1a61bddc0": {
+      "selref": "0x1e9f02080",
+      "selector": "_actuallyRunGradientAnimation"
+    },
+    "0x1a61c2f80": {
+      "selref": "0x1e9f034f0",
+      "selector": "animationTimer"
+    },
+    "0x1a61cbce0": {
+      "selref": "0x1e9f05848",
+      "selector": "scheduledTimerWithTimeInterval:target:selector:userInfo:repeats:"
+    },
+    "0x1a61cc340": {
+      "selref": "0x1e9f059e0",
+      "selector": "setAnimationTimer:"
+    },
+    "0x1a61c2fa0": {
+      "selref": "0x1e9f034f8",
+      "selector": "animationWithKeyPath:"
+    },
+    "0x1a61cd6a0": {
+      "selref": "0x1e9f05eb8",
+      "selector": "setFromValue:"
+    },
+    "0x1a61cf4e0": {
+      "selref": "0x1e9f06648",
+      "selector": "setToValue:"
+    },
+    "0x1a61cd240": {
+      "selref": "0x1e9f05da0",
+      "selector": "setDuration:"
+    },
+    "0x1a61c63a0": {
+      "selref": "0x1e9f041f8",
+      "selector": "functionWithControlPoints::::"
+    },
+    "0x1a61cf400": {
+      "selref": "0x1e9f06610",
+      "selector": "setTimingFunction:"
+    },
+    "0x1a61cd580": {
+      "selref": "0x1e9f05e70",
+      "selector": "setFillMode:"
+    },
+    "0x1a61c2ec0": {
+      "selref": "0x1e9f034c0",
+      "selector": "animation"
+    },
+    "0x1a61cc360": {
+      "selref": "0x1e9f059e8",
+      "selector": "setAnimations:"
+    },
+    "0x1a61ccfa0": {
+      "selref": "0x1e9f05cf8",
+      "selector": "setDelegate:"
+    },
+    "0x1a61cb200": {
+      "selref": "0x1e9f05590",
+      "selector": "removeAllAnimations"
+    },
+    "0x1a61c2780": {
+      "selref": "0x1e9f032f0",
+      "selector": "addAnimation:forKey:"
+    },
+    "0x1a61ceee0": {
+      "selref": "0x1e9f064c8",
+      "selector": "setState:"
+    },
+    "0x1a61c2e00": {
+      "selref": "0x1e9f03490",
+      "selector": "animateWithDuration:delay:options:animations:completion:"
+    },
+    "0x1a61c3780": {
+      "selref": "0x1e9f036f0",
+      "selector": "begin"
+    },
+    "0x1a61cd0a0": {
+      "selref": "0x1e9f05d38",
+      "selector": "setDisableActions:"
+    },
+    "0x1a61cc220": {
+      "selref": "0x1e9f05998",
+      "selector": "setAlpha:"
+    },
+    "0x1a61cdf00": {
+      "selref": "0x1e9f060d0",
+      "selector": "setLocations:"
+    },
+    "0x1a61cf560": {
+      "selref": "0x1e9f06668",
+      "selector": "setTransform:"
+    },
+    "0x1a61c4440": {
+      "selref": "0x1e9f03a20",
+      "selector": "commit"
+    },
+    "0x1a61c7bc0": {
+      "selref": "0x1e9f04800",
+      "selector": "initWithString:"
+    },
+    "0x1a61d0680": {
+      "selref": "0x1e9f06ab0",
+      "selector": "string"
+    },
+    "0x1a61c8bc0": {
+      "selref": "0x1e9f04c00",
+      "selector": "length"
+    },
+    "0x1a61c27a0": {
+      "selref": "0x1e9f032f8",
+      "selector": "addAttribute:value:range:"
+    },
+    "0x1a61cc420": {
+      "selref": "0x1e9f05a18",
+      "selector": "setAttributedText:"
+    },
+    "0x1a61ce220": {
+      "selref": "0x1e9f06198",
+      "selector": "setNumberOfLines:"
+    },
+    "0x1a61c4c20": {
+      "selref": "0x1e9f03c18",
+      "selector": "copy"
+    },
+    "0x1a61c1f60": {
+      "selref": "0x1e9f030e8",
+      "selector": "_updateLabelTextWithLanguage:"
+    },
+    "0x1a61c83a0": {
+      "selref": "0x1e9f049f8",
+      "selector": "isEqualToString:"
+    },
+    "0x1a61bede0": {
+      "selref": "0x1e9f02488",
+      "selector": "_executePostAnimationCompletionBlocks"
+    },
+    "0x1a61c3a80": {
+      "selref": "0x1e9f037b0",
+      "selector": "bounds"
+    },
+    "0x1a61cd660": {
+      "selref": "0x1e9f05ea8",
+      "selector": "setFrame:"
+    },
+    "0x1a61cc9c0": {
+      "selref": "0x1e9f05b80",
+      "selector": "setCenter:"
+    },
+    "0x1a61c6340": {
+      "selref": "0x1e9f041e0",
+      "selector": "frame"
+    },
+    "0x1a61cc820": {
+      "selref": "0x1e9f05b18",
+      "selector": "setBounds:"
+    },
+    "0x1a61ce500": {
+      "selref": "0x1e9f06250",
+      "selector": "setPosition:"
+    }
+  },
+  "cfstrings": {
+    "0x1ee1a3a90": "SBDashBoardSetupNormalAnimation",
+    "0x1ee1a3ab0": "SBDashBoardSetupResetAnimation",
+    "0x1ee1a3ad0": "SBDashBoardSetupDispatchGroup",
+    "0x1e9ed7b68": "transform.scale.xy",
+    "0x1e9ed65e8": "locations",
+    "0x1e9ed9e88": "hidden",
+    "0x1ee1582d0": "opacity",
+    "0x1ee16e530": "position.y",
+    "0x1ee1a3bb0": "linear",
+    "0x1ee1a3bd0": "cubic"
+  },
+  "constant_arrays": {
+    "0x1ee4400c8": [
+      0.03,
+      0.26,
+      0.75,
+      0.98
+    ],
+    "0x1ee4400e0": [
+      0.0,
+      0.2,
+      0.5,
+      0.72,
+      1.0
+    ],
+    "0x1ee4400f8": [
+      0.0,
+      0.8,
+      1.0,
+      0.0,
+      0.0
+    ],
+    "0x1ee440110": [
+      0.0,
+      0.065,
+      0.16,
+      0.6,
+      1.0
+    ],
+    "0x1ee440128": [
+      0.0,
+      0.04,
+      0.16,
+      0.6,
+      1.0
+    ],
+    "0x1e9f09780": [
+      0.0,
+      1.0
+    ],
+    "0x1e9f09798": [
+      0.5,
+      0.5
+    ]
+  },
+  "label_class": {
+    "class": "0x1f2afa718",
+    "name": "SBUICallToActionLabel",
+    "ro": "0x1e9efc828",
+    "methods": [
+      {
+        "name": "sizeToFit",
+        "imp": "0x1a6160ed8"
+      },
+      {
+        "name": "description",
+        "imp": "0x1a61614b4"
+      },
+      {
+        "name": "didMoveToSuperview",
+        "imp": "0x1a6160d60"
+      },
+      {
+        "name": "gradientLayer",
+        "imp": "0x1a6162610"
+      },
+      {
+        "name": "initWithFrame:",
+        "imp": "0x1a6160c88"
+      },
+      {
+        "name": "setText:",
+        "imp": "0x1a61611f0"
+      },
+      {
+        "name": "state",
+        "imp": "0x1a6162634"
+      },
+      {
+        "name": "baselineOffset",
+        "imp": "0x1a6160f9c"
+      },
+      {
+        "name": "animationDidStop:finished:",
+        "imp": "0x1a6162550"
+      },
+      {
+        "name": "text",
+        "imp": "0x1a61625dc"
+      },
+      {
+        "name": "setLegibilitySettings:",
+        "imp": "0x1a6160f20"
+      },
+      {
+        "name": "sizeThatFits:",
+        "imp": "0x1a6160f10"
+      },
+      {
+        "name": ".cxx_destruct",
+        "imp": "0x1a616268c"
+      },
+      {
+        "name": "animationDidStart:",
+        "imp": "0x1a6162548"
+      },
+      {
+        "name": "label",
+        "imp": "0x1a61625ec"
+      },
+      {
+        "name": "layoutSubviews",
+        "imp": "0x1a6160db0"
+      },
+      {
+        "name": "setState:",
+        "imp": "0x1a6161540"
+      },
+      {
+        "name": "legibilitySettings",
+        "imp": "0x1a61625cc"
+      },
+      {
+        "name": "_preferredTextSizeChanged:",
+        "imp": "0x1a6161d50"
+      },
+      {
+        "name": "setLabel:",
+        "imp": "0x1a61625fc"
+      },
+      {
+        "name": "fadeOut",
+        "imp": "0x1a61610ac"
+      },
+      {
+        "name": "fadeIn",
+        "imp": "0x1a6160fd8"
+      },
+      {
+        "name": "setGradientLayer:",
+        "imp": "0x1a6162620"
+      },
+      {
+        "name": "setVisible:animated:",
+        "imp": "0x1a6161168"
+      },
+      {
+        "name": "animationTimer",
+        "imp": "0x1a6162644"
+      },
+      {
+        "name": "setAnimationTimer:",
+        "imp": "0x1a6162654"
+      },
+      {
+        "name": "_createLabel",
+        "imp": "0x1a6161710"
+      },
+      {
+        "name": "_timerTriggered",
+        "imp": "0x1a6161ef0"
+      },
+      {
+        "name": "fadeOutWithDuration:completion:",
+        "imp": "0x1a61610bc"
+      },
+      {
+        "name": "_actuallyRunGradientAnimation",
+        "imp": "0x1a6161f40"
+      },
+      {
+        "name": "_addAnimationCompletionBlockIfNecessary:",
+        "imp": "0x1a61623e4"
+      },
+      {
+        "name": "_callToActionFont",
+        "imp": "0x1a6161808"
+      },
+      {
+        "name": "_createGradientLayer",
+        "imp": "0x1a6161bdc"
+      },
+      {
+        "name": "_executePostAnimationCompletionBlocks",
+        "imp": "0x1a6162440"
+      },
+      {
+        "name": "_fontWithTextStyle:symbolicTraits:withMaximumFontSizeCategory:",
+        "imp": "0x1a6161ad4"
+      },
+      {
+        "name": "_invalidateGradientAnimationTimer",
+        "imp": "0x1a6161e7c"
+      },
+      {
+        "name": "_resetGradientAndLabelBefore:",
+        "imp": "0x1a6162320"
+      },
+      {
+        "name": "_runFadeAnimationForFadingOut:duration:completion:",
+        "imp": "0x1a61621ac"
+      },
+      {
+        "name": "_runGradientAnimation:",
+        "imp": "0x1a6161da4"
+      },
+      {
+        "name": "_updateLabelTextWithLanguage:",
+        "imp": "0x1a6161628"
+      },
+      {
+        "name": "animationCompletionBlocks",
+        "imp": "0x1a6162668"
+      },
+      {
+        "name": "cancelFadeInTimerIfNecessary",
+        "imp": "0x1a6161164"
+      },
+      {
+        "name": "fadeInImmediately:",
+        "imp": "0x1a6160fe4"
+      },
+      {
+        "name": "fadeInImmediately:completion:",
+        "imp": "0x1a6160fec"
+      },
+      {
+        "name": "setAnimationCompletionBlocks:",
+        "imp": "0x1a6162678"
+      },
+      {
+        "name": "setText:forLanguage:animated:",
+        "imp": "0x1a61611fc"
+      }
+    ],
+    "method_flags": "0xc000000f"
+  },
+  "confirmed_parameters": {
+    "greeting_opacity": {
+      "keyTimes": [
+        0.03,
+        0.26,
+        0.75,
+        0.98
+      ],
+      "values": [
+        "current layer opacity",
+        1,
+        1,
+        0
+      ],
+      "calculationMode": "linear",
+      "duration": "SBDashBoardSetupView._customDelayDuration; cursive branch max(path duration+1,4)",
+      "model_opacity_after_adding": 0
+    },
+    "home_button_prompt": {
+      "label": "SBUICallToActionLabel",
+      "owner": "SpringBoardUIServices",
+      "normal_entry": "fadeInImmediately:YES completion:",
+      "gradient_type": "radial",
+      "gradient_scale": [
+        0,
+        1
+      ],
+      "gradient_duration_s": 0.6,
+      "gradient_locations_from": [
+        0.0,
+        1.0
+      ],
+      "gradient_locations_to": [
+        0.5,
+        0.5
+      ],
+      "gradient_timing_control_points": [
+        0.05,
+        0,
+        0.15,
+        1
+      ],
+      "gradient_is_label_layer_mask": true,
+      "fadeout_start": "D-1 seconds",
+      "fadeout_duration_s": 1,
+      "delayed_non_immediate_route_s": 4,
+      "delayed_route_is_not_the_normal_immediate_entry": true
+    },
+    "home_affordance_prompt": {
+      "opacity_keyTimes": [
+        0.0,
+        0.2,
+        0.5,
+        0.72,
+        1.0
+      ],
+      "opacity_values": [
+        0.0,
+        0.8,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "position_y_keyTimes": [
+        0.0,
+        0.065,
+        0.16,
+        0.6,
+        1.0
+      ],
+      "position_y_additive_values": [
+        0,
+        -16,
+        -30,
+        -33,
+        -33
+      ],
+      "beginTime": "CACurrentMediaTime()+1",
+      "duration": "D"
+    },
+    "home_affordance_indicator": {
+      "position_y_keyTimes": [
+        0.0,
+        0.04,
+        0.16,
+        0.6,
+        1.0
+      ],
+      "position_y_additive_values": [
+        0,
+        -5,
+        -15,
+        -2,
+        0
+      ],
+      "beginTime": "CACurrentMediaTime()+1",
+      "duration": "D"
+    },
+    "reset_animation_duration_s": 0.25
+  },
+  "code_verification": [
+    {
+      "name": "greeting_opacity",
+      "address": "0x1d2bf2390",
+      "bytes": 528,
+      "matches_original": true,
+      "sha256": "2aff740b5511d480c983101a3a7082fc3dd7be0b2c073739828b494cd1506fb2",
+      "disassembly": "\n/tmp/mi6-welcome-followup/SpringBoard.inspect.macho:\tfile format mach-o arm64\n\nDisassembly of section __TEXT,__text:\n\n00000001d24a5c10 <__text>:\n1d2bf2390:     \tsub\tsp, sp, #0x70\n1d2bf2394:     \tstp\tx24, x23, [sp, #0x30]\n1d2bf2398:     \tstp\tx22, x21, [sp, #0x40]\n1d2bf239c:     \tstp\tx20, x19, [sp, #0x50]\n1d2bf23a0:     \tstp\tx29, x30, [sp, #0x60]\n1d2bf23a4:     \tadd\tx29, sp, #0x60\n1d2bf23a8:     \tmov\tx22, x3\n1d2bf23ac:     \tmov\tx20, x2\n1d2bf23b0:     \tmov\tx21, x0\n1d2bf23b4:     \tadrp\tx8, 0x1e5e8c000\n1d2bf23b8:     \tldr\tx8, [x8, #0x7d0]\n1d2bf23bc:     \tldr\tx8, [x8]\n1d2bf23c0:     \tstr\tx8, [sp, #0x28]\n1d2bf23c4:     \tbl\t0x1d39b6328\n1d2bf23c8:     \tmov\tx19, x0\n1d2bf23cc:     \tmov\tx0, x20\n1d2bf23d0:     \tbl\t0x1d3218160\n1d2bf23d4:     \tbl\t0x1d39b6070\n1d2bf23d8:     \tmov\tx20, x0\n1d2bf23dc:     \tcbz\tx0, 0x1d2bf2564 <__text+0x74c954>\n1d2bf23e0:     \tcbz\tw22, 0x1d2bf2540 <__text+0x74c930>\n1d2bf23e4:     \tmov\tx0, x19\n1d2bf23e8:     \tbl\t0x1d2dab7e8\n1d2bf23ec:     \tadrp\tx22, 0x1ee158000\n1d2bf23f0:     \tadd\tx22, x22, #0x2d0\n1d2bf23f4:     \tmov\tx0, x21\n1d2bf23f8:     \tmov\tx2, x22\n1d2bf23fc:     \tmov\tx3, x20\n1d2bf2400:     \tbl\t0x1d31b6800\n1d2bf2404:     \tmov\tx0, x21\n1d2bf2408:     \tmov\tx2, x22\n1d2bf240c:     \tmov\tx3, x20\n1d2bf2410:     \tbl\t0x1d31b6520\n1d2bf2414:     \tadrp\tx8, 0x1e5d63000\n1d2bf2418:     \tldr\tx0, [x8, #0x150]\n1d2bf241c:     \tmov\tx2, x22\n1d2bf2420:     \tbl\t0x1d31d6200\n1d2bf2424:     \tbl\t0x1d39b6070\n1d2bf2428:     \tmov\tx22, x0\n1d2bf242c:     \tadrp\tx2, 0x1ee440000\n1d2bf2430:     \tadd\tx2, x2, #0xc8\n1d2bf2434:     \tbl\t0x1d3249240\n1d2bf2438:     \tadrp\tx8, 0x1e5d42000\n1d2bf243c:     \tldr\tx23, [x8, #0x908]\n1d2bf2440:     \tmov\tx0, x20\n1d2bf2444:     \tbl\t0x1d32229c0\n1d2bf2448:     \tmov\tx0, x23\n1d2bf244c:     \tbl\t0x1d32219c0\n1d2bf2450:     \tbl\t0x1d39b6070\n1d2bf2454:     \tmov\tx23, x0\n1d2bf2458:     \tadrp\tx8, 0x1ee440000\n1d2bf245c:     \tadd\tx8, x8, #0x858\n1d2bf2460:     \tstp\tx0, x8, [sp, #0x8]\n1d2bf2464:     \tadrp\tx9, 0x1ee440000\n1d2bf2468:     \tadd\tx9, x9, #0x868\n1d2bf246c:     \tstp\tx8, x9, [sp, #0x18]\n1d2bf2470:     \tadrp\tx8, 0x1e5d27000\n1d2bf2474:     \tldr\tx0, [x8, #0x3a8]\n1d2bf2478:     \tadd\tx2, sp, #0x8\n1d2bf247c:     \tmov\tw3, #0x4                ; =4\n1d2bf2480:     \tbl\t0x1d31d8fe0\n1d2bf2484:     \tbl\t0x1d39b6070\n1d2bf2488:     \tmov\tx24, x0\n1d2bf248c:     \tmov\tx0, x22\n1d2bf2490:     \tmov\tx2, x24\n1d2bf2494:     \tbl\t0x1d3259800\n1d2bf2498:     \tbl\t0x1d39b61d8\n1d2bf249c:     \tbl\t0x1d39b61cc\n1d2bf24a0:     \tadrp\tx2, 0x1ee1a3000\n1d2bf24a4:     \tadd\tx2, x2, #0xbb0\n1d2bf24a8:     \tmov\tx0, x22\n1d2bf24ac:     \tbl\t0x1d323e460\n1d2bf24b0:     \tadrp\tx8, 0x1f60ea000\n1d2bf24b4:     \tldrsw\tx8, [x8, #0x2bc]\n1d2bf24b8:     \tldr\td0, [x21, x8]\n1d2bf24bc:     \tmov\tx0, x22\n1d2bf24c0:     \tbl\t0x1d3243520\n1d2bf24c4:     \tmov\tx0, x22\n1d2bf24c8:     \tmov\tx2, x21\n1d2bf24cc:     \tbl\t0x1d3241c60\n1d2bf24d0:     \tadrp\tx3, 0x1ee1a3000\n1d2bf24d4:     \tadd\tx3, x3, #0xad0\n1d2bf24d8:     \tmov\tx0, x22\n1d2bf24dc:     \tmov\tx2, x19\n1d2bf24e0:     \tbl\t0x1d3259720\n1d2bf24e4:     \tmov\tx0, x22\n1d2bf24e8:     \tbl\t0x1d32168a0\n1d2bf24ec:     \tbl\t0x1d39b6070\n1d2bf24f0:     \tmov\tx21, x0\n1d2bf24f4:     \tstr\tx0, [sp]\n1d2bf24f8:     \tadrp\tx0, 0x1ee1a3000\n1d2bf24fc:     \tadd\tx0, x0, #0xa90\n1d2bf2500:     \tadrp\tx2, 0x1ee1a3000\n1d2bf2504:     \tadd\tx2, x2, #0xbf0\n1d2bf2508:     \tbl\t0x1d3263500\n1d2bf250c:     \tbl\t0x1d39b6070\n1d2bf2510:     \tmov\tx23, x0\n1d2bf2514:     \tmov\tx0, x20\n1d2bf2518:     \tmov\tx2, x22\n1d2bf251c:     \tmov\tx3, x23\n1d2bf2520:     \tbl\t0x1d31d1840\n1d2bf2524:     \tbl\t0x1d39b61cc\n1d2bf2528:     \tbl\t0x1d39b61b4\n1d2bf252c:     \tfmov\ts0, wzr\n1d2bf2530:     \tmov\tx0, x20\n1d2bf2534:     \tbl\t0x1d324d1c0\n1d2bf2538:     \tbl\t0x1d39b61c0\n1d2bf253c:     \tb\t0x1d2bf2564 <__text+0x74c954>\n1d2bf2540:     \tadrp\tx2, 0x1ee158000\n1d2bf2544:     \tadd\tx2, x2, #0x2d0\n1d2bf2548:     \tmov\tx0, x21\n1d2bf254c:     \tmov\tx3, x20\n1d2bf2550:     \tmov\tx4, x19\n1d2bf2554:     \tbl\t0x1d31928a0\n1d2bf2558:     \tfmov\ts0, #1.00000000\n1d2bf255c:     \tmov\tx0, x20\n1d2bf2560:     \tbl\t0x1d324d1c0\n1d2bf2564:     \tbl\t0x1d39b61a8\n1d2bf2568:     \tbl\t0x1d39b6190\n1d2bf256c:     \tldr\tx8, [sp, #0x28]\n1d2bf2570:     \tadrp\tx9, 0x1e5e8c000\n1d2bf2574:     \tldr\tx9, [x9, #0x7d0]\n1d2bf2578:     \tldr\tx9, [x9]\n1d2bf257c:     \tcmp\tx9, x8\n1d2bf2580:     \tb.ne\t0x1d2bf259c <__text+0x74c98c>\n1d2bf2584:     \tldp\tx29, x30, [sp, #0x60]\n1d2bf2588:     \tldp\tx20, x19, [sp, #0x50]\n1d2bf258c:     \tldp\tx22, x21, [sp, #0x40]\n1d2bf2590:     \tldp\tx24, x23, [sp, #0x30]\n1d2bf2594:     \tadd\tsp, sp, #0x70\n1d2bf2598:     \tret\n1d2bf259c:     \tbl\t0x1d39b5a94\n"
+    },
+    {
+      "name": "home_prompt",
+      "address": "0x1d2bf25a0",
+      "bytes": 624,
+      "matches_original": true,
+      "sha256": "e94014998f88e76b0b96f53ac1034a11e3445b913dc475e996fcd20ff8cfcca4",
+      "disassembly": "\n/tmp/mi6-welcome-followup/SpringBoard.inspect.macho:\tfile format mach-o arm64\n\nDisassembly of section __TEXT,__text:\n\n00000001d24a5c10 <__text>:\n1d2bf25a0:     \tsub\tsp, sp, #0x120\n1d2bf25a4:     \tstp\td9, d8, [sp, #0xb0]\n1d2bf25a8:     \tstp\tx28, x27, [sp, #0xc0]\n1d2bf25ac:     \tstp\tx26, x25, [sp, #0xd0]\n1d2bf25b0:     \tstp\tx24, x23, [sp, #0xe0]\n1d2bf25b4:     \tstp\tx22, x21, [sp, #0xf0]\n1d2bf25b8:     \tstp\tx20, x19, [sp, #0x100]\n1d2bf25bc:     \tstp\tx29, x30, [sp, #0x110]\n1d2bf25c0:     \tadd\tx29, sp, #0x110\n1d2bf25c4:     \tmov\tx21, x2\n1d2bf25c8:     \tmov\tx20, x0\n1d2bf25cc:     \tbl\t0x1d39b631c\n1d2bf25d0:     \tmov\tx19, x0\n1d2bf25d4:     \tadrp\tx8, 0x1f60ea000\n1d2bf25d8:     \tldrsw\tx22, [x8, #0x2fc]\n1d2bf25dc:     \tldr\tx8, [x20, x22]\n1d2bf25e0:     \tcbz\tx8, 0x1d2bf27e8 <__text+0x74cbd8>\n1d2bf25e4:     \tcbz\tw21, 0x1d2bf2768 <__text+0x74cb58>\n1d2bf25e8:     \tmov\tx0, x19\n1d2bf25ec:     \tbl\t0x1d2dab7e8\n1d2bf25f0:     \tmov\tx0, x19\n1d2bf25f4:     \tbl\t0x1d2dab7e8\n1d2bf25f8:     \tldr\tx22, [x20, x22]\n1d2bf25fc:     \tadrp\tx24, 0x1e5e8c000\n1d2bf2600:     \tldr\tx24, [x24, #0x6d0]\n1d2bf2604:     \tstr\tx24, [sp, #0x88]\n1d2bf2608:     \tadrp\tx8, 0x1d2e57000\n1d2bf260c:     \tldr\td8, [x8, #0x5c8]\n1d2bf2610:     \tstr\td8, [sp, #0x90]\n1d2bf2614:     \tadrp\tx8, 0x1d2bf2000 <__text+0x74c3f0>\n1d2bf2618:     \tadd\tx8, x8, #0x810\n1d2bf261c:     \tadrp\tx25, 0x1ee11a000\n1d2bf2620:     \tadd\tx25, x25, #0x918\n1d2bf2624:     \tstp\tx8, x25, [sp, #0x98]\n1d2bf2628:     \tadd\tx8, sp, #0x88\n1d2bf262c:     \tadd\tx23, x8, #0x20\n1d2bf2630:     \tbl\t0x1d39b6298\n1d2bf2634:     \tmov\tx21, x0\n1d2bf2638:     \tstr\tx0, [sp, #0xa8]\n1d2bf263c:     \tadd\tx3, sp, #0x88\n1d2bf2640:     \tmov\tx0, x22\n1d2bf2644:     \tmov\tw2, #0x1                ; =1\n1d2bf2648:     \tbl\t0x1d31f4300\n1d2bf264c:     \tadd\tx0, sp, #0x80\n1d2bf2650:     \tmov\tx1, x20\n1d2bf2654:     \tbl\t0x1d39b60f4\n1d2bf2658:     \tadrp\tx0, 0x1e5e8b000\n1d2bf265c:     \tldr\tx0, [x0, #0xa30]\n1d2bf2660:     \tadrp\tx3, 0x1e5e8b000\n1d2bf2664:     \tldr\tx3, [x3, #0x998]\n1d2bf2668:     \tmov\tx1, #0x0                ; =0\n1d2bf266c:     \tmov\tx2, #0x0                ; =0\n1d2bf2670:     \tbl\t0x1d2dab8b4\n1d2bf2674:     \tadrp\tx8, 0x1f60ea000\n1d2bf2678:     \tldrsw\tx26, [x8, #0x2c0]\n1d2bf267c:     \tldr\tx8, [x20, x26]\n1d2bf2680:     \tstr\tx0, [x20, x26]\n1d2bf2684:     \tbl\t0x1d39b6220\n1d2bf2688:     \tadrp\tx8, 0x1f60ea000\n1d2bf268c:     \tldrsw\tx8, [x8, #0x2bc]\n1d2bf2690:     \tldr\td0, [x20, x8]\n1d2bf2694:     \tfmov\td1, #-1.00000000\n1d2bf2698:     \tfadd\td0, d0, d1\n1d2bf269c:     \tadrp\tx8, 0x1d2e57000\n1d2bf26a0:     \tldr\td1, [x8, #0x630]\n1d2bf26a4:     \tfmul\td0, d0, d1\n1d2bf26a8:     \tfcvtzs\tx1, d0\n1d2bf26ac:     \tmov\tx0, #0x0                ; =0\n1d2bf26b0:     \tbl\t0x1d2dab908\n1d2bf26b4:     \tmov\tx1, x0\n1d2bf26b8:     \tldr\tx0, [x20, x26]\n1d2bf26bc:     \tmov\tx2, #-0x1               ; =-1\n1d2bf26c0:     \tmov\tx3, #0x0                ; =0\n1d2bf26c4:     \tbl\t0x1d2dab8e4\n1d2bf26c8:     \tldr\tx22, [x20, x26]\n1d2bf26cc:     \tstr\tx24, [sp, #0x50]\n1d2bf26d0:     \tadrp\tx8, 0x1d2bf2000 <__text+0x74c3f0>\n1d2bf26d4:     \tadd\tx8, x8, #0x818\n1d2bf26d8:     \tstr\td8, [sp, #0x58]\n1d2bf26dc:     \tadrp\tx9, 0x1ee11b000\n1d2bf26e0:     \tadd\tx9, x9, #0xe08\n1d2bf26e4:     \tstp\tx8, x9, [sp, #0x60]\n1d2bf26e8:     \tadd\tx27, sp, #0x50\n1d2bf26ec:     \tadd\tx0, x27, #0x28\n1d2bf26f0:     \tadd\tx1, sp, #0x80\n1d2bf26f4:     \tbl\t0x1d39b6088\n1d2bf26f8:     \tbl\t0x1d39b62bc\n1d2bf26fc:     \tmov\tx21, x0\n1d2bf2700:     \tstr\tx0, [sp, #0x70]\n1d2bf2704:     \tadd\tx1, sp, #0x50\n1d2bf2708:     \tmov\tx0, x22\n1d2bf270c:     \tbl\t0x1d2dab8d8\n1d2bf2710:     \tldr\tx22, [x20, x26]\n1d2bf2714:     \tstr\tx24, [sp, #0x28]\n1d2bf2718:     \tstr\td8, [sp, #0x30]\n1d2bf271c:     \tadrp\tx8, 0x1d2bf2000 <__text+0x74c3f0>\n1d2bf2720:     \tadd\tx8, x8, #0x8d0\n1d2bf2724:     \tstp\tx8, x25, [sp, #0x38]\n1d2bf2728:     \tbl\t0x1d39b62bc\n1d2bf272c:     \tstr\tx0, [sp, #0x48]\n1d2bf2730:     \tadd\tx1, sp, #0x28\n1d2bf2734:     \tmov\tx0, x22\n1d2bf2738:     \tbl\t0x1d2dab8cc\n1d2bf273c:     \tldr\tx0, [x20, x26]\n1d2bf2740:     \tbl\t0x1d2dab878\n1d2bf2744:     \tldr\tx8, [sp, #0x48]\n1d2bf2748:     \tbl\t0x1d39b6220\n1d2bf274c:     \tldr\tx8, [sp, #0x70]\n1d2bf2750:     \tbl\t0x1d39b6220\n1d2bf2754:     \tadd\tx0, x27, #0x28\n1d2bf2758:     \tbl\t0x1d39b6094\n1d2bf275c:     \tadd\tx0, sp, #0x80\n1d2bf2760:     \tbl\t0x1d39b6094\n1d2bf2764:     \tb\t0x1d2bf27e0 <__text+0x74cbd0>\n1d2bf2768:     \tadrp\tx8, 0x1f60ea000\n1d2bf276c:     \tldrsw\tx21, [x8, #0x2c0]\n1d2bf2770:     \tldr\tx0, [x20, x21]\n1d2bf2774:     \tcbz\tx0, 0x1d2bf2788 <__text+0x74cb78>\n1d2bf2778:     \tbl\t0x1d2dab8a8\n1d2bf277c:     \tldr\tx8, [x20, x21]\n1d2bf2780:     \tstr\txzr, [x20, x21]\n1d2bf2784:     \tbl\t0x1d39b6220\n1d2bf2788:     \tmov\tx0, x19\n1d2bf278c:     \tbl\t0x1d2dab7e8\n1d2bf2790:     \tldr\tx20, [x20, x22]\n1d2bf2794:     \tadrp\tx8, 0x1e5e8c000\n1d2bf2798:     \tldr\tx8, [x8, #0x6d0]\n1d2bf279c:     \tstr\tx8, [sp]\n1d2bf27a0:     \tadrp\tx8, 0x1d2e57000\n1d2bf27a4:     \tldr\td0, [x8, #0x5c8]\n1d2bf27a8:     \tstr\td0, [sp, #0x8]\n1d2bf27ac:     \tadrp\tx8, 0x1d2bf2000 <__text+0x74c3f0>\n1d2bf27b0:     \tadd\tx8, x8, #0x8d8\n1d2bf27b4:     \tadrp\tx9, 0x1ee11a000\n1d2bf27b8:     \tadd\tx9, x9, #0x918\n1d2bf27bc:     \tstp\tx8, x9, [sp, #0x10]\n1d2bf27c0:     \tmov\tx8, sp\n1d2bf27c4:     \tadd\tx23, x8, #0x20\n1d2bf27c8:     \tbl\t0x1d39b6298\n1d2bf27cc:     \tstr\tx0, [sp, #0x20]\n1d2bf27d0:     \tfmov\td0, xzr\n1d2bf27d4:     \tmov\tx2, sp\n1d2bf27d8:     \tmov\tx0, x20\n1d2bf27dc:     \tbl\t0x1d31f4420\n1d2bf27e0:     \tldr\tx8, [x23]\n1d2bf27e4:     \tbl\t0x1d39b6220\n1d2bf27e8:     \tbl\t0x1d39b6190\n1d2bf27ec:     \tldp\tx29, x30, [sp, #0x110]\n1d2bf27f0:     \tldp\tx20, x19, [sp, #0x100]\n1d2bf27f4:     \tldp\tx22, x21, [sp, #0xf0]\n1d2bf27f8:     \tldp\tx24, x23, [sp, #0xe0]\n1d2bf27fc:     \tldp\tx26, x25, [sp, #0xd0]\n1d2bf2800:     \tldp\tx28, x27, [sp, #0xc0]\n1d2bf2804:     \tldp\td9, d8, [sp, #0xb0]\n1d2bf2808:     \tadd\tsp, sp, #0x120\n1d2bf280c:     \tret\n"
+    },
+    {
+      "name": "gradient_create",
+      "address": "0x1a6161bdc",
+      "bytes": 372,
+      "matches_original": true,
+      "sha256": "622c0612d3b2e98381d626d7c242649434baacfff7b01dd02f8b2a654e5ca401",
+      "disassembly": "\n/tmp/mi6-welcome-followup/SpringBoardUIServices.analysis.macho:\tfile format mach-o arm64\n\nDisassembly of section __TEXT,__text:\n\n00000001a60efc98 <__text>:\n1a6161bdc:     \tsub\tsp, sp, #0x60\n1a6161be0:     \tstp\tx24, x23, [sp, #0x20]\n1a6161be4:     \tstp\tx22, x21, [sp, #0x30]\n1a6161be8:     \tstp\tx20, x19, [sp, #0x40]\n1a6161bec:     \tstp\tx29, x30, [sp, #0x50]\n1a6161bf0:     \tadd\tx29, sp, #0x50\n1a6161bf4:     \tmov\tx20, x0\n1a6161bf8:     \tadrp\tx8, 0x1e5e8c000\n1a6161bfc:     \tldr\tx8, [x8, #0x7d0]\n1a6161c00:     \tldr\tx8, [x8]\n1a6161c04:     \tstr\tx8, [sp, #0x18]\n1a6161c08:     \tadrp\tx8, 0x1e5d63000\n1a6161c0c:     \tldr\tx0, [x8, #0x148]\n1a6161c10:     \tbl\t0x1a8222a28\n1a6161c14:     \tmov\tx19, x0\n1a6161c18:     \tadrp\tx8, 0x1e5d63000\n1a6161c1c:     \tldr\tx8, [x8, #0x908]\n1a6161c20:     \tldr\tx2, [x8]\n1a6161c24:     \tbl\t0x1a61cf640\n1a6161c28:     \tfmov\td0, #0.50000000\n1a6161c2c:     \tfmov\td1, #0.50000000\n1a6161c30:     \tmov\tx0, x19\n1a6161c34:     \tbl\t0x1a61ceec0\n1a6161c38:     \tfmov\td0, #1.00000000\n1a6161c3c:     \tfmov\td1, #1.00000000\n1a6161c40:     \tmov\tx0, x19\n1a6161c44:     \tbl\t0x1a61cd400\n1a6161c48:     \tadrp\tx22, 0x1e5e58000\n1a6161c4c:     \tldr\tx0, [x22, #0xc38]\n1a6161c50:     \tbl\t0x1a61d1d20\n1a6161c54:     \tbl\t0x1a8222a64\n1a6161c58:     \tmov\tx21, x0\n1a6161c5c:     \tbl\t0x1a8222bfc\n1a6161c60:     \tbl\t0x1a61bd440\n1a6161c64:     \tstr\tx0, [sp, #0x8]\n1a6161c68:     \tldr\tx0, [x22, #0xc38]\n1a6161c6c:     \tbl\t0x1a61c4240\n1a6161c70:     \tbl\t0x1a8222a64\n1a6161c74:     \tmov\tx22, x0\n1a6161c78:     \tbl\t0x1a8222bfc\n1a6161c7c:     \tbl\t0x1a61bd440\n1a6161c80:     \tstr\tx0, [sp, #0x10]\n1a6161c84:     \tadrp\tx8, 0x1e5d27000\n1a6161c88:     \tldr\tx0, [x8, #0x3a8]\n1a6161c8c:     \tadd\tx2, sp, #0x8\n1a6161c90:     \tmov\tw3, #0x2                ; =2\n1a6161c94:     \tbl\t0x1a61c3360\n1a6161c98:     \tbl\t0x1a8222a64\n1a6161c9c:     \tmov\tx23, x0\n1a6161ca0:     \tmov\tx0, x19\n1a6161ca4:     \tmov\tx2, x23\n1a6161ca8:     \tbl\t0x1a61ccb00\n1a6161cac:     \tbl\t0x1a8222b84\n1a6161cb0:     \tbl\t0x1a8222b78\n1a6161cb4:     \tbl\t0x1a8222b6c\n1a6161cb8:     \tmov\tx0, x20\n1a6161cbc:     \tmov\tw2, #0x1                ; =1\n1a6161cc0:     \tbl\t0x1a61c0940\n1a6161cc4:     \tmov\tx0, x20\n1a6161cc8:     \tbl\t0x1a61c89e0\n1a6161ccc:     \tbl\t0x1a8222a64\n1a6161cd0:     \tmov\tx21, x0\n1a6161cd4:     \tmov\tx2, x19\n1a6161cd8:     \tbl\t0x1a61c2a20\n1a6161cdc:     \tbl\t0x1a8222b6c\n1a6161ce0:     \tmov\tx0, x20\n1a6161ce4:     \tmov\tx2, x19\n1a6161ce8:     \tbl\t0x1a61cd720\n1a6161cec:     \tmov\tx0, x20\n1a6161cf0:     \tbl\t0x1a61c88e0\n1a6161cf4:     \tbl\t0x1a8222a64\n1a6161cf8:     \tmov\tx20, x0\n1a6161cfc:     \tbl\t0x1a61c89e0\n1a6161d00:     \tbl\t0x1a8222a64\n1a6161d04:     \tmov\tx21, x0\n1a6161d08:     \tmov\tx2, x19\n1a6161d0c:     \tbl\t0x1a61cdf60\n1a6161d10:     \tbl\t0x1a8222b6c\n1a6161d14:     \tbl\t0x1a8222b60\n1a6161d18:     \tbl\t0x1a8222b48\n1a6161d1c:     \tldr\tx8, [sp, #0x18]\n1a6161d20:     \tadrp\tx9, 0x1e5e8c000\n1a6161d24:     \tldr\tx9, [x9, #0x7d0]\n1a6161d28:     \tldr\tx9, [x9]\n1a6161d2c:     \tcmp\tx9, x8\n1a6161d30:     \tb.ne\t0x1a6161d4c <__text+0x720b4>\n1a6161d34:     \tldp\tx29, x30, [sp, #0x50]\n1a6161d38:     \tldp\tx20, x19, [sp, #0x40]\n1a6161d3c:     \tldp\tx22, x21, [sp, #0x30]\n1a6161d40:     \tldp\tx24, x23, [sp, #0x20]\n1a6161d44:     \tadd\tsp, sp, #0x60\n1a6161d48:     \tret\n1a6161d4c:     \tbl\t0x1a8222860\n"
+    },
+    {
+      "name": "gradient_animation",
+      "address": "0x1a6161f40",
+      "bytes": 620,
+      "matches_original": true,
+      "sha256": "5842107ba7d3baa3ea6e08f056f54a78e295866b7960aa1365326e5cedd2e9bd",
+      "disassembly": "\n/tmp/mi6-welcome-followup/SpringBoardUIServices.analysis.macho:\tfile format mach-o arm64\n\nDisassembly of section __TEXT,__text:\n\n00000001a60efc98 <__text>:\n1a6161f40:     \tsub\tsp, sp, #0x80\n1a6161f44:     \tstp\td11, d10, [sp, #0x20]\n1a6161f48:     \tstp\td9, d8, [sp, #0x30]\n1a6161f4c:     \tstp\tx24, x23, [sp, #0x40]\n1a6161f50:     \tstp\tx22, x21, [sp, #0x50]\n1a6161f54:     \tstp\tx20, x19, [sp, #0x60]\n1a6161f58:     \tstp\tx29, x30, [sp, #0x70]\n1a6161f5c:     \tadd\tx29, sp, #0x70\n1a6161f60:     \tmov\tx20, x0\n1a6161f64:     \tadrp\tx8, 0x1e5e8c000\n1a6161f68:     \tldr\tx8, [x8, #0x7d0]\n1a6161f6c:     \tldr\tx8, [x8]\n1a6161f70:     \tstr\tx8, [sp, #0x18]\n1a6161f74:     \tadrp\tx23, 0x1e5d63000\n1a6161f78:     \tldr\tx0, [x23, #0xc8]\n1a6161f7c:     \tadrp\tx2, 0x1e9ed7000\n1a6161f80:     \tadd\tx2, x2, #0xb68\n1a6161f84:     \tbl\t0x1a61c2fa0\n1a6161f88:     \tbl\t0x1a8222a64\n1a6161f8c:     \tmov\tx19, x0\n1a6161f90:     \tadrp\tx2, 0x1e9f09000\n1a6161f94:     \tadd\tx2, x2, #0x5c0\n1a6161f98:     \tbl\t0x1a61cd6a0\n1a6161f9c:     \tadrp\tx2, 0x1e9f09000\n1a6161fa0:     \tadd\tx2, x2, #0x5d0\n1a6161fa4:     \tmov\tx0, x19\n1a6161fa8:     \tbl\t0x1a61cf4e0\n1a6161fac:     \tadrp\tx8, 0x1a6182000\n1a6161fb0:     \tldr\td8, [x8, #0x430]\n1a6161fb4:     \tmov\tx0, x19\n1a6161fb8:     \tfmov\td0, d8\n1a6161fbc:     \tbl\t0x1a61cd240\n1a6161fc0:     \tadrp\tx24, 0x1e5d63000\n1a6161fc4:     \tldr\tx0, [x24, #0x188]\n1a6161fc8:     \tadrp\tx8, 0x1a6183000\n1a6161fcc:     \tldr\ts9, [x8, #0x310]\n1a6161fd0:     \tadrp\tx8, 0x1a6183000\n1a6161fd4:     \tldr\ts10, [x8, #0x314]\n1a6161fd8:     \tfmov\ts1, wzr\n1a6161fdc:     \tfmov\ts3, #1.00000000\n1a6161fe0:     \tfmov\ts0, s9\n1a6161fe4:     \tfmov\ts2, s10\n1a6161fe8:     \tbl\t0x1a61c63a0\n1a6161fec:     \tbl\t0x1a8222a64\n1a6161ff0:     \tmov\tx21, x0\n1a6161ff4:     \tmov\tx0, x19\n1a6161ff8:     \tmov\tx2, x21\n1a6161ffc:     \tbl\t0x1a61cf400\n1a6162000:     \tbl\t0x1a8222b6c\n1a6162004:     \tadrp\tx8, 0x1e5d63000\n1a6162008:     \tldr\tx8, [x8, #0x500]\n1a616200c:     \tldr\tx22, [x8]\n1a6162010:     \tmov\tx0, x19\n1a6162014:     \tmov\tx2, x22\n1a6162018:     \tbl\t0x1a61cd580\n1a616201c:     \tldr\tx0, [x23, #0xc8]\n1a6162020:     \tadrp\tx2, 0x1e9ed6000\n1a6162024:     \tadd\tx2, x2, #0x5e8\n1a6162028:     \tbl\t0x1a61c2fa0\n1a616202c:     \tbl\t0x1a8222a64\n1a6162030:     \tmov\tx21, x0\n1a6162034:     \tadrp\tx2, 0x1e9f09000\n1a6162038:     \tadd\tx2, x2, #0x780\n1a616203c:     \tbl\t0x1a61cd6a0\n1a6162040:     \tadrp\tx2, 0x1e9f09000\n1a6162044:     \tadd\tx2, x2, #0x798\n1a6162048:     \tmov\tx0, x21\n1a616204c:     \tbl\t0x1a61cf4e0\n1a6162050:     \tmov\tx0, x21\n1a6162054:     \tfmov\td0, d8\n1a6162058:     \tbl\t0x1a61cd240\n1a616205c:     \tldr\tx0, [x24, #0x188]\n1a6162060:     \tfmov\ts1, wzr\n1a6162064:     \tfmov\ts3, #1.00000000\n1a6162068:     \tfmov\ts0, s9\n1a616206c:     \tfmov\ts2, s10\n1a6162070:     \tbl\t0x1a61c63a0\n1a6162074:     \tbl\t0x1a8222a64\n1a6162078:     \tmov\tx23, x0\n1a616207c:     \tmov\tx0, x21\n1a6162080:     \tmov\tx2, x23\n1a6162084:     \tbl\t0x1a61cf400\n1a6162088:     \tbl\t0x1a8222b84\n1a616208c:     \tmov\tx0, x21\n1a6162090:     \tmov\tx2, x22\n1a6162094:     \tbl\t0x1a61cd580\n1a6162098:     \tadrp\tx8, 0x1e5d63000\n1a616209c:     \tldr\tx0, [x8, #0xb8]\n1a61620a0:     \tbl\t0x1a61c2ec0\n1a61620a4:     \tbl\t0x1a8222a64\n1a61620a8:     \tmov\tx23, x0\n1a61620ac:     \tfmov\td0, d8\n1a61620b0:     \tbl\t0x1a61cd240\n1a61620b4:     \tstp\tx19, x21, [sp, #0x8]\n1a61620b8:     \tadrp\tx8, 0x1e5d27000\n1a61620bc:     \tldr\tx0, [x8, #0x3a8]\n1a61620c0:     \tadd\tx2, sp, #0x8\n1a61620c4:     \tmov\tw3, #0x2                ; =2\n1a61620c8:     \tbl\t0x1a61c3360\n1a61620cc:     \tbl\t0x1a8222a64\n1a61620d0:     \tmov\tx24, x0\n1a61620d4:     \tmov\tx0, x23\n1a61620d8:     \tmov\tx2, x24\n1a61620dc:     \tbl\t0x1a61cc360\n1a61620e0:     \tbl\t0x1a8222b90\n1a61620e4:     \tmov\tx0, x23\n1a61620e8:     \tmov\tx2, x22\n1a61620ec:     \tbl\t0x1a61cd580\n1a61620f0:     \tmov\tx0, x23\n1a61620f4:     \tmov\tx2, x20\n1a61620f8:     \tbl\t0x1a61ccfa0\n1a61620fc:     \tadrp\tx8, 0x1f4a16000\n1a6162100:     \tldrsw\tx24, [x8, #0x1fc]\n1a6162104:     \tldr\tx0, [x20, x24]\n1a6162108:     \tbl\t0x1a61cb200\n1a616210c:     \tbl\t0x1a822259c\n1a6162110:     \tbl\t0x1a8222a64\n1a6162114:     \tmov\tx22, x0\n1a6162118:     \tmov\tw1, #0x2                ; =2\n1a616211c:     \tbl\t0x1a8222d7c\n1a6162120:     \tcbnz\tw0, 0x1a6162194 <__text+0x724fc>\n1a6162124:     \tbl\t0x1a8222b78\n1a6162128:     \tldr\tx0, [x20, x24]\n1a616212c:     \tadrp\tx3, 0x1e9ed9000\n1a6162130:     \tadd\tx3, x3, #0xe08\n1a6162134:     \tmov\tx2, x23\n1a6162138:     \tbl\t0x1a61c2780\n1a616213c:     \tmov\tx0, x20\n1a6162140:     \tmov\tw2, #0x0                ; =0\n1a6162144:     \tbl\t0x1a61c0940\n1a6162148:     \tmov\tx0, x20\n1a616214c:     \tbl\t0x1a61bf4c0\n1a6162150:     \tbl\t0x1a8222b84\n1a6162154:     \tbl\t0x1a8222b6c\n1a6162158:     \tbl\t0x1a8222b48\n1a616215c:     \tldr\tx8, [sp, #0x18]\n1a6162160:     \tadrp\tx9, 0x1e5e8c000\n1a6162164:     \tldr\tx9, [x9, #0x7d0]\n1a6162168:     \tldr\tx9, [x9]\n1a616216c:     \tcmp\tx9, x8\n1a6162170:     \tb.ne\t0x1a61621a8 <__text+0x72510>\n1a6162174:     \tldp\tx29, x30, [sp, #0x70]\n1a6162178:     \tldp\tx20, x19, [sp, #0x60]\n1a616217c:     \tldp\tx22, x21, [sp, #0x50]\n1a6162180:     \tldp\tx24, x23, [sp, #0x40]\n1a6162184:     \tldp\td9, d8, [sp, #0x30]\n1a6162188:     \tldp\td11, d10, [sp, #0x20]\n1a616218c:     \tadd\tsp, sp, #0x80\n1a6162190:     \tret\n1a6162194:     \tmov\tx0, x20\n1a6162198:     \tmov\tx1, x23\n1a616219c:     \tmov\tx2, x22\n1a61621a0:     \tbl\t0x1a61738f8 <__text+0x83c60>\n1a61621a4:     \tb\t0x1a6162124 <__text+0x7248c>\n1a61621a8:     \tbl\t0x1a8222860\n"
+    },
+    {
+      "name": "prompt_fade",
+      "address": "0x1a61621ac",
+      "bytes": 372,
+      "matches_original": true,
+      "sha256": "130521b4c853ac7226918101db8637c71463fc18e338be3d24ab0f8978e91075",
+      "disassembly": "\n/tmp/mi6-welcome-followup/SpringBoardUIServices.analysis.macho:\tfile format mach-o arm64\n\nDisassembly of section __TEXT,__text:\n\n00000001a60efc98 <__text>:\n1a61621ac:     \tsub\tsp, sp, #0xa0\n1a61621b0:     \tstp\td9, d8, [sp, #0x60]\n1a61621b4:     \tstp\tx22, x21, [sp, #0x70]\n1a61621b8:     \tstp\tx20, x19, [sp, #0x80]\n1a61621bc:     \tstp\tx29, x30, [sp, #0x90]\n1a61621c0:     \tadd\tx29, sp, #0x90\n1a61621c4:     \tfmov\td8, d0\n1a61621c8:     \tmov\tx20, x2\n1a61621cc:     \tmov\tx19, x0\n1a61621d0:     \tcmp\tw2, #0x0\n1a61621d4:     \tmov\tw8, #0x3                ; =3\n1a61621d8:     \tcsinc\tx21, x8, xzr, ne\n1a61621dc:     \tbl\t0x1a8222cbc\n1a61621e0:     \tmov\tx22, x0\n1a61621e4:     \tmov\tx0, x19\n1a61621e8:     \tmov\tx2, x21\n1a61621ec:     \tbl\t0x1a61ceee0\n1a61621f0:     \tmov\tx0, x19\n1a61621f4:     \tbl\t0x1a61bf4c0\n1a61621f8:     \tadrp\tx8, 0x1f4a16000\n1a61621fc:     \tldrsw\tx8, [x8, #0x1fc]\n1a6162200:     \tldr\tx0, [x19, x8]\n1a6162204:     \tadrp\tx2, 0x1e9ed9000\n1a6162208:     \tadd\tx2, x2, #0xe08\n1a616220c:     \tbl\t0x1a61cb240\n1a6162210:     \tmov\tx0, x19\n1a6162214:     \tmov\tx2, x22\n1a6162218:     \tbl\t0x1a61bdde0\n1a616221c:     \tbl\t0x1a8222b78\n1a6162220:     \tadrp\tx8, 0x1e5e59000\n1a6162224:     \tldr\tx0, [x8, #0x668]\n1a6162228:     \tadrp\tx8, 0x1e5e8c000\n1a616222c:     \tldr\tx8, [x8, #0x6d0]\n1a6162230:     \tstr\tx8, [sp, #0x30]\n1a6162234:     \tadrp\tx9, 0x1a6182000\n1a6162238:     \tldr\td0, [x9, #0x3e0]\n1a616223c:     \tstr\td0, [sp, #0x38]\n1a6162240:     \tadrp\tx9, 0x1a6162000 <__text+0x72368>\n1a6162244:     \tadd\tx9, x9, #0x2b0\n1a6162248:     \tadrp\tx10, 0x1e9ece000\n1a616224c:     \tadd\tx10, x10, #0xfb0\n1a6162250:     \tstp\tx9, x10, [sp, #0x40]\n1a6162254:     \tstr\tx19, [sp, #0x50]\n1a6162258:     \tstrb\tw20, [sp, #0x58]\n1a616225c:     \tstr\tx8, [sp]\n1a6162260:     \tstr\td0, [sp, #0x8]\n1a6162264:     \tadrp\tx8, 0x1a6162000 <__text+0x72368>\n1a6162268:     \tadd\tx8, x8, #0x2dc\n1a616226c:     \tadrp\tx9, 0x1e9ecf000\n1a6162270:     \tadd\tx9, x9, #0x7b0\n1a6162274:     \tstp\tx8, x9, [sp, #0x10]\n1a6162278:     \tstrb\tw20, [sp, #0x28]\n1a616227c:     \tstr\tx19, [sp, #0x20]\n1a6162280:     \tfmov\td1, xzr\n1a6162284:     \tadd\tx3, sp, #0x30\n1a6162288:     \tmov\tx4, sp\n1a616228c:     \tfmov\td0, d8\n1a6162290:     \tmov\tw2, #0x4                ; =4\n1a6162294:     \tbl\t0x1a61c2e00\n1a6162298:     \tldp\tx29, x30, [sp, #0x90]\n1a616229c:     \tldp\tx20, x19, [sp, #0x80]\n1a61622a0:     \tldp\tx22, x21, [sp, #0x70]\n1a61622a4:     \tldp\td9, d8, [sp, #0x60]\n1a61622a8:     \tadd\tsp, sp, #0xa0\n1a61622ac:     \tret\n1a61622b0:     \tldr\tx8, [x0, #0x20]\n1a61622b4:     \tadrp\tx9, 0x1f4a16000\n1a61622b8:     \tldrsw\tx9, [x9, #0x200]\n1a61622bc:     \tldr\tx8, [x8, x9]\n1a61622c0:     \tldrb\tw9, [x0, #0x28]\n1a61622c4:     \tcmp\tw9, #0x0\n1a61622c8:     \tfmov\td0, #1.00000000\n1a61622cc:     \tfmov\td1, xzr\n1a61622d0:     \tfcsel\td0, d1, d0, ne\n1a61622d4:     \tmov\tx0, x8\n1a61622d8:     \tb\t0x1a61cc220\n1a61622dc:     \tstp\tx20, x19, [sp, #-0x20]!\n1a61622e0:     \tstp\tx29, x30, [sp, #0x10]\n1a61622e4:     \tadd\tx29, sp, #0x10\n1a61622e8:     \tmov\tx19, x0\n1a61622ec:     \tldrb\tw8, [x0, #0x28]\n1a61622f0:     \tcmp\tw8, #0x1\n1a61622f4:     \tb.ne\t0x1a6162310 <__text+0x72678>\n1a61622f8:     \tldr\tx0, [x19, #0x20]\n1a61622fc:     \tmov\tx2, #0x0                ; =0\n1a6162300:     \tbl\t0x1a61ceee0\n1a6162304:     \tldr\tx0, [x19, #0x20]\n1a6162308:     \tmov\tw2, #0x1                ; =1\n1a616230c:     \tbl\t0x1a61c0940\n1a6162310:     \tldr\tx0, [x19, #0x20]\n1a6162314:     \tldp\tx29, x30, [sp, #0x10]\n1a6162318:     \tldp\tx20, x19, [sp], #0x20\n1a616231c:     \tb\t0x1a61bede0\n"
+    }
+  ],
+  "current_project_snapshot": {
+    "drivers/gpu/QcomGPU/Info.plist": {
+      "sha256": "49f484a4ae9ca6ee8db403f8d9493b4afe2c9159b7272eca54d0d5027372e041",
+      "version": "1.113.0"
+    },
+    "drivers/gpu/QcomMTL/Info.plist": {
+      "sha256": "e9b6ab1fbbabe52bfbd9ff7ad75538f09643c857d53ecc3f5479e922d5585a62",
+      "version": "0.86.0"
+    },
+    "drivers/display/QcomDisplay/Info.plist": {
+      "sha256": "849a6eb819370386f4c4a2d10936a487329adf3d72cdebc236ef3c6d3404be49",
+      "version": "1.0.13"
+    },
+    "drivers/gpu/QcomGPU/AdrenoPipeline.h": {
+      "sha256": "ecd8b41ffeae19b1908cc5a8a5395e40a317faf0b86c85b9355544b1cb9175b5"
+    },
+    "drivers/include/GPUNativeCompletion.h": {
+      "sha256": "629feb48ba6336708f934f67f3f2d82ae2cac0bc847e9a365e69f994893c6b55"
+    },
+    "drivers/gpu/QcomMTL/QcomMTL.mm": {
+      "sha256": "54a05c8e044833a6b7328242a6cf16769aa2ad9b26029e432803c5a855719f19"
+    },
+    "build/gpu-runtime/ui-snapshot-xcrop/hardware-evidence.json": {
+      "sha256": "80f36d0f4e33635a45447cf154c8dfe4aabdb21b4614a3b5226395fb7bdf1204",
+      "content": {
+        "GPU": "1.111.0",
+        "diagnostics_ABI": 5,
+        "boot_uuid": "3C732320-2D37-4817-9C3F-2CC601624DCF",
+        "main_report": "round-118/report.json",
+        "metrics_report": "round-118-metrics/report.json",
+        "metrics": "round-118-metrics/performance.json",
+        "four_cpus": true,
+        "runtime_panic": false,
+        "compositor_kind_membership_overlapping": {
+          "marker": {
+            "submitted": 23,
+            "completed": 23,
+            "failed": 0
+          },
+          "transfer": {
+            "submitted": 350,
+            "completed": 349,
+            "failed": 0
+          },
+          "compute": {
+            "submitted": 365,
+            "completed": 364,
+            "failed": 0
+          },
+          "render": {
+            "submitted": 1188,
+            "completed": 1188,
+            "failed": 0
+          }
+        },
+        "actual_CP_hz": 595989377.377,
+        "GPU_execution_mean_ms_per_job": 10.943398057931983,
+        "actual_background_copy": {
+          "actual_payload_bytes": 7983026432,
+          "uncropped_payload_bytes": 8391268608,
+          "saved_payload_bytes": 408242176,
+          "saved_fraction": 0.04865082922155458
+        },
+        "actual_displayed_samples": {
+          "samples": 368,
+          "span_s": 69.11455265625,
+          "fps": 5.310024964283876,
+          "p50_ms": 99.95760416666667,
+          "p95_ms": 333.44427083333335,
+          "max_ms": 10352.021822916666,
+          "baseline_displayed": 0,
+          "final_frame_age_ms": 98.958
+        },
+        "goal_achieved": false,
+        "interpretation": "Horizontal crop saved4.865% actualWelcome backgroundpayload inthis window. Median~100ms remains. Aggregate5.31FPSincludes10.35s pause; notcontinuouswritingfps. No strictsameworkloadFPSspeedupclaim, no60claim.",
+        "correctness": "117actual1080x1920and1040x67all4patternphases,fence/indexed/blit/CApassed; seevalidation-hardware-evidence.json",
+        "native_screenshot": {
+          "path": "round-118-capture/scanout.png",
+          "verification": "round-118-capture/capture-verification.json",
+          "observed": "NativeWelcome Vietnamese xin chào/statusbar/bottomprompt visible. Singleimage notmotion/FPSproof."
+        },
+        "strict_control": "ui-snapshot-xcrop-control-bridge: samekernel/HFS all2D596, onlygpu-fb-xcrop=0; NOTbooted."
+      }
+    },
+    "build/gpu-runtime/ui-mixed-shader-batch/hardware-evidence.json": {
+      "sha256": "b8cf887f01a2c8b2871089ddcf9e41c8d3c0ef5722f12b142449398ce3f441d9",
+      "content": {
+        "GPU": "1.112.0",
+        "Metal": "0.86.0",
+        "main": "round-119/report.json",
+        "Welcome_metrics": "round-119-metrics/performance.json",
+        "regression": "round-119-regression/report.json",
+        "results": [
+          {
+            "index": 0,
+            "status": 1,
+            "seconds": 1.753
+          },
+          {
+            "index": 1,
+            "status": 0,
+            "seconds": 2.958
+          },
+          {
+            "index": 2,
+            "status": 0,
+            "seconds": 4.005
+          },
+          {
+            "index": 3,
+            "status": 0,
+            "seconds": 7.107
+          },
+          {
+            "index": 4,
+            "status": 0,
+            "seconds": 15.901
+          },
+          {
+            "index": 5,
+            "status": 0,
+            "seconds": 23.377
+          },
+          {
+            "index": 6,
+            "status": 0,
+            "seconds": 25.261
+          }
+        ],
+        "mixed_test": "Firstcompute-compute-render completed+allpixels/guards passed; immediate sampledregistrycounters hadzero delta andteststatus1. BatchcountUNVERIFIED, do NOTclaimallregressionspass. SourceGPUtimerActionperiodicallypublishes; oldCARendererprobealreadywaitsforcounters. Fixnewtestwaitsamerefresh.",
+        "goal_achieved": false
+      }
+    }
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "schema": 1,
+  "repositories": [
+    {
+      "path": "boot/edk2-msm8998",
+      "url": "https://github.com/edk2-porting/edk2-msm8998.git",
+      "commit": "ace27110b9b9b6c591387d50cf748ec646402b4a",
+      "patch": {
+        "file": "tools/patches/edk2-sagit/source-snapshot.patch",
+        "sha256": "e870c1ef8fc32a4a1290a7fb8c0b1c7a3cb919785ef0aa57b1e57dc57f57b415",
+        "source_files": [
+          "Config/sagit.conf",
+          "Platforms/Msm8998FamilyPkg/Library/ArmPlatformLib/ArmPlatformLibMem.c",
+          "Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.c",
+          "Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/PlatformBm.c",
+          "Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/PlatformBootManagerLib.inf",
+          "Platforms/Msm8998FamilyPkg/Msm8998FamilyPkg.dsc.inc",
+          "Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.dsc",
+          "Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.fdf",
+          "Platforms/Msm8998Pkg/Msm8998.dsc",
+          "build.sh",
+          "Platforms/Msm8998FamilyPkg/Drivers/QcomFastboot/QcomFastboot.c",
+          "Platforms/Msm8998FamilyPkg/Drivers/QcomFastboot/QcomFastboot.inf",
+          "Platforms/Msm8998FamilyPkg/Drivers/QcomFastboot/QcomUsb.h",
+          "Platforms/Msm8998FamilyPkg/Drivers/QcomFastboot/TestPayload/Probe.c",
+          "Platforms/Msm8998FamilyPkg/Drivers/QcomFastboot/TestPayload/Probe.inf",
+          "Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/QcomUartDm.h",
+          "Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/XnuBoot.c",
+          "Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/XnuBootFormat.h"
+        ]
+      }
+    },
+    {
+      "path": "boot/edk2-msm8998/Common/edk2",
+      "url": "https://github.com/tianocore/edk2.git",
+      "commit": "e7aac7fc137e247edad22f7ee53b9a1fba227397",
+      "patch": {
+        "file": "tools/patches/edk2-sagit/edk2-source-snapshot.patch",
+        "sha256": "6f87cf251c7aa4924a228aa00587180e2a7ec2f036086f1f10f18cb4dfe59411",
+        "source_files": [
+          "EmbeddedPkg/Application/AndroidFastboot/AndroidFastbootApp.c",
+          "MdeModulePkg/Universal/Acpi/AcpiTableDxe/AcpiSdt.c",
+          "MdeModulePkg/Universal/Acpi/AcpiTableDxe/AmlNamespace.c"
+        ]
+      }
+    },
+    {
+      "path": "boot/edk2-msm8998/Common/edk2/ArmPkg/Library/ArmSoftFloatLib/berkeley-softfloat-3",
+      "url": "https://github.com/ucb-bar/berkeley-softfloat-3.git",
+      "commit": "b64af41c3276f97f0e181920400ee056b9c88037"
+    },
+    {
+      "path": "boot/edk2-msm8998/Common/edk2/BaseTools/Source/C/BrotliCompress/brotli",
+      "url": "https://github.com/google/brotli",
+      "commit": "f4153a09f87cbb9c826d8fc12c74642bb2d879ea"
+    },
+    {
+      "path": "boot/edk2-msm8998/Common/edk2/CryptoPkg/Library/OpensslLib/openssl",
+      "url": "https://github.com/openssl/openssl",
+      "commit": "129058165d195e43a0ad10111b0c2e29bdf65980"
+    },
+    {
+      "path": "boot/edk2-msm8998/Common/edk2/MdeModulePkg/Library/BrotliCustomDecompressLib/brotli",
+      "url": "https://github.com/google/brotli",
+      "commit": "f4153a09f87cbb9c826d8fc12c74642bb2d879ea"
+    },
+    {
+      "path": "boot/edk2-msm8998/Common/edk2/MdeModulePkg/Universal/RegularExpressionDxe/oniguruma",
+      "url": "https://github.com/kkos/oniguruma",
+      "commit": "abfc8ff81df4067f309032467785e06975678f0d"
+    },
+    {
+      "path": "boot/edk2-msm8998/Common/edk2/RedfishPkg/Library/JsonLib/jansson",
+      "url": "https://github.com/akheron/jansson",
+      "commit": "e9ebfa7e77a6bee77df44e096b100e7131044059"
+    },
+    {
+      "path": "boot/edk2-msm8998/Common/edk2/UnitTestFrameworkPkg/Library/CmockaLib/cmocka",
+      "url": "https://github.com/tianocore/edk2-cmocka.git",
+      "commit": "1cc9cde3448cdd2e000886a26acf1caac2db7cf1"
+    },
+    {
+      "path": "boot/edk2-msm8998/Common/edk2/UnitTestFrameworkPkg/Library/GoogleTestLib/googletest",
+      "url": "https://github.com/google/googletest.git",
+      "commit": "86add13493e5c881d7e4ba77fb91c1f57752b3a4"
+    },
+    {
+      "path": "boot/edk2-msm8998/Common/edk2-platforms",
+      "url": "https://github.com/tianocore/edk2-platforms.git",
+      "commit": "35a84b1838baacf0d470e76fb68a6ade30413450"
+    },
+    {
+      "path": "boot/edk2-msm8998/Common/edk2-platforms/Silicon/RISC-V/ProcessorPkg/Library/RiscVOpensbiLib/opensbi",
+      "url": "https://github.com/riscv/opensbi",
+      "commit": "a731c7e36988c3308e1978ecde491f2f6182d490"
+    },
+    {
+      "path": "boot/edk2-msm8998/GPLDrivers/Library/simple-init",
+      "url": "https://github.com/BigfootACA/simple-init",
+      "commit": "29e062805776db5ab7a61d07ef040d43aed71161"
+    },
+    {
+      "path": "boot/edk2-msm8998/GPLDrivers/Library/simple-init/libs/freetype",
+      "url": "https://github.com/freetype/freetype.git",
+      "commit": "6a2b3e4007e794bfc6c91030d0ed987f925164a8"
+    }
+  ]
+}

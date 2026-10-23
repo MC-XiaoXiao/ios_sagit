@@ -1,0 +1,409 @@
+200 8N1)
+USB switch to peripheral: SuccesDownloading 25401856 bytes
+ 1048576 / 25401856 bytes downloaded (4%)25401856 / 25401856 bytes downloaded (100%)
+
+[XNU bridge] EDK2 entry EL=0x0000000000000001 MPIDR=0x0000000080000000
+[EFI free] 0x0000000040000000..0x0000000081ac0000
+[EFI free] 0x0000000096000000..0x000000009d400000
+[EFI free] 0x00000000a0000000..0x00000000ffe50000
+[XNU bridge] framebuffer base=0x000000009d400000 width=0x0000000000000438 height=0x0000000000000780 stride=0x00000000000010e0 BGRX8888
+[XNU bridge] fresh host-generated build entropy
+[XNU bridge] physical arena=0x00000000a0000000 virtual=0xfffffff006a00000 entry=0x00000000a0a8e488 DT=0x00000000a1acc000 boot_args=0x00000000a1ad4000 top=0x00000000a1bd8000
+[XNU bridge] ExitBootServices OK; entering XNU
+[XNU bridge] watchdog seconds=0x000000000000001f enable=0x0000000000000003
+[XNU] start_first_cpu
+[XNU] arm_init rebased
+[XNU] platform DT ready
+[XNU] CPU topology ready
+[XNU] arm_vm_init begin
+[XNU VM] early_random begin
+[XNU VM] early_random done
+[XNU VM] alloc tables
+[XNU VM] read Mach-O segments
+[XNU VM] prot init begin
+[XNU VM] prot init done
+[XNU VM] physmap init begin
+[XNU VM] physmap init done; switching tables
+[XNU VM] TTBR1 switched
+[XNU VM] TTBR0 switched
+[XNU VM] pmap bootstrap begin
+[XNU VM] pmap bootstrap done
+[XNU VM] VM ready
+[XNU] serial_init begin�[XNU console] UART + framebuffer text output enabled (1080x1920, stride 4320)
+Darwin Kernel Version 24.6.0: Tue Oct 13 20:21:26 PDT 2026; xxiao:obj/DEVELOPMENT_ARM64_SDM835
+pmap_startup() init/release time: 44747 microsec
+vm_page_bootstrap: 57413 free pages, 8123 wired pages
+VM boostrap: 17 maps, 153 entries and 128 holes available
+Maximum number of VM swap files: 5
+ipc_kernel_copy_map     : 0xfffffff000948000 - 0xfffffff001148000 (8M)
+gIOKitPageableFixed     : 0xfffffff049000000 - 0xfffffff0a9000000 (1536M)
+zone_meta               : 0xfffffff0a9000000 - 0xfffffff0af104000 (97M)
+compressor              : 0xfffffff0af104000 - 0xfffffff0e7113000 (896M)
+io_submap               : 0xfffffff0e7113000 - 0xfffffff0e7913000 (8M)
+bufferhdr               : 0xfffffff0e7913000 - 0xfffffff0e79bc000 (676K)
+zones                   : 0xfffffff0e79bc000 - 0xfffffff6e79bc000 (24G)
+bsd_pageable            : 0xfffffff6e79bc000 - 0xfffffff6e823e000 (8M)
+kmem_ptr_range          : 0xfffffff6e823e000 - 0xfffffff9697be000 (10G)
+kmem_ptr_range_meta     : 0xfffffff9697be000 - 0xfffffff9699a0000 (1928K)
+ipc_kernel_map          : 0xfffffff9699a0000 - 0xfffffff96b9a0000 (32M)
+kmem_sprayqtn_range     : 0xfffffff96b9a0000 - 0xfffffff972b95000 (113M)
+mb                      : 0xfffffff972b95000 - 0xfffffff976b95000 (64M)
+kmem_data_range         : 0xfffffff976b95000 - 0xfffffffbff4fc000 (10G)
+kmem_large_ranges[1]    : 0 - 0 (0B)
+kmem_large_ranges[2]    : 0 - 0 (0B)
+kmem_large_ranges[3]    : 0 - 0 (0B)
+kmem_large_ranges[4]    : 0xfffffff96c7dea00 - 0xfffffff972b95000 (99M)
+kmem_large_ranges[5]    : 0xfffffff9c7cc1e00 - 0xfffffffbff4fc000 (8G)
+"vm_compressor_mode" is 8
+mapping deprecated VM_PAGER_FREEZER_DEFAULT to VM_PAGER_FREEZER_COMPRESSOR_NO_SWAP
+zone_init: pgzalloc  0xfffffff0e79bc000:0xfffffff0e7a2d000 (452K) [56 slots]
+zone_init: map VM    0xfffffff0e7a2d000:0xfffffff1ce081000 (3686M, 3686M usable)
+zone_init: map RO    0xfffffff1ce081000:0xfffffff21ad52000 (1228M, 1228M usable)
+zone_init: map GEN0  0xfffffff21ad52000:0xfffffff3013a6000 (3686M, 3686M usable)
+zone_init: map GEN1  0xfffffff3013a6000:0xfffffff3e79fb000 (3686M, 3686M usable)
+zone_init: map GEN2  0xfffffff3e79fb000:0xfffffff4ce050000 (3686M, 3686M usable)
+zone_init: map GEN3  0xfffffff4ce050000:0xfffffff5b46a5000 (3686M, 3686M usable)
+zone_init: map DATA  0xfffffff5b46a5000:0xfffffff6e79bc000 (4915M, 4915M usable)
+zone_init: metadata  0xfffffff0a9010000:0xfffffff0af010000 (96M)
+zone_init: metabits  0xfffffff0af010000:0xfffffff0af0f4000 (912K)
+zone_init: extra     0:0 (0B)
+Unable to find vm tag  for btlog
+VM bootstrap done: 5 maps, 115 entries and 117 holes left
+Log queues configured: slot count: 9, per-slot size: 32768, total size: 294912
+Firehose configured: 16 chunks, 8 io pages
+Long logs support configured: size: 16384
+OSLog stream configured: stream: 8192 bytes, cache: 2112 bytes
+OSLog stream verification: 0
+[trap_telemetry] trap_telemetry_init
+standard timeslicing quantum is 10000 us
+standard background quantum is 2500 us
+mig_table_max_displ = 54 mach_kobj_count = 376
+kdp_core zlib memory 0x7000
+Serial requested, consistent debug disabled or debug boot arg not present, configuring debugging over serial
+iBoot version: MI6 XNU bridge
+iBoot Stage 2 version: 
+[XNU IOKit] pe_prepare_images begin
+[XNU IOKit] pe_prepare_images done
+[XNU IOKit] InitIOKit begin
+[XNU IOKit] IOLibInit begin
+[XNU IOKit] IOLibInit done
+[XNU IOKit] OSlibkernInit begin
+[XNU IOKit] OSlibkernInit done
+[XNU IOKit] IOMachPortInitialize begin
+[XNU IOKit] IOMachPortInitialize done
+[XNU IOKit] progress key begin
+[XNU IOKit] progress key done
+[XNU IOKit] progress property set begin
+[XNU IOKit] progress property set done
+[XNU IOKit] interrupt accounting begin
+[XNU IOKit] interrupt accounting done
+[XNU IOKit] root nub allocation begin
+[XNU IOKit] root nub allocation done
+[XNU IOKit] root nub init begin
+[XNU IOKit] root nub init done
+[XNU IOKit] root nub attach begin
+[XNU IOKit] root nub attach done
+[XNU IOKit] record_startup_extensions begin
+WARNING: did not find UUID in Primary KC!
+[XNU IOKit] record_startup_extensions done
+[XNU IOKit] InitIOKit done
+[XNU IOKit] ConfigureIOKit begin
+IONVRAM.cpp:start:1303 - ...
+IONVRAM.cpp:initImageFormat:1442 - NVRAM size is 16384 bytes
+IONVRAM.cpp:getNVRAMProperties:1257 - _bankSize=0x4000, _bankCount=0x1, _currentBank=0
+IONVRAMCHRPHandler.cpp:unserializeImage:487 - NVRAM : commonPartitionOffset - 0x30, commonPartitionSize - 0x1fd0, systemPartitionOffset - 0x2010, systemPartitionSize - 0x1ff0
+[XNU IOKit] ConfigureIOKit done
+lockdown_mode: lockdown mode in nvram is off
+Darwin Image4 Extension Version 7.0.0: Tue Jul 21 20:38:52 PDT 2026; root:AppleImage4-320.100.22~2761/AppleImage4/RELEASE_ARM64
+calling mpo_policy_init for AppleImage4
+Security policy loaded: AppleImage4 hooks (AppleImage4)
+AppleImage4: no legacy blob present
+AppleImage4: magazine[pdmg]: failed to read nonce slot data: 2
+AppleImage4: magazine[cptx]: failed to read nonce slot data: 2
+AppleImage4: magazine[dvdi]: failed to read nonce slot data: 2
+AppleImage4: magazine[c1bt]: failed to read nonce slot data: 2
+AppleImage4: magazine[c1ab]: failed to read nonce slot data: 2
+AppleImage4: magazine[c1gn]: failed to read nonce slot data: 2
+AppleImage4: magazine[c1sm]: failed to read nonce slot data: 2
+AppleImage4: magazine[d1ma]: failed to read nonce slot data: 2
+AppleImage4: root power domain not yet available: 19
+initUDIDEnforcement: /product is missing udid-version
+AMFI: queried model name from device tree: Xiaomi Mi 6 (sagit)
+calling mpo_policy_init for AMFI
+Security policy loaded: Apple Mobile File Integrity (AMFI)
+calling mpo_policy_init for Sandbox
+Security policy loaded: Seatbelt sandbox policy (Sandbox)
+calling mpo_policy_init for vnguard
+Security policy loaded: Guarded vnode policy (vnguard)
+no external trust caches found (segment length is zero)
+keepsyms boot arg specified; keeping linkedit segment for symbols.
+No POST boot-arg set.
+GenericARMPlatform: configuring Apple DT nubs
+Copyright (c) 1982, 1986, 1989, 1991, 1993
+	The Regents of the University of California. All rights reserved.
+
+MAC Framework successfully initialized
+using 1166 buffer headers and 1166 cluster IO buffer headers
+[XNU RTC] waiting for IORTC
+GenericARMPlatform: nub cpu@0 created
+AppleARMBootPerf: Error: profile handoff region not found (1)
+AppleARMBootPerf: Error: failed to publish profile data (1)
+AppleARMSFRManifest: Starting
+AppleARMSFRManifest: Error: Failed to open reg-entry /chosen/secure-boot-hashes
+AppleARMSFRManifest: Error: Failed to find property boot-manifest-hash
+AppleARMSFRManifest: Error: Failed to find manifest hash
+AppleARMSFRManifest: Error: Failed to locate manifest information
+AppleARMSFRManifest: Error: Failed to find entry /chosen/iBoot
+AppleARMSFRManifest: Error: Failed to publish sfr manifest
+virtual bool CoreAnalyticsHub::start(IOService *)::150:CoreAnalyticsHub start
+GenericARMPlatform: nub psci created
+GenericARMPlatform: nub timer created
+GenericARMPlatform: nub arm-io created
+Registered CoreAnalyticsHub functions with xnu.virtual bool CoreAnalyticsHub::start(IOService *)::229:CoreAnalyticsHub start completed
+GenericARMPlatform: nub product created
+GenericARMIO: starting Apple arm-io bus arm-io
+GenericARMPlatform: nub pram created
+GenericARMPlatform: nub defaults created
+GenericARMPlatform: DT nub configuration complete
+QcomSPMI: starting power-controller@800f000
+QcomPowerService: mapping power-controller@800f000 resource 0
+QcomPowerService: mapping power-controller@800f000 resource 1
+QcomPowerService: mapping power-controller@800f000 resource 2
+QcomPowerService: mapping power-controller@800f000 resource 3
+QcomPowerService: mapping power-controller@800f000 resource 4
+QcomPowerService: mapped power-controller@800f000 resources
+QcomSPMI: initializing arbiter
+QcomSPMI: arbiter ready
+QcomSPMI: reading PM8998 RTC boot sample
+QcomSPMI: PM8998 RTC boot seconds=94722
+QcomSPMI: starting controller services
+QcomSPMI: controller services ready
+QcomPMICRTC: starting IORTC provider
+AppleARMBootPerf: Error: profile handoff region not found (1)
+AppleARMBootPerf: Error: failed to publish profile data (1)
+AppleARMSFRManifest: Starting
+AppleARMSFRManifest: Error: Failed to open reg-entry /chosen/secure-boot-hashes
+AppleARMSFRManifest: Error: Failed to find property boot-manifest-hash
+AppleARMSFRManifest: Error: Failed to find manifest hash
+AppleARMSFRManifest: Error: Failed to locate manifest information
+AppleARMSFRManifest: Error: Failed to find entry /chosen/iBoot
+AppleARMSFRManifest: Error: Failed to publish sfr manifest
+QcomPMICRTC: IORTC ready, raw PMIC seconds=94722 (vendor UTC offset not imported)
+[XNU RTC] IORTC ready
+[XNU RTC] calendar initialized
+ktriage_register_subsystem_strings: set subsystem 8 strings
+mbinit: done [64 MB total pool size, (64/0) split]
+panic(cpu 0 caller 0xfffffff007777478): pthread kernel extension not loaded (function table is NULL). @pthread_shims.c:318
+Debugger message: panic
+Device: SDM835
+Hardware Model: Xiaomi Mi 6 (sagit)
+ECID: 0000000000000000
+Boot args: -v serial=3 debug=0x14e keepsyms=1 cpus=1 disable-uart-irq=1 mirror-console=1
+Memory ID: 0x0
+OS release type: Not set yet
+OS version: Not set yet
+Kernel version: Darwin Kernel Version 24.6.0: Tue Oct 13 20:21:26 PDT 2026; xxiao:obj/DEVELOPMENT_ARM64_SDM835
+Kernel UUID: E50503FA-9040-38D8-B926-881E9114BEE0
+Boot session UUID: EFE8E5FB-6255-4331-B78E-84FD98C85E20
+iBoot version: MI6 XNU bridge
+iBoot Stage 2 version: 
+secure boot?: NO
+roots installed: 0
+Paniclog version: 14
+Kernel text base:  0xfffffff007004000
+mach_absolute_time: 0x49957dbb
+Epoch Time:        sec       usec
+  Boot    : 0x00017202 0x0003fee6
+  Sleep   : 0x00000000 0x00000000
+  Wake    : 0x00000000 0x00000000
+  Calendar: 0x00017202 0x000917bb
+
+Zone info:
+  Zone map: 0xfffffff0e79bc000 - 0xfffffff6e79bc000
+  . PGZ   : 0xfffffff0e79bc000 - 0xfffffff0e7a2d000
+  . VM    : 0xfffffff0e7a2d000 - 0xfffffff1ce081000
+  . RO    : 0xfffffff1ce081000 - 0xfffffff21ad52000
+  . GEN0  : 0xfffffff21ad52000 - 0xfffffff3013a6000
+  . GEN1  : 0xfffffff3013a6000 - 0xfffffff3e79fb000
+  . GEN2  : 0xfffffff3e79fb000 - 0xfffffff4ce050000
+  . GEN3  : 0xfffffff4ce050000 - 0xfffffff5b46a5000
+  . DATA  : 0xfffffff5b46a5000 - 0xfffffff6e79bc000
+  Metadata: 0xfffffff0a9010000 - 0xfffffff0af010000
+  Bitmaps : 0xfffffff0af010000 - 0xfffffff0af0f4000
+  Extra   : 0 - 0
+
+TPIDRx_ELy = {1: 0xfffffff3e7a5de40  0: 0x0000000000000000  0ro: 0x0000000000000000 }
+CORE 0 is the one that panicked. Check the full backtrace for details.
+Compressor Info: 0% of compressed pages limit (OK) and 0% of segments limit (OK) with 0 swapfiles and OK swap space
+Panicked task 0xfffffff3013c67c8: 0 pages, 39 threads: pid 0: kernel_task
+Panicked thread: 0xfffffff3e7a5de40, backtrace: 0xfffffff96b9d7600, tid: 101
+		  lr: 0xfffffff0072bbe60  fp: 0xfffffff96b9d7680
+		  lr: 0xfffffff00749d118  fp: 0xfffffff96b9d76a0
+		  lr: 0xfffffff00748c02c  fp: 0xfffffff96b9d7720
+		  lr: 0xfffffff00748af30  fp: 0xfffffff96b9d77f0
+		  lr: 0xfffffff00748a660  fp: 0xfffffff96b9d7800
+		  lr: 0xfffffff0072bb250  fp: 0xfffffff96b9d7cd0
+		  lr: 0xfffffff0072bc6d4  fp: 0xfffffff96b9d7d70
+		  lr: 0xfffffff007a71f20  fp: 0xfffffff96b9d7d90
+		  lr: 0xfffffff007777478  fp: 0xfffffff96b9d7db0
+		  lr: 0xfffffff00777fc54  fp: 0xfffffff96b9d7ec0
+		  lr: 0xfffffff0073096b8  fp: 0xfffffff96b9d7f20
+		  lr: 0xfffffff00749050c  fp: 0x0000000000000000
+
+
+** Stackshot Succeeded ** Bytes Traced 5073 (Uncompressed 14992) **
+Original panic string:
+panic(cpu 0 caller 0xfffffff007777478): pthread kernel extension not loaded (function table is NULL). @pthread_shims.c:318
+handshake structure not initialized
+
+Please go to https://panic.apple.com to report this panic
+ 
+Format: Log Type - Time(microsec) - Message - Optional Info
+Log Type: B - Since Boot(Power On Reset),  D - Delta,  S - Statistic
+S - QC_IMAGE_VERSION_STRING=BOOT.XF.1.2.2.c1-00015-M8998LZB-1.173533.1
+S - IMAGE_VARIANT_STRING=Msm8998LA
+S - OEM_IMAGE_VERSION_STRING=c3-miui-ota-bd102.bj
+S - Boot Interface: UFS
+S - Secure Boot: On
+S - Boot Config @ 0x00786070 = 0x000002c1
+S - JTAG ID @ 0x00786130 = 0x2005e0e1
+S - OEM ID @ 0x00786138 = 0x00000000
+S - Serial Number @ 0x00784138 = 0x855171e7
+S - Feature Config Row 0 @ 0x007841a0 = 0x0050200000000000
+S - Feature Config Row 1 @ 0x007841a8 = 0x00000000000000a0
+S - Core 0 Frequency, 1305 MHz
+S - PBL Patch Ver: 2
+B -         0 - PBL, Start
+B -      9445 - bootable_media_detect_entry, Start
+B -     54539 - bootable_media_detect_success, Start
+B -     54546 - elf_loader_entry, Start
+B -     55840 - auth_hash_seg_entry, Start
+B -     77502 - auth_hash_seg_exit, Start
+B -    126777 - elf_segs_hash_verify_entry, Start
+B -    156633 - elf_segs_hash_verify_exit, Start
+B -    156651 - auth_xbl_sec_hash_seg_entry, Start
+B -    180466 - auth_xbl_sec_hash_seg_exit, Start
+B -    180468 - xbl_sec_segs_hash_verify_entry, Start
+B -    185864 - xbl_sec_segs_hash_verify_exit, Start
+B -    185929 - PBL, End
+B -    218868 - SBL1, Start
+B -    332419 - boot_flash_init, Start
+D -        30 - boot_flash_init, Delta
+B -    334981 - sbl1_ddr_set_default_params, Start
+D -       152 - sbl1_ddr_set_default_params, Delta
+B -    342942 - boot_config_data_table_init, Start
+B -    498492 - CDT not programmed, using default
+D -    151066 - boot_config_data_table_init, Delta - (54 Bytes)
+B -    501816 - CDT Version:3,Platform ID:30,Major ID:1,Minor ID:0,Subtype:0
+B -    507642 - Image Load, Start
+D -     17995 - Auth Metadata
+D -       549 - Segments hash check
+D -     27877 - PMIC Image Loaded, Delta - (45608 Bytes)
+B -    538843 - pm_device_init, Start
+B -    546346 - PM: PON REASON: PM0=0x8000028000000021:0x0 PM1=0x8000088000000020:0x0 PM2=0x8000088000000020:0x0 
+B -    605608 - PM: SET_VAL:Skip
+D -     63196 - pm_device_init, Delta
+B -    607529 - pm_driver_init, Start
+D -      5337 - pm_driver_init, Delta
+B -    616191 - pm_sbl_chg_init, Start
+B -    618509 - PM: Trigger FG IMA Reset
+B -    622047 - PM: Trigger FG IMA Reset.Completed
+B -    629367 - PM: EntryVbat: 3454; EntrySOC: -1
+B -    630099 - PM: Manually set ICL 500mA
+B -    634522 - PM: BATT TEMP: 41 DegC
+D -    519872 - pm_sbl_chg_init, Delta
+B -   1138351 - vsense_init, Start
+D -         0 - vsense_init, Delta
+B -   1190049 - Pre_DDR_clock_init, Start
+D -       213 - Pre_DDR_clock_init, Delta
+D -         0 - sbl1_ddr_set_params, Delta
+B -   1201303 - DSF version = 108.4, DSF RPM version = 58.1
+B -   1201334 - Max Frequency = 1804 MHz
+B -   1205817 - do_ddr_training, Start
+B -   1221830 - Bootup frequency set to 1296000
+D -     12627 - do_ddr_training, Delta
+B -   1247145 - clock_init, Start
+D -       305 - clock_init, Delta
+B -   1249768 - ADC done - mv: 377197, percent: 13183
+B -   1252086 - Platform type KEEP in C1
+B -   1257576 - ADC done - mv: 1125183, percent: 39327
+B -   1260595 - Platform version: MP
+B -   1265902 - Image Load, Start
+D -      2867 - APDP Image Loaded, Delta - (0 Bytes)
+B -   1273253 - PM: 0: PON=0x21:PON1:HARD_RESET: ON=0x80:PON_SEQ: POFF=0x2:PS_HOLD: OFF=0x80:POFF_SEQ
+B -   1276547 - PM: 1: PON=0x20:PON1: ON=0x80:PON_SEQ: POFF=0x8:GP1: OFF=0x80:POFF_SEQ
+B -   1285392 - PM: 2: PON=0x20:PON1: ON=0x80:PON_SEQ: POFF=0x8:GP1: OFF=0x80:POFF_SEQ
+B -   1292864 - PM: SMEM Chgr Info Write Success
+B -   1300886 - sbl1_efs_handle_cookies, Start
+D -        30 - sbl1_efs_handle_cookies, Delta
+B -   1309212 - Image Load, Start
+D -     20587 - Auth Metadata
+D -      1128 - Segments hash check
+D -     27420 - QSEE Dev Config Image Loaded, Delta - (49912 Bytes)
+B -   1339621 - Image Load, Start
+D -       305 - SEC Image Loaded, Delta - (4096 Bytes)
+B -   1348466 - Image Load, Start
+D -     59963 - Auth Metadata
+D -     17294 - Segments hash check
+D -     93391 - QSEE Image Loaded, Delta - (1893632 Bytes)
+B -   1443656 - Image Load, Start
+D -     20557 - Auth Metadata
+D -      3569 - Segments hash check
+D -     34709 - QHEE Image Loaded, Delta - (264944 Bytes)
+B -   1480409 - Image Load, Start
+D -     20679 - Auth Metadata
+D -      2348 - Segments hash check
+D -     33702 - RPM Image Loaded, Delta - (228180 Bytes)
+B -   1517009 - Image Load, Start
+D -      4209 - STI Image Loaded, Delta - (0 Bytes)
+B -   1524817 - Image Load, Start
+D -     20557 - Auth Metadata
+D -      1220 - Segments hash check
+D -     27541 - ABL Image Loaded, Delta - (105112 Bytes)
+B -   1555561 - Image Load, Start
+D -     21075 - Auth Metadata
+D -     23576 - Segments hash check
+D -     62372 - APPSBL Image Loaded, Delta - (3145728 Bytes)
+B -   1620068 - SBL1, End
+D -   1406202 - SBL1, Delta
+S - Flash Throughput, 168000 KB/s  (5742478 Bytes,  34180 us)
+S - DDR Frequency, 1296 MHz
+
+
+UEFI Start     [ 1787] SEC
+PROD Mode   : On
+DEBUG Mode  : On
+ASLR        : On
+Timer Delta : +7 mS
+RAM Entry 0 : Base 0x0000000040000000  Size 0x00000000C0000000
+RAM Entry 1 : Base 0x0000000100000000  Size 0x00000000BD8C0000
+UEFI Ver    : 4.2.200506.BOOT.XF.1.2.2.c1-00015-M8998LZB-1.173533.1
+Build Info  : 64b May  6 2020 23:13:48
+Boot Device : UFS
+enter ffu,vendor:SAMSUNG,product:KLUCG4J1ED-B0C1,fw_rev:0200
+match vendor:SAMSUNG, product id:KLUCG4J1ED-B0C1
+firmware is already the newest  now
+InitSSUSBPhy: Init SSUSBPhy Enable Error
+InitSSUSBPhy: Init SSUSBPhy - HWIO_PERIPH_SS_USB3PHY_PCIE_USB3_PHY_PCS_STATUS = 0x69696969
+Setvariable Splash Image returned Success
+Setvariable Logo Image returned Success
+get_Panel_Id: lcd id = 0 0 0
+DisplayDxe: Resolution 1080x1920 (1 intf)
+ RenderBGRTImage: Resolution cannot be larger than the file itself minus the header
+Render Splash  [ 3436]
+EnvDxe Render Callback
+LoadImageFromPartitionUsingGuid Failed: 2
+LoadImageFromPartitionUsingGuid Failed: 2
+LoadImageFromPartitionUsingGuid Failed: 2
+Keymaster failed to load! Status = 0x2
+LoadSecureApps: Load app from partition(keymaster): Status = 0x0, AppId = 65537
+TsFastboot: TsFastBootEntryPoint, VERSION 2
+-----------------------------
+Platform Init  [ 3604] BDS
+UEFI Ver   : 4.2.200506.BOOT.XF.1.2.2.c1-00015-M8998LZB-1.173533.1
+Platform   : C1
+Chip Name  : MSM8998
+Chip Ver   : 2.1
+Core 0 Freq: 1555 MHz
+-----------------------------
+Battery prfile BATTERY.PROVISION1, platform type 30 

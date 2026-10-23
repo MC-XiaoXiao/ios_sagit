@@ -1,0 +1,105 @@
+--- a/pkg/apfs/volume_superblock.go
++++ b/pkg/apfs/volume_superblock.go
+@@ -21,6 +21,7 @@
+ 
+ // VolumeSuperblock represents the APFS volume superblock structure
+ type VolumeSuperblock struct {
++ FextRoot uint64
+ 	// The object checksum
+ 	// Consists of 8 bytes
+ 	Checksum uint64
+@@ -265,6 +266,7 @@
+ 
+ // ReadData reads the volume superblock from binary data
+ func (vs *VolumeSuperblock) ReadData(data []byte, isSnapshot bool) error {
++ if len(data)>=0x410 { vs.FextRoot = binary.LittleEndian.Uint64(data[0x408:0x410]) }
+ 	if vs == nil {
+ 		return fmt.Errorf("invalid volume superblock")
+ 	}
+--- a/pkg/apfs/file_system_btree.go
++++ b/pkg/apfs/file_system_btree.go
+@@ -10,6 +10,8 @@
+ 
+ // FileSystemBTree represents the APFS file system B-tree
+ type FileSystemBTree struct {
++ FextRoot uint64
++ sealedExtents map[uint64][]*FileExtent
+ 	// The IO handle
+ 	IOHandle *IOHandle
+ 
+@@ -147,16 +149,9 @@
+ 		return 0, fmt.Errorf("invalid B-tree entry")
+ 	}
+ 
+-	// In branch nodes, value data should be 8 bytes (uint64 block number)
+-	if len(entry.ValueData) != 8 {
+-		return 0, fmt.Errorf("invalid value data size for branch entry: %d", len(entry.ValueData))
+-	}
+-
+-	// Read the OID (little-endian)
+-	// Per drat (btree.c:377-378), in file system B-trees, child node references
+-	// are ALWAYS virtual OIDs that must be resolved through the volume's object map
+-	// (unlike container object map B-trees which use bit 63 to indicate virtual vs physical)
+-	virtualOID := binary.LittleEndian.Uint64(entry.ValueData[0:8])
++	if len(entry.ValueData) != 8 && len(entry.ValueData) != 40 { return 0, fmt.Errorf("unexpected child width") }
++	virtualOID := binary.LittleEndian.Uint64(entry.ValueData[:8])
++	if len(entry.ValueData) == 40 { virtualOID += bt.RootNodeOID }
+ 
+ 	// Resolve through the volume's object map B-tree
+ 	if bt.ObjectMapBTree == nil {
+@@ -184,6 +179,32 @@
+ 	identifier uint64,
+ 	xid uint64,
+ ) ([]*FileExtent, error) {
++ if bt.FextRoot != 0 {
++  if bt.sealedExtents == nil {
++   bt.sealedExtents = make(map[uint64][]*FileExtent)
++   var walk func(uint64, int) error
++   walk = func(address uint64, depth int) error {
++    if depth > 8 { return fmt.Errorf("fext depth") }
++    node, err := ReadBTreeNode(reader,bt.IOHandle,bt.EncryptionContext,address)
++    if err != nil {return err}
++    for _, entry := range node.Entries {
++     if node.IsLeafNode() {
++      if len(entry.KeyData)!=16 || len(entry.ValueData)!=16 {return fmt.Errorf("fext record size")}
++      id:=binary.LittleEndian.Uint64(entry.KeyData[:8])
++      ext:=&FileExtent{LogicalOffset:binary.LittleEndian.Uint64(entry.KeyData[8:]), DataSize:binary.LittleEndian.Uint64(entry.ValueData[:8])&0xffffffffffffff, PhysicalBlockNumber:binary.LittleEndian.Uint64(entry.ValueData[8:])}
++      bt.sealedExtents[id]=append(bt.sealedExtents[id],ext)
++     } else {
++      if len(entry.ValueData)!=8 {return fmt.Errorf("fext child size")}
++      if err:=walk(binary.LittleEndian.Uint64(entry.ValueData),depth+1);err!=nil{return err}
++     }
++    }
++    return nil
++   }
++   if err:=walk(bt.FextRoot,0);err!=nil{return nil,err}
++  }
++  return bt.sealedExtents[identifier],nil
++ }
++
+ 	if bt == nil {
+ 		return nil, fmt.Errorf("invalid file system B-tree")
+ 	}
+--- a/pkg/apfs/volume.go
++++ b/pkg/apfs/volume.go
+@@ -184,7 +184,8 @@
+ 		v.Superblock.XID, // Volume's transaction ID
+ 		v.Superblock.IncompatibleFeaturesFlags&VolumeIncompatCaseInsensitive != 0,
+ 	)
+-	v.FileSystemBTree = fileSystemBTree
++	fileSystemBTree.FextRoot = v.Superblock.FextRoot
++ v.FileSystemBTree = fileSystemBTree
+ 
+ 	// Read extentref tree if present
+ 	if v.Superblock.ExtentrefTreeOID > 0 {
+--- a/pkg/apfs/btree_node.go
++++ b/pkg/apfs/btree_node.go
+@@ -161,7 +161,7 @@
+ 
+ 			// For fixed size entries, size depends on object subtype
+ 			switch n.ObjectSubtype {
+-			case 0x0000000b: // Object map B-tree
++			case 0x0000000b, 0x0000001f: // OMAP / sealed extents
+ 				keyDataSize = 16   // sizeof(fsapfs_object_map_btree_key_t)
+ 				valueDataSize = 16 // sizeof(fsapfs_object_map_btree_value_t)
+ 			default:

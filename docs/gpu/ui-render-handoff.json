@@ -1,0 +1,2420 @@
+{
+  "updated": "2026-10-20T11:01:25.893710+00:00",
+  "workspace": "/home/xxiao/Projects/MI6_iOS",
+  "user_direction": "Prioritize initial boot missing wallpaper. User now confirms geometry normal; preserve current scale. Device debugging authorized.",
+  "live_device": {
+    "round": 190,
+    "versions": {
+      "GPU": "1.148.0",
+      "Metal": "1.21.0",
+      "Display": "1.0.22"
+    },
+    "payload": "build/gpu-runtime/ui-direct-drawable-admission/bridge/XnuBridge.efi",
+    "state": "Round190 frozen Metal1.21 user-confirmed wallpaper initial onset and wake preservation;12919/12919 GPU,12643/12643 compositor, failures0,recovery0; PID262 alive through age620.5s. Hello handwriting replay remains separate. Device left running.",
+    "UART_reader": {
+      "session_id": null,
+      "state": "none; all diagnostics completed and readers closed"
+    },
+    "payload_sha256": "c8bac15e5f0d0f7f5d43894a9100a9101c276b5fa2b4f46376d332dcaafcf991",
+    "embedded_kernel_sha256": "1935fa87a1ea9022abc582d42c01e22fb87ccb7575ca2251d9da91902104ac3b"
+  },
+  "ready_candidate": {
+    "versions": {
+      "GPU": "1.148.0",
+      "Metal": "1.21.0",
+      "Display": "1.0.22"
+    },
+    "parent": "build/gpu-runtime/ui-memoryless-allocation-audit",
+    "source_sha256": {
+      "boot/bridge/display_handoff.c": "cb69830e16a1a9fc563a3924be8c2f43d07ee6764d8856d25d6bce129d22ea79",
+      "drivers/display/QcomDisplay/DisplayCommandTransfer.h": "b9006bbf692e38b7b5ce315bb7d930631461bac9c645d40d72ea61b07d225f62",
+      "drivers/display/QcomDisplay/DisplayIdleMappings.h": "bc5e5b401583f43a2c94a345d91f3c024173629ffe5d2d8295dbb7a2634d4631",
+      "drivers/display/QcomDisplay/Info.plist": "bc10bc4d974c2490159da0be5b8247f691ba2a94dd9ed379a49613a09d281e63",
+      "drivers/display/QcomDisplay/QcomDisplay.cpp": "3b230dd10ed523ca3e80a7f7505a86833b7643d64ea48b465309fa3bd91a60b5",
+      "drivers/display/QcomDisplay/QcomDisplay.h": "6302e349f8e79f2c6d09ee5fbc462622294dca67baff9d911e8c14f2f17de331",
+      "drivers/display/QcomDisplay/QcomDisplaySurface.h": "b5640228a8abc2efac19bdfbd4dd462ba3b305e3c5013918f33bb3dec3af4720",
+      "drivers/gpu/QcomGPU/AdrenoPipeline.h": "3830b91e429ec20169675a59635fd8a320038cccde0e6f633c7b7097397743a9",
+      "drivers/gpu/QcomGPU/Info.plist": "7f052e7a1e26635a2bdc8adeee227b4ad32073f1b7409d60ac95f003273ded51",
+      "drivers/gpu/QcomGPU/NativePosterIdentity.h": "034d1f8b79cc2355855e9ec52b189710b1a4a2c3031df5bcaf011bc650120d16",
+      "drivers/gpu/QcomGPU/QcomGPU.cpp": "3b3b6c0d9e34e9111136cf1969285340d8d549f915bbc3c1e17b53a7f4f5c6b2",
+      "drivers/gpu/QcomGPU/QcomGPU.h": "69e48a00bc85be43ab7ea9b18120e4eb303fc89ecba106e1db7a552e53bcc1f2",
+      "drivers/gpu/QcomGPU/QcomGPUHardware.cpp": "aa2f13453dfc07409a6289ec34cc2d22e0c64f6dab4ca11cac06a8e3a90d2990",
+      "drivers/gpu/QcomGPU/QcomGPUNative.cpp": "9ceff6bedc374cd72a750e71270e422c3103af1100ed9cf31c394912e958874c",
+      "drivers/include/DisplayFrameStatistics.h": "fde188fd35eb8c925005bae16717d5a6b4bfee9f048e1772bb8072fbf4ab316a",
+      "drivers/include/DisplayTimeline.h": "ce60adc499d22427c2bd4e450313f186f113084029d44c8b1e543d1c704b5f7a",
+      "drivers/include/GPUBlit.h": "43336bcd2d6ea751bfb7e41777dbce44ded9cdb3ed091f192a7951e5f6406156",
+      "drivers/include/GPUDiagnostics.h": "a8d6fa7ab9b40b6f4a12fdd450084c75b4f0b34cb512ec160c10850c9384b32a",
+      "drivers/include/GPUMetalCapabilities.h": "0c99145d5379302fe622b3c30ddd35c5ecf652e18744eefa8f06cb73cb1d7330",
+      "drivers/include/GPUMetalTiming.h": "c8bfe1c0b06617e8af2c0779c7ec70853711d2ac8f28411841130911c8cf0f6d",
+      "drivers/include/GPUShaderProtocol.h": "b785d1c77c3210443afa97eba0a2afbdf38df3451366849861ba18ea1397ee1c",
+      "drivers/gpu/QcomMTL/Blit.metal": "af98c30ec8297cdac4c46b75e4aa984382b588fcaf181a30c5dfb1ee78152b3b",
+      "drivers/gpu/QcomMTL/Info.plist": "7af30a4af9dce47f98fe67da9bde6264d4794e0c24ab81a87ed0371f8d67dee1",
+      "drivers/gpu/QcomMTL/QcomMTL.mm": "f5f759875912a7c1ba9662ef47c9b2095cc2b439ee0ac4c817f8c674b4da0e06",
+      "tests/display_test.cpp": "668b12ba683007a3370325e70b32081713d2dd139d259cb50a47ad29fec1a42c",
+      "tests/fixtures/gpu/packed-fluidity.air.ll": "99c1cef7ba2cd3fcb35738e6b131b7fd91045b87ea66a7e9c5020a40f03dd88c",
+      "tests/gpu_compiler_test.cpp": "fd34e44f22788aa47e395920f25c37acd5701215392cfeb1f349cc0bf219fd73",
+      "tests/gpu_submit_test.cpp": "4ba07c6a60457451b18a0661792eb702e69beffa64a3f6d2edef5843bea3f236",
+      "tests/gpu_test.cpp": "8726b580bff8dd5086f20d95f3edc1edaa77a0fc2f3f88cb7938292298113cc4",
+      "tools/displayctl/displayctl.mm": "bd473349bdbfad087f7d377c446277c21d70a564817f404a48d2b38d6310daa4",
+      "tools/gpu-compiler/AIR.cpp": "81ae37bbeff1bb3ce100efaca00bfe4fde089fde5b3b6eb4a72ab19057b2fe15",
+      "tools/gpu-compiler/AIRRuntime.cpp": "cb5990485d9b4548273ae2d8379da3f6a70b49f2ec8f2d05880bb95342f28b91",
+      "tools/gpu-compiler/Backend.c": "2e0c21624c60b590cc3c2478cb90938cca12f1ddfe917799a87783aa836c7be8",
+      "tools/gpu-compiler/Semantic.h": "6131bb7f29e9805a70e14d43ea282e0e7db5e5e05788e3e4b542764f2cea6ff1",
+      "tools/gpuctl/GPUConnection.cpp": "e46229fc435a9e9277d3b7eac791bac0c1bb151da80c9f9a8b469671a9b694b7",
+      "tools/gpuctl/GPUConnection.h": "76ccb59c2f173c7142c5de08efceadb19af50cd3b3bac8bf72e14db8378467d3",
+      "tools/gpuctl/gpuctl.cpp": "aa950f2b8d390714b85716ccf620622b9da512d7c7876f0a1f8211ec39437914",
+      "tools/gpuctl/metalctl.mm": "de7001d0f6adf22354185b9c00ad8ec35f0df3281f24b4b5deba77664f76f9d0",
+      "drivers/gpu/QcomMTL/MetalRetirement.h": "348d05d5936ee67e2e14052f4c2a39f7ea016775ad49f4259423b43790196fcb",
+      "drivers/gpu/QcomMTL/MetalUploadPool.h": "97ad64ec7cf02f209de2c2c71c60ddcebbb9028579967cc8279b9ced63e89d7a",
+      "drivers/gpu/QcomMTL/MetalBatch.h": "51fa6246463fdb026166b73dd2c6b192e1d7ec9d86c351275fe21b215e6c9ce8",
+      "drivers/gpu/QcomMTL/MetalArchive.h": "2c3b7ceeb938f20d51edbda48632897890283e3b2c20f58305ffa276ba21d444",
+      "drivers/gpu/QcomMTL/MetalReference.h": "f437d17cc47b872fd99078495d0ec811d7041120a4c1e8e0d915cb65a342d7ab",
+      "drivers/gpu/QcomMTL/MetalHeap.h": "6ddab846a58cb2c7507ca9c0f4aa10ae18a1e375ff667f40f41360cbe54dfaa6",
+      "drivers/gpu/QcomMTL/MetalSync.h": "25eb9ada1cd0fca11078d2ea94e701af9f783e6c04c8c8ac42b99f680cfc5204",
+      "drivers/gpu/QcomMTL/QcomMTL.h": "4c2835f253d00ad31c1eda7a1d982544705371ebc3ce3628e4d8365b6d33e3c0",
+      "drivers/gpu/QcomMTL/NativeMetal.h": "e50e525b69cd8ff1468a7ee0e1f065b2b8441af15d7d3f9e1c135613e550e551",
+      "drivers/gpu/QcomMTL/MetalTexture.h": "0bde1667e0728323cd9f41153a6c8b3ec0d78ec5d9741c2f41f259935cd8c563",
+      "drivers/gpu/QcomMTL/MetalShaderCapture.h": "00d97a51ee93420eb96a0a6729bc8a31e8dd87a3861303437da67411384a831d"
+    },
+    "kernel": "build/gpu-runtime/kernelcache.ui-rgba16-unorm",
+    "kernel_sha256": "4a271cd7a1d43eb5088ebd33fc0d68d4625289540d7b51baca873c71d2911642",
+    "payload": "build/gpu-runtime/ui-direct-drawable-admission/bridge/XnuBridge.efi",
+    "payload_sha256": "c8bac15e5f0d0f7f5d43894a9100a9101c276b5fa2b4f46376d332dcaafcf991",
+    "changed_HFS_files": [
+      "QcomMTLDriver.bundle/Info.plist",
+      "QcomMTLDriver.bundle/QcomMTLDriver",
+      "QcomMTLDriver.bundle/QcomMTLDriver.json",
+      "mc",
+      "metalctl",
+      "ui-background.sh"
+    ],
+    "added_HFS_files": [
+      "QcomMTLBefore.bundle/Info.plist",
+      "QcomMTLBefore.bundle/QcomGPUCompiler.dylib",
+      "QcomMTLBefore.bundle/QcomMTLDriver"
+    ],
+    "hardware_tested": true,
+    "goal_achieved": true,
+    "hardware_evidence": "build/gpu-runtime/ui-direct-drawable-admission/hardware-evidence.json",
+    "note": "Frozen source.json is pretest build receipt. Current acceptance is wallpaper-only and recorded separately; do not mutate frozen packet. The source.json kernel pathname/hash is parent-source metadata; actual embedded kernel hash is1935fa87... as verified in embedded-verification.json."
+  },
+  "verified": {
+    "mmu": "round73 established actual MMSS SID0 bank0 AArch64/4K stage1 WB tables after real VBIF halt ACK and TLB sync. Native CARenderer diagnostic IOSurface scanned directly at DPU IOVA 0xf0004000 stride4352. SwapWait=0, all2073600 reference pixels matched, quarantine0. This is a GPU/scanout diagnostic, not native Welcome or fluidity proof.",
+    "round74_no_backlight": "Frozen Display1.0.11/GPU1.88/Metal0.77 with WLED handoff omitted. Native compositor accepted535, rejected0; completed render432, compute48, transfer48, marker55 (kind counts can overlap). Native displayed reached2834 then3691, direct frames2830 then3684. User physically pressed lock button during this round and saw repeated information-button flicker. Two later readbacks showed complete white information icon on black (same SHA); awake-window captures were all-black on a different surface. Further display flips did not grow GPU job count535. Do not equate flips with new GPU rendering.",
+    "round74_image": "build/gpu-runtime/round-74-current-ui/scanout-1.png (1080x1920, complete info icon, SHA6e6a2b4e695d9df02a559ed667b4b2ca9a47aceab94610fc27fe14edd2e19ce6); user photo /home/xxiao/Downloads/IMG_20261018_193846.jpg matches this general content. round-74/scanout-1.png is an earlier firmware text frame, not UI.",
+    "round75_power_fix": "WLED matched and native on/off readback works. Off no longer masks retained-raster IRQ or cancels active swap. Native VBL count12196 to50500, delta319845ticks (~16.66ms at625/12 ns). IRQ1 while visible0; pending/active/queued0 in samples. Displayed9, completed12 after control transactions. Native GPU submitted/accepted0 throughout this boot, despite GPUHardwareReady true and metalctl info successfully creating device. Native wake-window alone did not yield Welcome. No matched same-boot backboardd/SpringBoard crash headers in scanned flat paths.",
+    "causal_caution": "535 versus9 is a useful difference but physical power-button wake was not controlled; do not assert WLED was the sole cause. CADisplayStateControl on lease does not itself prove SpringBoard animation resumed. User asked to remove backlight from next phase.",
+    "remaining": "Rendering fluency belongs to new user-requested task. Preserve fixed lifetime semantics; no more performance changes in old task. Separate prior orderly-shutdown initproc panic is recorded, outside current performance scope.",
+    "round76": "No backlight match. Native GPU accepted0; original failures included A8/RGBA16Float sampling and client buffer imports. Complete PNG all black. Original SBSUndimScreen UUID/RVA0x12704 disassembled and matched; zero-argument native wake sent, not UI presentation proof. Evidence build/gpu-runtime/round-76-evidence.json.",
+    "round77": "GPU1.90/Metal0.79 adds A8 alpha-only hardware sampling and RGBA16Float8-byte sampling. Original compositor9Render+1marker completed, but capture all black. Native rejected input descriptors all logged direction2, otherwise matching layout. Evidence build/gpu-runtime/round-77-evidence.json.",
+    "round78": "GPU1.91 accepts original direction2 inputs; checks GPU writes and preserves read-only AP in job tables. No direction2 layout rejection in capture; imports grow. Native compositor accepted0 while texture-binding/draw/render-pass failures continue. Later backboardd hits1024 resources/77,709,312bytes and allocations fail. Could be cache demand or lifetime bug; not proven leak. Existing blit-test exited1 before reaching new readonly subcheck, so its GPU read/write permission result is UNVERIFIED. Main capture no panic; subsequent requested reboot panicked after launchd teardown (initproc exited namespace2 subcode0xa), recovered Fastboot. Evidence build/gpu-runtime/round-78-evidence.json.",
+    "round79": "GPU1.91/Metal0.80: readonly imported input passed GPU blit/compute/sample readback and rejected write with unchanged data. Whole blit suite failed afterward because expected native rejection poisoned that diagnostic device. Native compositor accepted31, render26/compute3/transfer3/marker2 completed, rejected0. UI PNG remains all black, exact previous hash. Four CPUs verified; no panic in main capture. See build/gpu-runtime/round-79-evidence.json.",
+    "round79_reboot": "Orderly displayctl reboot returned to Fastboot; raw UART and report show no panic. round78 reboot initproc panic remains a separate earlier failure.",
+    "round80": "GPU1.92/Metal0.81: previous Metal binding/line/render-extent failures absent, native compositor accepted70 then439 (340 render submitted339 complete at snapshot), native rejected0. Resources83 then115, no cap. After SBSUndimScreen native display flips and pixel hashes change. PNG actual UI is visibly incorrect: gray overdraw/partial glyphs, user reports heavy flicker/overlap. Four CPUs verified, no panic. Existing whole blit test fails silently before completion subcheck logs; readonly subcheck not reached. See round-80-evidence.json.",
+    "round80_reboot": "Native orderly reboot hit initproc exited namespace2 subcode0xa after launchd shutdown, then recovered Fastboot. Separate from main round80 and round81 captures.",
+    "round81": "Diagnostic-only metalctl; frozen round80 drivers. Blit failure localized to pitched texture transfer: first/last readback zero instead of0x3c. Fence and render-state existing diagnostics pass;4CPUs,no main panic. Compositor accepted0 within this boot capture; scanout still firmware, not a native UI result.",
+    "round82": "Diagnostic-only:512KiB GPU fill source all0; CPU writes same source then2048row CP copy passes8192/8192. Small fill/reference/heap/packed clear/readonly checks pass. Large fill failure is not yet linked to flicker. See round-82-evidence.json.",
+    "round82_stable": "At this stable follow-up, scanout images change but compositor accepted count remains493 across~40s; could reflect replay of existing surfaces, not new GPU rendering. User reports animation continues without ghosting; initial state this boot not observed. See round-82-stable/evidence.json.",
+    "round82_reboot": "Native reboot returned Fastboot; report/raw show no panic.",
+    "round83": "65532 fill passes,65536 fills0,65540 passes with guards unchanged.131072 probe aborted after mapper context-register8030 observed802098 expected802018; immediate snapshot already802018, FSR400 FAR0. GPU0xe00002d7. Evidence round-83-live/evidence.json; no kernel panic captured. Main early UART gap means4CPU not verified this round.",
+    "round83_recovery": "User identifies likely screen-off state. Static scanout and fixed counters during this interval do not prove a hang or rendering recovery. SBSUndimScreen call and driver visible1 do not establish optical wake; no matching crash header in latest8 files, so no crashed process confirmed.",
+    "round83_reboot": "Native orderly reboot returned Fastboot; no panic captured.",
+    "round84": "GPU1.93/Metal0.82 real byte readback passes512KiB and65532/65536/65540/131072 with0 guard errors. Full blit including readonly input/write rejection passes;fence/render-state pass. Compositor107→365 accepted0rejected;TCR fault not reproduced in main capture. USER STILL SEES FLICKER/OVERLAP; UI not fixed.",
+    "round84_video": "Latest video shows central greeting black/light rectangles while status/bottom prompt stay intact. NativeCARenderer1080x1920 IOSurface2layer2073600pixels pass. UI remainsincorrect.",
+    "round84_reboot": "Orderly native reboot returned Fastboot; no panic captured.",
+    "round85": "Same round84 kernel/Metal. NativeCA64x64 five frames opaque/translucent/moved/hidden/local damage all4096pixels correct per frame.1080x1920 native render/readback returned, CPU pixel verifier timed out, interrupted cleanly to Bash.4CPUs,no main panic. Reboot had existing initproc namespace2subcode0xa panic then Fastboot. Full multi-frame result unverified.",
+    "round86_initial": "Only direct-scanout boot flag1→0. Initial compositor0, firmware/staged raster samples do not constitute UI comparison. Awaiting same-boot followup.",
+    "round86_user": "Entered Setup later and still flickers. Actual CPU source-copy completed=1 lines confirm staging active. Directscanout alone does not explain flicker. Initial preUI compositor0/samples not normalUIproof.",
+    "round87": "FrozenGPU1.93/Metal0.82;64x64 and256x256 nativeQuartzCore sameIOSurface8frames each correct incl transparentCGImage/localdamage;4CPU,no mainpanic.1465compositoraccepted0rejected. Rebootinitproc namespace2subcode0xa after launchdshutdown returnedFastboot.",
+    "round88": "Metal0.83 new Scheduled/future-event fence regression, nativeCA256 eight frames and render-state pass;4CPU,no main panic. User reports no flicker/black/ghost now but low frame rate. First-Setup repeat verification pending. round-88/evidence.json includes actual scanout and quiet-window CPU timing, not FPS.",
+    "round88_reboot": "Native no-argument displayctl reboot returned firmware; no panic captured.",
+    "round89": "GPU1.94/Metal0.83: full fence+future-event/Scheduled, whole blit including readonly, nativeCA256x256 eight frames, render-state all pass;4CPU,no panic. Actual scanout full hello intact. User: still slow but no flicker/overlap; explicitly closes flicker task and requests new performance task. See round-89/evidence.json.",
+    "round90": "GPU1.95 exact-size scratch DMA cache4entries/32MiB, full clear; full4suites pass,4CPU,no main panic.30.338s348jobs; encoding2.810ms,address18.362ms,admission29.024ms,run21.217ms,retire5.002ms. User still slow. Evidence round-90/evidence.json.",
+    "round91": "GPU1.96 private unpublished L3 sequential writes; every source physical-page/retained translation validation preserved. Full4suites pass,4CPU,no main panic.42.485s753jobs;address14.154ms,admission24.892ms,run21.196ms,retire4.990ms. User still slow. NOT FPS. Evidence round-91/evidence.json.",
+    "round91_direct_scanout": "AFTER performance window actual direct1 mapper1 direct_frames137 quarantine0 sourcef0004000 IOSurface1. PNG all offsets/chunkCRCs/IEND verified/viewed: gray background greeting transition, intact status/info; center greeting absent. Do not claim fullhello from this frame.",
+    "round91_reboot": "Existing initproc namespace2subcode0xa after launchd orderly teardown, then Fastboot; separate from clean rendering capture.",
+    "round92": "GPU1.97 opt-in read-only clock observer; same render sources as1.96. Fence+future-event andCA2568frames pass;4CPU,no panic.39samples GPUCC configured257000097Hz. BothOSMbank enable0,counterctrl14/status0, LUTNotReady; CPUactual frequencyUNAVAILABLE,0meansinvalid not0Hz. Evidence round-92/evidence.json.",
+    "round96_performance": "No GPU tests or readback in the active 34.630-second window: 1231 compositor jobs, CP mean 6.573 ms, 35.547 jobs/s. CPU means across all 1474 UI jobs: admission 12.445 ms including preflight 4.518, encoding 1.570, address space 4.884; observed run 8.569, retirement 2.772 ms. Different time windows and combined clock/bandwidth changes; not an isolated frequency speedup.",
+    "round96_regressions": "Fence/Scheduled/future event, complete blit with RO imports/guards, CA256 same-IOSurface eight frames (all 65536 pixels, unchanged0), and render state passed. Four CPUs; no UI runtime panic. Evidence: build/gpu-runtime/round-96/evidence.json.",
+    "round96_scanout": "direct1, mapper available1, direct frames62, completed/displayed62, quarantined0, pending/active/queued0. Raw PNG offsets, size, every chunk CRC and IEND verified; gray greeting transition with complete status/bottom text viewed. Image: build/gpu-runtime/round-96-final/scanout-1.png.",
+    "round96_low_frame_rate": "Only 62 cumulative displayed swaps after the earlier 34.630-second active window: new swaps in that window must be <=1.79/s. This conservative upper bound confirms slow display updates; exact motion FPS was not measured. Fluency remains unresolved despite higher job throughput.",
+    "round97": "GPU1.99/Metal0.84/Display1.0.13: batch command5 coalesces2856shader ops into885jobs (3.227/op group), rejected0. Actual137latched swaps52.445s =>2.593fps welcome, p50 350.210ms/p95 783.886ms. Independent native CA moving-bar505swaps20.053s =>25.134fps,p50 33.636ms,p95 50.132ms. These are different workloads; no60fps claim. Fence/future-event/Scheduled, complete blit with readonly/guards, CA256 IOSurface8frames and render-state allpassed. report ui-native-batch/performance-report.json.",
+    "round97_scanout_motion": "Two actual direct-scanout PNGs during controlled native CA animation: allbase64offset/length/PNGchunkCRC/IEND verified, exactlytwo known whole scratch-cache diagnostic lines removed from transport, raw retained. Whitebar bbox shifted x539..1079 to102..642,y940..980,34960changedpixels; first image viewed. Captures excluded from timing. round-97-capture2/scanout-verification.json. Initial race returnedNotReady and was not counted.",
+    "round98_cpu_clock": "Read-only CPU PLL/RCGR observations stable, decoded with same device ClockDxe: online cluster0 cfg301 source105 at PLL17916000, L51,user9,alpha disabled, divide1,locked ->configuration1555200000Hz. Not a PMU/cycle measurement. Cluster1cfg403 selectsauxsource17/div2; own PLL614.4MHz is NOT its CPUfrequency. Firmware GetClockFrequency cluster1 cached300MHz;cluster0cachedqueryfailed. CPU OSM remainsdisabled,no writes. ui-cpu-clock-audit/{firmware-clock-audit,apcs-clock-decode}.json.",
+    "round98_controlled_CA": "GPU1.100 diagnostic-only changes, Metal0.84 batchON, sameOPP: controlled507swaps=>25.212fps,p50 33.655ms,p95 50.073ms; welcome117swaps39.810s=>2.914fps. FourCPUs,no mainpanic. Boot backtraces are IOMemoryDescriptor managed-page warnings, not panic. BootUUID932D3D3E-7E55-409D-BC9D-DC8660EF64E3.",
+    "round99_control": "Same raw/embedded kernel and frozen Metal0.84HFS as98, only capability advert0off; optional diagnostics identical. GPU596MHz/968mV, sameCPUcfg301/L51. Native controlled334swaps20.086s=>16.579fps,p50 66.324ms,p95 66.981ms. On98=>25.212fps,ratio1.521. Actualregistryadvert0verified. MainhostUARTwrapperreplydelayed causedtimeout; fresh8s passiveattachdrained actualindex0status0; later sameUUIDB3F13D29-9E7F-487B-83A5-431DB696AF33 diagnosticsall0. Not a GPUhang. ui-cpu-clock-audit/performance-control.json.",
+    "round100": "Metal0.85 calls ordinary queue drain before private marker fallback, preserving executionLock/FIFO/dependency suspensions and full-list Scheduled semantics. Exact onlycode changes are helper7lines/comment +plist0.85 relativeCPUauditparent. Controlled598swaps20.070s=>29.7465fps,p50 33.341ms,p95 33.483ms,p99 35.032ms. Marker count9->43 acrossinterval, vs98 138->710. Compared98gain17.98%;99gain79.43%. Welcome80swaps29.141s=>2.711fps,p50 366.404ms,p95 616.669ms; differentstartupwindowso no exact Welcome speedupclaim. Full fence/future-event/Scheduled, blit/readonly/guards, CA256 sameIOSurface8frames(all65536pixels,unchanged0),render-state pass. FourCPUs,no runtimepanic. ui-inline-submit/performance-report.json.",
+    "round100_final_scanout": "One actual quiescentdirectscanout PNG32,587bytesSHA256caf4dc1832d2cfdd7d570cc41c5b8d922cc5dab45a9e2dee72fe48b6fa0f5c47,offset/length/chunkCRC/IENDverified. Whitebar bbox353..893,y940..980;redcornerRGB204,13,13. direct1/mapper1/directframes1893/quarantine0/displayed1896/pending-active-queued0. CapturebusyattemptsreturnedNotReady andwereNOTcounted. Onlyone valid frame, NOT motionproof; continuousmotionconfirmedonly97twoimages, while100realframeintervalsandCA8changingpixelsseparateevidence. round-100-capture/scanout-verification.json.",
+    "round100_live_before101": {
+      "running_round": "round100 GPU1.100/Metal0.85: bounded draw batches + ordinary FIFO admission in native submit helper;596MHz nominal; welcome2.711fps, controlled CA29.746fps, goal unachieved",
+      "running_boot_uuid": "F36A2CA9-28D4-49AA-973F-FB067EA472A8",
+      "running_payload": "build/gpu-runtime/ui-inline-submit-bridge/XnuBridge.efi",
+      "running_report": "build/gpu-runtime/round-100/report.json",
+      "versions": {
+        "Display": "1.0.13",
+        "GPU": "1.101.0",
+        "Metal": "0.85.0",
+        "SCM": "1.0.1",
+        "RPM": "1.14.0"
+      },
+      "uart": "/dev/ttyUSB0",
+      "uart_exclusivity": "All round100 captures/regressions finished; no UART reader remains. One exclusive scripts/test-bridge.py reader only. Attach must use MAIN round-100/report.json.",
+      "fastboot_serial": "edk2-fastboot1",
+      "reboot": "Native displayctl reboot followed by firmware Fastboot has succeeded for rounds 73 and 74. No flashing. Use existing scripts/test-bridge.py, stage/CRC/run-efi.",
+      "last_user_observation": "User is not at the device and explicitly requested autonomous detection/debugging; no subjective fluency conclusion."
+    },
+    "round101_102_cursor": "GPU1.101 actual retained parent+leaf reread cursor. Same kernel/HFS/rates ON101 controlled29.647fps vsOFF10229.525fps; address perbatch4.135vs5.340ms (-22.6%). Work batches810vs781; not deterministic command replay. Welcome2.998vs2.782fps startup workloads differ. 101full four regressions allpassed, eightCAframes65536correctunchanged0; bothmain4CPUs/no runtimepanic. Native reboots101/102 maypanic during knownlaunchd shutdown then recoverFastboot, not runtimeUI failures. Evidence ui-translation-cursor/performance-comparison.json.",
+    "round101_framebuffer_work": "Welcome completed3598916608payloadbytes/760primitives; controlledincrement67961088bytes/14primitives. GPU CP mean20.918ms/batch,max237.630ms,invalid0. CPUadmit18.988ms inclpreflight4.971/encoding7.918/map4.702, retire8.914. Stages overlap, no sumasframewall. Copy-onlytime unmeasured. IOSurface directscanout is zeroCPUcopy; GPU framebuffer snapshots remain.",
+    "round103_restored_on": "Same verified ON payload;4CPUs/no runtimepanic, UUID28384C54-AC57-4A51-99BA-FCA2CD1BDEE7 matched in finalattachment. Welcome135actualdisplayedsamples/48.327s=2.773fps. CPU749batches admission19.123ms inclencoding7.959/map4.713, retire8.931. Completedframebuffersnapshot3545303680bytes/746primitives. No newscanoutPNG. Evidence ui-translation-cursor/restored-on.json.",
+    "round103_scanout": "Actual nativeWelcome quiescent endframe, visible iPod/battery/info onblack. CompletePNG33115bytes,SHA0b7902bd4f067a39240f0494a85c4a346dfa9dce9bb77664f07e0ff7ab0aa285,1080x1920,viewed. Allbase64offsets/size/PNGCRCs/IENDvalidated;10wholeknownclock/execution telemetryrows removedfrominterleavedstream, rawretained; no unknownbytesdiscarded. Transportdirect1,mapper1,directframes137,quarantine0,surface3,displayed137,pending/active/queued0. Singleimage notmotionproof. Evidence round-103-capture/scanout-verification.json.",
+    "firmware103_recovery": "Afterknownshutdownpanic, firmware stoppednearBatteryprofile, noUSB/noUART12s, failedShell20sattempt. LaterFastbootindependentlyrecovered; no causeproved. No1.102payloadranuntil104stage. PassiveUARTtoolneededandtested; no physicalactionrequired afterrecovery.",
+    "round104_baseline": "GPU1.102 mode0originalcompute;4CPUs/no runtimepanic. Newpatternidentity+overlap/padding/guards allpass; fence/blit existingfullsuitespassed. 2Dbytes0asexpected. Welcome118actualswaps/36.826s=3.177fps, startupworkdifferent, no2Dperfclaim. Evidence ui-snapshot-blit/baseline-evidence.json.",
+    "round105_2d_failed": "GPU1.102 mode1main4CPUs/nopanic; compositor2Dbytes0andnative2Dbytes0beforetests. Fence/blitpass; renderstateoriginalpass, thennewpatternfirst2DjobfaultedSMMUFSR80000402FAR1087c000 (source10834000+48000exactguardpage). Driverquarantined, no2Dsuccessbytescredited. CAafterglobalfaultcouldnotexecute, not independentpixelresult. Neverenablemode2of1.102. Evidenceui-snapshot-blit/diagnostic-failure.json.",
+    "round106_2d_pixels_failed": "1.103mode1adminnoncompositor;4CPUs/nopanic,fence/blit/originalrenderstatepass. Patternphase0firstbadbyte4352(planeoffset4096)actual51expected0; actualcompleted2D196608bytes,comp2D0,nofaultinthecapture. NoCAafterfailedpattern,noUI2D. Evidenceui-snapshot-blit-interior/pattern-failure.json.",
+    "round107_2d_small_passed": "1.104finalslice+CCUmode1administratornoncompositor;4CPUs/nopanic,fence/blit/fullrenderstatepattern pass. Actual2D0->589824, noncompFBpayload0->831232, compositor2D0. 8CA1080x1920framesall2073600correctunchanged0but2Dcounterunchanged589824: CAdoesnotvalidatefullsizeFBcopypath. Neednewexplicitfullsizepattern beforeUI2D.",
+    "round108_full_2d_passed": "Exactsame1.104kernel withupdatedsignedmetalctl.4CPUs/nopanic,full1080x1920pattern2phases each8356352bytespassed,identityexact/guards/paddingexact/overlap2instances/alphaonly1LSBtolerance. Native2D0->24772608,totalnoncompFB0->25032704,comp2D0. Meaningfulmulti2Drectanglepathproven; notFPSproof. Welcomecontrol143samples/48.061s=2.955fps, mode1compusesoriginalcompute.",
+    "round109_initial": "Mode2 actualWelcome158swaps43.410s=3.617fps,p50249.919ms,p95466.975ms. GPUCP805samplesmean17.290ms(max209.986ms),invalid0,FBpayload3932874240/830primitives. Startupworkdifferentvs1082.955fps; notisolatedcopycostor60fpsproof. Initialframe-statswrapperlate, fullframevaluesreceived; oldcaptureterminal thenpassive8sdrain,newrootstats pending.",
+    "round107_108_2d": "GPU1.104 small and1080x1920 pattern identity/overlap/padding/guards passed; fullsize actual2D24772608 bytes,total25032704,compositor0. Eight CA full frames107 passed but did NOT exercise2D. Full pattern108 is large-copy proof.",
+    "round109_2d": "Main4CPUs/no runtimepanic, Welcome158samples43.410s=3.61666fps; compositor2D3854827520/3932874240=98.016%.805CP samples mean17.289ms,max209.986,invalid0; CPU admission19.376ms/retire9.193ms. Different boot work; not isolated gain. Later absent UART probe; controlled CA not executed.",
+    "round110": "1.105 fourCPUs/no mainpanic, Welcome3.3513fps, controlled29.5989fps. CP effective297.970MHz versusGPUCCconfigured596MHz. CPUretire9.138ms/batch inclpools7.637ms. Fence/blit/fullpattern pass; CAtoolABI mismatch beforedraw, noCApixelproof.",
+    "round111": "1.106 secondaryIBreuse: fourCPUs/no mainpanic; Welcome3.7419fps, controlled29.8461fps. CPUadmit13.219ms/retire2.892ms inclpools1.398ms onWelcome; CP/RBBM bothabout298MHz. Fullfence/blit/CA8x65536pixels/fullpattern pass withABI3tools. Not60fps.",
+    "round112_metrics": {
+      "samples": 145,
+      "fps": 4.2974191840386,
+      "span_s": 33.50848354166666,
+      "p50_ms": 150.22177083333332,
+      "p95_ms": 782.9422916666666,
+      "max_ms": 1467.0409895833334,
+      "last_token": 145
+    },
+    "round112": {
+      "evidence": "build/gpu-runtime/ui-gfx-clock-divider/hardware-evidence.json",
+      "performance": "build/gpu-runtime/ui-gfx-clock-divider/performance.json",
+      "welcome_fps": 4.2974191840386,
+      "controlled_CA_fps": 29.871711545341697,
+      "actual_CP_hz": 595989793.556,
+      "controlled_GPU_ms": 0.5205156652706185,
+      "all_regression_statuses": 0,
+      "goal_achieved": false
+    },
+    "round113": {
+      "evidence": "build/gpu-runtime/ui-admission-detail/hardware-evidence.json",
+      "performance": "build/gpu-runtime/ui-admission-detail/performance.json",
+      "controlled_CA_fps": 29.821098921186067,
+      "controlled_GPU_ms": 0.5087536606041924,
+      "index_alloc_ms": 1.8095531554426092,
+      "index_retire_ms_per_alljobs": 2.1980015669954787,
+      "all_GPU_regressions": 0,
+      "idle_displaylink_probe_status": 1,
+      "goal_achieved": false
+    },
+    "round114": {
+      "evidence": "build/gpu-runtime/ui-index-cache/hardware-evidence.json",
+      "performance": "build/gpu-runtime/ui-index-cache/performance.json",
+      "controlled_CA_fps": 29.89626879243218,
+      "controlled_GPU_ms": 0.4911504435805423,
+      "index_alloc_ms": 0.06173022490820074,
+      "index_retire_ms": 0.019209591806220096,
+      "all7_GPU_regression_statuses": 0,
+      "active_display_link_hz": 60,
+      "goal_achieved": false
+    },
+    "round115": {
+      "evidence": "build/gpu-runtime/ui-admission-stages/hardware-evidence.json",
+      "performance": "build/gpu-runtime/ui-admission-stages/performance.json",
+      "controlled_CA_fps": 29.97034730715519,
+      "CPU_admission_ms": 7.950937252279033,
+      "CPU_preflight_ms": 1.6347220570749108,
+      "CPU_AS_ms": 4.426561509116132,
+      "GPU_ms": 0.48793625992063494,
+      "all6GPUregression_statuses": 0,
+      "goal_achieved": false
+    },
+    "round115_system_ui_GPU_acceleration": {
+      "evidence": "build/gpu-runtime/round-115-ui-acceleration-evidence.json",
+      "Welcome_pre_diagnostics_render_completed": 1627,
+      "Welcome_pre_diagnostics_compute_completed": 484,
+      "native_ui_wake_CP_samples_delta": 18,
+      "native_ui_wake_render_delta": 9,
+      "limitation": "NoalloperationsGPUclaim/perSpringBoarddirectjobclaim; UICPUworkremains. Newwakeframepresentationnotyetobserved."
+    },
+    "round118_last_runtime_record": {
+      "running_round": "round118GPU1.111nativeWelcome4CPUs/no runtimepanic; actualXcrop4.865%payloadsaved; median99.958ms,60notachieved.",
+      "running_boot_uuid": "3C732320-2D37-4817-9C3F-2CC601624DCF",
+      "running_payload": "build/gpu-runtime/ui-snapshot-xcrop-bridge/XnuBridge.efi",
+      "running_report": "build/gpu-runtime/round-118/report.json",
+      "versions": {
+        "Display": "1.0.13",
+        "GPU": "1.111.0",
+        "Metal": "0.85.0",
+        "GPUCC": "1.4.0",
+        "QcomPowerController": "1.3.0",
+        "SCM": "1.0.1",
+        "RPM": "1.14.0"
+      },
+      "uart": "/dev/ttyUSB0",
+      "uart_exclusivity": "NoUARTreaderactive.11775181/59197/19586/25463terminal;118main24851/metrics6397/capture68918terminal. Attachonlymain118report.",
+      "fastboot_serial": "edk2-fastboot1",
+      "reboot": "Native displayctl reboot followed by firmware Fastboot has succeeded for rounds 73 and 74. No flashing. Use existing scripts/test-bridge.py, stage/CRC/run-efi.",
+      "last_user_observation": "2026-10-18 user reports Welcome确实流畅了一些 oncurrent/pre-index-cache version (round113); qualitativeonly, not60FPSproof.",
+      "last_boot_report": "build/gpu-runtime/round-118/report.json"
+    },
+    "GPU1_113_offline": "Trusted aligned multiline2D R32_UINT rawcopy candidate,4x fewerlogicaltexels/samebytes. Normal+ASan/UBSan actualPM4 replay passed; driver/client/Metal builds passed.74kexts/23local hashes exact, HFS12file extraction+3bridge hashes verified. No hardware bitexactness/FPS claim. Newmixed-test waits sampledstats afterrealcompletedpixels;119 failure retained.",
+    "GPU1_114_offline": "Experimental perprimitive samepixel framebuffer feedback eliminates copy commands for eligible single-sample/single-color RGBA/BGRA8UNorm/sRGB triangles. Retains primitive split, realcolor/UCHEflush timestamps+waits/invalidation and allresource/ASID/coherence/display safeguards. DefaultOFF. ActualPM4 tests including384primitive multiIB/instances/rollback passed normal+ASan/UBSan. Driver/gpuctl builds,74kexts/23local hashes,HFS12file readback and3bridge hashes verified. No hardware pixel/cache/performance claim. Fullscratch allocation andglobalbackpressure stillremain.",
+    "GPU1_115_offline": "Producer-aware pre-Family CPU index/blit-layout checks against all live clients actual physical full-root aliases and write masks. Read/read sharing allowed with exact pending reference accounting; unknown uses fail closed. Replace unconditional framebuffer drain with64MiB scratch/64MiB IB/16MiB indices/16-job budgets; worst16MiB IB chain prechecked before tokens. Metal0.87 capability-gated global index drain removal and one-slot retry. Legacy/defaultOFF control retained. Normal+ASan tests passed including full-root alias hazard, overflow/tokenretry and sliding16-slot window. Driver/Metal/gpuctl builds,74kexts/23hashes,HFS12files,5bridges allverified. No hardware pixels/FPS evidence.",
+    "GPU1_116_offline": "Per-job16-cell CP-stamped profiling, epoch/sequence/slot ownership, bounded ring posting, physical full-root read/write dependencies, deferred cache preparation in all modes, all-sequence completion with FIFO publication and execution-order watchdog. Normal+ASan/UBSan passed including max256IB-chain ring refill, privateAS retirement while another root selected, queuedfault preservation. Driver/client/74Kext23hashes/HFS12readback/4bridges verified. No new hardware evidence.",
+    "GPU1_117_offline": "Shared storageplan for preFamily budget/actualallocation/PM4. Eligibleinplace4KiB scratch, fallbackfullsnapshot andbatchmaximum retained. Fullscratch fetch3control. Normal+ASan passed includingbyteidenticalPM4,4formats/R8fallback,1080x1920,384primitive/multiIB,1vs2041privateleafmaps andendguard. Driver/gpuctl/74Kext23hashes/HFS12readback/5bridges verified. Nohardware.",
+    "round141": {
+      "round": 141,
+      "updated": "2026-10-19T01:27:34.738044-07:00",
+      "versions": {
+        "GPU": "1.126.0",
+        "Metal": "0.92.0",
+        "Display": "1.0.17"
+      },
+      "profile": "fetch2/pipe6",
+      "boot_report": "../round-141/report.json",
+      "uart": "../round-141/uart.txt",
+      "payload_sha256": "8d91bd609ffee5a46a1a6a0c7c787924fe6c14f18293bbe8aece574d969dc165",
+      "hardware_tested": true,
+      "multicore_verified": true,
+      "panic_detected": false,
+      "console_command_timeout": false,
+      "inline_snapshot_test": {
+        "exit": 0,
+        "compute_values": 120,
+        "guard_words": 8,
+        "render_pixels": 4096,
+        "scope": "unretained CBs; source overwritten before commit; vertex/fragment/compute bindings; suboffset, page rollover and fallback"
+      },
+      "real_compositor": {
+        "submitted": 1483,
+        "completed": 1483,
+        "failed": 0,
+        "shader_operations": 10279,
+        "framebuffer_copy_bytes": 0,
+        "surface_fences_created": 994,
+        "surface_fences_completed": 994,
+        "surface_fences_failed": 0
+      },
+      "display": {
+        "displayed": 664,
+        "failed": 0,
+        "p50_ms": 49.912968,
+        "p95_ms": 100.79927,
+        "intervals": 663,
+        "intervals_over_20_ms": 663,
+        "span_ms": 41309.541,
+        "aggregate_fps": 16.05,
+        "latest_age_ms": 42782.746,
+        "caution": "Includes animation pauses; aggregate is not continuous active-motion FPS."
+      },
+      "cpu_elapsed": {
+        "encoding_ms_per_job": 1.2923,
+        "address_space_ms_per_job": 2.9463,
+        "queue_wait_ms_per_job": 17.0818,
+        "wrapper_submit_ms_per_job": 9.657,
+        "resource_create_calls": 1258,
+        "resource_create_ms_per_call": 5.0337,
+        "resource_delete_calls": 1256,
+        "resource_delete_ms_per_call": 2.1743,
+        "caution": "Nested/overlapping elapsed intervals, not additive frame time."
+      },
+      "actual_gpu_hz": 595988692.751,
+      "cpu_effective_hz": null,
+      "user_visual_observation": {
+        "text": "正常播放，未见闪烁或停住",
+        "source": "Direct user reply for GPU1.126 / Metal0.92, current round141"
+      },
+      "window_validation": {
+        "wrapper_exit": 0,
+        "UI_WINDOW_STATUS": 1,
+        "reason": "Post-transfer mutable IOSurface capture returns NotReady by design; not an all-pass window."
+      },
+      "previous_failure": "../ui-inline-constants/hardware-evidence.json",
+      "stack_fix": "stack-frame-audit.json",
+      "apple_original_audit": "../ui-inline-constants/apple-audit.json",
+      "conclusion": "Snapshot correctness and current optical playback passed. No demonstrated Welcome frame-rate improvement; near60FPS goal remains unachieved. Round140 real kernel-stack overflow did not recur in this bounded run.",
+      "goal_achieved": false
+    },
+    "round142": {
+      "hardware_evidence": "build/gpu-runtime/ui-resource-validation/hardware-evidence.json",
+      "active_window": "build/gpu-runtime/ui-resource-validation/active-window.json",
+      "resource_create_ms": 2.0958950438233694,
+      "display": {
+        "first_index": 1162,
+        "last_index": 1626,
+        "records": 465,
+        "intervals": 464,
+        "records_contiguous": true,
+        "frame_span_seconds": 28.736398982753713,
+        "overall_fps": 16.146769129927232,
+        "p50_ms": 33.660208117908,
+        "p95_ms": 99.800468111277,
+        "p99_ms": 233.712238087575,
+        "max_ms": 2667.642378760422,
+        "over20ms": 464,
+        "caution": "Includes a2.668sec gap. Content hold versus scheduling stall not distinguished. Do not present inverse median as average FPS or drop long gaps to inflate motion rate."
+      },
+      "gpu_execution": {
+        "completed_delta": 1116,
+        "alwayson_ticks_delta": 203395438,
+        "core_cycles_delta": 6313616776,
+        "mean_ms_per_job": 9.492394619922342,
+        "total_job_seconds": 10.593512395833333,
+        "mean_hz": 595988992.1385553,
+        "caution": "Job counter intervals, not whole-wall GPU utilization; boundary jobs and commands outside timestamp intervals are not adjusted."
+      },
+      "failed": 0,
+      "goal_achieved": false
+    },
+    "round165": {
+      "hardware_evidence": "build/gpu-runtime/ui-display-prepare-ahead/hardware-evidence.json",
+      "phase_analysis": "build/gpu-runtime/round-165/phase-analysis.json",
+      "GPU_hz": 595971198.3451052,
+      "ahead_total": 190,
+      "ahead_hits": 190,
+      "discarded": 0,
+      "hardware_vbl_rate": 59.99481807562509,
+      "lease_active_to_start_p50_ms": 0.017968749885,
+      "lease_start_to_done_p50_ms": 29.727135226413,
+      "goal_achieved": false
+    },
+    "round178": {
+      "round": 178,
+      "runtime_metal": "1.13.0",
+      "goal_achieved": false,
+      "user_observations": [
+        "Background pattern or animation initially visible",
+        "Background disappears after screen off/wake",
+        "Wallpaper size appears incorrect"
+      ],
+      "boot_transport": {
+        "stage_crc": "8CC4C782",
+        "ram_only": true,
+        "initial_capture_wrong_uart": true,
+        "working_uart": "/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0"
+      },
+      "native_exits": {
+        "pids": [
+          364,
+          366
+        ],
+        "signal": 9,
+        "os_reason_namespace": 7,
+        "os_reason_code": 3,
+        "original_libxpc_name": "XPC_EXIT_REASON_EXTENSION_CHECK_IN_TIMEOUT",
+        "original_table_address": "0x1f03b5a60",
+        "lifetimes_s": [
+          5.013,
+          5.012
+        ],
+        "jetsam": false,
+        "codesigning": false
+      },
+      "native_render_failure": "pid273 pipeline/render-pass attachment mismatch; exact mismatch not present in Metal1.13 report",
+      "completed_function_compile_ms": {
+        "273": 4219.49,
+        "308": 4348.8,
+        "315": 4388.21
+      },
+      "diagnostics": {
+        "fluidity_functions": 11,
+        "fluidity_pipelines": 9,
+        "original_descriptors": true,
+        "fluidity_status": 0,
+        "rg32_status": 0,
+        "memoryless_two_pass_pixel_checks": "passed"
+      },
+      "geometry": {
+        "bks_width": 1080,
+        "bks_height": 1920,
+        "bks_scale": 3,
+        "framebuffer_width": 1080,
+        "framebuffer_height": 1920,
+        "wallpaper_crop": "not yet verified"
+      },
+      "other_failure": "SpringBoard unsupported newTextureLayoutWithDescriptor:isHeapOrBufferBacked: observed later; relationship to Hello not established",
+      "files_sha256": {
+        "build/gpu-runtime/round-178-native/uart.bin": "653ee3f17fcfc5edc8341f264ace2787f37231a2d87ff4521e3f71277e70e622",
+        "build/gpu-runtime/round-178-native/uart.txt": "c67a96feb783593f32dd6c5e2935f79a074efb0429b479c8bbd35a11b50a9407",
+        "build/gpu-runtime/round-178-native-tail/uart.bin": "78a16e4dbb63f804ce2e871bb80a77ed92ac6e3a356adb614377db5ae8596043",
+        "build/gpu-runtime/round-178-native-tail/uart.txt": "966716c0f4be27e9a5456e1abfacab6200ba1e35232f910db1b0a9d350bf731a",
+        "build/gpu-runtime/round-178-exits/uart.bin": "29bc5feb81e062550e1d5c8070ed0729230d3c27b5355318980314d9bf56e836",
+        "build/gpu-runtime/round-178-exits/uart.txt": "9ffb0884a83df768edf9acd189d174688c5f4ab897be22f720d9482e699baa16",
+        "build/gpu-runtime/round-178-native-log/uart.bin": "364e8d0009f0f7f533d7bfd60ca14550352d1439b4654a86dd971ab629a1e6aa",
+        "build/gpu-runtime/round-178-native-log/uart.txt": "2bc30e15f2fcab727ef98ee7e5c920a3c9eccb6d2ad869359b0cd27940355ce4",
+        "build/gpu-runtime/round-178-regressions2/uart.bin": "6cf5f53a348469c62c87ac23143bfe96b9eaaecff5652624eb9114ad3e8c7fa4",
+        "build/gpu-runtime/round-178-regressions2/uart.txt": "1267656bd49842559dd36ca000afdc89b6f6443e0940a4a4fb54b5fdb1e1b357",
+        "build/gpu-runtime/round-178-geometry/uart.bin": "be22db35947f189594f6daadee856d1055e4f498c04dc58eaea51c31383bc5bb",
+        "build/gpu-runtime/round-178-geometry/uart.txt": "dd3f1746a3c858efe2acea2c858342ef85465a4b4d11b96e08bbae6d7d5d7e80"
+      }
+    },
+    "round179": {
+      "round": 179,
+      "versions": {
+        "GPU": "1.148.0",
+        "Metal": "1.14.0",
+        "Display": "1.0.22"
+      },
+      "goal_achieved": false,
+      "user_observations": [
+        "No background initially",
+        "Background appeared after a delay",
+        "Background enlarged and edges cropped"
+      ],
+      "capture": "build/gpu-runtime/round-179-native/uart.bin",
+      "first_failure": {
+        "pid": 255,
+        "message": "IOSurface texture rejected: format=80 size=1080x1920 usage=4 plane=0",
+        "timestamp": 2132269785
+      },
+      "consequent_failure": {
+        "pid": 255,
+        "message": "Render attachment mismatch extent=1080x1920 samples=1/1 depth=0/0 stencil=0/0 color0=80/0",
+        "timestamp": 2133767872
+      },
+      "later_process": {
+        "pid": 336,
+        "observed_age_s": [
+          344.4,
+          356.0
+        ],
+        "window_exits": 0,
+        "cpu_static_in_window": true
+      },
+      "completed_jobs": {
+        "all": 12807,
+        "compositor": 12800,
+        "difference_non_compositor": 7
+      },
+      "scanout_capture": "Unavailable because display-scanout-capture was not enabled; no image obtained",
+      "native_geometry_formula": "ceil(view.bounds dimension * UIScreen.nativeScale), original 0x100030020; observed drawable request 1080x1920; no established crop cause"
+    }
+  },
+  "new_code": {
+    "Display1.0.12": [
+      "setDisplayVisible only records visibility: retain TE/transfer IRQ and accepted hardware timeout/completion when blanking WLED",
+      "swap_begin uses resourcesReady/irqEnabled/quarantine rather than visibility; wake front-offset adoption requires no swapPending",
+      "NativePMInitialized+0x8c set before PMinit/join/register as final Apple native start does",
+      "After note_vbl_ISR, forward exact native count+0x100/time+0x108/delta+0x110 from mach_continuous_time; prior second mach_absolute_time sample mixed clocks",
+      "Metadata adds native VBL fields, DisplayIRQEnabled/DisplayVisible, bounded requested/current PM trace"
+    ],
+    "GPU1.89_Metal0.78": [
+      "GPUDiagnostics.h fixed1040-byte MetalFailure, stages library1/function2/renderPipeline3/computePipeline4/encoder5/commandBuffer6/resource7. Optional vendor selector0x1002, authorized owning task as JIT, bounded32 unique reports in GPUMetalFailureReports; text sanitized and immutable arrays published under native gate. gpuctl stats/registry includes version/count/reports",
+      "Metal asynchronous failure reporting never waits on transport while compiler/CB condition is held. Existing NSError and returns preserved; errors from AIR function/library, pipelines, encoders, terminal CBs and common texture/buffer allocations. No compiler ISA logic changed",
+      "displayctl scanout-samples COUNT INTERVAL_MS (count1..64, interval100..5000, product<=60000) emits bounded passive RGB FNV1a64/nonblack bounds/source/surface/VBL/completion/power; no PNG encoding or drawing; busy samples are not stale snapshots",
+      "displayctl display-apis now resolves pinned SpringBoardServices UUID a6aa78c367eb376ba38a44995f7e38a0 and SBSUndimScreen RVA. wake-ui helper exists with same UUID guard and void(void) prototype from existing local Theos header. IMPORTANT: first inspect native resolved original function before invoking wake-ui; no verified wake claim yet. Helper does not assert optical or rendering success."
+    ],
+    "GPU1.90_Metal0.79": [
+      "Sampled A8 and RGBA16Float hardware formats/swizzle/layout; raw image operations, RT and MSAA for those formats remain unsupported",
+      "Bounded client import rejection stage/descriptor metadata and userspace native return diagnostics",
+      "wake-ui exact original RVA0x12704 added to UUID guard"
+    ],
+    "GPU1.91": [
+      "Original kIODirectionOut accepted only as GPU-readable input; original native factory/task VM checks retained",
+      "retainBuffer(write) rejects readonly backing and per-job SMMU preserves its AP",
+      "Existing metalctl blit-test uses mprotect before no-copy import; reuses blit/compute/sample readback plus expected write rejection. No new test file/script."
+    ],
+    "Metal0.80": [
+      "Expand existing texture/draw/render-pass errors with actual parameters without changing admission outcomes",
+      "Run readonly buffer texture subcheck first in existing metalctl blit-test to obtain direct evidence"
+    ],
+    "Metal0.83": [
+      "Per-operation nativeadmission staysprivate; Scheduled onlyafter full operationlist and dependencies admitted",
+      "Private commithelper returnsNO while marker/partialwork pending; originalQuartzCore defers resourcecleanup toScheduled",
+      "Existingfence test verifiesactualfirstfill +futureevent leavesScheduledpending; no newtestfile"
+    ],
+    "GPU1.95": [
+      "Bounded exact-size scratch DMA cache4entries/32MiB; full clearing before reuse; only after proved job/page table/ASID/cache retirement; failure not cached; release after hardware stop."
+    ],
+    "GPU1.96": [
+      "Walk unpublished private tree once per2MiB L3 range, validate/write each actual leaf. Every source prepared physical page is still compared against actual retained translation. Boundary/failure/RO/XN host tests and full hardware suites pass."
+    ],
+    "GPU1.97": [
+      "gpu-performance-observe=1:64samples/5seconds; existing GPUCC GetRate and read-only fixedOSM16KiB map; reuse OSM LUT validator without write/wait/kick callbacks; no clock/voltage/PMU writes. Replaces optional display-submit-trace boot argument to fit NVRAM limit."
+    ],
+    "GPU1.101": [
+      "RetainedTranslationCursor rechecks everyactual parent andleaf plus everybufferphysicalPage. Owner/epoch/region invalidation; original fullwalk via gpu-cursor=0; adversarialboundary,parent/leaf mutation,block/table,cycle,destroy/re-adopt tests passed.",
+      "Framebuffer payloadbytes/primitives credited only after actualcoherent successfulnative completion. PM4/shaders unchanged.",
+      "Frozenbefore/after owncandidate artifacts verified. Corrected inherited receipt stale source_snapshot/hash fields toactualcandidate; parent-source.json retained."
+    ],
+    "GPU1.118": [
+      "Separate version1/1120-byte GPUAddressSpaceStatistics; existing GPUStatistics ABI5/3216 unchanged. Thirteen phases; per-page detail sampled one in64 builds, nested and timer overhead disclosed.",
+      "Bounded64 private table-page cache only after actual completed/registered/submitted root retirement, health, deselection and oldASID TLBSYNC. Revalidate original descriptor physical span/CPU view, clear all512 entries, preserve RO/nG and source checks. Faulted entries retained; unpublished cleanup never caches. gpu-pipe=3 opt-in.",
+      "Meaningful actual PM4/MMU reuse, old-translation isolation, RO commands, forbidden global fence mapping, bad-cache and unpublished cleanup host tests; normal+ASan/UBSan, driver/gpuctl and seven matched artifact profiles passed.",
+      "Hardware baseline/ring/cache/cache+fetch rounds120-123: all six GPU regressions pass. Ring depth3; cache reduces retirement cost; actual compositor inplace used. Real fade flicker remains."
+    ],
+    "GPU1.119": [
+      "gpu-pipe=4 compact mixedIB; complete singleIB trial rollback and boundedretry, preservedperprimitive split/synchronization, no repeatedresourceadmission.",
+      "Frozenblit parameters now uploaded/addressed againstcurrentIB in bothcontrolandcandidate.",
+      "Independent live diagnostic ABI1/2960-byte vendorselector0x1003, scope0native/1compositor, CPU timestamps+sequence, IBworkcounts. NoGPUwork/forcedretire/MMIOwrite; oldregistry remainscached.",
+      "Normal+ASan/UBSan and driver/gpuctl buildpass; 16mixedops16→2IB hostsemanticstream; threeverifiedmatchedprofiles, twoactualboots and6GPUregressions each."
+    ],
+    "GPU1.120_Metal0.88": [
+      "Original Apple Family registerNotificationPort slot169 forwarding under ownership/lifecycle gate; exact local ABI evidence: build/gpu-runtime/ui-native-notify/native-notification-abi.json. Successful native queue owns send right; receive right is dispatch-cancel owned.",
+      "Pipe5 publishes IOGPUNativeCompletionNotificationVersion1; IODataQueue Mach notification wakes a serialized drain. Forty-byte completion records, FIFO and exact end-token validation remain authoritative. Lost-message fallback50ms watchdog, original2s no-progress error; ready retirement immediate asynchronous dispatch. Legacy polling retained.",
+      "gpuctl native-notify-test passed real event-only wakeup, token4 retirement,64resource data readback and invalid/duplicate/deleted notification IDs. Sparse Metal helper counters confirm events retire real jobs.",
+      "GPU-to-IOSurface/IOMFB native producer fence remains unimplemented; no early presentation, ReadyLayers bypass or surface lifetime relaxation."
+    ],
+    "Metal0.89": [
+      "Resource-ID union planning replaces duplicated ObjC reference count48; exact command/payload/task upload capacity and16MiB aggregate index budget. Existing dependency/retained-resource/physical-alias semantics preserved.",
+      "One ASan/UBSan GPU-submit run; one experimental boot; targeted mixed/fence/originalCA tests passed. Main window after-capture failed, deadline overlap and different sampling spans explicitly retained."
+    ],
+    "GPU1.121_Metal0.90": [
+      "Native IOSurface access-fence registration perunique surface, read/write directions, actual ready gating and real coherent GPU completion signal; original IOMFB ReadyLayers callback audited. Stateless async callback avoids borrowed lifetime. Pipe6 opt-in preserves5.",
+      "Capability-gated whole-list Scheduled presentation for actual IOSurface drawables. Keep refs/FIFO presentation barrier and original display/DPU ownership until real retirement.",
+      "Normal path runtime788created/completed0failed; GPUaccessdeferred0. Pending readiness and unarmed/quarantine cancellation need followup; see pending-verification.json."
+    ],
+    "GPU1.129_Metal0.93": [
+      "Verified page-aligned sparse client working sets in CPU encoding OSData; full-root unknown/overflow fallback and all actual per-page authority checks retained.",
+      "CB-private4KiB upload roots eligible only at successful physical retirement; native IDs enter bounded64page/1MiB actual-byte device cache only after final view/encoder release. No device/buffer ARC cycle.",
+      "Independent matched-sequence page-work diagnostics and inherited1.128 enter/commands/leave stamps. Display1.0.17 and596MHz policy frozen."
+    ],
+    "GPU1.130": [
+      "retireJobs normal mapper path performs locked full actual platform/context/stream/firmware health check once instead of duplicating its outer platform scan. No health cache or reduced MMU/engine checks; bootstrap without mapper retains direct guard.",
+      "Combined candidate reuses exact1.129 Metal0.93 HFS/trustcache; prior engine/mapping/upload Pool sanitizer inputs and binaries are unchanged.",
+      "Matched-sequence/timebase parser and explicit known-UART-insertion audit prepared; actual round142 replay agrees with10 existing CPU elapsed means. Synthetic new-field tests do not imply runtime evidence."
+    ],
+    "GPU1.130_Metal0.93_reuse_diagnostic": [
+      "Only metalctl: append1warmup+6paired epochs to original inline-test; actual output/guard and allocation-neutral reuse assertions. Compiled/packaged, NOT EXECUTED.",
+      "Compute/render ended encoders clear bound snapshot references, so retaining ended encoders is not a valid delayed-reference test. Final private view/CPU refs still gate root dealloc/pool return."
+    ]
+  },
+  "reverse_engineering": {
+    "skill": "/home/xxiao/.codex/plugins/cache/mrexodia/ida-pro-mcp/0.1.0/skills/idapython/SKILL.md",
+    "IDA_sessions": {
+      "kernel": "76eddd5a",
+      "SpringBoard": "3726b620"
+    },
+    "pinned_kernel": "build/ios18-kext-analysis/kernelcache.release.ipad7c.macho",
+    "sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+    "audit": "build/gpu-runtime/ui-power-compare/native-power-functions.json",
+    "facts": [
+      "Original Legacy clock slot244 at0xfffffff005c274ec is mach_continuous_time; AppleDisplayPipe5c40a1c and H7 5c4a480 same",
+      "note_vbl_ISR5c23a74 updates native count/time/delta; notifyVBL5c23b18 uses those values and subscriber list+0x16e0",
+      "setPowerState5c24044 command-gates through5c1e908; native requested/current fields17e4/17e8/17ec/17f0",
+      "Final AppleMobileADBE0 power5c4eae4 separates controller/panel and considers queued work. Generic AppleDisplayPipe/H7 slots are stubs: do not copy final subclass offsets into Legacy object",
+      "Original PM init5c4d148 sets byte8c before PMinit/join/register. Power notify slot2165c23dac timestamps via native clock and sends controller/display bits",
+      "IMPORTANT IDA split original common completion5c1dfc0 at5c1dff0. Its zero-arg decompilation is WRONG; disassembly shows this=x0/displayed=x1. Completion calls forced power reevaluation; use stored tail instructions."
+    ],
+    "wake_audit": "build/gpu-runtime/ui-wake-native-audit.json",
+    "client_buffer_audit": "build/gpu-runtime/ui-shared-resources/apple-client-buffer.json",
+    "performance_apple_driver_audit": [
+      "build/gpu-runtime/ui-scratch-cache/apple-driver-audit.json",
+      "build/gpu-runtime/ui-scratch-cache/apple-pool-lifecycle.json",
+      "build/gpu-runtime/ui-execution-profile/apple-power-audit.json"
+    ]
+  },
+  "tools": {
+    "unified": [
+      "scripts/toolchain.py",
+      "scripts/build-bridge.py",
+      "scripts/test-bridge.py",
+      "build/apfs/apfs-image create-volume",
+      "scripts/bridge_trustcache.py development_module"
+    ],
+    "commands": "Device tools /System/Library/Extensions/{gpuctl,metalctl,displayctl}. displayctl scanout-live passive PNG; scanout PREFIX saves -scanout.json/-scanout.bgra. validate-window PREFIX holds native on ~63s, three snapshots + full stacks in stdout; redirect its large log on device. Avoid swap-gpu in native UI capture because it replaces content and holds60s. New Display1.0.13: displayctl frame-stats [raw] snapshots bounded2048 actual swap_complete(displayed=true) samples without fullpixels. displayctl layer-animation holds native CADisplay on lease and presents20s CA movingwhitebar/redbackground. Its frame-stats raw includes allretained samples; subtract baselinecount and omit preceding idle-gap when calculating active fps.",
+    "capture": "UART base64 PNG chunks128, SCANOUT_PNG_BEGIN/DATA(offset)/END. Kernel logs may interleave mid-line. Verify contiguous offsets, size, all PNG chunk CRCs and IEND before viewing; never silently drop unknown bytes. Selected stackshots use hex chunks64; scripts/kcdata.py parser at build/boot-diagnosis/kernel-src/tools/lldbmacros/kcdata.py. Previously decoded files already available in round folders.",
+    "attach": "After test process exits only, scripts/test-bridge.py --attach-running --running-report <main current boot report>. Attachment reports are NOT base boot identity. No second UART reader. Native reboot is displayctl reboot; report may lack command reply because process reboots; verify Fastboot with fastboot devices.",
+    "pitfalls": [
+      "No remote power/reset. Avoid asking user to reboot unless actually blocked. Recent native reboot succeeds.",
+      "Native /bin/ls, grep, plutil, launchctl and /bin/sleep not present; /usr/bin/log/logger/sleep checks were also absent. Bash builtins, /bin/ps,/bin/df, /usr/bin/taskinfo, truncate exist. hidutil help was killed9 earlier: do not blindly repeat.",
+      "Read small metadata with IFS= read -r -N8192 VAR < FILE then printf; JSON last line has no newline.",
+      "Match crash headers to gpuctl shell-info boot UUID; RTC and filename order unreliable.",
+      "Do not naïvely pack-drivers: current offline SCM source1.0.2 differs from verified frozen runtime1.0.1. Clone frozen74-bundle collection and replace only deliberate Kexts, link/verify exact74 IDs.",
+      "Do not disable display MMU/direct scanout: validated. Keep all same-source IOSurface/IOMapper mapping lifetime and real hardware completion. No per-frame CPU copy in supported direct path."
+    ]
+  },
+  "next_steps": [
+    "Boot189 frozen1.19 and run RG32 same/different-queue pixel tests plus9full-size passes<=16MiB.",
+    "Inspect late allocation status/resources without weakening kernel limits; keep initial optical onset unverified."
+  ],
+  "user_video": {
+    "path": "/home/xxiao/Downloads/VID_20261018_205803.mp4",
+    "evidence": "build/gpu-runtime/round-80-video/evidence.json",
+    "observations": "Residual Korean cursive plus hello; content alternates bright/dark/blank while statusbar often remains visible. No root cause proven from video alone."
+  },
+  "performance_followup_thread": {
+    "thread_id": "01a14f76-7650-7d43-92f3-37494be51ce4",
+    "title": "优化原生 UI 渲染流畅度",
+    "host": "local",
+    "scope": "User requested separate new task; old flicker task closed, all hardware operations transferred."
+  },
+  "last_verified_runtime": {
+    "round": 143,
+    "planned_round": 143,
+    "versions": {
+      "GPU": "1.130.0",
+      "Metal": "0.93.0",
+      "Display": "1.0.17"
+    },
+    "payload": "build/gpu-runtime/ui-upload-reuse-bridge/XnuBridge.efi",
+    "kernel": "build/gpu-runtime/kernelcache.ui-poll-validation",
+    "source_receipt": "build/gpu-runtime/ui-upload-reuse-source.json",
+    "audit": "build/gpu-runtime/ui-upload-reuse/audit.json",
+    "hardware_tested": true,
+    "goal_achieved": false,
+    "state": "First combined1.130/0.93 actual boot143 passed4CPU, inline snapshot+13CB allocation-neutral reuse and native fence tests. Same-boot clean complex Welcome window787complete0failed. Display selected330intervals p50=33.64594ms,p95=83.47208ms,max=366.77469ms;13>100ms. Tail9.201s without new display and GPU counters pause; later same-boot GPU resumes. No60FPS or new optical no-flicker acceptance.",
+    "profile": {
+      "fetch": 2,
+      "pipe": 6,
+      "gpu_policy_hz": 596000097,
+      "gfx_voltage_uv": 968000
+    },
+    "hardware_evidence": "build/gpu-runtime/ui-upload-reuse/hardware-evidence.json",
+    "hardware_tested_profiles": [
+      "fetch2/pipe6"
+    ],
+    "report": "build/gpu-runtime/round-143-live/report.json"
+  },
+  "candidate_under_test": {
+    "round": 146,
+    "versions": {
+      "GPU": "1.132.0",
+      "Metal": "0.93.0",
+      "Display": "1.0.17"
+    },
+    "payload": "build/gpu-runtime/ui-shader-object-reuse-bridge/XnuBridge.efi",
+    "source_receipt": "build/gpu-runtime/ui-shader-object-reuse-source.json",
+    "audit": "build/gpu-runtime/ui-shader-object-reuse/audit.json",
+    "hardware_evidence": "build/gpu-runtime/ui-shader-object-reuse/hardware-evidence.json",
+    "hardware_tested": true,
+    "goal_achieved": false,
+    "profile": {
+      "fetch": 2,
+      "pipe": 6,
+      "gpu_policy_hz": 596000097,
+      "gfx_voltage_uv": 968000
+    },
+    "state": "145 exact framebuffer guards+overlap pixels pass; same payload146 missing mixed/fence rerun pass. All6commands0,4CPU,no panic.873UIcompleted0failed,8575ISA reuse hits. Median display33.449ms, first-last15.712FPS inclholds; not60FPS or new optical acceptance."
+  },
+  "prepared_profiling_candidate": {
+    "name": "ui-retirement-profile",
+    "GPU": "1.105.0",
+    "state": "GPU1.105 fully built, sourcebefore/after andartifacts frozen, verified74Kexts/localconstants, signedgpuctl HFS/trustcache/bridge ready; PM4/MMUhost+ASan passed; NOT hardware tested. Device UART unavailable in latestprobe.",
+    "scope": "CPU retirement subphases and read-only existing CP counter0/always-on pairs; no clock/PMU/selector writes or health/coherence bypass",
+    "source_before": "build/gpu-runtime/ui-retirement-profile/source-before",
+    "goal_achieved": false,
+    "payload": "build/gpu-runtime/ui-retirement-profile-bridge/XnuBridge.efi",
+    "invocation": "build/gpu-runtime/ui-retirement-profile-invocation.json",
+    "source_receipt": "build/gpu-runtime/ui-retirement-profile-source.json",
+    "kernel_sha256": "704d226d12e1108f1db711702f6533af7c7f3edc35aff3631c834349f271ca79"
+  },
+  "goal_blocked_audit": {
+    "status": "revoked_by_user_recovery",
+    "reason": "User reports reboot/Fastboot and recognition restored; actual product query now succeeds. Goal work resumed; no current blocking claim."
+  },
+  "prepared_clock_candidate": {
+    "name": "ui-gfx-clock-divider",
+    "GPU": "1.106.0",
+    "GPUCC": "1.4.0",
+    "QcomPowerController": "1.3.0",
+    "state": "driver/host+ASan passed; collection linking; not hardwaretested",
+    "source_audit": "build/gpu-runtime/ui-gfx-clock-divider/source-audit.json",
+    "scope": "vendor nominalGFX mapping fixed/2; keepPLL1192/968mV, setHID1ratherthan3 andnormalizeGetRate; QcomPowerController isactualbackend implementation. FrozenGenericClockController remains. SameGPU/HFS as111."
+  },
+  "next_performance_focus": [
+    "Trace per-job submission/execution/retirement against physical display tokens to attribute long intervals.",
+    "Classify real UI resource allocation types/sizes and lifetimes before widening the private upload pool.",
+    "Sparse resource mapping saved0.596% pages in this window; address-space GPU entry/exit are microseconds. Do not prioritize context-switch removal or blind range narrowing.",
+    "Preserve original CA Scheduled semantics and actual IOSurface/DPU completion ownership; do not signal early or remove waits to inflate throughput."
+  ],
+  "video_observation": {
+    "source": "/home/xxiao/Downloads/VID_20261019_075540.mp4",
+    "summary": "build/gpu-runtime/welcome-video-analysis/summary.json",
+    "visible_ink_update_estimate_hz": 10,
+    "not_a_compositor_fps_measurement": true,
+    "user_steering": "Stopfurther videoanalysis, continueUIoptimization."
+  },
+  "last_goal_turn_classification": "progress: physical-wake confirmation and final no-new-error query updated authoritative evidence; this continuation fixes the remaining empty-cache duplicate compilation path.",
+  "previous_ready_candidate_GPU1_113": {
+    "payload": "build/gpu-runtime/ui-copy-word32-bridge/XnuBridge.efi",
+    "validation_payload": "build/gpu-runtime/ui-copy-word32-validation-bridge/XnuBridge.efi",
+    "strict_control_offline_only": "build/gpu-runtime/ui-copy-word32-control-bridge/XnuBridge.efi",
+    "source_receipt": "build/gpu-runtime/ui-copy-word32-source.json",
+    "hardware_tested": false,
+    "kernel": "build/gpu-runtime/kernelcache.ui-copy-word32",
+    "versions": {
+      "Display": "1.0.13",
+      "GPU": "1.113.0",
+      "Metal": "0.86.0",
+      "GPUCC": "1.4.0",
+      "QcomPowerController": "1.3.0",
+      "SCM": "1.0.1",
+      "RPM": "1.14.0"
+    },
+    "backlight": "disabled as before",
+    "gpu_policy_hz": 596000097,
+    "gfx_voltage_uv": 968000,
+    "state": "Offline-built and verified only. No device launch; user reports depleted battery. Main/control identical final kernel/HFS, only gpu-fb2d-word32=0 control argument. Privileged validation gpu-fb2d=1."
+  },
+  "ordered_optimization_work": "build/gpu-runtime/ui-producer-fence/ordered-work-audit.json",
+  "previous_ready_candidate_GPU1_114": {
+    "payload": "build/gpu-runtime/ui-fetch-inplace-bridge/XnuBridge.efi",
+    "validation_payload": "build/gpu-runtime/ui-fetch-inplace-validation-bridge/XnuBridge.efi",
+    "experimental_payload": "build/gpu-runtime/ui-fetch-inplace-experimental-bridge/XnuBridge.efi",
+    "source_receipt": "build/gpu-runtime/ui-fetch-inplace-source.json",
+    "hardware_tested": false,
+    "kernel": "build/gpu-runtime/kernelcache.ui-fetch-inplace",
+    "versions": {
+      "Display": "1.0.13",
+      "GPU": "1.114.0",
+      "Metal": "0.86.0",
+      "GPUCC": "1.4.0",
+      "QcomPowerController": "1.3.0",
+      "SCM": "1.0.1",
+      "RPM": "1.14.0"
+    },
+    "state": "Offline-built and verified only. Main/default uses gpu-fb-fetch=0. Validation1 is privileged noncompositor only; experimental2 is global. All three use identical final policy kernel/HFS, with word32 defaultOFF in1.114. No device launch.",
+    "backlight": "disabled as before",
+    "gpu_policy_hz": 596000097,
+    "gfx_voltage_uv": 968000,
+    "volatile_NVRAM_bootargs_bytes": 1016
+  },
+  "previous_ready_candidate_GPU1_115": {
+    "payload": "build/gpu-runtime/ui-admission-pipeline-bridge/XnuBridge.efi",
+    "pipeline_only_payload": "build/gpu-runtime/ui-admission-pipeline-pipeline-bridge/XnuBridge.efi",
+    "validation_payload": "build/gpu-runtime/ui-admission-pipeline-validation-bridge/XnuBridge.efi",
+    "fetch_control_payload": "build/gpu-runtime/ui-admission-pipeline-fetch-control-bridge/XnuBridge.efi",
+    "experimental_payload": "build/gpu-runtime/ui-admission-pipeline-experimental-bridge/XnuBridge.efi",
+    "source_receipt": "build/gpu-runtime/ui-admission-pipeline-source.json",
+    "hardware_tested": false,
+    "kernel": "build/gpu-runtime/kernelcache.ui-admission-pipeline",
+    "versions": {
+      "Display": "1.0.13",
+      "GPU": "1.115.0",
+      "Metal": "0.87.0",
+      "GPUCC": "1.4.0",
+      "QcomPowerController": "1.3.0",
+      "SCM": "1.0.1",
+      "RPM": "1.14.0"
+    },
+    "state": "Offline-ready CPU admission pipeline prototype. Default main fetch0/pipe0; pipeline-only0/1; privileged fetch validation1/0; fetchcontrol2/0; combined2/1. All five same final kernel/HFS/firmware/trustcache and596MHz968mV policy. No device calls.",
+    "backlight": "disabled as before",
+    "gpu_policy_hz": 596000097,
+    "gfx_voltage_uv": 968000,
+    "volatile_NVRAM_bootargs_bytes": 1022
+  },
+  "previous_ready_candidate_GPU1_116": {
+    "payload": "build/gpu-runtime/ui-ring-pipeline-bridge/XnuBridge.efi",
+    "admission_control_payload": "build/gpu-runtime/ui-ring-pipeline-admission-bridge/XnuBridge.efi",
+    "ring_only_payload": "build/gpu-runtime/ui-ring-pipeline-ring-bridge/XnuBridge.efi",
+    "experimental_payload": "build/gpu-runtime/ui-ring-pipeline-experimental-bridge/XnuBridge.efi",
+    "source_receipt": "build/gpu-runtime/ui-ring-pipeline-source.json",
+    "hardware_tested": false,
+    "kernel": "build/gpu-runtime/kernelcache.ui-ring-pipeline",
+    "versions": {
+      "Display": "1.0.13",
+      "GPU": "1.116.0",
+      "Metal": "0.87.0",
+      "GPUCC": "1.4.0",
+      "QcomPowerController": "1.3.0",
+      "SCM": "1.0.1",
+      "RPM": "1.14.0"
+    },
+    "backlight": "disabled as before",
+    "gpu_policy_hz": 596000097,
+    "gfx_voltage_uv": 968000,
+    "volatile_NVRAM_bootargs_bytes": 1022,
+    "state": "Offline-built and verified only.4profiles fetch/pipe=0/0,0/1,0/2,2/2. Same final kernel/HFS/firmware/TC/clockpolicy. Mode2 queues eligible hardware jobs, but physical writer dependencies remain serialized through coherent retirement. No hardware launch or60FPS evidence."
+  },
+  "previous_ready_candidate_GPU1_117": {
+    "payload": "build/gpu-runtime/ui-framebuffer-storage-bridge/XnuBridge.efi",
+    "admission_control_payload": "build/gpu-runtime/ui-framebuffer-storage-admission-bridge/XnuBridge.efi",
+    "ring_only_payload": "build/gpu-runtime/ui-framebuffer-storage-ring-bridge/XnuBridge.efi",
+    "experimental_payload": "build/gpu-runtime/ui-framebuffer-storage-experimental-bridge/XnuBridge.efi",
+    "source_receipt": "build/gpu-runtime/ui-framebuffer-storage-source.json",
+    "hardware_tested": false,
+    "kernel": "build/gpu-runtime/kernelcache.ui-framebuffer-storage",
+    "versions": {
+      "Display": "1.0.13",
+      "GPU": "1.117.0",
+      "Metal": "0.87.0",
+      "GPUCC": "1.4.0",
+      "QcomPowerController": "1.3.0",
+      "SCM": "1.0.1",
+      "RPM": "1.14.0"
+    },
+    "backlight": "disabled as before",
+    "gpu_policy_hz": 596000097,
+    "gfx_voltage_uv": 968000,
+    "volatile_NVRAM_bootargs_bytes": 1022,
+    "state": "Offline-built verified5controls. Fetch/pipe0/0,0/1,0/2,2/2,3/2. Fetch2 compactinplace scratch;3 sameinplace withfullscratch. Allsamekernel/HFS/firmware/TC/clockpolicy. No hardwarelaunch;60FPS unverified.",
+    "fullscratch_control_payload": "build/gpu-runtime/ui-framebuffer-storage-fullscratch-control-bridge/XnuBridge.efi"
+  },
+  "previous_verified_runtime_round119": {
+    "round": 119,
+    "boot_uuid": "891AD0F5-0F6F-4417-AEA3-A3FF14DD73BF",
+    "payload": "build/gpu-runtime/ui-mixed-shader-batch-bridge/XnuBridge.efi",
+    "main_report": "build/gpu-runtime/round-119/report.json",
+    "versions": {
+      "Display": "1.0.13",
+      "GPU": "1.112.0",
+      "Metal": "0.86.0",
+      "GPUCC": "1.4.0",
+      "QcomPowerController": "1.3.0",
+      "SCM": "1.0.1",
+      "RPM": "1.14.0"
+    },
+    "state": "Historical healthy UI runtime, not current live boot.4CPUs/no runtimepanic. Welcome p50 100.008ms,6.55 aggregateupdates/s incl pauses. Regression first mixed-test pixels correct but sampledcounter stale failure; exactbatchcount still UNVERIFIED. Other6 commands passed.",
+    "evidence": "build/gpu-runtime/ui-mixed-shader-batch/hardware-evidence.json",
+    "performance": "build/gpu-runtime/round-119-metrics/performance.json"
+  },
+  "previous_ready_candidate_GPU1_118": {
+    "payload": "build/gpu-runtime/ui-as-page-cache-bridge/XnuBridge.efi",
+    "admission_control_payload": "build/gpu-runtime/ui-as-page-cache-admission-bridge/XnuBridge.efi",
+    "ring_only_payload": "build/gpu-runtime/ui-as-page-cache-ring-bridge/XnuBridge.efi",
+    "experimental_payload": "build/gpu-runtime/ui-as-page-cache-experimental-bridge/XnuBridge.efi",
+    "fullscratch_control_payload": "build/gpu-runtime/ui-as-page-cache-fullscratch-control-bridge/XnuBridge.efi",
+    "cache_payload": "build/gpu-runtime/ui-as-page-cache-cache-bridge/XnuBridge.efi",
+    "cache_fetch_payload": "build/gpu-runtime/ui-as-page-cache-cache-fetch-bridge/XnuBridge.efi",
+    "source_receipt": "build/gpu-runtime/ui-as-page-cache-source.json",
+    "hardware_tested": true,
+    "hardware_tested_profiles": [
+      "baseline",
+      "ring",
+      "cache",
+      "cache-fetch"
+    ],
+    "all_prepared_profiles_hardware_tested": false,
+    "kernel": "build/gpu-runtime/kernelcache.ui-as-page-cache",
+    "versions": {
+      "Display": "1.0.13",
+      "GPU": "1.118.0",
+      "Metal": "0.87.0",
+      "GPUCC": "1.4.0",
+      "QcomPowerController": "1.3.0",
+      "SCM": "1.0.1",
+      "RPM": "1.14.0"
+    },
+    "backlight": "Bridge policy disabled as before; native display lease can power on.",
+    "gpu_policy_hz": 596000097,
+    "gfx_voltage_uv": 968000,
+    "volatile_NVRAM_bootargs_bytes": 1022,
+    "default_fetch": 0,
+    "default_pipe": 0,
+    "state": "Seven matched profiles built and verified; four booted and passed six GPU regressions each. Current fetch2/pipe3 is experimental. Writing slightly smoother per user; fade flicker unresolved. Near60FPS not achieved."
+  },
+  "previous_verified_runtime_round123": {
+    "round": 123,
+    "boot_uuid": "638D9FE1-4204-4FC9-8A5D-B70D20115215",
+    "payload": "build/gpu-runtime/ui-as-page-cache-cache-fetch-bridge/XnuBridge.efi",
+    "main_report": "build/gpu-runtime/round-123/report.json",
+    "versions": {
+      "Display": "1.0.13",
+      "GPU": "1.118.0",
+      "Metal": "0.87.0",
+      "GPUCC": "1.4.0",
+      "QcomPowerController": "1.3.0",
+      "SCM": "1.0.1",
+      "RPM": "1.14.0"
+    },
+    "state": "Experimental fetch2/pipe3; four CPUs, no panic, six GPU regressions passed including exact mixed job counts and fullscreenRGBA feedback phases0..3. Actual fade flicker remains unresolved; not visual acceptance or60FPS.",
+    "evidence": "build/gpu-runtime/ui-as-page-cache/hardware-evidence.json",
+    "performance": "build/gpu-runtime/round-123/performance.json",
+    "display_interval_p50_ms": 66.69703125000001,
+    "GPU_live_mean_ms_per_job": 6.440481404986165,
+    "statistics_caution": {
+      "finding": "GPUStatistics is published by timerAction on a1s deadline, but retireJobs resets the same timer from frequent IRQ callbacks. Under sustained work the timer can be postponed and the property stale; round123 snapshot1323 jobs versus final live kernel3132.",
+      "impact": "Per-job means remain summaries of their own recorded samples; no elapsed-per-displayed-frame normalization. Final live kernel mean6.440ms corroborates sampled6.446ms, without a shared frame epoch.",
+      "next": "Explicit gated diagnostic refresh with timestamps/sequence, or bounded publication independent of timer rearming; keep per-frame allocation overhead out of the fast path."
+    }
+  },
+  "previous_ready_candidate_GPU1_119": {
+    "payload": "build/gpu-runtime/ui-compact-ib-bridge/XnuBridge.efi",
+    "strict_control_payload": "build/gpu-runtime/ui-compact-ib-control-bridge/XnuBridge.efi",
+    "experimental_payload": "build/gpu-runtime/ui-compact-ib-experimental-bridge/XnuBridge.efi",
+    "source_receipt": "build/gpu-runtime/ui-compact-ib-source.json",
+    "kernel": "build/gpu-runtime/kernelcache.ui-compact-ib",
+    "versions": {
+      "Display": "1.0.13",
+      "GPU": "1.119.0",
+      "Metal": "0.87.0",
+      "GPUCC": "1.4.0",
+      "QcomPowerController": "1.3.0",
+      "SCM": "1.0.1",
+      "RPM": "1.14.0"
+    },
+    "hardware_tested": true,
+    "hardware_tested_profiles": [
+      "control",
+      "experimental"
+    ],
+    "all_prepared_profiles_hardware_tested": false,
+    "gpu_policy_hz": 596000097,
+    "gfx_voltage_uv": 968000,
+    "backlight": "Bridge policy disabled; native lease powers display.",
+    "default_fetch": 0,
+    "default_pipe": 0,
+    "state": "CompactIB and live diagnostics implemented/tested. Actual IB4.476→1.313/job, encoding1.079→0.877ms, AS3.200→3.144ms; GPU6.6ms/job and displayedmedian66.7ms unchanged. Round125 maincapture timeout recovered bysameboot followup; no60FPS orfadefix proof."
+  },
+  "previous_verified_runtime_round125": {
+    "round": 125,
+    "boot_uuid": "91A82383-43E7-442E-A744-7AEEE442E477",
+    "payload": "build/gpu-runtime/ui-compact-ib-experimental-bridge/XnuBridge.efi",
+    "main_report": "build/gpu-runtime/round-125/report.json",
+    "followup_reports": [
+      "build/gpu-runtime/round-125-check/report.json",
+      "build/gpu-runtime/round-125-followup/report.json",
+      "build/gpu-runtime/round-125-regression/report.json"
+    ],
+    "versions": {
+      "Display": "1.0.13",
+      "GPU": "1.119.0",
+      "Metal": "0.87.0",
+      "GPUCC": "1.4.0",
+      "QcomPowerController": "1.3.0",
+      "SCM": "1.0.1",
+      "RPM": "1.14.0"
+    },
+    "evidence": "build/gpu-runtime/ui-compact-ib/hardware-evidence.json",
+    "performance": "build/gpu-runtime/round-125-metrics/performance.json",
+    "state": "Experimental fetch2/pipe4. FourCPUs, no panic, sixGPU regressions and freshnative/compositor queriespassed. Primarywindow capturetimedout; sameboot helperlog recordsall0 andretainedframes were readlater. Finalframeage230s; notopticalacceptance.",
+    "display_interval_p50_ms": 66.72171875,
+    "GPU_live_mean_ms_per_job": 6.602848829475924
+  },
+  "validation_preference": "用户要求减少多余对照、提高效率：只做直接相关的检查；没有新改动、失败或具体疑点时，不重复同类窗口、A/B 重启或整套回归。",
+  "previous_ready_candidate_GPU1_120_Metal0_88": {
+    "payload": "build/gpu-runtime/ui-native-notify-bridge/XnuBridge.efi",
+    "strict_control_payload": "build/gpu-runtime/ui-native-notify-control-bridge/XnuBridge.efi",
+    "experimental_payload": "build/gpu-runtime/ui-native-notify-experimental-bridge/XnuBridge.efi",
+    "source_receipt": "build/gpu-runtime/ui-native-notify-source.json",
+    "kernel": "build/gpu-runtime/kernelcache.ui-native-notify",
+    "versions": {
+      "Display": "1.0.13",
+      "GPU": "1.120.0",
+      "Metal": "0.88.0",
+      "GPUCC": "1.4.0",
+      "QcomPowerController": "1.3.0",
+      "SCM": "1.0.1",
+      "RPM": "1.14.0"
+    },
+    "hardware_tested": true,
+    "hardware_tested_profiles": [
+      "control",
+      "experimental"
+    ],
+    "all_prepared_profiles_hardware_tested": false,
+    "gpu_policy_hz": 596000097,
+    "gfx_voltage_uv": 968000,
+    "backlight": "Bridge policy disabled; native lease powers display.",
+    "default_fetch": 0,
+    "default_pipe": 0,
+    "state": "Native Mach completion notifications implemented and exercised; pipe5 retains compactIB/pagecache/ring and removes1ms ready-retirement delay. Display p50 remains66.6ms; no meaningful FPS gain or optical fade-flicker resolution. Default0/0 prepared but not hardware tested."
+  },
+  "previous_verified_runtime_round127": {
+    "round": 127,
+    "boot_uuid": "BCF53B68-5C67-4912-AF03-E5DFD82B9AF7",
+    "payload": "build/gpu-runtime/ui-native-notify-experimental-bridge/XnuBridge.efi",
+    "main_report": "build/gpu-runtime/round-127/report.json",
+    "followup_reports": [
+      "build/gpu-runtime/round-127-warm/report.json",
+      "build/gpu-runtime/round-127-regression/report.json"
+    ],
+    "versions": {
+      "Display": "1.0.13",
+      "GPU": "1.120.0",
+      "Metal": "0.88.0",
+      "GPUCC": "1.4.0",
+      "QcomPowerController": "1.3.0",
+      "SCM": "1.0.1",
+      "RPM": "1.14.0"
+    },
+    "evidence": "build/gpu-runtime/ui-native-notify/hardware-evidence.json",
+    "performance": "build/gpu-runtime/ui-native-notify/analysis127.json",
+    "state": "Experimental fetch2/pipe5. Main/warm commands all0; native event-only notification/readback and eight other regression commands passed. Sparse helper event counters prove event retirement, not an exhaustive native UI ratio. No optical acceptance. Control warm helper status1 unresolved, old logs lost across reboot.",
+    "display_interval_p50_ms": 66.64229166666667,
+    "GPU_live_mean_ms_per_job": 6.165290823699422
+  },
+  "previous_ready_candidate_GPU1_120_Metal0_89": {
+    "payload": "build/gpu-runtime/ui-resource-batch-bridge/XnuBridge.efi",
+    "experimental_payload": "build/gpu-runtime/ui-resource-batch-bridge/XnuBridge.efi",
+    "source_receipt": "build/gpu-runtime/ui-resource-batch-source.json",
+    "kernel": "build/gpu-runtime/kernelcache.ui-native-notify",
+    "versions": {
+      "Display": "1.0.13",
+      "GPU": "1.120.0",
+      "Metal": "0.89.0",
+      "GPUCC": "1.4.0",
+      "QcomPowerController": "1.3.0",
+      "SCM": "1.0.1",
+      "RPM": "1.14.0"
+    },
+    "hardware_tested": true,
+    "hardware_tested_profiles": [
+      "fetch2/pipe5"
+    ],
+    "gpu_policy_hz": 596000097,
+    "gfx_voltage_uv": 968000,
+    "default_fetch": 0,
+    "default_pipe": 0,
+    "state": "Only one experimental candidate prepared this turn. Metal resource-ID union batches;16 dependent compute ops/one actual job verified. Display p50=50.13ms in retained ring with41.09s gap; not60FPS or optical fade acceptance. Main helper after-capture1, followup all6commands0."
+  },
+  "previous_verified_runtime_round128": {
+    "round": 128,
+    "boot_uuid": "15D3F92B-C884-4C6F-8D53-5A3D8C433995",
+    "payload": "build/gpu-runtime/ui-resource-batch-bridge/XnuBridge.efi",
+    "main_report": "build/gpu-runtime/round-128/report.json",
+    "followup_reports": [
+      "build/gpu-runtime/round-128-targeted/report.json"
+    ],
+    "versions": {
+      "Display": "1.0.13",
+      "GPU": "1.120.0",
+      "Metal": "0.89.0",
+      "GPUCC": "1.4.0",
+      "QcomPowerController": "1.3.0",
+      "SCM": "1.0.1",
+      "RPM": "1.14.0"
+    },
+    "evidence": "build/gpu-runtime/ui-resource-batch/hardware-evidence.json",
+    "performance": "build/gpu-runtime/ui-resource-batch/performance.json",
+    "display_interval_p50_ms": 50.12953125,
+    "GPU_live_mean_ms_per_job": 9.474872122426316,
+    "state": "Only one experimental candidate prepared this turn. Metal resource-ID union batches;16 dependent compute ops/one actual job verified. Display p50=50.13ms in retained ring with41.09s gap; not60FPS or optical fade acceptance. Main helper after-capture1, followup all6commands0."
+  },
+  "last_user_visual_observation": {
+    "first_appearance": "Hello 与壁纸同时出现",
+    "wake": "壁纸没消失，首轮回放BUG还在",
+    "replay_layer": "Hello 手写文字动画",
+    "geometry_previous": "现在背景显示尺寸正常了"
+  },
+  "previous_verified_runtime_round129": {
+    "round": 129,
+    "boot_uuid": "2D0EF348-138B-424B-9319-9900D3BDD534",
+    "payload": "build/gpu-runtime/ui-producer-fence-bridge/XnuBridge.efi",
+    "main_report": "build/gpu-runtime/round-129/report.json",
+    "followup_reports": [
+      "build/gpu-runtime/round-129-targeted/report.json"
+    ],
+    "versions": {
+      "Display": "1.0.13",
+      "GPU": "1.121.0",
+      "Metal": "0.90.0",
+      "GPUCC": "1.4.0",
+      "QcomPowerController": "1.3.0",
+      "SCM": "1.0.1",
+      "RPM": "1.14.0"
+    },
+    "evidence": "build/gpu-runtime/ui-producer-fence/hardware-evidence.json",
+    "performance": "build/gpu-runtime/round-129/performance.json",
+    "display_interval_p50_ms": 49.92276041666666,
+    "GPU_live_mean_ms_per_job": 9.039057867250675,
+    "state": "Experimental fetch2/pipe6 native IOSurface fences.788created/completed0failed, GPUdeferred0. All6main/5targetedcommands0. Displayp5049.92ms; not60FPS; user now confirms current device no longer flickers. Delayed-ready and unarmed/quarantine failure cleanup still need targeted work.",
+    "visual_observation_scope": "Historical129 observation only; overridden for current acceptance by later reproduced access faults and current fade flicker."
+  },
+  "active_candidate": {
+    "round": 146,
+    "versions": {
+      "GPU": "1.132.0",
+      "Metal": "0.93.0",
+      "Display": "1.0.17"
+    },
+    "payload": "build/gpu-runtime/ui-shader-object-reuse-bridge/XnuBridge.efi",
+    "source_receipt": "build/gpu-runtime/ui-shader-object-reuse-source.json",
+    "audit": "build/gpu-runtime/ui-shader-object-reuse/audit.json",
+    "hardware_evidence": "build/gpu-runtime/ui-shader-object-reuse/hardware-evidence.json",
+    "hardware_tested": true,
+    "goal_achieved": false,
+    "profile": {
+      "fetch": 2,
+      "pipe": 6,
+      "gpu_policy_hz": 596000097,
+      "gfx_voltage_uv": 968000
+    },
+    "state": "145 exact framebuffer guards+overlap pixels pass; same payload146 missing mixed/fence rerun pass. All6commands0,4CPU,no panic.873UIcompleted0failed,8575ISA reuse hits. Median display33.449ms, first-last15.712FPS inclholds; not60FPS or new optical acceptance."
+  },
+  "latest_review": "docs/gpu/hello-hardware-ready-1.141.md",
+  "latest_hardware_evidence": "build/gpu-runtime/ui-cold-compile-shared-nir/hardware-evidence.json",
+  "previous_candidate_GPU1_124": {
+    "GPU": "1.124.0",
+    "Metal": "frozen0.90.0",
+    "driver_build": "passed",
+    "host_gpu_submit_test": "passed",
+    "collection_bridge_build": "passed",
+    "scope": "Ready/Pending/Failed native surface access; queue-scoped cancellation of never-posted work, reserved native stamps retire FIFO; persistent bounded failure snapshot, native try-lock. Does not prove Pending graph solved.",
+    "work": "build/gpu-runtime/ui-surface-access-state",
+    "hardware_tested": true,
+    "state": "Failed round135:16unposted jobs waiting for native access; external IOMFB accelerator0 reader surface3. Complete graph captured.",
+    "evidence": "build/gpu-runtime/ui-surface-access-state/hardware-evidence.json"
+  },
+  "framework_lifecycle_audit": "build/gpu-runtime/ui-framework-lifecycle/lifecycle-audit.json",
+  "framework_next": "Display read ownership fix validated in round139: PP_DONE/latched/idle, auto-refresh disabled, read-fence-only retirement. Original logical surfaces/maps retained. Token1129 absence not proven, but persistent physical-front read dependency removed.",
+  "current_evidence": "build/gpu-runtime/ui-cold-compile-shared-nir/hardware-evidence.json",
+  "previous_display_stability_baseline_round139": {
+    "payload": "build/gpu-runtime/ui-command-transfer-bridge/XnuBridge.efi",
+    "source_receipt": "build/gpu-runtime/ui-command-transfer-source.json",
+    "kernel": "build/gpu-runtime/kernelcache.ui-command-transfer",
+    "versions": {
+      "GPU": "1.125.0",
+      "Metal": "0.90.0",
+      "Display": "1.0.17"
+    },
+    "hardware_tested": true,
+    "targeted_display_fix_passed": true,
+    "hardware_tested_profiles": [
+      "fetch2/pipe6"
+    ],
+    "gpu_policy_hz": 596000097,
+    "gfx_voltage_uv": 968000,
+    "state": "Verified round139 display-only baseline retained as fallback; current live candidate is round141."
+  },
+  "offline_direction": "Device available; user explicitly authorized resumed native debugging.",
+  "prepared_hardware_phase_candidate": {
+    "round": 143,
+    "versions": {
+      "GPU": "1.128.0",
+      "Metal": "0.92.0",
+      "Display": "1.0.17"
+    },
+    "state": "Retained offline, NEVER BOOTED. Its phase probes are included in latest1.130/0.93. Do not boot intermediate1.128/1.129 candidates.",
+    "payload": "build/gpu-runtime/ui-hardware-phases-bridge/XnuBridge.efi",
+    "source_receipt": "build/gpu-runtime/ui-hardware-phases-source.json",
+    "audit": "build/gpu-runtime/ui-hardware-phases/audit.json",
+    "hardware_tested": false
+  },
+  "prepared_offline_gpu_candidate": {
+    "round": null,
+    "planned_round": 143,
+    "versions": {
+      "GPU": "1.130.0",
+      "Metal": "0.93.0",
+      "Display": "1.0.17"
+    },
+    "payload": "build/gpu-runtime/ui-upload-reuse-bridge/XnuBridge.efi",
+    "kernel": "build/gpu-runtime/kernelcache.ui-poll-validation",
+    "source_receipt": "build/gpu-runtime/ui-upload-reuse-source.json",
+    "audit": "build/gpu-runtime/ui-upload-reuse/audit.json",
+    "hardware_tested": true,
+    "goal_achieved": false,
+    "state": "Historical offline preparation, now exercised in first combined runtime round143; see current_source_candidate. Charging restriction revoked by user device availability.",
+    "profile": {
+      "fetch": 2,
+      "pipe": 6,
+      "gpu_policy_hz": 596000097,
+      "gfx_voltage_uv": 968000
+    },
+    "runtime_evidence": "build/gpu-runtime/ui-upload-reuse/hardware-evidence.json"
+  },
+  "current_source_candidate": {
+    "versions": {
+      "GPU": "1.148.0",
+      "Metal": "1.13.0",
+      "Display": "1.0.22"
+    },
+    "parent": "build/gpu-runtime/ui-runtime-compiler-text",
+    "source_sha256": {
+      "boot/bridge/display_handoff.c": "cb69830e16a1a9fc563a3924be8c2f43d07ee6764d8856d25d6bce129d22ea79",
+      "drivers/display/QcomDisplay/DisplayCommandTransfer.h": "b9006bbf692e38b7b5ce315bb7d930631461bac9c645d40d72ea61b07d225f62",
+      "drivers/display/QcomDisplay/DisplayIdleMappings.h": "bc5e5b401583f43a2c94a345d91f3c024173629ffe5d2d8295dbb7a2634d4631",
+      "drivers/display/QcomDisplay/Info.plist": "bc10bc4d974c2490159da0be5b8247f691ba2a94dd9ed379a49613a09d281e63",
+      "drivers/display/QcomDisplay/QcomDisplay.cpp": "3b230dd10ed523ca3e80a7f7505a86833b7643d64ea48b465309fa3bd91a60b5",
+      "drivers/display/QcomDisplay/QcomDisplay.h": "6302e349f8e79f2c6d09ee5fbc462622294dca67baff9d911e8c14f2f17de331",
+      "drivers/display/QcomDisplay/QcomDisplaySurface.h": "b5640228a8abc2efac19bdfbd4dd462ba3b305e3c5013918f33bb3dec3af4720",
+      "drivers/gpu/QcomGPU/AdrenoPipeline.h": "3830b91e429ec20169675a59635fd8a320038cccde0e6f633c7b7097397743a9",
+      "drivers/gpu/QcomGPU/Info.plist": "7f052e7a1e26635a2bdc8adeee227b4ad32073f1b7409d60ac95f003273ded51",
+      "drivers/gpu/QcomGPU/NativePosterIdentity.h": "034d1f8b79cc2355855e9ec52b189710b1a4a2c3031df5bcaf011bc650120d16",
+      "drivers/gpu/QcomGPU/QcomGPU.cpp": "3b3b6c0d9e34e9111136cf1969285340d8d549f915bbc3c1e17b53a7f4f5c6b2",
+      "drivers/gpu/QcomGPU/QcomGPU.h": "69e48a00bc85be43ab7ea9b18120e4eb303fc89ecba106e1db7a552e53bcc1f2",
+      "drivers/gpu/QcomGPU/QcomGPUHardware.cpp": "aa2f13453dfc07409a6289ec34cc2d22e0c64f6dab4ca11cac06a8e3a90d2990",
+      "drivers/gpu/QcomGPU/QcomGPUNative.cpp": "9ceff6bedc374cd72a750e71270e422c3103af1100ed9cf31c394912e958874c",
+      "drivers/include/DisplayFrameStatistics.h": "fde188fd35eb8c925005bae16717d5a6b4bfee9f048e1772bb8072fbf4ab316a",
+      "drivers/include/DisplayTimeline.h": "ce60adc499d22427c2bd4e450313f186f113084029d44c8b1e543d1c704b5f7a",
+      "drivers/include/GPUBlit.h": "43336bcd2d6ea751bfb7e41777dbce44ded9cdb3ed091f192a7951e5f6406156",
+      "drivers/include/GPUDiagnostics.h": "a8d6fa7ab9b40b6f4a12fdd450084c75b4f0b34cb512ec160c10850c9384b32a",
+      "drivers/include/GPUMetalCapabilities.h": "0c99145d5379302fe622b3c30ddd35c5ecf652e18744eefa8f06cb73cb1d7330",
+      "drivers/include/GPUMetalTiming.h": "c8bfe1c0b06617e8af2c0779c7ec70853711d2ac8f28411841130911c8cf0f6d",
+      "drivers/include/GPUShaderProtocol.h": "b785d1c77c3210443afa97eba0a2afbdf38df3451366849861ba18ea1397ee1c",
+      "drivers/gpu/QcomMTL/Blit.metal": "af98c30ec8297cdac4c46b75e4aa984382b588fcaf181a30c5dfb1ee78152b3b",
+      "drivers/gpu/QcomMTL/Info.plist": "953511665d2380f3be9ad0df4bba7359c8162581acf07cada8417e704ddce73d",
+      "drivers/gpu/QcomMTL/QcomMTL.mm": "9a8c57994e502da2e2aed3949452eeac250253584ab7239d794f083aa411eebf",
+      "tests/display_test.cpp": "668b12ba683007a3370325e70b32081713d2dd139d259cb50a47ad29fec1a42c",
+      "tests/fixtures/gpu/packed-fluidity.air.ll": "99c1cef7ba2cd3fcb35738e6b131b7fd91045b87ea66a7e9c5020a40f03dd88c",
+      "tests/gpu_compiler_test.cpp": "fd34e44f22788aa47e395920f25c37acd5701215392cfeb1f349cc0bf219fd73",
+      "tests/gpu_submit_test.cpp": "4ba07c6a60457451b18a0661792eb702e69beffa64a3f6d2edef5843bea3f236",
+      "tests/gpu_test.cpp": "8726b580bff8dd5086f20d95f3edc1edaa77a0fc2f3f88cb7938292298113cc4",
+      "tools/displayctl/displayctl.mm": "ac8cd3cec6eeffbcca45513c29e65262897bcbd9237c6f05cc069ae5ea30cbf2",
+      "tools/gpu-compiler/AIR.cpp": "81ae37bbeff1bb3ce100efaca00bfe4fde089fde5b3b6eb4a72ab19057b2fe15",
+      "tools/gpu-compiler/AIRRuntime.cpp": "cb5990485d9b4548273ae2d8379da3f6a70b49f2ec8f2d05880bb95342f28b91",
+      "tools/gpu-compiler/Backend.c": "b318a7ad0b2543b0fb987b660460c1c1daa8a19a54ed05b3a4edd64d3d74b481",
+      "tools/gpu-compiler/Semantic.h": "6131bb7f29e9805a70e14d43ea282e0e7db5e5e05788e3e4b542764f2cea6ff1",
+      "tools/gpuctl/GPUConnection.cpp": "e46229fc435a9e9277d3b7eac791bac0c1bb151da80c9f9a8b469671a9b694b7",
+      "tools/gpuctl/GPUConnection.h": "76ccb59c2f173c7142c5de08efceadb19af50cd3b3bac8bf72e14db8378467d3",
+      "tools/gpuctl/gpuctl.cpp": "aa950f2b8d390714b85716ccf620622b9da512d7c7876f0a1f8211ec39437914",
+      "tools/gpuctl/metalctl.mm": "3ec2243ed1be0c5459160c47f5d97766639c9bf82a0b8b1e422063aa509fcf95"
+    },
+    "changed_sources": [
+      "tools/displayctl/displayctl.mm",
+      "tools/gpuctl/metalctl.mm"
+    ],
+    "kernel": "build/gpu-runtime/kernelcache.ui-rgba16-unorm",
+    "kernel_sha256": "4a271cd7a1d43eb5088ebd33fc0d68d4625289540d7b51baca873c71d2911642",
+    "payload": "build/gpu-runtime/ui-mercury-init-audit/bridge/XnuBridge.efi",
+    "payload_sha256": "34ccd63b353f835d6647a97c3f9426c7eef9a6f4b6236a2d2a82a72fca87b93e",
+    "changed_HFS_files": [
+      "displayctl",
+      "mc",
+      "metalctl",
+      "ui-background.sh"
+    ],
+    "added_HFS_files": [],
+    "hardware_tested": false,
+    "goal_achieved": false,
+    "state": "Offline diagnostics candidate frozen and verified. Mercury exit/status/resource capture and original Fluidity descriptor coverage. Production Metal1.13 parent preserved; no hardware run.",
+    "source_receipt": "build/gpu-runtime/ui-mercury-init-audit/source.json",
+    "review": "docs/gpu/hello-mercury-lifecycle-review.md",
+    "audit": "build/gpu-runtime/ui-mercury-init-audit/audit.json"
+  },
+  "previous_offline_gpu_candidate_1_129": {
+    "round": null,
+    "planned_round": 143,
+    "versions": {
+      "GPU": "1.129.0",
+      "Metal": "0.93.0",
+      "Display": "1.0.17"
+    },
+    "payload": "build/gpu-runtime/ui-mapped-ranges-bridge/XnuBridge.efi",
+    "kernel": "build/gpu-runtime/kernelcache.ui-mapped-ranges",
+    "source_receipt": "build/gpu-runtime/ui-mapped-ranges-source.json",
+    "audit": "build/gpu-runtime/ui-mapped-ranges/audit.json",
+    "hardware_tested": false,
+    "goal_achieved": false,
+    "state": "OFFLINE BUILT/PACKAGED, NEVER BOOTED. User charging. Verified sparse working-set mappings, bounded private inline-page recycling at physical retirement + final view release, and inherited hardware-phase timing. Sanitized host GPU-submit, arm64/ABI,74kexts/23local hashes/12HFS readbacks passed. Wait for explicit device availability; no new reboot/action request.",
+    "profile": {
+      "fetch": 2,
+      "pipe": 6,
+      "gpu_policy_hz": 596000097,
+      "gfx_voltage_uv": 968000
+    }
+  },
+  "previous_offline_candidate_poll_only": {
+    "round": null,
+    "planned_round": 143,
+    "versions": {
+      "GPU": "1.130.0",
+      "Metal": "0.93.0",
+      "Display": "1.0.17"
+    },
+    "payload": "build/gpu-runtime/ui-poll-validation-bridge/XnuBridge.efi",
+    "kernel": "build/gpu-runtime/kernelcache.ui-poll-validation",
+    "source_receipt": "build/gpu-runtime/ui-poll-validation-source.json",
+    "audit": "build/gpu-runtime/ui-poll-validation/audit.json",
+    "hardware_tested": false,
+    "goal_achieved": false,
+    "state": "OFFLINE BUILT/PACKAGED, NEVER BOOTED. Adds retirement outer platform scan deduplication2->1 while preserving locked actual platform/context/stream/firmware and engine completion checks. Inherits1.129 sparse mappings/private upload cache and1.128 phase probes. Focused GPU arm64/ABI +74kext/23local verification passed; exact Metal0.93 HFS/trustcache reused and prior sanitizer source/binary hashes still match. Real Welcome142 data replay/parser checks passed. User charging; no UART/Fastboot query/boot. No FPS or optical proof.",
+    "profile": {
+      "fetch": 2,
+      "pipe": 6,
+      "gpu_policy_hz": 596000097,
+      "gfx_voltage_uv": 968000
+    }
+  },
+  "previous_hardware_fallback_round142": {
+    "payload": "build/gpu-runtime/ui-resource-validation-bridge/XnuBridge.efi",
+    "source_receipt": "build/gpu-runtime/ui-resource-validation-source.json",
+    "kernel": "build/gpu-runtime/kernelcache.ui-resource-validation",
+    "versions": {
+      "GPU": "1.127.0",
+      "Metal": "0.92.0",
+      "Display": "1.0.17"
+    },
+    "hardware_tested": true,
+    "hardware_tested_profiles": [
+      "fetch2/pipe6"
+    ],
+    "gpu_policy_hz": 596000097,
+    "gfx_voltage_uv": 968000,
+    "state": "Resource-validation candidate passed compile/ABI/images, inline snapshot/fence diagnostics and bounded active Welcome. Current optical no-flicker observation remains round141 only; no60FPS claim.",
+    "hardware_evidence": "build/gpu-runtime/ui-resource-validation/hardware-evidence.json"
+  },
+  "previous_combined143_candidate": {
+    "round": 143,
+    "planned_round": 143,
+    "versions": {
+      "GPU": "1.130.0",
+      "Metal": "0.93.0",
+      "Display": "1.0.17"
+    },
+    "payload": "build/gpu-runtime/ui-upload-reuse-bridge/XnuBridge.efi",
+    "kernel": "build/gpu-runtime/kernelcache.ui-poll-validation",
+    "source_receipt": "build/gpu-runtime/ui-upload-reuse-source.json",
+    "audit": "build/gpu-runtime/ui-upload-reuse/audit.json",
+    "hardware_tested": true,
+    "goal_achieved": false,
+    "state": "First combined1.130/0.93 actual boot143 passed4CPU, inline snapshot+13CB allocation-neutral reuse and native fence tests. Same-boot clean complex Welcome window787complete0failed. Display selected330intervals p50=33.64594ms,p95=83.47208ms,max=366.77469ms;13>100ms. Tail9.201s without new display and GPU counters pause; later same-boot GPU resumes. No60FPS or new optical no-flicker acceptance.",
+    "profile": {
+      "fetch": 2,
+      "pipe": 6,
+      "gpu_policy_hz": 596000097,
+      "gfx_voltage_uv": 968000
+    },
+    "hardware_evidence": "build/gpu-runtime/ui-upload-reuse/hardware-evidence.json",
+    "hardware_tested_profiles": [
+      "fetch2/pipe6"
+    ]
+  },
+  "next_focus": "Wallpaper first frame and wake delay only. Preserve corrected geometry. No unrelated display timing changes.",
+  "previous_planned132_candidate": {
+    "round": 145,
+    "GPU": "1.132.0",
+    "Metal": "0.93.0",
+    "Display": "1.0.17",
+    "payload": "build/gpu-runtime/ui-shader-object-reuse-bridge/XnuBridge.efi",
+    "source_receipt": "build/gpu-runtime/ui-shader-object-reuse-source.json",
+    "audit": "build/gpu-runtime/ui-shader-object-reuse/audit.json",
+    "hardware_tested": false,
+    "goal_achieved": false,
+    "scope": "Intra-IB immutable shader ISA reuse and adjacent duplicate inplace UCHE preflush removal; keep actual per-primitive waits and display ownership.",
+    "state": "Built and tested same payload across145/146; current active candidate146."
+  },
+  "previous_hardware_round146": {
+    "round": 146,
+    "versions": {
+      "GPU": "1.132.0",
+      "Metal": "0.93.0",
+      "Display": "1.0.17"
+    },
+    "payload": "build/gpu-runtime/ui-shader-object-reuse-bridge/XnuBridge.efi",
+    "source_receipt": "build/gpu-runtime/ui-shader-object-reuse-source.json",
+    "audit": "build/gpu-runtime/ui-shader-object-reuse/audit.json",
+    "hardware_evidence": "build/gpu-runtime/ui-shader-object-reuse/hardware-evidence.json",
+    "hardware_tested": true,
+    "goal_achieved": false,
+    "profile": {
+      "fetch": 2,
+      "pipe": 6,
+      "gpu_policy_hz": 596000097,
+      "gfx_voltage_uv": 968000
+    },
+    "state": "145 exact framebuffer guards+overlap pixels pass; same payload146 missing mixed/fence rerun pass. All6commands0,4CPU,no panic.873UIcompleted0failed,8575ISA reuse hits. Median display33.449ms, first-last15.712FPS inclholds; not60FPS or new optical acceptance."
+  },
+  "previous_hardware_round147": {
+    "round": 147,
+    "versions": {
+      "GPU": "1.132.0",
+      "Metal": "0.94.0",
+      "Display": "1.0.17"
+    },
+    "payload": "build/gpu-runtime/ui-retired-cleanup-bridge/XnuBridge.efi",
+    "source_receipt": "build/gpu-runtime/ui-retired-cleanup-source.json",
+    "audit": "build/gpu-runtime/ui-retired-cleanup/audit.json",
+    "hardware_evidence": "build/gpu-runtime/ui-retired-cleanup/hardware-evidence.json",
+    "hardware_tested": true,
+    "goal_achieved": false,
+    "profile": {
+      "fetch": 2,
+      "pipe": 6,
+      "gpu_policy_hz": 596000097,
+      "gfx_voltage_uv": 968000
+    },
+    "state": "Bounded asynchronous retired-storage cleanup;8-batch backpressure,10FIFOcallbacks,no-copy once,inline/fence checks passed. RealUI789complete0failed,p50display33.439ms,p9583.674ms,max1233.928ms inclholds;GPUmax104.899ms. No exact FPS gain or optical acceptance."
+  },
+  "operation_profiling_progress": {
+    "validated_runtime": "round-158",
+    "runtime_versions": {
+      "GPU": "1.137.0",
+      "Metal": "1.0.0",
+      "Display": "1.0.18"
+    },
+    "runtime_evidence": "build/gpu-runtime/ui-framebuffer-input-snapshot/hardware-evidence.json",
+    "coverage": "4861.337ms sampled operations /5083.257ms summedGPUjobs (~95.6%); no bucket overflow. Not wall GPU utilization.",
+    "dominant_shader": "Actual a5f84e06617f6984 single-input-materialization640words,16full/19half,oneFBreadgroup;231ops3457.774ms ~68.0% summedGPUjobtime,copy0;22scalarbufferloads remain. No gain proved.",
+    "next_candidate": "Metal1.1 offline overlay ready; guarded half4 reads, hot6006761a9eb7f18e. Hardware still untested; measured68% and33.446ms refer to Metal1.0 round158, not new candidate."
+  },
+  "previous_hardware_round150": {
+    "round": 150,
+    "versions": {
+      "GPU": "1.135.0",
+      "Metal": "0.94.0",
+      "Display": "1.0.18"
+    },
+    "payload": "build/gpu-runtime/ui-operation-coverage-bridge/XnuBridge.efi",
+    "source_receipt": "build/gpu-runtime/ui-operation-coverage-source.json",
+    "audit": "build/gpu-runtime/ui-operation-coverage/audit.json",
+    "hardware_evidence": "build/gpu-runtime/ui-operation-coverage/hardware-evidence.json",
+    "hardware_tested": true,
+    "goal_achieved": false,
+    "profile": {
+      "fetch": 2,
+      "pipe": 6,
+      "gpu_policy_hz": 596000097,
+      "gfx_voltage_uv": 968000
+    },
+    "state": "135 diagnostic coverage hardware verified150; largest64+cumulative suffix preserves80ms hotfetch. Next candidateMetal0.95captures exactnative GLSL/constants/image; noGPU or rendering policy change."
+  },
+  "offline_shader_reconstruction": {
+    "audit": "build/gpu-runtime/ui-native-hot-reconstruction/audit.json",
+    "vertex_identity_match": "7f6e21cd625f7b24",
+    "fragment_target": "bc8b834de5755555",
+    "fragment_match": false,
+    "scope": "Original AIR specialization candidates reconstructed with current compiler. Same704word samples have different identities/regs; not adopted. Actual hotVS FNV matched; full native bytes not exported."
+  },
+  "previous_hardware_round154": {
+    "versions": {
+      "GPU": "1.136.0",
+      "Metal": "0.96.0",
+      "Display": "1.0.18"
+    },
+    "hardware_evidence": "build/gpu-runtime/ui-cacheable-job-tables/hardware-evidence.json",
+    "state": "Pixel+mixed0,4CPU; 12.103s619UIcompleted0failed. GPU595.987MHz,max62.605ms; actualdisplay265intervals/12.018s22.050FPS inclholds,p5033.518ms,p9583.267ms,4>100ms. AddressSpace2.214ms/job. Original90s bulk exporttimeout retained; exact same943job frozen file reexport with767complete prefix match. Last fully analyzed performance window, not60FPS."
+  },
+  "previous_hardware_round156": {
+    "versions": {
+      "GPU": "1.137.0",
+      "Metal": "0.99.0",
+      "Display": "1.0.18"
+    },
+    "hardware_evidence": "build/gpu-runtime/ui-native-capture-authority/hardware-evidence.json",
+    "state": "Native backboardd/SpringBoard registry+owningconnection diagnostic enabled1;22actualshaderfiles at /private/var/mobile/tmp/com.apple.backboardd. Initialmaincapturestatus1 was omittedsearchpath, retained. Sameboot three targetrecords exported command0status0 and SHA/FNV/base+MSAA verified. Hot bc8b834de5755555 full41840byte original+host images identical. Actualhot is base/single-sample, sourceAIRSHA bc740d...,constants captured; no performance gain claimed."
+  },
+  "current_hardware_round157_158": {
+    "versions": {
+      "GPU": "1.137.0",
+      "Metal": "1.0.0",
+      "Display": "1.0.18"
+    },
+    "hardware_evidence": "build/gpu-runtime/ui-framebuffer-input-snapshot/hardware-evidence.json",
+    "review": "docs/gpu/hello-runtime-review-1.137.md",
+    "hardware_tested": true,
+    "goal_achieved": false,
+    "performance_gain_proven": false,
+    "user_screen_state_feedback": "长间隔应该是熄屏了",
+    "bright_moving_animation_FPS": null,
+    "CPU_frequency_measured": false
+  },
+  "device_identity_verification_20261019": {
+    "status": "passed",
+    "report": "build/device-identity/runtime-20261019/verification.json",
+    "review": "docs/sdm835/device-identity.md",
+    "old_cache_backup_on_device": "/private/var/device-identity-gestalt-8653386C-BAF8-4CA3-A6CA-5B0422B9282A.plist",
+    "persistent_cache_regenerated": true,
+    "last_completed_boot_report": "build/device-identity/runtime-20261019/final-boot/report.json",
+    "rendering_base_round": 157,
+    "rendering_assets_unchanged": true,
+    "UI_performance_tested": false,
+    "shutdown_panic_separate": true
+  },
+  "previous_hardware_round157_158": {
+    "round": 157,
+    "planned_round": 157,
+    "versions": {
+      "GPU": "1.137.0",
+      "Metal": "1.0.0",
+      "Display": "1.0.18"
+    },
+    "payload": "build/gpu-runtime/ui-framebuffer-input-snapshot-bridge/XnuBridge.efi",
+    "kernel": "build/gpu-runtime/kernelcache.ui-native-capture-authority",
+    "source_receipt": "build/gpu-runtime/ui-framebuffer-input-snapshot-source.json",
+    "audit": "build/gpu-runtime/ui-framebuffer-input-snapshot/audit.json",
+    "hardware_tested": true,
+    "goal_achieved": false,
+    "profile": {
+      "fetch": 2,
+      "pipe": 6,
+      "gpu_policy_hz": 596000097,
+      "gfx_voltage_uv": 968000
+    },
+    "state": "Hardware validated157/158. Exact guardedpixels and nativeCA8frames pass; hota5f used in realUI.12.097s586jobs0failed,596MHz; hot68.0% summedGPUjobtime,copy0. Displayp5033.446ms.1.300s interval suspected screen-off per user; raw19.028interval/s includes it, not valid bright-animation FPS. No measured performance gain/60FPS/newopticalacceptance.",
+    "capture_script": "build/gpu-runtime/ui-framebuffer-input-snapshot/capture157.py",
+    "hardware_evidence": "build/gpu-runtime/ui-framebuffer-input-snapshot/hardware-evidence.json",
+    "user_screen_state_feedback": "长间隔应该是熄屏了"
+  },
+  "constant_bank_feasibility": {
+    "state": "RESEARCH ONLY, nondeployable; production1.1/ABI35 unchanged",
+    "audit": "build/gpu-runtime/ui-constant-bank-study/audit.json",
+    "review": "docs/gpu/hello-constant-bank-feasibility.md",
+    "program_hash_base": "2a8173811f5b8343",
+    "model_cases": 520,
+    "zero_SSBO_model_cases": 80,
+    "window_contract_ASan_UBSan_cases": 8224,
+    "raw_half_cases": 65536,
+    "words_base_msaa": [
+      896,
+      928
+    ],
+    "full_half": [
+      6,
+      27
+    ],
+    "source_window": [
+      160,
+      224
+    ],
+    "driver_integration_complete": false,
+    "hardware_tested": false,
+    "goal_achieved": false
+  },
+  "previous_ready_candidate_GPU1_137_Metal1_1": {
+    "round": null,
+    "planned_round": null,
+    "versions": {
+      "GPU": "1.137.0",
+      "Metal": "1.1.0",
+      "Display": "1.0.18"
+    },
+    "payload": null,
+    "gpu_driver_image": "build/gpu-runtime/drivers-ui-vector-buffer-loads.hfs",
+    "trust_cache": "build/gpu-runtime/ui-vector-buffer-loads.trustcache",
+    "kernel_reference": "build/gpu-runtime/kernelcache.ui-native-capture-authority",
+    "source_receipt": "build/gpu-runtime/ui-vector-buffer-loads-source.json",
+    "audit": "build/gpu-runtime/ui-vector-buffer-loads/audit.json",
+    "review": "docs/gpu/hello-framebuffer-shader-offline-1.1.md",
+    "hardware_tested": false,
+    "goal_achieved": false,
+    "profile": {
+      "fetch": 2,
+      "pipe": 6,
+      "gpu_policy_hz": 596000097,
+      "gfx_voltage_uv": 968000
+    },
+    "state": "OFFLINE ONLY. Readonly constant-offset fragment half-load vectorization + bounded full-vector guard, original per-component tail fallback. Actual AppleAIR/constants GLSL/reflection unchanged; hot6006761a9eb7f18e. Full valid matrix20scalar->5u16.4; total valid-pathLDGB22->7 but static27 inclfallback.640->800words,full16->6,half19->26,branchstack1.2700NIRcases+fullcompiler+arm64build+12HFSreadbacks pass. Same133AOT/registry/kernelreference/display/ABI/fences. FourHFSfiles inclactualbuildreceipt changed; no combinedEFI/rootfs edits/device access/FPS gain claim."
+  },
+  "constant_bank_production": {
+    "state": "COMPLETE_OFFLINE_UNTESTED",
+    "workdir": "build/gpu-runtime/ui-constant-bank",
+    "versions": {
+      "GPU": "1.138.0",
+      "Metal": "1.2.0",
+      "Display": "1.0.18"
+    },
+    "layout": {
+      "description_bytes": 2464,
+      "image_bytes": 41912,
+      "max_windows": 4,
+      "data_base_words": 112,
+      "data_words_per_window": 16,
+      "flags": "one full vec4 after all active windows",
+      "prefix_words": "112+16*count+4"
+    },
+    "jit_version": 36,
+    "registry": "a52d1cc3dce54a71",
+    "native_diagnostic": "metalctl --system constant-window-test (compiled, not executed)",
+    "audit": "build/gpu-runtime/ui-constant-bank/audit.json",
+    "report": "docs/gpu/hello-constant-bank-1.2.md",
+    "ABI_warning": "Global host .so now ABI36/image41912. Never run old ABI35/image41840 compile/rebuild helpers against it. New helper ui-constant-bank/rebuild is ABI36. Frozen v35library retained under ui-constant-bank/before/build/gpu-compiler/host/src/freedreno/QcomGPUCompiler.so.",
+    "hardware_tested": false,
+    "goal_achieved": false,
+    "remaining": [
+      "Real GPU producer→constant pixel/coherence test and actual path-hit confirmation; then framebuffer/fence regression and complex Welcome timing, only after offline instruction changes.",
+      "Native compile profile failure retries both variants without promotion. AOT CLI has no retry yet; all current135programs compile.",
+      "No combinedEFI. Any laterboot must use matching138kernel and1.2overlay/trustcache with then-current verified boot inputs."
+    ]
+  },
+  "previous_ready_candidate_GPU1_138_Metal1_2": {
+    "round": null,
+    "planned_round": null,
+    "versions": {
+      "GPU": "1.138.0",
+      "Metal": "1.2.0",
+      "Display": "1.0.18"
+    },
+    "payload": null,
+    "kernel": "build/gpu-runtime/kernelcache.ui-constant-bank",
+    "kernel_reference": "build/gpu-runtime/kernelcache.ui-constant-bank",
+    "gpu_driver_image": "build/gpu-runtime/drivers-ui-constant-bank.hfs",
+    "trust_cache": "build/gpu-runtime/ui-constant-bank.trustcache",
+    "source_receipt": "build/gpu-runtime/ui-constant-bank-source.json",
+    "audit": "build/gpu-runtime/ui-constant-bank/audit.json",
+    "review": "docs/gpu/hello-constant-bank-1.2.md",
+    "hardware_tested": false,
+    "goal_achieved": false,
+    "profile": {
+      "fetch": 2,
+      "pipe": 6,
+      "gpu_policy_hz": 596000097,
+      "gfx_voltage_uv": 968000
+    },
+    "state": "OFFLINE COMPLETE. GPU138/Metal1.2 ABI36 matching components only; no EFI/device access. Generic bounded GPU constant windows plus Metal1.1 half-vector guards. Actual Apple hotspot6c69f37293d6f5a7 windowbuffer1[160,224),base896/MSAA928words,6full/27half,constlen40.832NIRcases(128enabled zeroSSBO)+2700halfguard cases,8224productionpacket cases ASAN/UBSAN,fullcompiler/nativebuild/kernel74+23local/HFS13readbacks pass.135AOTentries,old133ISA/immediate arrays exact,registrya52d1cc3dce54a71. Native GPUproducer/consumer diagnostic built NOT RUN. Extra conditional cacheflush and shader size may offset benefit; no FPS gain claim. Use paired newkernel+overlay, never old137."
+  },
+  "window_guard_coalescing": {
+    "state": "COMPLETE_OFFLINE_UNTESTED",
+    "workdir": "build/gpu-runtime/ui-window-guard-coalescing",
+    "review": "docs/gpu/hello-window-guard-coalescing-1.3.md",
+    "audit": "build/gpu-runtime/ui-window-guard-coalescing/audit.json",
+    "compiler_tests": "build/gpu-runtime/ui-window-guard-coalescing/host-check-final.json",
+    "registry": "465b990a90071c98",
+    "jit_version": 36,
+    "shader_hashes": {
+      "base": "85db5ac1599a4f7a",
+      "MSAA": "43de3bc71d92a1b6"
+    },
+    "hardware_tested": false,
+    "goal_achieved": false,
+    "limitations": [
+      "Concentrated loads may alter liveness; no GPU time or FPS gain inferred.",
+      "Existing GPU producer-to-constant pixel/path diagnostic has not run on hardware.",
+      "AOT profile failure retry remains unimplemented; all135currentprograms compile."
+    ]
+  },
+  "previous_ready_candidate_GPU1_139_Metal1_3": {
+    "round": null,
+    "planned_round": null,
+    "versions": {
+      "GPU": "1.139.0",
+      "Metal": "1.3.0",
+      "Display": "1.0.18"
+    },
+    "payload": null,
+    "kernel": "build/gpu-runtime/kernelcache.ui-window-guard-coalescing",
+    "kernel_reference": "build/gpu-runtime/kernelcache.ui-window-guard-coalescing",
+    "gpu_driver_image": "build/gpu-runtime/drivers-ui-window-guard-coalescing.hfs",
+    "trust_cache": "build/gpu-runtime/ui-window-guard-coalescing.trustcache",
+    "source_receipt": "build/gpu-runtime/ui-window-guard-coalescing-source.json",
+    "audit": "build/gpu-runtime/ui-window-guard-coalescing/audit.json",
+    "review": "docs/gpu/hello-window-guard-coalescing-1.3.md",
+    "hardware_tested": false,
+    "goal_achieved": false,
+    "profile": {
+      "fetch": 2,
+      "pipe": 6,
+      "gpu_policy_hz": 596000097,
+      "gfx_voltage_uv": 968000
+    },
+    "state": "OFFLINE COMPLETE. Generic same-window static readonly half loads grouped within one basic block across pure SSA only; Mesa uniform condition merge5to1 on actualApplehot. ExactAIR/constants GLSL/reflection prefix retained. Hot85db5ac1599a4f7a base864/MSAA864words,6full/26half,constlen40; staticLDGB27 includescoldfallback.2700half+832window(128enabledzeroSSBO)+newordering/SSAchecks/fullcompiler/nativebuild passed;8224productionpacket ASAN/UBSAN;74kext+23local+13HFSreadback passed. Original133AOT+producerISA unchanged,onlyconsumerdiagnostic changes.135entries,registry465b990a90071c98,ABI36. Fivebundlefiles changed; tools binaries preserved. PairedGPU139/Metal1.3components,noEFI/deviceaccess/hardware/FPSacceptance."
+  },
+  "static_read_bounds": {
+    "state": "COMPLETE_OFFLINE_UNTESTED",
+    "workdir": "build/gpu-runtime/ui-static-read-bounds",
+    "review": "docs/gpu/hello-static-read-bounds-1.4.md",
+    "audit": "build/gpu-runtime/ui-static-read-bounds/audit.json",
+    "compiler_tests": "build/gpu-runtime/ui-static-read-bounds/host-check-final.json",
+    "AOT_changes": "build/gpu-runtime/ui-static-read-bounds/AOT-preservation.json",
+    "registry": "72b191f4da4d7b92",
+    "jit_version": 36,
+    "shader_hashes": {
+      "base": "80bdefd21c667f9f",
+      "MSAA": "6291f71230a8b632"
+    },
+    "hardware_tested": false,
+    "goal_achieved": false,
+    "limitations": [
+      "No actualGPU pixels/time/FPS.31fragmentAOT ISA changes require affected native render-state/framebuffer/fence regression when hardware phase resumes.",
+      "Register allocation tradeoffs are explicit; e.g.buffer_color full6to8/half5to3. No universal occupancy/performance claim.",
+      "Conditional GPUcache publish from1.2 remains. Native compile profile retry exists, AOT CLI retry remains absent; all135currentprograms compile."
+    ]
+  },
+  "previous_ready_candidate_GPU1_140_Metal1_4": {
+    "round": null,
+    "planned_round": null,
+    "versions": {
+      "GPU": "1.140.0",
+      "Metal": "1.4.0",
+      "Display": "1.0.18"
+    },
+    "payload": null,
+    "kernel": "build/gpu-runtime/kernelcache.ui-static-read-bounds",
+    "kernel_reference": "build/gpu-runtime/kernelcache.ui-static-read-bounds",
+    "gpu_driver_image": "build/gpu-runtime/drivers-ui-static-read-bounds.hfs",
+    "trust_cache": "build/gpu-runtime/ui-static-read-bounds.trustcache",
+    "source_receipt": "build/gpu-runtime/ui-static-read-bounds-source.json",
+    "audit": "build/gpu-runtime/ui-static-read-bounds/audit.json",
+    "review": "docs/gpu/hello-static-read-bounds-1.4.md",
+    "hardware_tested": false,
+    "goal_achieved": false,
+    "profile": {
+      "fetch": 2,
+      "pipe": 6,
+      "gpu_policy_hz": 596000097,
+      "gfx_voltage_uv": 968000
+    },
+    "state": "OFFLINE COMPLETE. Readonly nonvolatile/noncoherent FS constant32 offsets use uint64 end proof +size>=end; oddhalf and end>UINT32_MAX invalid. Dynamic/shared/store/atomic semantics retained. ExactAppleAIR/constants/GLSL/reflectionprefix retained. Hot80bdefd21c667f9f base672/MSAA704words,6full/20half,constlen40,1windowflag condition,22staticLDGB inclcoldfallback.1768productionNIR literal/symbolic differential cases+2700half+832window+schedule/SSA/fullcompiler/nativebuild passed.145900integeridentitycases. CurrentAOT gpu-submit+8224window ASAN/UBSAN models passed.135AOTnames/order/IDs preserved;104ISAarrays exact,31fragmententries changed (30old133+consumer),compute/vertex/producer exact. Registry72b191f4da4d7b92,ABI36.74kext+23local+13HFSreadback audit passed. PairedGPU140/Metal1.4components only,noEFI/deviceaccess/actualpixel/FPSacceptance. Some AOT register tradeoffs documented."
+  },
+  "constant_publish_reuse": {
+    "state": "COMPLETE_OFFLINE_UNTESTED",
+    "workdir": "build/gpu-runtime/ui-constant-publish-reuse",
+    "audit": "build/gpu-runtime/ui-constant-publish-reuse/audit.json",
+    "review": "docs/gpu/hello-constant-publication-reuse-1.141.md",
+    "registry": "72b191f4da4d7b92",
+    "jit_version": 36,
+    "native_diagnostic": "metalctl --system constant-window-test: ordinary/framebuffer modes,5phases each,4096pixels perphase; compiled,notexecuted.",
+    "hardware_tested": false,
+    "goal_achieved": false,
+    "limits": [
+      "Local static synchronization coverage proof plus PM4 models are not actual cache/pixel/timing validation.",
+      "Keep ordinary/direct raster publish and CP memory wait; do not generalize private localproof to operation-wide dirty tracking.",
+      "Shader target remains Metal1.4 actualApplehot80bdefd21c667f9f. Diagnostic authoredAIR is correctness input,notWelcomeperformanceproxy."
+    ]
+  },
+  "previous_ready_candidate_GPU1_141_components": {
+    "round": null,
+    "planned_round": null,
+    "versions": {
+      "GPU": "1.141.0",
+      "Metal": "1.4.0",
+      "Display": "1.0.18"
+    },
+    "payload": null,
+    "kernel": "build/gpu-runtime/kernelcache.ui-constant-publish-reuse",
+    "kernel_reference": "build/gpu-runtime/kernelcache.ui-constant-publish-reuse",
+    "gpu_driver_image": "build/gpu-runtime/drivers-ui-constant-publish-reuse.hfs",
+    "trust_cache": "build/gpu-runtime/ui-constant-publish-reuse.trustcache",
+    "source_receipt": "build/gpu-runtime/ui-constant-publish-reuse-source.json",
+    "audit": "build/gpu-runtime/ui-constant-publish-reuse/audit.json",
+    "review": "docs/gpu/hello-constant-publication-reuse-1.141.md",
+    "hardware_tested": false,
+    "goal_achieved": false,
+    "profile": {
+      "fetch": 2,
+      "pipe": 6,
+      "gpu_policy_hz": 596000097,
+      "gfx_voltage_uv": 968000
+    },
+    "state": "OFFLINE COMPLETE. Private expandedFB raster invocation reuses actual completed UCHE publication before constant loading, skipping duplicateflush only. Plain/direct raster stillpublishes,CPmemorywritewait and allperprimitive/finalfences retained; no cached crossoperation cleanflag.135AOT/compiler/adapter/archivecontext exact1.4,registry72b191f4da4d7b92,ABI36. Newnative10phase GPUproducer→ordinary/FB windowconsumer test compiled,notrun; exactAIR checked throughreal base/MSAAISA. ASAN8224windows+eightFBmodes+mixedcompute+384primitives/IBrollover/profiling+compactrollback/deniedallocation+fullsubmit models pass. Fullcompiler2700/832/1768cases passed.74kext/23local/13HFSreadbacks auditpass. HFSonlymetalctl changes. NoEFI/deviceaccess/runtimepixels/timing/FPSclaim."
+  },
+  "hardware_ready_candidate": {
+    "round": null,
+    "planned_round": null,
+    "versions": {
+      "GPU": "1.141.0",
+      "Metal": "1.4.0",
+      "Display": "1.0.18"
+    },
+    "payload": "build/gpu-runtime/ui-141-hardware-ready/bridge/XnuBridge.efi",
+    "kernel": "build/gpu-runtime/kernelcache.ui-constant-publish-reuse",
+    "kernel_reference": "build/gpu-runtime/kernelcache.ui-constant-publish-reuse",
+    "gpu_driver_image": "build/gpu-runtime/ui-141-hardware-ready/drivers.hfs",
+    "trust_cache": "build/gpu-runtime/ui-141-hardware-ready/diagnostics.trustcache",
+    "source_receipt": "build/gpu-runtime/ui-141-hardware-ready/source.json",
+    "audit": "build/gpu-runtime/ui-141-hardware-ready/audit.json",
+    "review": "docs/gpu/hello-hardware-ready-1.141.md",
+    "hardware_tested": false,
+    "goal_achieved": false,
+    "profile": {
+      "fetch": 2,
+      "pipe": 6,
+      "gpu_policy_hz": 596000097,
+      "gfx_voltage_uv": 968000
+    },
+    "state": "OFFLINE COMPLETE combinedEFI. GPU141/Metal1.4/Display118 kernel/Metal assets exactpriorcandidate; onlydisplayctl changed in13fileoverlay,adding boundednative onlease/10Hzlogicalstate+dualMachclock samples;identitydiagnostics/DT/bootargs/APFSUUIDs preserved. Native arm64build/exports,HFSreadback,ELFsymbol payload checks and actualblobmatches inrawImage/EFI passed. Captureplan prepared NOT EXECUTED; hardware availabilityquestion pending. No deviceaccess/optical/pixels/timing/FPSacceptance.",
+    "payload_sha256": "ca2c01bc2ff5e161150c22cbfa2e7f0bfe94a3198b6dd6af1fbac5614683c40b"
+  },
+  "power_capture_preparation": {
+    "state": "HARDWARE_SAMPLED_12S_WINDOW_BRACKETED",
+    "workdir": "build/gpu-runtime/ui-141-hardware-ready",
+    "command": "displayctl hold-display-on SECONDS (1..60)",
+    "sampling": "NativeCADisplayStateControl 4logicalstates at10Hz,absolute+continuousMach clocks,boundeddeadline,quietduringwindow,allrawsamples exportedafterward. Durationvalidated; not optical/uninterruptedon proof.",
+    "capture_plan": "build/gpu-runtime/ui-141-hardware-ready/capture-plan.json",
+    "device_runner_executed": true,
+    "availability_question_pending": false,
+    "limits": [
+      "Compositorjobgrowth doesnot aloneproveWelcomecontent/continuousmotion.",
+      "Checktimecoverage andgaps;retainoff/unknown samples andrawlongintervals.",
+      "Old23.419msStarted→observedPPDONEincludesTE/IRQworkloop,notpureDMA. DSIbitclockunknown.",
+      "Native60Hzmode declarations are not60FPSruntimeacceptance."
+    ],
+    "runtime_plan": "build/gpu-runtime/ui-141-runtime-compatible/window-plan.json",
+    "runtime_analysis": "build/gpu-runtime/round-160-window/analysis.json",
+    "full_holder_status": 1,
+    "full_holder_note": "Off/transition observed later in60s,not a guaranteed-on lease. Predeclared12.0876swindow bracketed by118on samples,maximumgap106.195ms; opticalnotverified."
+  },
+  "hardware_resume": {
+    "authorization": "设备已可用，可以恢复真机调试",
+    "failed_round": "build/gpu-runtime/round-159/report.json",
+    "failure": "Before GPU diagnostics: current patched shared cache not in old candidate trust list. launchd libSystem mapping rejected. os.dmg ELOOP also occurs in earlier successful boot and is not alone the regression cause.",
+    "correction": "Append current PosterBoard shared-cache trust from completed wallpaper task; preserve GPU kernel, drivers HFS, DT and boot arguments. No filesystem writes.",
+    "verification": "build/gpu-runtime/ui-141-runtime-compatible/verification.json",
+    "active_round": "build/gpu-runtime/round-160",
+    "status": "Completed combined correctness and real UI capture on same boot. First boot missing current shared-cache trust and initial collection-shell failures retained. No rootfs writes."
+  },
+  "runtime_1_141": {
+    "versions": {
+      "GPU": "1.141.0",
+      "Metal": "1.4.0",
+      "Display": "1.0.18"
+    },
+    "hardware_tested": true,
+    "goal_achieved": false,
+    "boot_report": "build/gpu-runtime/round-160/report.json",
+    "correctness_report": "build/gpu-runtime/round-160-verify/report.json",
+    "constant_window_phases": [
+      [
+        "0",
+        "0",
+        "4096"
+      ],
+      [
+        "1",
+        "0",
+        "4096"
+      ],
+      [
+        "2",
+        "0",
+        "4096"
+      ],
+      [
+        "3",
+        "0",
+        "4096"
+      ],
+      [
+        "4",
+        "0",
+        "4096"
+      ],
+      [
+        "0",
+        "1",
+        "4096"
+      ],
+      [
+        "1",
+        "1",
+        "4096"
+      ],
+      [
+        "2",
+        "1",
+        "4096"
+      ],
+      [
+        "3",
+        "1",
+        "4096"
+      ],
+      [
+        "4",
+        "1",
+        "4096"
+      ]
+    ],
+    "CA_frames": [
+      [
+        "0",
+        "4096"
+      ],
+      [
+        "1",
+        "4096"
+      ],
+      [
+        "2",
+        "4096"
+      ],
+      [
+        "3",
+        "4096"
+      ],
+      [
+        "4",
+        "4096"
+      ],
+      [
+        "5",
+        "4096"
+      ],
+      [
+        "6",
+        "4096"
+      ],
+      [
+        "7",
+        "4096"
+      ]
+    ],
+    "correctness_statuses": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "legacy_info_status": 1,
+    "performance_report": "build/gpu-runtime/round-160-window/report.json",
+    "performance_analysis": "build/gpu-runtime/round-160-window/analysis.json",
+    "window_seconds": 12.087613776805938,
+    "UI_work": {
+      "submitted": 816,
+      "completed": 817,
+      "failed": 0,
+      "shader_operations": 5769
+    },
+    "actual_GPU_hz": 595970396.9051286,
+    "GPU_job_ms": {
+      "count": 817,
+      "mean": 3.4699785164218686,
+      "total": 2834.9724479166666,
+      "max": 19.393385416666668,
+      "p50": 1.5610416666666667,
+      "p95": 17.23125,
+      "p99": 19.030572916666667
+    },
+    "display_raw_intervals_ms": {
+      "count": 309,
+      "mean": 39.00170299337723,
+      "total": 12051.526224953564,
+      "max": 166.888801015245,
+      "p50": 33.422864369427,
+      "p95": 50.077760096169,
+      "p99": 83.19843696753
+    },
+    "raw_display_first_last_update_rate": 25.639906036149426,
+    "optical_FPS_verified": false,
+    "power_full_holder_return": 1,
+    "power_window_all_sampled_on": true,
+    "rootfs_writes": false,
+    "failed_rounds_retained": [
+      "build/gpu-runtime/round-159",
+      "build/gpu-runtime/round-160",
+      "build/gpu-runtime/round-160-ui"
+    ],
+    "evidence_sha256": {
+      "build/gpu-runtime/round-160-window/uart.bin": "7c45b19cda77930473e6a896d3074b6651907fba2cf7cba9f1865104c615c06b",
+      "build/gpu-runtime/round-160-window/report.json": "0f3df2f51245ba301b77ad06c03cc3d05830804569918f1c18be0df629e0fadc",
+      "build/gpu-runtime/round-160-window/analysis.json": "2f0ee85728778ccc99c496d37a8992d28eb711e2e8dbf840a73e4f56b68170c7",
+      "build/gpu-runtime/ui-141-runtime-compatible/analyze-window.py": "ca0d9bc4b893db264b52e56f53ed13140b358fb4886188c955394af023d61e91",
+      "build/gpu-runtime/ui-141-runtime-compatible/verification.json": "b2ba84798b449620d5b9efec211df2b040438813aa281e9e0b269a0f26996e6b",
+      "build/gpu-runtime/ui-141-runtime-compatible/bridge-invocation.json": "7aa4107711adf9a190f633ef41231771106ee5fc50be908bdf96e41b752195a2",
+      "build/gpu-runtime/ui-141-runtime-compatible/bridge/XnuBridge.efi": "7b3634336d4f237f3c3e2bd5904452731ce24e1b59eb331580eeb47d01c36ca3",
+      "build/gpu-runtime/round-160-verify/uart.bin": "83cfc4d0e77b7a6073980f3a19e8e004aeb6e2263fe06d119df5d5643159a4be",
+      "build/gpu-runtime/round-160-verify/report.json": "ce456a399832a0c42635f94d801f18559143ddc9359540ad03ce2ca5a3a558b1"
+    }
+  },
+  "previous_live_device_round160": {
+    "round": 160,
+    "state": "GPU141/Metal1.4/Display118 booted with current modified-shared-cache trust. Four native correctness suites passed.12.0876s real compositor window817completed0failed; GPU595.970MHz,rawdisplayupdates25.640/s,notverifiedmotion/opticalFPS. Device remains running as last observed; no active UART reader.",
+    "UART_reader": {
+      "session_id": null,
+      "state": "round160-window completed; reader closed",
+      "report": "build/gpu-runtime/round-160-window/report.json"
+    },
+    "last_completed_boot_report": "build/gpu-runtime/round-160/report.json",
+    "versions": {
+      "GPU": "1.141.0",
+      "Metal": "1.4.0",
+      "Display": "1.0.18"
+    },
+    "payload": "build/gpu-runtime/ui-141-runtime-compatible/bridge/XnuBridge.efi",
+    "payload_sha256": "7b3634336d4f237f3c3e2bd5904452731ce24e1b59eb331580eeb47d01c36ca3",
+    "current_state_queried_in_this_offline_phase": true
+  },
+  "previous_ready_candidate_round160": {
+    "round": 160,
+    "planned_round": null,
+    "versions": {
+      "GPU": "1.141.0",
+      "Metal": "1.4.0",
+      "Display": "1.0.18"
+    },
+    "payload": "build/gpu-runtime/ui-141-runtime-compatible/bridge/XnuBridge.efi",
+    "kernel": "build/gpu-runtime/kernelcache.ui-constant-publish-reuse",
+    "kernel_reference": "build/gpu-runtime/kernelcache.ui-constant-publish-reuse",
+    "gpu_driver_image": "build/gpu-runtime/ui-141-hardware-ready/drivers.hfs",
+    "trust_cache": "build/gpu-runtime/ui-141-hardware-ready/diagnostics.trustcache",
+    "source_receipt": "build/gpu-runtime/ui-141-hardware-ready/source.json",
+    "audit": "build/gpu-runtime/ui-141-hardware-ready/audit.json",
+    "review": "docs/gpu/hello-runtime-review-1.141.md",
+    "hardware_tested": true,
+    "goal_achieved": false,
+    "profile": {
+      "fetch": 2,
+      "pipe": 6,
+      "gpu_policy_hz": 596000097,
+      "gfx_voltage_uv": 968000
+    },
+    "state": "GPU141/Metal1.4/Display118 booted with current modified-shared-cache trust. Four native correctness suites passed.12.0876s real compositor window817completed0failed; GPU595.970MHz,rawdisplayupdates25.640/s,notverifiedmotion/opticalFPS. Device remains running as last observed; no active UART reader.",
+    "payload_sha256": "7b3634336d4f237f3c3e2bd5904452731ce24e1b59eb331580eeb47d01c36ca3",
+    "hardware_evidence": "build/gpu-runtime/ui-141-runtime-compatible/hardware-evidence.json"
+  },
+  "cold_start_followup": {
+    "user_observation": "First startup animation stutters and occasionally appears to regress; after screen off/on smoother.",
+    "review": "docs/gpu/hello-cold-start-review-1.143.md",
+    "cold_window": "build/gpu-runtime/round-162/analysis.json",
+    "long_intervals": "build/gpu-runtime/round-162/cold-start-analysis.json",
+    "GPU_clock_hz": 595966110.2072475,
+    "CPU_actual_frequency_measured": false,
+    "OSM_in_current_collection": true,
+    "shader_capture_expensive_cold_path": "Previously tied to all Metal diagnostics; now explicit gpu-metal-shader-capture=1 plus diagnostics/authorization, off by default.",
+    "frame_regression": "No display token reversal in264samples; semantic content ordering unverified.",
+    "power_limits": "Passive logical-on samples bracket window, maxgap1.399s, no uninterrupted optical-on proof.",
+    "no_performance_acceptance": true,
+    "current_review": "docs/gpu/hello-cold-start-review-1.143.md",
+    "latest_round": 164,
+    "OSM_secureinit": false,
+    "CPU_policy_available": false,
+    "CPU_query_failure": "36rows126/HFS0644; fixed0755candidateoffline only",
+    "startup_stutter_resolved": false,
+    "shader_capture_off_native_verified": true,
+    "next_priorities": [
+      "Offline firmware/OSMlayout+securecalibration path audit; no guessedPLL/voltage orforcedenable.",
+      "Link CA contentgeneration/targettime, native admission and display surface/seed to distinguish semantic regressions from monotonic swap tokens.",
+      "Cold-start framework compilation/rasterization/scheduling timeline before submitNative, including cache warming versus sleep/wake."
+    ]
+  },
+  "previous_ready_candidate_GPU143_without_OSM": {
+    "source_sha256": {
+      "drivers/gpu/QcomMTL/QcomMTL.mm": "5ad03807ae58e4dc0dfd913393725a369121a1a5f4791116268d7f41f87c1954",
+      "drivers/gpu/QcomMTL/Info.plist": "7189cb5b11463ae20f52e11551b586cce6399f8e1b2e2a1cf42c03a3222a034e",
+      "drivers/gpu/QcomGPU/QcomGPUHardware.cpp": "4a6ea62fd86ca447f51bfbfb6da6865dda9f9e7765e95ed68bf5f03de56d709d",
+      "drivers/gpu/QcomGPU/Info.plist": "395d21fc7e4f2444c0a61e77de6035e13f5accc2c9994999a5a5bae612d2ce94",
+      "drivers/include/GPUDiagnostics.h": "a8d6fa7ab9b40b6f4a12fdd450084c75b4f0b34cb512ec160c10850c9384b32a",
+      "tools/gpuctl/gpuctl.cpp": "5cff7b6beec8cac7d825c580515441c18c6e9cf1920fc089d247f33eaba9bbdd"
+    },
+    "versions": {
+      "GPU": "1.143.0",
+      "Metal": "1.5.0",
+      "Display": "1.0.18"
+    },
+    "payload": "build/gpu-runtime/ui-cold-start-analysis/bridge/XnuBridge.efi",
+    "payload_sha256": "a182aee820ff69a0fb7ec66b9624d97f2a3565fea7f0d8a5852debf0b8fadc7e",
+    "kernel_sha256": "0214d20eccb532fb59b5407d4df7163fafba190be1ac6bc44898bcf5d5da8198",
+    "changed_HFS_files": [
+      "QcomMTLDriver.bundle/Info.plist",
+      "QcomMTLDriver.bundle/QcomMTLDriver",
+      "QcomMTLDriver.bundle/QcomMTLDriver.json",
+      "gpuctl"
+    ],
+    "hardware_tested": false,
+    "goal_achieved": false,
+    "AOT_unchanged": true,
+    "archive_context_changed": true,
+    "state": "CombinedEFI built, currently under one hardware validation; heavy shader capture separately opt-in/off. Rendering ISA/order/fences unchanged.",
+    "review": "docs/gpu/hello-cold-start-review-1.143.md",
+    "kernel": "build/gpu-runtime/kernelcache.ui-cold-start-analysis"
+  },
+  "runtime_1_143": {
+    "round163": "build/gpu-runtime/ui-cold-start-analysis/hardware-evidence.json",
+    "round164": "build/gpu-runtime/ui-cpu-policy-integration/hardware-evidence.json",
+    "no_performance_gain_verified": true,
+    "semantic_frame_regression_fixed": false,
+    "OSM_loaded": true,
+    "SecureOSMInitialized": false,
+    "CPUAutomaticPerformanceAvailable": false,
+    "CPU_policy_requests_sent": false
+  },
+  "current_next_actions": [
+    "Keep frozen tested1.21 payload as wallpaper reference; no further wallpaper changes needed from current observations.",
+    "Hello handwriting initial stutter/old-frame replay remains an explicit follow-up outside the wallpaper-only phase.",
+    "Combined root1.22 includes other task texture-layout source; compilation passed, hardware integration is unverified.",
+    "Preserve first cold Mercury PID246 XPC check-in timeout and old/new presentation overlap assertion failure as known limitations; do not report all services or all regressions as passing."
+  ],
+  "pending_setup_background": {
+    "reference_thread": "01a14f76-7650-7d43-92f3-37494be51ce4",
+    "status": "wallpaper phase completed",
+    "scope": "Wallpaper initial visibility, geometry and wake persistence",
+    "last_user_observation": {
+      "first_appearance": "Hello 与壁纸同时出现",
+      "wake": "壁纸没消失，首轮回放BUG还在",
+      "replay_layer": "Hello 手写文字动画",
+      "geometry_previous": "现在背景显示尺寸正常了"
+    },
+    "optical_background_fixed": true,
+    "current_fix": "Guarded whole real drawable operation-list admission before commit returns; existing shader cache and correct geometry preserved.",
+    "hardware_candidate_not_tested": false,
+    "current_candidate_payload": "build/gpu-runtime/ui-direct-drawable-admission/bridge/XnuBridge.efi",
+    "current_source_versions": {
+      "GPU": "1.148.0",
+      "Metal": "1.22.0",
+      "Display": "1.0.23"
+    },
+    "live_versions": {
+      "GPU": "1.148.0",
+      "Metal": "1.21.0",
+      "Display": "1.0.22"
+    },
+    "known_remaining_outside_wallpaper_phase": [
+      "Hello handwriting first-loop old-frame replay",
+      "First cold-cache Mercury XPC check-in timeout"
+    ],
+    "required_next_evidence": []
+  },
+  "runtime_1_144": {
+    "round166": "build/gpu-runtime/round-166/analysis.json",
+    "round167": "build/gpu-runtime/round-167/analysis.json",
+    "round168": "build/gpu-runtime/round-168/analysis.json",
+    "cold_compile_functions": 25,
+    "cold_compile_mean_ms": 533.73,
+    "CPU_actual_frequency_measured": false,
+    "GPU_actual_frequency_hz": 595979629.6047626,
+    "transparent_persistent_shader_cache_implemented": false,
+    "mapping_prepare_median_ms": 0.083749999464,
+    "idle_mapping_retire_median_ms": 0.005833333296,
+    "goal_achieved": false
+  },
+  "previous_ready_candidate_before_mercury_init_audit": {
+    "versions": {
+      "GPU": "1.148.0",
+      "Metal": "1.13.0",
+      "Display": "1.0.22"
+    },
+    "source_sha256": {
+      "boot/bridge/display_handoff.c": "cb69830e16a1a9fc563a3924be8c2f43d07ee6764d8856d25d6bce129d22ea79",
+      "drivers/display/QcomDisplay/DisplayCommandTransfer.h": "b9006bbf692e38b7b5ce315bb7d930631461bac9c645d40d72ea61b07d225f62",
+      "drivers/display/QcomDisplay/DisplayIdleMappings.h": "bc5e5b401583f43a2c94a345d91f3c024173629ffe5d2d8295dbb7a2634d4631",
+      "drivers/display/QcomDisplay/Info.plist": "bc10bc4d974c2490159da0be5b8247f691ba2a94dd9ed379a49613a09d281e63",
+      "drivers/display/QcomDisplay/QcomDisplay.cpp": "3b230dd10ed523ca3e80a7f7505a86833b7643d64ea48b465309fa3bd91a60b5",
+      "drivers/display/QcomDisplay/QcomDisplay.h": "6302e349f8e79f2c6d09ee5fbc462622294dca67baff9d911e8c14f2f17de331",
+      "drivers/display/QcomDisplay/QcomDisplaySurface.h": "b5640228a8abc2efac19bdfbd4dd462ba3b305e3c5013918f33bb3dec3af4720",
+      "drivers/gpu/QcomGPU/AdrenoPipeline.h": "3830b91e429ec20169675a59635fd8a320038cccde0e6f633c7b7097397743a9",
+      "drivers/gpu/QcomGPU/Info.plist": "7f052e7a1e26635a2bdc8adeee227b4ad32073f1b7409d60ac95f003273ded51",
+      "drivers/gpu/QcomGPU/NativePosterIdentity.h": "034d1f8b79cc2355855e9ec52b189710b1a4a2c3031df5bcaf011bc650120d16",
+      "drivers/gpu/QcomGPU/QcomGPU.cpp": "3b3b6c0d9e34e9111136cf1969285340d8d549f915bbc3c1e17b53a7f4f5c6b2",
+      "drivers/gpu/QcomGPU/QcomGPU.h": "69e48a00bc85be43ab7ea9b18120e4eb303fc89ecba106e1db7a552e53bcc1f2",
+      "drivers/gpu/QcomGPU/QcomGPUHardware.cpp": "aa2f13453dfc07409a6289ec34cc2d22e0c64f6dab4ca11cac06a8e3a90d2990",
+      "drivers/gpu/QcomGPU/QcomGPUNative.cpp": "9ceff6bedc374cd72a750e71270e422c3103af1100ed9cf31c394912e958874c",
+      "drivers/include/DisplayFrameStatistics.h": "fde188fd35eb8c925005bae16717d5a6b4bfee9f048e1772bb8072fbf4ab316a",
+      "drivers/include/DisplayTimeline.h": "ce60adc499d22427c2bd4e450313f186f113084029d44c8b1e543d1c704b5f7a",
+      "drivers/include/GPUBlit.h": "43336bcd2d6ea751bfb7e41777dbce44ded9cdb3ed091f192a7951e5f6406156",
+      "drivers/include/GPUDiagnostics.h": "a8d6fa7ab9b40b6f4a12fdd450084c75b4f0b34cb512ec160c10850c9384b32a",
+      "drivers/include/GPUMetalCapabilities.h": "0c99145d5379302fe622b3c30ddd35c5ecf652e18744eefa8f06cb73cb1d7330",
+      "drivers/include/GPUMetalTiming.h": "c8bfe1c0b06617e8af2c0779c7ec70853711d2ac8f28411841130911c8cf0f6d",
+      "drivers/include/GPUShaderProtocol.h": "b785d1c77c3210443afa97eba0a2afbdf38df3451366849861ba18ea1397ee1c",
+      "drivers/gpu/QcomMTL/Blit.metal": "af98c30ec8297cdac4c46b75e4aa984382b588fcaf181a30c5dfb1ee78152b3b",
+      "drivers/gpu/QcomMTL/Info.plist": "953511665d2380f3be9ad0df4bba7359c8162581acf07cada8417e704ddce73d",
+      "drivers/gpu/QcomMTL/QcomMTL.mm": "9a8c57994e502da2e2aed3949452eeac250253584ab7239d794f083aa411eebf",
+      "tests/display_test.cpp": "668b12ba683007a3370325e70b32081713d2dd139d259cb50a47ad29fec1a42c",
+      "tests/fixtures/gpu/packed-fluidity.air.ll": "99c1cef7ba2cd3fcb35738e6b131b7fd91045b87ea66a7e9c5020a40f03dd88c",
+      "tests/gpu_compiler_test.cpp": "fd34e44f22788aa47e395920f25c37acd5701215392cfeb1f349cc0bf219fd73",
+      "tests/gpu_submit_test.cpp": "4ba07c6a60457451b18a0661792eb702e69beffa64a3f6d2edef5843bea3f236",
+      "tests/gpu_test.cpp": "8726b580bff8dd5086f20d95f3edc1edaa77a0fc2f3f88cb7938292298113cc4",
+      "tools/displayctl/displayctl.mm": "f355de818dfb5ee11c32b5ffaccfd2dab91f5db87bfe776820b7ffdbdb191498",
+      "tools/gpu-compiler/AIR.cpp": "81ae37bbeff1bb3ce100efaca00bfe4fde089fde5b3b6eb4a72ab19057b2fe15",
+      "tools/gpu-compiler/AIRRuntime.cpp": "cb5990485d9b4548273ae2d8379da3f6a70b49f2ec8f2d05880bb95342f28b91",
+      "tools/gpu-compiler/Backend.c": "b318a7ad0b2543b0fb987b660460c1c1daa8a19a54ed05b3a4edd64d3d74b481",
+      "tools/gpu-compiler/Semantic.h": "6131bb7f29e9805a70e14d43ea282e0e7db5e5e05788e3e4b542764f2cea6ff1",
+      "tools/gpuctl/GPUConnection.cpp": "e46229fc435a9e9277d3b7eac791bac0c1bb151da80c9f9a8b469671a9b694b7",
+      "tools/gpuctl/GPUConnection.h": "76ccb59c2f173c7142c5de08efceadb19af50cd3b3bac8bf72e14db8378467d3",
+      "tools/gpuctl/gpuctl.cpp": "aa950f2b8d390714b85716ccf620622b9da512d7c7876f0a1f8211ec39437914",
+      "tools/gpuctl/metalctl.mm": "7a5751a0ba0051d5693ae945e1a7ee29a9b71b6f1fab7261966beb5a311cd8f7"
+    },
+    "kernel": "build/gpu-runtime/kernelcache.ui-rgba16-unorm",
+    "kernel_sha256": "4a271cd7a1d43eb5088ebd33fc0d68d4625289540d7b51baca873c71d2911642",
+    "payload": "build/gpu-runtime/ui-runtime-compiler-text/bridge/XnuBridge.efi",
+    "payload_sha256": "74f5f07b035427fc3d1ca47178c2abe0e6de732ac66d600258a1d6aaac6dbce1",
+    "changed_HFS_files": [
+      "QcomMTLDriver.bundle/Info.plist",
+      "QcomMTLDriver.bundle/QcomGPUCompiler.dylib",
+      "QcomMTLDriver.bundle/QcomMTLDriver",
+      "QcomMTLDriver.bundle/QcomMTLDriver.json",
+      "displayctl",
+      "ui-background.sh"
+    ],
+    "added_HFS_files": [],
+    "hardware_tested": false,
+    "goal_achieved": false,
+    "state": "Offline checks passed. Pending hardware178: remove unused runtime NIR/ISA formatting, 11 actual Fluidity complete images identical. XNU native exception capture helper included."
+  },
+  "previous_live_device_before_mercury_init_audit": {
+    "round": 177,
+    "state": "Mercury repeatedly exits before native GPU submission. 7003 jobs all compositor. Two main-thread samples in runtime compilation; exact crash reason unavailable.",
+    "UART_reader": {
+      "session_id": 99826,
+      "state": "sole reader orderly reboot round177 in progress"
+    },
+    "versions": {
+      "GPU": "1.148.0",
+      "Metal": "1.12.0",
+      "Display": "1.0.22"
+    },
+    "payload": "build/gpu-runtime/ui-poster-failure-delivery/bridge/XnuBridge.efi",
+    "last_completed_boot_report": "build/gpu-runtime/round-177/report.json"
+  },
+  "mercury_offline_audit": {
+    "date": "2026-10-20",
+    "scope": "offline only; device charging per user",
+    "reference_thread": "01a14f76-7650-7d43-92f3-37494be51ce4",
+    "hardware_tested": false,
+    "goal_achieved": false,
+    "review": "docs/gpu/hello-mercury-lifecycle-review.md",
+    "evidence_sha256": {
+      "parent-source.json": "6add768bf6719f963937057893186e25ae7fa0f0bcdfe1242a147a543256df8b",
+      "source.json": "1e7864cf7818a0cd57953586090922af8cf36f0583be26c5a0e4be3ba4b833e1",
+      "embedded-verification.json": "1c967757a82f2114bf86ead4c700462f6ff0ea8000856bf57bcf722ff7c50cba",
+      "bridge-invocation.json": "0840962940f488009cf396e26d7ece8eaa4808a0f040889bae942a85584b7081",
+      "ui-background.sh": "5f3543c31ad4ac3d4459f944273cd855a43fc593cbaf9c6f3b64f5d18989a3bc",
+      "package.py": "dddd0019910ea7630343f40d62053941b51aa7eea041d571812fc0937b2a2008",
+      "mercury-attach.c": "da308fe3ed90202c90a2610b57f2a154be63c3887d39b19ec6ca09aaeb7dd64b",
+      "mercury-coordinator-init.c": "494cc511f6e190bbedff37f93218fd57130518082140ddd1436262932024cf3d",
+      "mercury-display-layer.c": "ccd5dd6bbffda074200f1cf841e8d5dc1b089e6496d02abeb7096df38b40f0ec",
+      "mercury-view-init.c": "2fa81db857bc45213cef4bb029defeed8b8f41fcd6ea9f3842a47b50ea7bf0ef",
+      "mercury-draw-handler.c": "6ee647a5a94b382cfc88254d4e7c065f3b4ecb098f84476ea1db85949794904c",
+      "mercury-draw-submit.c": "4841a397fc564815b2300f240251a4cb69f8d75db3562d418a5a24cd19bdfd77",
+      "posterkit-scene-connect.asm": "8a4bae94c8f4d57450f904e17cf64e0612f8be5cf4588a3a7a0b89f6388f14cf",
+      "posterkit-host-readiness.asm": "395c79f76d5f54fa49520ab4606eb26cb1c5c8bd6aeb4eb0a862334e35ed838c",
+      "posterkit-client-settings-update.asm": "eb2367d118c3520ee6d13e57267888f266f3423b356b89dbc6525474187d9d23",
+      "posterboard-memory-assertion.asm": "d694d7d492f8e73594e351f806324dd99d9144393237bc5d680dc76d57abaa2d",
+      "posterboard-runtime-assertion.asm": "622f47accf9c7ddc3ab9d232b57cf6ef4a70a2218edbb8944ff225915b49c5d9",
+      "frontboard-watchdog-violation.asm": "4492322046f1a85b2d107718ab15bfd31de804dee16aa2bca7803c31ff4ec99e"
+    },
+    "original_Mercury_sha256": "9e123c8b9598622bcb69e9698157f4f903985f1da26968db01553b256868615c",
+    "checks": {
+      "source_parent_and_current_match": true,
+      "arm64_displayctl_build": true,
+      "arm64_metalctl_build": true,
+      "bash_syntax": true,
+      "HFS_readback": true,
+      "EFI_Image_embedding": true,
+      "production_bundle_identical_to_parent": true
+    },
+    "missing_evidence": [
+      "Mercury actual exception/OS_REASON/exit detail",
+      "RunningBoard assertions and effective memory limit",
+      "Scene initialization flag plus contentState==2",
+      "Mercury-owned GPU first submit/completion",
+      "CAMetalLayer transaction presentation and visible Hello provider linkage"
+    ],
+    "not_proven": [
+      "compiler crash",
+      "watchdog termination or fixed timeout",
+      "memory-limit termination",
+      "new missing Metal selector",
+      "Hello background fixed"
+    ],
+    "candidate": {
+      "source_receipt": "build/gpu-runtime/ui-mercury-init-audit/source.json",
+      "payload": "build/gpu-runtime/ui-mercury-init-audit/bridge/XnuBridge.efi",
+      "payload_sha256": "34ccd63b353f835d6647a97c3f9426c7eef9a6f4b6236a2d2a82a72fca87b93e"
+    }
+  },
+  "current_work": {
+    "candidate": "ui-direct-drawable-admission",
+    "state": "Wallpaper phase completed on tested1.21: first Hello/background together, wake wallpaper retained, dimensions correct. Tested driver fix merged into root1.22 with existing texture-layout code; driver/client ARM64 compilation passed; combined1.22 not deployed.",
+    "goal_achieved": true,
+    "production_merge_verification": "build/gpu-runtime/ui-direct-drawable-admission/production-merge-verification.json"
+  },
+  "current_source_drift_from_round187": {
+    "drivers/display/QcomDisplay/Info.plist": {
+      "frozen_sha256": "bc10bc4d974c2490159da0be5b8247f691ba2a94dd9ed379a49613a09d281e63",
+      "workspace_sha256": "ec94aeebc64c74c30ad3a8e9d0fa6f945b9c7b86a87a035aec0e448862c344c4"
+    },
+    "drivers/display/QcomDisplay/QcomDisplay.cpp": {
+      "frozen_sha256": "3b230dd10ed523ca3e80a7f7505a86833b7643d64ea48b465309fa3bd91a60b5",
+      "workspace_sha256": "9b7ed2dfbe79edc41a4e96d8a4b6e5c2776851e8e4dc3227402dcc699244fbe8"
+    },
+    "drivers/display/QcomDisplay/QcomDisplay.h": {
+      "frozen_sha256": "6302e349f8e79f2c6d09ee5fbc462622294dca67baff9d911e8c14f2f17de331",
+      "workspace_sha256": "547e9583d89a80b31da9ee7a21e60e2f87291612d9785c8ee3870a96764b5273"
+    },
+    "drivers/include/DisplayTimeline.h": {
+      "frozen_sha256": "ce60adc499d22427c2bd4e450313f186f113084029d44c8b1e543d1c704b5f7a",
+      "workspace_sha256": "fd49dd6fd27dd4a84259caa7c93dbff03788f5ae2f8e819b6f8755d7ac51c913"
+    },
+    "tests/display_test.cpp": {
+      "frozen_sha256": "668b12ba683007a3370325e70b32081713d2dd139d259cb50a47ad29fec1a42c",
+      "workspace_sha256": "556a96aecf06077ff4013045897d7b102ba8e7f9e3468cf433209784ed83d399"
+    }
+  },
+  "goal_achieved": true,
+  "wallpaper_phase_completed": true,
+  "previous_ready_candidate_before_direct_drawable_admission": {
+    "versions": {
+      "GPU": "1.148.0",
+      "Metal": "1.19.0",
+      "Display": "1.0.22"
+    },
+    "parent": "build/gpu-runtime/ui-cold-compile-shared-nir",
+    "source_sha256": {
+      "boot/bridge/display_handoff.c": "cb69830e16a1a9fc563a3924be8c2f43d07ee6764d8856d25d6bce129d22ea79",
+      "drivers/display/QcomDisplay/DisplayCommandTransfer.h": "b9006bbf692e38b7b5ce315bb7d930631461bac9c645d40d72ea61b07d225f62",
+      "drivers/display/QcomDisplay/DisplayIdleMappings.h": "bc5e5b401583f43a2c94a345d91f3c024173629ffe5d2d8295dbb7a2634d4631",
+      "drivers/display/QcomDisplay/Info.plist": "bc10bc4d974c2490159da0be5b8247f691ba2a94dd9ed379a49613a09d281e63",
+      "drivers/display/QcomDisplay/QcomDisplay.cpp": "3b230dd10ed523ca3e80a7f7505a86833b7643d64ea48b465309fa3bd91a60b5",
+      "drivers/display/QcomDisplay/QcomDisplay.h": "6302e349f8e79f2c6d09ee5fbc462622294dca67baff9d911e8c14f2f17de331",
+      "drivers/display/QcomDisplay/QcomDisplaySurface.h": "b5640228a8abc2efac19bdfbd4dd462ba3b305e3c5013918f33bb3dec3af4720",
+      "drivers/gpu/QcomGPU/AdrenoPipeline.h": "3830b91e429ec20169675a59635fd8a320038cccde0e6f633c7b7097397743a9",
+      "drivers/gpu/QcomGPU/Info.plist": "7f052e7a1e26635a2bdc8adeee227b4ad32073f1b7409d60ac95f003273ded51",
+      "drivers/gpu/QcomGPU/NativePosterIdentity.h": "034d1f8b79cc2355855e9ec52b189710b1a4a2c3031df5bcaf011bc650120d16",
+      "drivers/gpu/QcomGPU/QcomGPU.cpp": "3b3b6c0d9e34e9111136cf1969285340d8d549f915bbc3c1e17b53a7f4f5c6b2",
+      "drivers/gpu/QcomGPU/QcomGPU.h": "69e48a00bc85be43ab7ea9b18120e4eb303fc89ecba106e1db7a552e53bcc1f2",
+      "drivers/gpu/QcomGPU/QcomGPUHardware.cpp": "aa2f13453dfc07409a6289ec34cc2d22e0c64f6dab4ca11cac06a8e3a90d2990",
+      "drivers/gpu/QcomGPU/QcomGPUNative.cpp": "9ceff6bedc374cd72a750e71270e422c3103af1100ed9cf31c394912e958874c",
+      "drivers/include/DisplayFrameStatistics.h": "fde188fd35eb8c925005bae16717d5a6b4bfee9f048e1772bb8072fbf4ab316a",
+      "drivers/include/DisplayTimeline.h": "ce60adc499d22427c2bd4e450313f186f113084029d44c8b1e543d1c704b5f7a",
+      "drivers/include/GPUBlit.h": "43336bcd2d6ea751bfb7e41777dbce44ded9cdb3ed091f192a7951e5f6406156",
+      "drivers/include/GPUDiagnostics.h": "a8d6fa7ab9b40b6f4a12fdd450084c75b4f0b34cb512ec160c10850c9384b32a",
+      "drivers/include/GPUMetalCapabilities.h": "0c99145d5379302fe622b3c30ddd35c5ecf652e18744eefa8f06cb73cb1d7330",
+      "drivers/include/GPUMetalTiming.h": "c8bfe1c0b06617e8af2c0779c7ec70853711d2ac8f28411841130911c8cf0f6d",
+      "drivers/include/GPUShaderProtocol.h": "b785d1c77c3210443afa97eba0a2afbdf38df3451366849861ba18ea1397ee1c",
+      "drivers/gpu/QcomMTL/Blit.metal": "af98c30ec8297cdac4c46b75e4aa984382b588fcaf181a30c5dfb1ee78152b3b",
+      "drivers/gpu/QcomMTL/Info.plist": "d884a2862c625b1018ea0d0e7956fd99249f76e0dfcea0f909c3f4ad17be19c4",
+      "drivers/gpu/QcomMTL/QcomMTL.mm": "3a297e401ac8ee07bc0c8a4354945cbfa2791f6382a6e09ced15efa6463ad3a6",
+      "tests/display_test.cpp": "668b12ba683007a3370325e70b32081713d2dd139d259cb50a47ad29fec1a42c",
+      "tests/fixtures/gpu/packed-fluidity.air.ll": "99c1cef7ba2cd3fcb35738e6b131b7fd91045b87ea66a7e9c5020a40f03dd88c",
+      "tests/gpu_compiler_test.cpp": "fd34e44f22788aa47e395920f25c37acd5701215392cfeb1f349cc0bf219fd73",
+      "tests/gpu_submit_test.cpp": "4ba07c6a60457451b18a0661792eb702e69beffa64a3f6d2edef5843bea3f236",
+      "tests/gpu_test.cpp": "8726b580bff8dd5086f20d95f3edc1edaa77a0fc2f3f88cb7938292298113cc4",
+      "tools/displayctl/displayctl.mm": "bd473349bdbfad087f7d377c446277c21d70a564817f404a48d2b38d6310daa4",
+      "tools/gpu-compiler/AIR.cpp": "81ae37bbeff1bb3ce100efaca00bfe4fde089fde5b3b6eb4a72ab19057b2fe15",
+      "tools/gpu-compiler/AIRRuntime.cpp": "cb5990485d9b4548273ae2d8379da3f6a70b49f2ec8f2d05880bb95342f28b91",
+      "tools/gpu-compiler/Backend.c": "2e0c21624c60b590cc3c2478cb90938cca12f1ddfe917799a87783aa836c7be8",
+      "tools/gpu-compiler/Semantic.h": "6131bb7f29e9805a70e14d43ea282e0e7db5e5e05788e3e4b542764f2cea6ff1",
+      "tools/gpuctl/GPUConnection.cpp": "e46229fc435a9e9277d3b7eac791bac0c1bb151da80c9f9a8b469671a9b694b7",
+      "tools/gpuctl/GPUConnection.h": "76ccb59c2f173c7142c5de08efceadb19af50cd3b3bac8bf72e14db8378467d3",
+      "tools/gpuctl/gpuctl.cpp": "aa950f2b8d390714b85716ccf620622b9da512d7c7876f0a1f8211ec39437914",
+      "tools/gpuctl/metalctl.mm": "b004945b90b59764087f2ecbca0ce3180db95b18fc6dc3d983b5dbf16c9bdffc"
+    },
+    "changed_sources": [
+      "drivers/gpu/QcomMTL/QcomMTL.mm",
+      "drivers/gpu/QcomMTL/Info.plist",
+      "tools/gpuctl/metalctl.mm"
+    ],
+    "kernel": "build/gpu-runtime/kernelcache.ui-rgba16-unorm",
+    "kernel_sha256": "4a271cd7a1d43eb5088ebd33fc0d68d4625289540d7b51baca873c71d2911642",
+    "payload": "build/gpu-runtime/ui-memoryless-allocation-audit/bridge/XnuBridge.efi",
+    "payload_sha256": "e907ea5c15e9fa9de46ab2e7285e8093b245f3610a987dd86dbf89e42baf259d",
+    "changed_HFS_files": [
+      "QcomMTLDriver.bundle/Info.plist",
+      "QcomMTLDriver.bundle/QcomMTLDriver",
+      "QcomMTLDriver.bundle/QcomMTLDriver.json",
+      "mc",
+      "metalctl",
+      "ui-background.sh"
+    ],
+    "added_HFS_files": [],
+    "hardware_tested": false,
+    "goal_achieved": false
+  },
+  "wallpaper_acceptance": {
+    "round": 190,
+    "scope": "wallpaper only",
+    "initial_onset": true,
+    "geometry": true,
+    "real_power_button_wake_persisted": true,
+    "replay_remaining_layer": "Hello handwriting",
+    "known_limits": [
+      "first cold process XPC timeout",
+      "existing presentation overlap assertion failure",
+      "one SpringBoard texture-layout unsupported selector in live1.21"
+    ],
+    "hardware_evidence": "build/gpu-runtime/ui-direct-drawable-admission/hardware-evidence.json"
+  },
+  "historical_pending_setup_background_before_round190": {
+    "reference_thread": "01a14f76-7650-7d43-92f3-37494be51ce4",
+    "scope": "Native Mercury initialization, PosterKit scene readiness, related service assertions and actual Hello presentation",
+    "reference_evidence": "build/setup-background/20261019/mercury-static-analysis.json",
+    "last_user_observation": "round176 GPU148/Metal1.11 still pure black",
+    "round169_evidence": "build/gpu-runtime/ui-poster-native-access/hardware-evidence.json",
+    "confirmed_failure_stage": "Round177 had no native Mercury GPU submit; two sampled main threads were synchronously compiling within PRRenderer scene connect before pui_didFinishInitialization is published. Actual exit reason unknown.",
+    "current_fix": "Frozen Metal1.13 removes discarded compiler text; current diagnostics add bounded native process exit/resource capture and original Fluidity pipeline descriptor coverage. Neither change is hardware-verified.",
+    "offline_actual_shader_failures": [
+      "SDF vertex local float/sincos + packed i8 uniform",
+      "SDF fragment packed i8 uniform",
+      "vertex ushort vertex_id",
+      "fragment three bool function constants, local float/sincos and packed i16 uniforms"
+    ],
+    "offline_artifacts": "build/gpu-runtime/ui-mercury-init-audit",
+    "optical_background_fixed": false,
+    "actual_air_runtime_checks": "build/gpu-runtime/ui-fluidity-air/runtime-checks.json",
+    "actual_air_all_pass": true,
+    "actual_fragment_framebuffer_input": 2,
+    "RG32_implementation_plan": "build/gpu-runtime/ui-rg32-render/implementation-plan.json",
+    "current_source_versions": {
+      "GPU": "1.148.0",
+      "Metal": "1.13.0",
+      "Display": "1.0.22",
+      "Shader": 40,
+      "JIT": 36
+    },
+    "last_successful_frozen_payload": "build/gpu-runtime/ui-metal-capabilities/bridge/XnuBridge.efi",
+    "hardware_not_matching_unbuilt_sources": false,
+    "current_candidate_payload": "build/gpu-runtime/ui-mercury-init-audit/bridge/XnuBridge.efi",
+    "hardware_candidate_not_tested": true,
+    "required_next_evidence": [
+      "Mercury actual exception/OS_REASON/exit detail",
+      "RunningBoard assertions and effective memory limit",
+      "Scene initialization flag plus contentState==2",
+      "Mercury-owned GPU first submit/completion",
+      "CAMetalLayer transaction presentation and visible Hello provider linkage"
+    ]
+  }
+}

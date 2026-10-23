@@ -1,0 +1,470 @@
+{
+  "schema": 1,
+  "scope": "Observed iOS 18 serial/H4/XPC interfaces and offline WCN3990 BlueTool backend. Native bluetoothd chipset/VSC model is not ported or runtime verified.",
+  "kernel": {
+    "file": "kernelcache.release.ipad7c.macho",
+    "sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+    "darwin_version": "Darwin Kernel Version 24.6.0: Tue Jul 21 20:48:55 PDT 2026; root:xnu-11417.140.69.706.66~1/RELEASE_ARM64_T8010"
+  },
+  "kernel_kexts": [
+    {
+      "CFBundleIdentifier": "com.apple.iokit.IOSerialFamily",
+      "CFBundleVersion": "11",
+      "DTSDKName": "iphoneos18.7.internal",
+      "DTPlatformBuild": "22H368",
+      "IOKitPersonalities": {
+        "IOSerialBSDClient": {
+          "IOClass": "IOSerialBSDClient",
+          "IOProviderClass": "IOSerialStreamSync",
+          "IOProbeScore": 1000,
+          "IOResourceMatch": "IOBSD",
+          "CFBundleIdentifier": "com.apple.iokit.IOSerialFamily"
+        }
+      },
+      "OSBundleLibraries": {
+        "com.apple.kpi.mach": "10.0.0d2",
+        "com.apple.kpi.private": "10.0.0d2",
+        "com.apple.kpi.unsupported": "10.0.0d2",
+        "com.apple.kpi.iokit": "10.0.0d2",
+        "com.apple.kpi.libkern": "10.0.0d2",
+        "com.apple.kpi.bsd": "10.0.0d2"
+      }
+    },
+    {
+      "CFBundleIdentifier": "com.apple.driver.AppleOnboardSerial",
+      "CFBundleVersion": "1.0",
+      "DTSDKName": "iphoneos18.7.internal",
+      "DTPlatformBuild": "22H368",
+      "IOKitPersonalities": {
+        "AppleOnboardSerialBSDClient": {
+          "IOClass": "AppleOnboardSerialBSDClient",
+          "IOMatchCategory": "AppleOnboardSerialBSDClient",
+          "IOProbeScore": 1000,
+          "IOProviderClass": "AppleOnboardSerialSync",
+          "CFBundleIdentifier": "com.apple.driver.AppleOnboardSerial",
+          "IOResourceMatch": "IOBSD"
+        }
+      },
+      "OSBundleLibraries": {
+        "com.apple.kpi.bsd": "8.0",
+        "com.apple.iokit.IOSerialFamily": "1.0.4",
+        "com.apple.kpi.libkern": "8.0",
+        "com.apple.kpi.mach": "8.0",
+        "com.apple.kpi.iokit": "8.0",
+        "com.apple.iokit.IOSkywalkFamily": "1.0",
+        "com.apple.kpi.unsupported": "8.0"
+      }
+    },
+    {
+      "CFBundleIdentifier": "com.apple.driver.AppleBluetooth",
+      "CFBundleVersion": "1.0.0d1",
+      "DTSDKName": "iphoneos18.7.internal",
+      "DTPlatformBuild": "22H371",
+      "IOKitPersonalities": {
+        "AppleBluetooth": {
+          "IOClass": "BTReset",
+          "IOMatchCategory": "BTReset",
+          "IONameMatch": [
+            "bluetooth"
+          ],
+          "IOProviderClass": "IOService",
+          "CFBundleIdentifier": "com.apple.driver.AppleBluetooth"
+        }
+      },
+      "OSBundleLibraries": {
+        "com.apple.kpi.libkern": "8.0",
+        "com.apple.kpi.mach": "8.0",
+        "com.apple.kpi.unsupported": "8.0",
+        "com.apple.kpi.iokit": "8.0",
+        "com.apple.driver.AppleARMPlatform": "1.0.0",
+        "com.apple.kpi.bsd": "8.0"
+      }
+    }
+  ],
+  "absent_kernel_bundles": [
+    "com.apple.driver.AppleBluetoothModule",
+    "com.apple.iokit.IOBluetoothFamily"
+  ],
+  "user_space": {
+    "rootfs": "build/apfs/firmware/094-32804-038.dmg",
+    "build": "22H374",
+    "files": {
+      "/System/Library/LaunchDaemons/com.apple.bluetoothd.plist": {
+        "sha256": "7c1a0594b2acc7af447afb906e575537992e390cdf3f1aa9750822b3ada48de6",
+        "plist": {
+          "KeepAlive": {
+            "SuccessfulExit": false
+          },
+          "LaunchEvents": {
+            "com.apple.notifyd.matching": {
+              "com.apple.mobile.lockdown.activation_state": {
+                "Notification": "com.apple.mobile.lockdown.activation_state"
+              }
+            }
+          },
+          "EnvironmentVariables": {
+            "OS_ACTIVITY_ENABLE_DYNAMIC": "1"
+          },
+          "Label": "com.apple.bluetoothd",
+          "POSIXSpawnType": "Interactive",
+          "MachServices": {
+            "com.apple.server.bluetooth.le.att.xpc": true,
+            "com.apple.server.bluetooth": true,
+            "com.apple.server.bluetooth.le.pipe.xpc": true,
+            "com.apple.bluetooth.BTPacketLogger.ios": true,
+            "com.apple.server.bluetooth.bbprovider.xpc": true,
+            "com.apple.usernotifications.delegate.com.apple.ExposureNotification.UserNotification": true,
+            "com.apple.server.bluetooth.classic.xpc": true,
+            "com.apple.bluetooth.BTPacketLogger": true,
+            "com.apple.ExposureNotification": true,
+            "com.apple.wirelessproxd": true,
+            "com.apple.ULLAConcierge.xpc.diagnostics": true,
+            "com.apple.BTAudioHALPlugin.xpc": true,
+            "com.apple.bluetooth.xpc": true,
+            "com.apple.server.bluetooth.general.xpc": true,
+            "com.apple.bluetooth.cloudkit.xpc": true
+          },
+          "EnableTransactions": true,
+          "RunAtLoad": true,
+          "UserName": "mobile",
+          "ProgramArguments": [
+            "/usr/sbin/bluetoothd"
+          ],
+          "PublishesEvents": [
+            "com.apple.bluetooth.connections",
+            "com.apple.bluetooth.discovery"
+          ]
+        }
+      },
+      "/System/Library/LaunchDaemons/com.apple.BlueTool.plist": {
+        "sha256": "e6a3c88d3458b7d6adc5da3b11099769648068baf81beae63283300c80c6606a",
+        "plist": {
+          "ThrottleInterval": 0,
+          "POSIXSpawnType": "Adaptive",
+          "MachServices": {
+            "com.apple.BlueTool": true
+          },
+          "ProgramArguments": [
+            "/usr/sbin/BlueTool",
+            "-R"
+          ],
+          "UserName": "mobile",
+          "EnablePressuredExit": true,
+          "Label": "com.apple.BlueTool"
+        }
+      },
+      "/usr/sbin/bluetoothd": {
+        "sha256": "86104e5cd2892b55a03024bcea8b6eb851a9ca451a9bbdb2b8de9e92fa50c634",
+        "bytes": 10533216
+      },
+      "/usr/sbin/BlueTool": {
+        "sha256": "d18fbb358dad114019ff7fee24d68e949c5f32c8b6261d895ae4239c3c548baa",
+        "bytes": 5221024
+      }
+    },
+    "bluetooth_dext_present": false,
+    "observations": {
+      "bluetoothd": {
+        "linked_libraries": [
+          "/usr/lib/libFDR.dylib",
+          "/usr/lib/libiconv.2.dylib",
+          "/usr/lib/libsqlite3.dylib",
+          "/System/Library/PrivateFrameworks/AppSupport.framework/AppSupport",
+          "/System/Library/PrivateFrameworks/BluetoothServices.framework/BluetoothServices",
+          "/System/Library/PrivateFrameworks/CrashReporterSupport.framework/CrashReporterSupport",
+          "/System/Library/PrivateFrameworks/CoreAccessories.framework/CoreAccessories",
+          "/System/Library/PrivateFrameworks/CoreAnalytics.framework/CoreAnalytics",
+          "/System/Library/Frameworks/CoreAudio.framework/CoreAudio",
+          "/System/Library/Frameworks/CoreBluetooth.framework/CoreBluetooth",
+          "/System/Library/PrivateFrameworks/CoreDuetContext.framework/CoreDuetContext",
+          "/System/Library/PrivateFrameworks/CoreTime.framework/CoreTime",
+          "/System/Library/PrivateFrameworks/CoreUtils.framework/CoreUtils",
+          "/System/Library/Frameworks/ExternalAccessory.framework/ExternalAccessory",
+          "/System/Library/Frameworks/IOKit.framework/Versions/A/IOKit",
+          "/System/Library/PrivateFrameworks/IDS.framework/IDS",
+          "/System/Library/PrivateFrameworks/MobileKeyBag.framework/MobileKeyBag",
+          "/System/Library/PrivateFrameworks/Netrb.framework/Netrb",
+          "/System/Library/PrivateFrameworks/OSAnalytics.framework/OSAnalytics",
+          "/System/Library/PrivateFrameworks/PowerLog.framework/PowerLog",
+          "/System/Library/PrivateFrameworks/ProtocolBuffer.framework/ProtocolBuffer",
+          "/System/Library/PrivateFrameworks/Rapport.framework/Rapport",
+          "/System/Library/PrivateFrameworks/RegulatoryDomain.framework/RegulatoryDomain",
+          "/System/Library/PrivateFrameworks/RTBuddyCrashlogDecoder.framework/RTBuddyCrashlogDecoder",
+          "/System/Library/Frameworks/Security.framework/Security",
+          "/System/Library/PrivateFrameworks/SPOwner.framework/SPOwner",
+          "/System/Library/PrivateFrameworks/SymptomDiagnosticReporter.framework/SymptomDiagnosticReporter",
+          "/System/Library/Frameworks/SystemConfiguration.framework/SystemConfiguration",
+          "/System/Library/PrivateFrameworks/TCC.framework/TCC",
+          "/System/Library/PrivateFrameworks/VoiceTrigger.framework/VoiceTrigger",
+          "/System/Library/PrivateFrameworks/WirelessCoexManager.framework/WirelessCoexManager",
+          "/System/Library/PrivateFrameworks/WirelessDiagnostics.framework/WirelessDiagnostics",
+          "/System/Library/PrivateFrameworks/WPDaemon.framework/WPDaemon",
+          "/System/Library/PrivateFrameworks/BiomeLibrary.framework/BiomeLibrary",
+          "/System/Library/Frameworks/Network.framework/Network",
+          "/usr/lib/libAWDProtobufBluetooth.dylib",
+          "/usr/lib/libprotobuf.dylib",
+          "/usr/lib/libMobileGestalt.dylib",
+          "/usr/lib/libSystemHealth.dylib",
+          "/System/Library/Frameworks/AVFoundation.framework/AVFoundation",
+          "/System/Library/PrivateFrameworks/BackBoardServices.framework/BackBoardServices",
+          "/System/Library/PrivateFrameworks/BacklightServices.framework/BacklightServices",
+          "/System/Library/PrivateFrameworks/CarKit.framework/CarKit",
+          "/System/Library/Frameworks/CFNetwork.framework/CFNetwork",
+          "/System/Library/Frameworks/Contacts.framework/Contacts",
+          "/System/Library/Frameworks/CoreLocation.framework/CoreLocation",
+          "/System/Library/Frameworks/CoreMotion.framework/CoreMotion",
+          "/System/Library/PrivateFrameworks/CoreRepairCore.framework/CoreRepairCore",
+          "/System/Library/Frameworks/CoreTelephony.framework/CoreTelephony",
+          "/System/Library/PrivateFrameworks/DeviceAccess.framework/DeviceAccess",
+          "/System/Library/Frameworks/ExposureNotification.framework/ExposureNotification",
+          "/System/Library/PrivateFrameworks/ExposureNotificationDaemon.framework/ExposureNotificationDaemon",
+          "/System/Library/PrivateFrameworks/FrontBoardServices.framework/FrontBoardServices",
+          "/System/Library/PrivateFrameworks/GeoServices.framework/GeoServices",
+          "/System/Library/Frameworks/ImageIO.framework/ImageIO",
+          "/System/Library/PrivateFrameworks/Lexicon.framework/Lexicon",
+          "/System/Library/PrivateFrameworks/ManagedConfiguration.framework/ManagedConfiguration",
+          "/System/Library/Frameworks/MatterSupport.framework/MatterSupport",
+          "/System/Library/PrivateFrameworks/MobileAsset.framework/MobileAsset",
+          "/System/Library/Frameworks/MobileCoreServices.framework/MobileCoreServices",
+          "/System/Library/PrivateFrameworks/MobileWiFi.framework/MobileWiFi",
+          "/System/Library/PrivateFrameworks/NanoRegistry.framework/NanoRegistry",
+          "/System/Library/PrivateFrameworks/NetworkRelay.framework/NetworkRelay",
+          "/System/Library/PrivateFrameworks/PowerUI.framework/PowerUI",
+          "/System/Library/PrivateFrameworks/RunningBoardServices.framework/RunningBoardServices",
+          "/System/Library/PrivateFrameworks/SetupAssistant.framework/SetupAssistant",
+          "/System/Library/PrivateFrameworks/SpringBoardServices.framework/SpringBoardServices",
+          "/System/Library/PrivateFrameworks/TelephonyUtilities.framework/TelephonyUtilities",
+          "/System/Library/PrivateFrameworks/TimeSync.framework/TimeSync",
+          "/System/Library/PrivateFrameworks/UserManagement.framework/UserManagement",
+          "/System/Library/PrivateFrameworks/NearField.framework/NearField",
+          "/System/Library/PrivateFrameworks/HID.framework/HID",
+          "/usr/lib/AppleConvergedTransport.dylib",
+          "/usr/lib/libAccessibility.dylib",
+          "/usr/lib/libCTGreenTeaLogger.dylib",
+          "/usr/lib/liblockdown.dylib",
+          "/System/Library/PrivateFrameworks/AppProtection.framework/AppProtection",
+          "/System/Library/Frameworks/Foundation.framework/Foundation",
+          "/usr/lib/libobjc.A.dylib",
+          "/usr/lib/libc++.1.dylib",
+          "/usr/lib/libSystem.B.dylib",
+          "/System/Library/Frameworks/AVFAudio.framework/AVFAudio",
+          "/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation",
+          "/System/Library/Frameworks/CoreServices.framework/CoreServices",
+          "/System/Library/PrivateFrameworks/SoftLinking.framework/SoftLinking"
+        ],
+        "macho_platform": [
+          {
+            "platform": 2,
+            "minimum": 1181440,
+            "sdk": 1181440
+          }
+        ],
+        "transport_strings": [
+          "/dev/cu.bluetooth",
+          "/dev/uart.bluetooth",
+          "/dev/btwake",
+          "AppleBluetoothModule",
+          "AppleSunriseBluetooth",
+          "AppleBluetoothModuleUserClient"
+        ]
+      },
+      "BlueTool": {
+        "linked_libraries": [
+          "/usr/lib/libFDR.dylib",
+          "/usr/lib/libz.1.dylib",
+          "/usr/lib/libMobileGestalt.dylib",
+          "/usr/lib/libedit.3.dylib",
+          "/System/Library/PrivateFrameworks/CrashReporterSupport.framework/CrashReporterSupport",
+          "/System/Library/Frameworks/Foundation.framework/Foundation",
+          "/System/Library/Frameworks/IOKit.framework/Versions/A/IOKit",
+          "/usr/lib/libc++.1.dylib",
+          "/usr/lib/libSystem.B.dylib",
+          "/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation",
+          "/usr/lib/libobjc.A.dylib"
+        ],
+        "macho_platform": [
+          {
+            "platform": 2,
+            "minimum": 1181440,
+            "sdk": 1181440
+          }
+        ],
+        "transport_strings": [
+          "/dev/btwake",
+          "/dev/btreset",
+          "AppleBluetoothModule",
+          "AppleBluetoothModuleUserClient"
+        ]
+      }
+    },
+    "boundary": "Native H4/POSIX and three BlueTool XPC script interfaces are implemented offline. bluetoothd has a separate Apple chipset-model/vendor factory that still lacks WCN3990.",
+    "driver_extensions": [
+      "System/Library/DriverExtensions/XboxGamepad.dext",
+      "System/Library/DriverExtensions/com.apple.AppleUserHIDDrivers.dext",
+      "System/Library/DriverExtensions/com.apple.DriverKit-Apple16X50PCI.dext",
+      "System/Library/DriverExtensions/com.apple.DriverKit-AppleBCMWLAN.dext",
+      "System/Library/DriverExtensions/com.apple.DriverKit-AppleEthernetE1000.dext",
+      "System/Library/DriverExtensions/com.apple.DriverKit-AppleEthernetIXGBE.dext",
+      "System/Library/DriverExtensions/com.apple.DriverKit-AppleEthernetIXL.dext",
+      "System/Library/DriverExtensions/com.apple.DriverKit-AppleEthernetMLX5.dext",
+      "System/Library/DriverExtensions/com.apple.DriverKit-AppleUSBCHCOM.dext",
+      "System/Library/DriverExtensions/com.apple.DriverKit-AppleUSBFTDI.dext",
+      "System/Library/DriverExtensions/com.apple.DriverKit-AppleUSBPLCOM.dext",
+      "System/Library/DriverExtensions/com.apple.DriverKit-AppleUSBSLCOM.dext",
+      "System/Library/DriverExtensions/com.apple.DriverKit-AppleUSBSerial.dext",
+      "System/Library/DriverExtensions/com.apple.DriverKit.AppleUserECM.dext"
+    ],
+    "execution_evidence": [
+      {
+        "image": "bluetoothd",
+        "address": "0x1000b0fcc",
+        "observation": "Entry checks /dev/cu.bluetooth and /dev/uart.bluetooth and calls address discovery for service name bluetooth."
+      },
+      {
+        "image": "bluetoothd",
+        "address": "0x1000b2338",
+        "observation": "IOServiceNameMatching followed by IORegistryEntrySearchCFProperty in IODeviceTree for local-mac-address; copies six canonical-order bytes."
+      },
+      {
+        "image": "bluetoothd",
+        "address": "0x10034941c",
+        "observation": "XPC com.apple.BlueTool RunBuiltinScript with script and optional btaddress; result checked by caller."
+      },
+      {
+        "image": "bluetoothd",
+        "address": "0x10034a1bc",
+        "observation": "Boot method may invoke script boot; init/deepsleep methods at0x10034aac8/0x10034ab6c use the same XPC path."
+      },
+      {
+        "image": "bluetoothd",
+        "address": "0x1004a861c",
+        "observation": "Initialization includes a failure branch for unknown platform/chipset/manufacturer; VM skip is separate and is not used by this driver."
+      },
+      {
+        "image": "bluetoothd",
+        "address": "0x100211ad8",
+        "observation": "Parses BT_HCI_TRANSPORT as transport:driver:argument. H4 table is at0x1009bfd40; POSIX driver table is at0x1009bfc40."
+      },
+      {
+        "image": "bluetoothd",
+        "address": "0x100116c60",
+        "observation": "POSIX driver opens PF_SYSTEM/SOCK_STREAM/SYSPROTO_CONTROL, resolves a supplied control name with CTLIOCGINFO, and uses Skywalk only for the exact default com.apple.uart.sk.bluetooth. Other names use read/write and termios socket options."
+      },
+      {
+        "image": "bluetoothd",
+        "address": "0x100117624",
+        "observation": "Without an os_channel, HCI bytes are sent with write on the control socket."
+      },
+      {
+        "image": "bluetoothd",
+        "address": "0x100117920",
+        "observation": "Without an os_channel, HCI bytes are received with read on the control socket."
+      },
+      {
+        "image": "BlueTool",
+        "address": "0x10003fcb0",
+        "observation": "Dispatches kMsgId=RunBuiltinScript and kMsgArgs={script,btaddress}; replies with result/manufacturer/firmware; boot/init have 30 s timers and deepsleep 4 s."
+      },
+      {
+        "image": "BlueTool",
+        "address": "0x10003e1e0",
+        "observation": "Native manufacturer selection uses Apple hardware/MobileGestalt vendor tags, not the HCI Company Identifier."
+      },
+      {
+        "image": "BlueTool",
+        "address": "0x1000131e0",
+        "observation": "Native built-in firmware/script selection requires a platform/chip/vendor match."
+      },
+      {
+        "image": "bluetoothd",
+        "address": "0x1003498b0",
+        "observation": "Result zero advances boot; 10/13 indicate unsupported hardware; reads firmware and manufacturer into state/metrics."
+      },
+      {
+        "image": "bluetoothd",
+        "address": "0x1001a071c",
+        "observation": "Reads four bytes of transport-encoding from the bluetooth or marconi-bt DeviceTree node independently of BT_HCI_TRANSPORT."
+      },
+      {
+        "image": "bluetoothd",
+        "address": "0x100379ac4",
+        "observation": "Chip model factory selects Apple-supported device profiles through MobileGestalt, plus ACI/VM overrides; no WCN3990 profile was found."
+      },
+      {
+        "image": "bluetoothd",
+        "address": "0x1002229b0",
+        "observation": "Vendor configuration rejects IDs beyond the native 1..6000 range."
+      },
+      {
+        "image": "bluetoothd",
+        "address": "0x10022288c",
+        "observation": "Vendor dispatch initializes BCM, ACI or SRS function tables by internal chipset-ID ranges; no QCA table."
+      },
+      {
+        "image": "bluetoothd",
+        "address": "0x100223034",
+        "observation": "An absent vendor hook returns native unsupported status 3601; this is separate from HCI completion and cannot be replaced by a fake controller response."
+      }
+    ]
+  },
+  "reference_project": {
+    "AppleBluetoothModule": "iphoneos12.1.internal; Kext layout and historical AppleARMIODevice/AppleOnboardSerialSync personalities only; no runtime dependency"
+  },
+  "native_serial": {
+    "contract": "drivers/abi-22H374/apple-serial-abi.json",
+    "evidence": "docs/bluetooth/native-serial-evidence.json",
+    "driver_base": "IOSerialDriverSync",
+    "stream": "IOSerialStreamSync",
+    "bsd_client": "IOSerialBSDClient",
+    "legacy_reserved_slots_present": false,
+    "classes": {
+      "IOSerialDriverSync": {
+        "super": "IOService",
+        "instance_size": 136,
+        "vtable_slots": 180
+      },
+      "IOSerialStreamSync": {
+        "super": "IOService",
+        "instance_size": 152,
+        "vtable_slots": 181
+      },
+      "IOSerialBSDClient": {
+        "super": "IOService",
+        "instance_size": 464,
+        "vtable_slots": 169
+      }
+    }
+  },
+  "native_uart_control": {
+    "name": "com.apple.uart.bluetooth",
+    "configuration": "H4:POSIX:com.apple.uart.bluetooth,3200000",
+    "kernel_api": "XNU ctl_register/ctl_enqueuedata and mbuf KPI",
+    "termios_bytes": 72,
+    "get_option": "0x40487413 (TIOCGETA)",
+    "set_option": "0x80487414 (TIOCSETA)",
+    "socket_api_references": "kernel/bsd/sys/kern_control.h; kernel/bsd/kern/kern_control.c",
+    "native_name_formats_observed": [
+      "com.apple.uart.%s",
+      "com.apple.uart.sk.%s"
+    ],
+    "authorization": "Native bluetoothd com.apple.bluetooth.control, or the separately scoped org.darwin.bluetooth.bootstrap helper entitlement",
+    "callback_locking": "Local XNU releases the socket lock around connect/send/set/get callbacks; gate-to-enqueue does not invert it.",
+    "skywalk_implemented": false,
+    "daemon_configuration_installed": false
+  },
+  "native_bluetool_backend": {
+    "binary": "bluetoothbootstrap",
+    "evidence": "docs/bluetooth/native-bootstrap-evidence.json",
+    "scripts": [
+      "boot",
+      "init",
+      "deepsleep"
+    ],
+    "native_service_preserved": true,
+    "native_binaries_modified": false,
+    "offline_package": "build/output/Bluetooth",
+    "installed": false,
+    "native_chipset_policy_ported": false,
+    "hardware_tested": false
+  }
+}

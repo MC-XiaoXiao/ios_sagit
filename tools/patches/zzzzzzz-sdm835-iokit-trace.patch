@@ -1,0 +1,107 @@
+--- a/pexpert/arm/pe_init.c
++++ b/pexpert/arm/pe_init.c
+@@ -247,6 +247,12 @@
+ 	return 0;
+ }
+ 
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++#define SDM835_IOKIT_TRACE(message) printf("[XNU IOKit] " message "\n")
++#else
++#define SDM835_IOKIT_TRACE(message) do {} while (0)
++#endif
++
+ void
+ PE_init_iokit(void)
+ {
+@@ -285,7 +291,9 @@
+ 		}
+ 	}
+ 
++	SDM835_IOKIT_TRACE("pe_prepare_images begin");
+ 	pe_prepare_images();
++	SDM835_IOKIT_TRACE("pe_prepare_images done");
+ 
+ 	scale = PE_state.video.v_scale;
+ 	flip = 1;
+@@ -377,8 +385,12 @@
+ #endif
+ 	}
+ 
++	SDM835_IOKIT_TRACE("InitIOKit begin");
+ 	InitIOKit(PE_state.deviceTreeHead);
++	SDM835_IOKIT_TRACE("InitIOKit done");
++	SDM835_IOKIT_TRACE("ConfigureIOKit begin");
+ 	ConfigureIOKit();
++	SDM835_IOKIT_TRACE("ConfigureIOKit done");
+ }
+ 
+ void
+--- a/iokit/Kernel/IOStartIOKit.cpp
++++ b/iokit/Kernel/IOStartIOKit.cpp
+@@ -127,6 +127,12 @@
+  */
+ void (*record_startup_extensions_function)(void) = NULL;
+ 
++#if defined(ARM64_BOARD_CONFIG_SDM835)
++#define SDM835_IOKIT_TRACE(message) printf("[XNU IOKit] " message "\n")
++#else
++#define SDM835_IOKIT_TRACE(message) do {} while (0)
++#endif
++
+ void
+ InitIOKit(void *dtTop)
+ {
+@@ -140,30 +146,50 @@
+ 	// of iokit basic service initialisation, or better we have IOLib stuff
+ 	// initialise as basic OS services.
+ 	//
++	SDM835_IOKIT_TRACE("IOLibInit begin");
+ 	IOLibInit();
++	SDM835_IOKIT_TRACE("IOLibInit done");
++	SDM835_IOKIT_TRACE("OSlibkernInit begin");
+ 	OSlibkernInit();
++	SDM835_IOKIT_TRACE("OSlibkernInit done");
++	SDM835_IOKIT_TRACE("IOMachPortInitialize begin");
+ 	IOMachPortInitialize();
+-
++	SDM835_IOKIT_TRACE("IOMachPortInitialize done");
++
++	SDM835_IOKIT_TRACE("progress key begin");
+ 	gIOProgressBackbufferKey  = OSSymbol::withCStringNoCopy(kIOProgressBackbufferKey);
++	SDM835_IOKIT_TRACE("progress key done");
++	SDM835_IOKIT_TRACE("progress property set begin");
+ 	gIORemoveOnReadProperties = OSSet::withObjects((const OSObject **) &gIOProgressBackbufferKey, 1);
+-
++	SDM835_IOKIT_TRACE("progress property set done");
++
++	SDM835_IOKIT_TRACE("interrupt accounting begin");
+ 	interruptAccountingInit();
+-
++	SDM835_IOKIT_TRACE("interrupt accounting done");
++
++	SDM835_IOKIT_TRACE("root nub allocation begin");
+ 	gRootNub = new IOPlatformExpertDevice;
++	SDM835_IOKIT_TRACE("root nub allocation done");
+ 	if (__improbable(gRootNub == NULL)) {
+ 		panic("Failed to allocate IOKit root nub");
+ 	}
++	SDM835_IOKIT_TRACE("root nub init begin");
+ 	bool ok = gRootNub->init(dtTop);
++	SDM835_IOKIT_TRACE("root nub init done");
+ 	if (__improbable(!ok)) {
+ 		panic("Failed to initialize IOKit root nub");
+ 	}
++	SDM835_IOKIT_TRACE("root nub attach begin");
+ 	gRootNub->attach(NULL);
++	SDM835_IOKIT_TRACE("root nub attach done");
+ 
+ 	/* If the bootstrap segment set up a function to record startup
+ 	 * extensions, call it now.
+ 	 */
+ 	if (record_startup_extensions_function) {
++		SDM835_IOKIT_TRACE("record_startup_extensions begin");
+ 		record_startup_extensions_function();
++		SDM835_IOKIT_TRACE("record_startup_extensions done");
+ 	}
+ }
+ 

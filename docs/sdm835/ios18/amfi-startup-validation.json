@@ -1,0 +1,248 @@
+{
+  "date": "2026-10-15T03:09:55.807763-07:00",
+  "status": "amfi-and-iig-validated-subsequent-wait",
+  "root_cause": "AMFI is a security provider whose module start is a no-op. Sandbox is the early security extension caller of amfi_register_mac_policy; the old collection included AMFI but omitted Sandbox. Thus the AMFI interface remained NULL at trust_cache_runtime_init.",
+  "factory_order": [
+    "PE_init_iokit: build registry and record Kexts",
+    "mac_policy_initmach: load security extensions",
+    "Sandbox kmod_start -> AMFI amfi_register_mac_policy -> amfi_interface_register",
+    "trust_cache_runtime_init and load static trust cache",
+    "machine lockdown and general IOKit matching",
+    "bsd_init and later IOBSD publication"
+  ],
+  "order_comparison": "build/amfi-diagnosis/order-comparison.json",
+  "baseline": {
+    "kernelcache_sha256": "42c6cb2f3b203642afd3121b881b30f4f733dbb1c09ce805ec19fb43b33c55cc",
+    "kext_count": 23,
+    "log": "build/amfi-diagnosis/hardware-kextlog/uart.txt",
+    "proof": "AMFI dependencies resolve; module start and class registration succeed; interface remains NULL."
+  },
+  "final_kernelcache": {
+    "path": "build/output/kernelcache.sdm835.platform",
+    "sha256": "caebc0b9c8376a74436dfe9263f6cea887a3354b09887af7ed4fc483620b9370",
+    "bytes": 25227264,
+    "kext_count": 25,
+    "added": [
+      "com.apple.security.sandbox",
+      "com.apple.kext.AppleMatch"
+    ],
+    "verification": "build/output/kernelcache.sdm835.platform.verification.json",
+    "corecrypto_hmac": {
+      "modules": [
+        {
+          "bundle": "com.apple.kec.corecrypto",
+          "algorithm": "HMAC-SHA256",
+          "hashed_bytes": 335056,
+          "hmac_offset": 20587968,
+          "hmac": "c1eda400f8cd49534131802eafa1ea994d094e06628df61baaebbecc21de710a"
+        }
+      ]
+    }
+  },
+  "final_bridge": {
+    "path": "build/amfi-diagnosis/bridge-platform-code/XnuBridge.efi",
+    "sha256": "c7fe367fb042e0b278d0bcc200c17ac75bb2a1f3fbafc11b35fb5461dcb89bc1",
+    "strict_alignment": {
+      "efi": true,
+      "raw": true
+    },
+    "kernelcache_sha256": "caebc0b9c8376a74436dfe9263f6cea887a3354b09887af7ed4fc483620b9370"
+  },
+  "checks": {
+    "native_kernel_build": "passed",
+    "patcher_ctest": 5,
+    "kernelcache_python_tests": 23,
+    "bridge_tests": 22,
+    "qemu_EL1_EL2": "passed",
+    "full_pipeline_pack": "passed",
+    "independent_collection_verifier": "passed",
+    "unresolved_relocations": 0,
+    "bridge_property_tests": 15
+  },
+  "last_device_attempt": {
+    "log": "build/amfi-diagnosis/hardware-platform-code-1/uart.txt",
+    "archived_log": "docs/sdm835/ios18/amfi-startup-hardware-uart.txt",
+    "report": "build/amfi-diagnosis/hardware-platform-code-1/report.json",
+    "checks": {
+      "efi_alignment_fault_absent": true,
+      "nvram_panic_absent": true,
+      "hash_method_panic_absent": true,
+      "fips_panic_absent": true,
+      "amfi_policy_loaded": true,
+      "sandbox_policy_loaded": true,
+      "vnguard_policy_loaded": true,
+      "trust_cache_phase_reached": true,
+      "amfi_interface_panic_absent": true,
+      "native_panic_complete": true,
+      "watchdog_recovered": true
+    },
+    "native_backtrace_frames": 20,
+    "evidence": [
+      {
+        "line": 122,
+        "text": "Security policy loaded: AppleImage4 hooks (AppleImage4)"
+      },
+      {
+        "line": 136,
+        "text": "Security policy loaded: Apple Mobile File Integrity (AMFI)"
+      },
+      {
+        "line": 138,
+        "text": "Security policy loaded: Seatbelt sandbox policy (Sandbox)"
+      },
+      {
+        "line": 140,
+        "text": "Security policy loaded: Guarded vnode policy (vnguard)"
+      },
+      {
+        "line": 141,
+        "text": "no external trust caches found (segment length is zero)"
+      },
+      {
+        "line": 144,
+        "text": "panic(cpu 0 caller 0xfffffff007a7e844): IOUserServer.cpp:7048 Assertion failed: kIOReturnSuccess == ret at pc 0xfffffff007a26b8c, lr 0xfffffff007a26a98 (saved state: 0xfffffffbf89337f0)"
+      },
+      {
+        "line": 145,
+        "text": "x0:  0x00000000e00002bf x1:  0xfffffffbf8933a60  x2:  0x0000000000000000  x3:  0x0000000000000000"
+      },
+      {
+        "line": 220,
+        "text": "** Stackshot Succeeded ** Bytes Traced 3120 (Uncompressed 8512) **"
+      },
+      {
+        "line": 222,
+        "text": "panic(cpu 0 caller 0xfffffff007a7e844): IOUserServer.cpp:7048 Assertion failed: kIOReturnSuccess == ret at pc 0xfffffff007a26b8c, lr 0xfffffff007a26a98 (saved state: 0xfffffffbf89337f0)"
+      },
+      {
+        "line": 223,
+        "text": "x0:  0x00000000e00002bf x1:  0xfffffffbf8933a60  x2:  0x0000000000000000  x3:  0x0000000000000000"
+      }
+    ]
+  },
+  "kernel_bootstrap_reordered": false,
+  "early_amfi_service_adapter_in_final_kernel": false,
+  "amfi_interface_faked": false,
+  "security_checks_bypassed": false,
+  "amfi_panic_resolved_on_device": true,
+  "full_boot_completed": false,
+  "partitions_written": false,
+  "current_blocker": "Waiting for an IOMedia root device with Content=Apple_HFS. RTC/calendar, pthread and network/lo0 initialization passed. No panic observed in the final test. No mountable root filesystem has been handed off; full userspace boot is not complete.",
+  "changed_source_files": [
+    "drivers/Build.json",
+    "tools/kernelcache_patcher/Patcher.cpp",
+    "tools/kernelcache_patcher/tests/PatcherControlFlowTests.cpp",
+    "scripts/build-bridge.py",
+    "README.md",
+    "docs/sdm835/ios18-kext-analysis.md",
+    "docs/sdm835/boot-bridge.md",
+    "device_trees/xiaomi-sagit.dts",
+    "tests/test_boot_bridge.py"
+  ],
+  "device_reset_required": true,
+  "device_tree_amfi": {
+    "path": "/chosen/amfi-only-platform-code",
+    "value": 1,
+    "format": "uint32 little endian",
+    "native_consumer": "T8010 AMFI 0xfffffff005a79ea4..0xfffffff005a79f28",
+    "analysis": "build/amfi-diagnosis/amfi-platform-code.txt",
+    "note": "Preserves platform-only enforcement; no relaxed policy flags."
+  },
+  "device_attempts": [
+    {
+      "log": "build/amfi-diagnosis/hardware-aligned-1/uart.txt",
+      "payload_sha256": "cb4826d656303b99dccecff1c304b287c3ba0fdd6c1e3d6f23233827dd186fd6",
+      "result": "EFI alignment fixed; reaches AMFI initialization but missing /chosen/amfi-only-platform-code."
+    },
+    {
+      "log": "build/amfi-diagnosis/hardware-platform-code-1/uart.txt",
+      "archived_log": "docs/sdm835/ios18/amfi-startup-hardware-uart.txt",
+      "report": "build/amfi-diagnosis/hardware-platform-code-1/report.json",
+      "checks": {
+        "efi_alignment_fault_absent": true,
+        "nvram_panic_absent": true,
+        "hash_method_panic_absent": true,
+        "fips_panic_absent": true,
+        "amfi_policy_loaded": true,
+        "sandbox_policy_loaded": true,
+        "vnguard_policy_loaded": true,
+        "trust_cache_phase_reached": true,
+        "amfi_interface_panic_absent": true,
+        "native_panic_complete": true,
+        "watchdog_recovered": true
+      },
+      "native_backtrace_frames": 20,
+      "evidence": [
+        {
+          "line": 122,
+          "text": "Security policy loaded: AppleImage4 hooks (AppleImage4)"
+        },
+        {
+          "line": 136,
+          "text": "Security policy loaded: Apple Mobile File Integrity (AMFI)"
+        },
+        {
+          "line": 138,
+          "text": "Security policy loaded: Seatbelt sandbox policy (Sandbox)"
+        },
+        {
+          "line": 140,
+          "text": "Security policy loaded: Guarded vnode policy (vnguard)"
+        },
+        {
+          "line": 141,
+          "text": "no external trust caches found (segment length is zero)"
+        },
+        {
+          "line": 144,
+          "text": "panic(cpu 0 caller 0xfffffff007a7e844): IOUserServer.cpp:7048 Assertion failed: kIOReturnSuccess == ret at pc 0xfffffff007a26b8c, lr 0xfffffff007a26a98 (saved state: 0xfffffffbf89337f0)"
+        },
+        {
+          "line": 145,
+          "text": "x0:  0x00000000e00002bf x1:  0xfffffffbf8933a60  x2:  0x0000000000000000  x3:  0x0000000000000000"
+        },
+        {
+          "line": 220,
+          "text": "** Stackshot Succeeded ** Bytes Traced 3120 (Uncompressed 8512) **"
+        },
+        {
+          "line": 222,
+          "text": "panic(cpu 0 caller 0xfffffff007a7e844): IOUserServer.cpp:7048 Assertion failed: kIOReturnSuccess == ret at pc 0xfffffff007a26b8c, lr 0xfffffff007a26a98 (saved state: 0xfffffffbf89337f0)"
+        },
+        {
+          "line": 223,
+          "text": "x0:  0x00000000e00002bf x1:  0xfffffffbf8933a60  x2:  0x0000000000000000  x3:  0x0000000000000000"
+        }
+      ]
+    }
+  ],
+  "next_panic": {
+    "function": "IOSystemStateNotification::initialize",
+    "source": "kernel/iokit/Kernel/IOUserServer.cpp:7048",
+    "return_code": "0xe00002bf",
+    "return_name": "kIOReturnIPCError",
+    "call_chain": [
+      "IOConfigThread::main",
+      "IOService::doServiceMatch",
+      "IOService::probeCandidates",
+      "IOService::startCandidate",
+      "IOPlatformExpert::start",
+      "IOService::setPlatform",
+      "IOSystemStateNotification::initialize",
+      "IOService::StateNotificationItemCreate",
+      "OSMetaClassBase::Invoke"
+    ],
+    "diagnosis": "tools/iig/IOService.iig.cpp:3960 initializes message/reply/sendSize/replySize only. Current kernel IORPC has kernelContent (IORPC.h:232); omitted aggregate member is zero. Invoke (IOUserServer.cpp:2411) requires kernelContent, returning IPCError before dispatch. Existing shim at scripts/toolchain.py:614 adapts dispatch parsing, but not outbound IORPC initialization.",
+    "fixed": true,
+    "fix_validation": "docs/sdm835/ios18/iig-compat-validation.json"
+  },
+  "iig_compat_followup": "docs/sdm835/ios18/iig-compat-validation.json",
+  "iig_panic_resolved_on_device": true,
+  "latest_bridge": "build/pthread-diagnosis/bridge/XnuBridge.efi",
+  "latest_device_log": "docs/sdm835/ios18/pthread-hardware-uart.txt",
+  "rtc_followup": "docs/sdm835/ios18/rtc-validation.json",
+  "pthread_followup": "docs/sdm835/ios18/pthread-validation.json",
+  "rtc_wait_resolved": true,
+  "pthread_panic_resolved": true,
+  "device_recovery": "Firmware reboot captured; USB transport not responding after cleanup."
+}

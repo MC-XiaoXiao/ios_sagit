@@ -1,0 +1,24 @@
+# Candidate dependency closure; linking and hardware are unverified.
+com.apple.kpi.iokit
+com.apple.kpi.libkern
+com.apple.kpi.mach
+com.apple.kpi.private
+com.apple.iokit.IOReportFamily
+com.apple.kpi.bsd
+com.apple.kpi.unsupported
+com.apple.iokit.IOSlowAdaptiveClockingFamily
+com.apple.iokit.IOStorageFamily
+com.apple.driver.AppleARMPlatform
+com.apple.driver.AppleARMWatchdogTimer
+com.apple.driver.AppleEffaceableStorage
+com.apple.iokit.CoreAnalyticsFamily
+com.apple.kec.corecrypto
+com.apple.kpi.dsep
+com.apple.iokit.IOCryptoAcceleratorFamily
+com.apple.kext.CoreTrust
+com.apple.security.AppleImage4
+com.apple.filesystems.apfs
+com.apple.driver.ApplePMGR
+com.apple.driver.AppleMobileFileIntegrity
+com.apple.kext.AppleMatch
+com.apple.security.sandbox

@@ -1,0 +1,125 @@
+diff --git a/EmbeddedPkg/Application/AndroidFastboot/AndroidFastbootApp.c b/EmbeddedPkg/Application/AndroidFastboot/AndroidFastbootApp.c
+index b16478be..2cde7a07 100644
+--- a/EmbeddedPkg/Application/AndroidFastboot/AndroidFastbootApp.c
++++ b/EmbeddedPkg/Application/AndroidFastboot/AndroidFastbootApp.c
+@@ -19,6 +19,7 @@
+ #include <Library/UefiBootServicesTableLib.h>
+ #include <Library/UefiApplicationEntryPoint.h>
+ #include <Library/PrintLib.h>
++#include <Library/UefiLib.h>
+ 
+ /*
+  * UEFI Application using the FASTBOOT_TRANSPORT_PROTOCOL and
+@@ -44,6 +45,7 @@ STATIC UINT64  mNumDataBytes;
+ STATIC UINT64  mBytesReceivedSoFar;
+ // .. and the buffer to save data into
+ STATIC UINT8  *mDataBuffer = NULL;
++STATIC BOOLEAN mRunEfi = FALSE;
+ 
+ // Event notify functions, from which gBS->Exit shouldn't be called, can signal
+ // this event when the application should exit
+@@ -74,7 +76,7 @@ HandleGetVar (
+   EFI_STATUS  Status;
+ 
+   // Respond to getvar:version with 0.4 (version of Fastboot protocol)
+-  if (!AsciiStrnCmp ("version", CmdArg, sizeof ("version") - 1)) {
++  if (!AsciiStrCmp ("version", CmdArg)) {
+     SEND_LITERAL ("OKAY" ANDROID_FASTBOOT_VERSION);
+   } else {
+     // All other variables are assumed to be platform specific
+@@ -108,7 +110,7 @@ HandleDownload (
+ 
+   // Parse out number of data bytes to expect
+   mNumDataBytes = AsciiStrHexToUint64 (NumBytesString);
+-  if (mNumDataBytes == 0) {
++  if (mNumDataBytes == 0 || mNumDataBytes > 64 * 1024 * 1024) {
+     mTextOut->OutputString (mTextOut, L"ERROR: Fail to get the number of bytes to download.\r\n");
+     SEND_LITERAL ("FAILFailed to get the number of bytes to download");
+     return;
+@@ -125,7 +127,7 @@ HandleDownload (
+     AsciiSPrint (
+       Response,
+       sizeof Response,
+-      "DATA%x",
++      "DATA%08x",
+       (UINT32)mNumDataBytes
+       );
+     mTransport->Send (sizeof Response - 1, Response, &mFatalSendErrorEvent);
+@@ -302,7 +304,21 @@ AcceptCmd (
+   } else if (MATCH_CMD_LITERAL ("oem", Command)) {
+     // The "oem" command isn't in the specification, but it was observed in the
+     // wild, followed by a space, followed by the actual command.
+-    HandleOemCommand (Command + sizeof ("oem"));
++    if (AsciiStrCmp(Command + sizeof("oem"), "crc32") == 0 && mDataBuffer != NULL) {
++      UINT32 Crc; CHAR8 Response[32];
++      gBS->CalculateCrc32(mDataBuffer, (UINTN)mNumDataBytes, &Crc);
++      AsciiSPrint(Response, sizeof(Response), "INFOcrc32=%08x", Crc);
++      mTransport->Send(AsciiStrLen(Response), Response, &mFatalSendErrorEvent);
++      SEND_LITERAL("OKAY");
++    } else if (AsciiStrCmp(Command + sizeof("oem"), "run-efi") == 0) {
++      if (mDataBuffer == NULL || mNumDataBytes < 64 || mDataBuffer[0] != 'M' || mDataBuffer[1] != 'Z') {
++        SEND_LITERAL("FAILDownload a PE/COFF EFI application first");
++      } else {
++        mRunEfi = TRUE;
++        SEND_LITERAL("OKAY");
++        gBS->SignalEvent(mFinishedEvent);
++      }
++    } else HandleOemCommand (Command + sizeof ("oem"));
+   } else if (IS_LOWERCASE_ASCII (Command[0])) {
+     // Commands starting with lowercase ASCII characters are reserved for the
+     // Fastboot protocol. If we don't recognise it, it's probably the future
+@@ -501,11 +517,16 @@ FastbootAppEntryPoint (
+   ASSERT_EFI_ERROR (Status);
+ 
+   // Start listening for data
++  mRunEfi = FALSE;
+   Status = mTransport->Start (
+                          ReceiveEvent
+                          );
+   if (EFI_ERROR (Status)) {
+     DEBUG ((DEBUG_ERROR, "Fastboot: Couldn't start transport: %r\n", Status));
++    gBS->CloseEvent(ReceiveEvent);
++    gBS->CloseEvent(mFinishedEvent);
++    gBS->CloseEvent(mFatalSendErrorEvent);
++    mPlatform->UnInit();
+     return Status;
+   }
+ 
+@@ -520,7 +541,9 @@ FastbootAppEntryPoint (
+   WaitEventArray[1] = TextIn->WaitForKey;
+   while (1) {
+     gBS->WaitForEvent (2, WaitEventArray, &EventIndex);
+-    Status = TextIn->ReadKeyStroke (gST->ConIn, &Key);
++    if (EventIndex == 0) break;
++    Status = TextIn->ReadKeyStroke (TextIn, &Key);
++    if (EFI_ERROR(Status)) continue;
+     if (Key.ScanCode == SCAN_NULL) {
+       if ((Key.UnicodeChar == CHAR_CARRIAGE_RETURN) ||
+           (Key.UnicodeChar == L' '))
+@@ -530,12 +553,24 @@ FastbootAppEntryPoint (
+     }
+   }
+ 
+-  mTransport->Stop ();
++  Status = mTransport->Stop ();
+   if (EFI_ERROR (Status)) {
+     DEBUG ((DEBUG_ERROR, "Warning: Fastboot Transport Stop: %r\n", Status));
+   }
+ 
+   mPlatform->UnInit ();
+-
++  gBS->CloseEvent(ReceiveEvent);
++  gBS->CloseEvent(mFinishedEvent);
++  gBS->CloseEvent(mFatalSendErrorEvent);
++  if (mRunEfi) {
++    EFI_HANDLE Payload = NULL;
++    Status = gBS->LoadImage(FALSE, gImageHandle, NULL, mDataBuffer, (UINTN)mNumDataBytes, &Payload);
++    if (!EFI_ERROR(Status)) {
++      Status = gBS->StartImage(Payload, NULL, NULL);
++      gBS->UnloadImage(Payload);
++    }
++    Print(L"EFI payload returned: %r\r\n", Status);
++  }
++  if (mDataBuffer != NULL) { FreePool(mDataBuffer); mDataBuffer=NULL; }
+   return EFI_SUCCESS;
+ }

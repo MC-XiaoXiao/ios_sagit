@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "source_kind": "community firmware-only extraction; official Xiaomi original package identity not verified",
+  "url": "https://github.com/XiaomiFirmwareUpdaterReleases/firmware_xiaomi_sagit/releases/download/stable-23.03.2020/fw_sagit_miui_MI6Global_V11.0.6.0.PCAMIXM_47fd8ee4ef_9.0.zip",
+  "bytes": 59124265,
+  "sha256": "2de2cd41548c91f0190b612597181177a8187d2d22d7005ef08770546aab2eb3",
+  "extracted": {
+    "META-INF/com/google/android/updater-script": {
+      "bytes": 2552,
+      "sha256": "f5cb76adec686b1ee531a5a304edd65025ed6b88d9c223d1cfbd7d4b4aed6b88",
+      "path": "firmware/sagit-stock/extracted/updater-script"
+    },
+    "firmware-update/NON-HLOS.bin": {
+      "bytes": 114028544,
+      "sha256": "9e5af9441f4b3fb14e9700b1f0f28054dbce64aedb0939c9ec8bb2be99dc882b",
+      "path": "firmware/sagit-stock/extracted/NON-HLOS.bin"
+    }
+  },
+  "hardware_tested": false,
+  "staged_manifest_sha256": "d519bc65f2f910d8295eb0db787eb06831f3eceeaf9e92761308fb8a4a34c50c"
+}

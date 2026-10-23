@@ -1,0 +1,37 @@
+--- a/iokit/Kernel/IOUserClient.cpp
++++ b/iokit/Kernel/IOUserClient.cpp
+@@ -4390,8 +4390,21 @@
+ 		return kIOReturnBadArgument;
+ 	}
+ 
++#if DEVELOPMENT || DEBUG
++	int trace_open = 0;
++	PE_parse_boot_argn("iokit-wait-trace", &trace_open, sizeof(trace_open));
++	if (trace_open) {
++		printf("[IOKit open] pid=%d service=%s class=%s type=%u\n",
++		    proc_selfpid(), service->getName(), service->getMetaClass()->getClassName(), connect_type);
++	}
++#endif
+ #if CONFIG_MACF
+ 	if (mac_iokit_check_open_service(kauth_cred_get(), service, connect_type) != 0) {
++#if DEVELOPMENT || DEBUG
++		if (trace_open) {
++			printf("[IOKit open] pid=%d denied by MAC service check\n", proc_selfpid());
++		}
++#endif
+ 		return kIOReturnNotPermitted;
+ 	}
+ #endif
+@@ -4431,6 +4444,12 @@
+ #endif
+ 		res = service->newUserClient( owningTask, (void *) owningTask,
+ 		    connect_type, propertiesDict, &client );
++#if DEVELOPMENT || DEBUG
++		if (trace_open) {
++			printf("[IOKit open] pid=%d newUserClient status=0x%x client=%s\n",
++			    proc_selfpid(), res, client ? client->getMetaClass()->getClassName() : "<none>");
++		}
++#endif
+ 
+ 		if (propertiesDict) {
+ 			propertiesDict->release();

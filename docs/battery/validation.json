@@ -1,0 +1,119 @@
+{
+  "date": "2026-10-20",
+  "status": "offline-validated",
+  "hardware_tested": false,
+  "deployed": false,
+  "actual_battery_data_observed": false,
+  "system_powerd_discovery_verified": false,
+  "battery_profile_verified": false,
+  "charger_control_implemented": false,
+  "framework": "XNU IOPMPowerSource, IOWorkLoop, IOCommandGate, IOTimerEventSource, IOKit PM",
+  "read_path": "QcomBattery -> QcomSPMI -> PMI8998 FG Gen3/SMB2",
+  "checks": [
+    {
+      "command": "make battery-driver battery-client",
+      "status": "passed",
+      "log": "build/battery/build.log"
+    },
+    {
+      "command": "make test-battery",
+      "status": "passed",
+      "integration_test_count": 4,
+      "log": "build/battery/collection.log"
+    },
+    {
+      "command": "make test-battery-sanitized",
+      "status": "passed",
+      "sanitizers": [
+        "address",
+        "undefined"
+      ],
+      "log": "build/battery/sanitized.log"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p 'test_driver_toolchain.py'",
+      "status": "passed",
+      "test_count": 19,
+      "log": "build/battery/toolchain-tests.log"
+    },
+    {
+      "command": "python3 -m unittest discover -s tests -p 'test_boot_bridge.py' -k standard_fdt",
+      "status": "passed",
+      "test_count": 1,
+      "log": "build/battery/bridge-tests.log"
+    },
+    {
+      "command": "make battery",
+      "status": "passed",
+      "includes": [
+        "battery",
+        "battery-runtime",
+        "rtc",
+        "power",
+        "5 kernelcache patcher tests"
+      ],
+      "log": "build/battery/collection.log"
+    },
+    {
+      "command": "make verify-battery",
+      "status": "passed",
+      "log": "build/battery/verify.log"
+    }
+  ],
+  "kernelcache": {
+    "path": "build/output/kernelcache.battery",
+    "sha256": "f3135ffac8763a32f79c6c77131690a00d8f7f97eaaab0d1b58187e69baef6c3",
+    "kext_count": 29,
+    "errors": [],
+    "warnings": [],
+    "report": "build/output/kernelcache.battery.verification.json"
+  },
+  "artifacts": {
+    "build/output/Extensions/QcomBattery.kext/Contents/MacOS/QcomBattery": {
+      "sha256": "fefa6e476f1601de6c615b4385847ffb8a5ed81c117c37dfa53d450d455326c5",
+      "bytes": 94144
+    },
+    "build/output/batteryctl": {
+      "sha256": "c1ed118bee87a8932d2d86c751ea7985425b11fc0182ba1a26df88a10b3e1c8d",
+      "bytes": 51440
+    },
+    "build/output/kernelcache.battery": {
+      "sha256": "f3135ffac8763a32f79c6c77131690a00d8f7f97eaaab0d1b58187e69baef6c3",
+      "bytes": 25608192
+    }
+  },
+  "inputs": {
+    "Makefile": "5f11b5a75d0d2cfa8cf2ab00d24b79e668bffc38e6f4c1c1f2e73f5ccde60ce9",
+    "device_trees/xiaomi-sagit.dts": "cfd04dc0641eae4ea507ee601290522b191d90c9277bc3fa6259bf745947e898",
+    "docs/battery/reference/sources.json": "18489c46892e8bdaac4c0bcf75bcae3b7700ef130e2b360ec033209eeacd6f8d",
+    "scripts/build-bridge.py": "f6061b2b986e4c908f7e96a35c791ecffe4a79c2d8320e02747e3b1e90859f6b",
+    "scripts/toolchain.py": "72bd83f7a1410ec913adbc89877d12b76b8d6f3c08800a90ffc2cb07139c48c2",
+    "drivers/Build.json": "854999d81f693d0be380afec54631eaff19b10619178c3a6ac2e78e9a60cf3d3",
+    "drivers/power/QcomBattery/Info.plist": "02ccc3e6b453a21b08dd39a330051c2c4dc409f27eba9022479a2a707e0e36ea",
+    "drivers/power/QcomBattery/PMI8998Battery.h": "5b47615b1ea03c0f506af3946289ea98a872ab80687d8a230a605fa6ae53ea20",
+    "drivers/power/QcomBattery/QcomBattery.cpp": "c5607233542fa566c0e9a4bda9c585f251549543c407aefc5c463d5c5c4214b9",
+    "drivers/power/QcomBattery/QcomBattery.h": "eb9295f2d1af1b537102ba9226347924a5f5c19df5acf22005955adca5f21eb1",
+    "tests/battery_runtime_test.cpp": "5017808b52323af0708a5064a5f4eee411d769ae8e29ee60390a8a301dbff7f4",
+    "tests/battery_shim/IOKit/IOLib.h": "4175c671e0c924a487e1046784ec5520c95283b3e3c2677bac4b144f772be7ca",
+    "tests/battery_shim/IOKit/IOTimerEventSource.h": "4175c671e0c924a487e1046784ec5520c95283b3e3c2677bac4b144f772be7ca",
+    "tests/battery_shim/IOKit/pwr_mgt/IOPM.h": "4175c671e0c924a487e1046784ec5520c95283b3e3c2677bac4b144f772be7ca",
+    "tests/battery_shim/IOKit/pwr_mgt/IOPMPowerSource.h": "4175c671e0c924a487e1046784ec5520c95283b3e3c2677bac4b144f772be7ca",
+    "tests/battery_shim/KernelShim.h": "ff843e13d75686b7f12b481c5cc9bdc0a43b59a3639bc3dcf04a894fdbc044e9",
+    "tests/battery_shim/QcomSPMI.h": "4175c671e0c924a487e1046784ec5520c95283b3e3c2677bac4b144f772be7ca",
+    "tests/battery_shim/kern/clock.h": "4175c671e0c924a487e1046784ec5520c95283b3e3c2677bac4b144f772be7ca",
+    "tests/battery_shim/libkern/c++/OSBoolean.h": "4175c671e0c924a487e1046784ec5520c95283b3e3c2677bac4b144f772be7ca",
+    "tests/battery_shim/libkern/c++/OSNumber.h": "4175c671e0c924a487e1046784ec5520c95283b3e3c2677bac4b144f772be7ca",
+    "tests/battery_test.cpp": "95663d36c8db37ca8a99578f0adc939ada7bd5ef6f856c79a1c6ba508e630af2",
+    "tests/test_battery_integration.py": "284b977d94631ea7c9e4df04e649b09d593dbc73b1e33b273aa31193e77944a3",
+    "tools/batteryctl/batteryctl.cpp": "2f17bd60f026f5195a490d4f51930e5ff37b8d694267a4a05761d417c8e1ac9d"
+  },
+  "remaining": [
+    "SPMI hardware access and retained FG readiness",
+    "battery identity/profile and calibration",
+    "iOS 18 powerd discovery and UI consumers",
+    "SRAM capacity/health/cycle-count telemetry",
+    "charger/JEITA/watchdog policy ownership and real suspend"
+  ],
+  "full_graphics_battery_collection_built": false,
+  "original_files_snapshot": "build/battery/source-before"
+}

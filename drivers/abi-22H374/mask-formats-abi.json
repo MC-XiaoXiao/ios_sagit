@@ -1,0 +1,105 @@
+{
+  "schema": 1,
+  "versions": {
+    "gpu": "1.60.0",
+    "metal": "0.52.0",
+    "shader": 36,
+    "jit": 33,
+    "surface_metadata": 2
+  },
+  "native_interfaces": [
+    "MTLPixelFormatR8Unorm",
+    "MTLPixelFormatRG8Unorm",
+    "MTLTextureDescriptor, MTLTexture views, CPU region access and native blit encoder",
+    "MTLRenderPipelineDescriptor, per-target blending/masks, render load clear/store and multisample resolve",
+    "IOSurface native OneComponent8 L008 and TwoComponent8 2C08; native task-authorized IOGPU resources"
+  ],
+  "formats": [
+    {
+      "metal": "R8Unorm",
+      "shader_format": 7,
+      "bytes_per_texel": 1,
+      "a540_texture_format": 3,
+      "a540_color_format": 3,
+      "default_channels": "(r,0,0,1)",
+      "iosurface_fourcc": "L008"
+    },
+    {
+      "metal": "RG8Unorm",
+      "shader_format": 8,
+      "bytes_per_texel": 2,
+      "a540_texture_format": 15,
+      "a540_color_format": 15,
+      "default_channels": "(r,g,0,1)",
+      "iosurface_fourcc": "2C08"
+    }
+  ],
+  "scope": {
+    "color_types": [
+      "2D",
+      "2DArray",
+      "Cube",
+      "CubeArray",
+      "private2DMS and2DMSArray"
+    ],
+    "raster_sample_counts": [
+      1,
+      2,
+      4
+    ],
+    "compute": "read/write/read_write and sample via existing MSL/AIR paths; normal/mip/array/cube and multisample reads",
+    "graphics": "native VS/FS read/query/sample and render color targets; scalar/half native framebuffer inputs and per-primitive snapshots",
+    "cpu_and_blit": "byte-accurate region copies, per-plane pixel size, levels/slices/views and MSAA texture-to-texture byte copies",
+    "mipmaps": "existing GPU sampler/filter/store program uses actual component count and format-dependent mip pitch",
+    "views": "same element size required; existing composed swizzles on reads; no swizzled writes/render targets",
+    "iosurface": "only non-planar, unprotected, untiled, identity element geometry and exact dimensions/pitch;64-byte row/base alignment and native allocation bounds remain; drawable import remainsRGBA/BGRA8"
+  },
+  "storage": {
+    "mip_pitch": "64 pixels times bytes per texel, minify aligned base pitch; sample count scales pitch alignment for MSAA; native texture PITCHALIGN reflects format/sample size",
+    "last_mip_rows": 32,
+    "layer_alignment": 4096,
+    "wire_structures_unchanged": {
+      "texture": 48,
+      "sampler": 28,
+      "program_description": 2424,
+      "jit_image": 41832,
+      "draw": 2816,
+      "dispatch": 824,
+      "surface_private_info": 64
+    },
+    "single_buffer_limit": 16777216
+  },
+  "compute_image_store": "packed8/16-bit texels share a guarded32-bit SSBO word; CAS retry changes only the selected pixel lanes, preserving adjacent concurrent stores and partial-word padding; full RGBA stores keep the existing direct32-bit store path; no CPU pixel fallback",
+  "out_of_bounds_read": "specified components zero, unspecified components retain default0/alpha1, then apply the read swizzle; invalid stores discarded",
+  "render_clear": "repeat the quantized red byte or red/green halfword across the existing GPU fill pattern; raw attachment snapshots preserve stored bits",
+  "native_surface_admission": "private metadata version2; bytesPerElement and native FourCC validated before import; native texture descriptor must retain the imported element size; Apple resource ownership/cache publication/completion unchanged",
+  "evidence": {
+    "native_runtime": "build/drivers/gpu-draw-batches/native-runtime.json",
+    "native_host_runtime_comparison": "build/drivers/gpu-draw-batches/native-code-comparison.json",
+    "native_kernel_pipeline_cases": 30,
+    "pipeline_scope": "three original QuartzCore fragment configurations, three attachment formats,1x/2x/4x; actual kernel PipelineEncoder only",
+    "pixel_semantics": "build/drivers/gpu-mask-formats/pixel-semantics.json",
+    "pixel_cases": 16,
+    "pixel_scope": "CPU llvmpipe executes production generated compute GLSL; actual C++ native layouts and independent byte/color expectations; mipmap/filter quantization error<=1byte; outside texels all owner bytes preserved",
+    "existing_compiler_submit_checks": "build/drivers/gpu-mask-formats/compile-and-submit-checks.log",
+    "target_execution": false
+  },
+  "remaining": [
+    "more native CoreAnimation formats including wider/float color targets",
+    "general raster-order groups/imageblocks and framebuffer snapshot cost",
+    "remaining native pipeline/function SPI and system compositor selection",
+    "native GPU/display shared scanout/fences and iOS/A540 execution"
+  ],
+  "hardware_executed": false,
+  "ios_metal_objects_executed": false,
+  "system_ui_gpu_acceleration_verified": false,
+  "references": [
+    "https://developer.apple.com/documentation/metal/mtlpixelformat/r8unorm",
+    "https://developer.apple.com/documentation/metal/mtlpixelformat/rg8unorm",
+    "https://developer.apple.com/metal/Metal-Shading-Language-Specification.pdf",
+    "tools/sdk/iPhoneOS18.6.sdk/System/Library/Frameworks/CoreVideo.framework/Headers/CVPixelBuffer.h",
+    "https://gitlab.freedesktop.org/mesa/mesa/-/blob/mesa-24.3.4/src/gallium/drivers/freedreno/a5xx/fd5_format.c",
+    "https://gitlab.freedesktop.org/mesa/mesa/-/blob/mesa-24.3.4/src/freedreno/fdl/fd5_layout.c"
+  ],
+  "draw_batches_abi": "drivers/abi-22H374/draw-batches-abi.json"
+}

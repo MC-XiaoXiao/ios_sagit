@@ -1,0 +1,1393 @@
+{
+  "image": "kernelcache.release.ipad7c.macho",
+  "sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+  "provider": "com.apple.driver.ApplePMGR",
+  "coverage": "resolved file-backed pointers, B/BL and arm64 import stubs; excludes dynamic matching and indirect dataflow",
+  "clients": [
+    {
+      "bundle": "com.apple.driver.AppleMobileFileIntegrity",
+      "references": [
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006cf4bc0",
+          "target": "0xfffffff0059dfaa4"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006cf4bc8",
+          "target": "0xfffffff0059ddfe8"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006cf4bd0",
+          "target": "0xfffffff006ce1048"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff005a74bc8",
+          "stub": "0xfffffff005a906a8",
+          "got": "0xfffffff006cf4bc0",
+          "target": "0xfffffff0059dfaa4"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff005a74bd8",
+          "stub": "0xfffffff005a906b4",
+          "got": "0xfffffff006cf4bc8",
+          "target": "0xfffffff0059ddfe8"
+        }
+      ]
+    },
+    {
+      "bundle": "com.apple.driver.AppleT8010SOCTuner",
+      "references": [
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f1e9d0",
+          "target": "0xfffffff0059de030"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f1e9d8",
+          "target": "0xfffffff0059de050"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f1e9e0",
+          "target": "0xfffffff0059ddf58"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f1e9e8",
+          "target": "0xfffffff0059de020"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f1e9f0",
+          "target": "0xfffffff0059de040"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f1e9f8",
+          "target": "0xfffffff0059ddf40"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f1ea00",
+          "target": "0xfffffff0059ddeb0"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f1ea08",
+          "target": "0xfffffff0059de000"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f1ea10",
+          "target": "0xfffffff0059ddf28"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f1ea18",
+          "target": "0xfffffff0059ddec8"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f1ea20",
+          "target": "0xfffffff0059ddf70"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f1ea28",
+          "target": "0xfffffff0059ddfa0"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f1ea30",
+          "target": "0xfffffff0059ddf10"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f1ea38",
+          "target": "0xfffffff0059ddee0"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f1ea40",
+          "target": "0xfffffff0059dde98"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f1ea48",
+          "target": "0xfffffff0059ddef8"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f1ea50",
+          "target": "0xfffffff0059ddf88"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f1ea58",
+          "target": "0xfffffff0059dde74"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f1ea60",
+          "target": "0xfffffff0059dde54"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f1ea68",
+          "target": "0xfffffff0059df180"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f1ea70",
+          "target": "0xfffffff006ce1048"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006655570",
+          "stub": "0xfffffff0066563c8",
+          "got": "0xfffffff006f1ea68",
+          "target": "0xfffffff0059df180"
+        }
+      ]
+    },
+    {
+      "bundle": "com.apple.driver.AppleT8010PMGR",
+      "references": [
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8bd10",
+          "target": "0xfffffff007b8b390"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8bd18",
+          "target": "0xfffffff0059a7e04"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8bd20",
+          "target": "0xfffffff0059ae1f8"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8bd28",
+          "target": "0xfffffff0059c1d6c"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8bd30",
+          "target": "0xfffffff0059a9860"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8bd38",
+          "target": "0xfffffff0059c1448"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8bd40",
+          "target": "0xfffffff0059c15f4"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8bd48",
+          "target": "0xfffffff0059c2800"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8bd50",
+          "target": "0xfffffff0059ae37c"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8bd58",
+          "target": "0xfffffff0059c147c"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8bd60",
+          "target": "0xfffffff0059d5000"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8bd68",
+          "target": "0xfffffff0059a7e50"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8bd70",
+          "target": "0xfffffff0059a9870"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8bd78",
+          "target": "0xfffffff0059a8044"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8bd80",
+          "target": "0xfffffff0059c1520"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8bd88",
+          "target": "0xfffffff0059c1538"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8bd90",
+          "target": "0xfffffff0059bba48"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8bd98",
+          "target": "0xfffffff0059c25fc"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8bda0",
+          "target": "0xfffffff0059c24d0"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8bda8",
+          "target": "0xfffffff0059bb828"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8bdb0",
+          "target": "0xfffffff0059c1d04"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8bdb8",
+          "target": "0xfffffff0059a7040"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8bdc0",
+          "target": "0xfffffff0059a71f4"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8bdd0",
+          "target": "0xfffffff006cd9dd8"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8be28",
+          "target": "0xfffffff007b8b390"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8bfa0",
+          "target": "0xfffffff0059ab6fc"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c0c8",
+          "target": "0xfffffff0059abfb4"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c0d0",
+          "target": "0xfffffff0059abfbc"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c0f0",
+          "target": "0xfffffff0059a7274"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c0f8",
+          "target": "0xfffffff0059a9af0"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c1e8",
+          "target": "0xfffffff0059a9b00"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c338",
+          "target": "0xfffffff0059daba0"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c340",
+          "target": "0xfffffff0059daa18"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c388",
+          "target": "0xfffffff0059c1138"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c390",
+          "target": "0xfffffff0059c1150"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c398",
+          "target": "0xfffffff0059c1168"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c3a0",
+          "target": "0xfffffff0059c1298"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c3a8",
+          "target": "0xfffffff0059d4030"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c3b0",
+          "target": "0xfffffff0059d4034"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c3b8",
+          "target": "0xfffffff0059d411c"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c3c0",
+          "target": "0xfffffff0059d4204"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c3e0",
+          "target": "0xfffffff0059bbad0"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c3e8",
+          "target": "0xfffffff0059bbb3c"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c3f0",
+          "target": "0xfffffff0059bbcd8"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c3f8",
+          "target": "0xfffffff0059bc068"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c410",
+          "target": "0xfffffff0059bfc98"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c418",
+          "target": "0xfffffff0059bff08"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c428",
+          "target": "0xfffffff0059bfedc"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c430",
+          "target": "0xfffffff0059be25c"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c438",
+          "target": "0xfffffff0059be77c"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c440",
+          "target": "0xfffffff0059bfc04"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c460",
+          "target": "0xfffffff0059c017c"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c468",
+          "target": "0xfffffff0059bdd28"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c470",
+          "target": "0xfffffff0059c08dc"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c480",
+          "target": "0xfffffff0059c0e48"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c488",
+          "target": "0xfffffff0059c1070"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c490",
+          "target": "0xfffffff0059c131c"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c498",
+          "target": "0xfffffff0059c14b4"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c4a0",
+          "target": "0xfffffff0059c1554"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c4e8",
+          "target": "0xfffffff0059c0658"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c4f8",
+          "target": "0xfffffff0059c17fc"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c530",
+          "target": "0xfffffff0059c1f74"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c540",
+          "target": "0xfffffff0059c1c90"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c548",
+          "target": "0xfffffff0059c1de0"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c550",
+          "target": "0xfffffff0059c1ec0"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c598",
+          "target": "0xfffffff0059c2470"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c618",
+          "target": "0xfffffff0059d3140"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c620",
+          "target": "0xfffffff0059d30a0"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c630",
+          "target": "0xfffffff0059da568"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c640",
+          "target": "0xfffffff0059c7524"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c648",
+          "target": "0xfffffff0059c756c"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c668",
+          "target": "0xfffffff0059c70fc"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c670",
+          "target": "0xfffffff0059c7108"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c6d8",
+          "target": "0xfffffff0059cda94"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c6e0",
+          "target": "0xfffffff0059da2f8"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c708",
+          "target": "0xfffffff0059ce664"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c710",
+          "target": "0xfffffff0059c6d00"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c718",
+          "target": "0xfffffff0059c6724"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c720",
+          "target": "0xfffffff0059c6bc8"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c728",
+          "target": "0xfffffff0059c6c74"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c7a8",
+          "target": "0xfffffff0059d57a4"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c7b8",
+          "target": "0xfffffff0059d5554"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c878",
+          "target": "0xfffffff0059d2578"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c880",
+          "target": "0xfffffff0059c295c"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c890",
+          "target": "0xfffffff0059c2b24"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c8a0",
+          "target": "0xfffffff0059c31d4"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c8a8",
+          "target": "0xfffffff0059c3208"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c8b0",
+          "target": "0xfffffff0059c3510"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c8b8",
+          "target": "0xfffffff0059c3548"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006f8c8c0",
+          "target": "0xfffffff0059ca048"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a69048",
+          "stub": "0xfffffff006a6ca9c",
+          "got": "0xfffffff006f8bdb8",
+          "target": "0xfffffff0059a7040"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6906c",
+          "stub": "0xfffffff006a6ca9c",
+          "got": "0xfffffff006f8bdb8",
+          "target": "0xfffffff0059a7040"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a690a0",
+          "stub": "0xfffffff006a6caa8",
+          "got": "0xfffffff006f8bdc0",
+          "target": "0xfffffff0059a71f4"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a69150",
+          "stub": "0xfffffff006a6ca9c",
+          "got": "0xfffffff006f8bdb8",
+          "target": "0xfffffff0059a7040"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a691a8",
+          "stub": "0xfffffff006a6ca9c",
+          "got": "0xfffffff006f8bdb8",
+          "target": "0xfffffff0059a7040"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a691f0",
+          "stub": "0xfffffff006a6ca9c",
+          "got": "0xfffffff006f8bdb8",
+          "target": "0xfffffff0059a7040"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6923c",
+          "stub": "0xfffffff006a6c9b8",
+          "got": "0xfffffff006f8bd20",
+          "target": "0xfffffff0059ae1f8"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a69254",
+          "stub": "0xfffffff006a6c9b8",
+          "got": "0xfffffff006f8bd20",
+          "target": "0xfffffff0059ae1f8"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6926c",
+          "stub": "0xfffffff006a6c9b8",
+          "got": "0xfffffff006f8bd20",
+          "target": "0xfffffff0059ae1f8"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a69284",
+          "stub": "0xfffffff006a6c9b8",
+          "got": "0xfffffff006f8bd20",
+          "target": "0xfffffff0059ae1f8"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6929c",
+          "stub": "0xfffffff006a6c9b8",
+          "got": "0xfffffff006f8bd20",
+          "target": "0xfffffff0059ae1f8"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a692b4",
+          "stub": "0xfffffff006a6c9b8",
+          "got": "0xfffffff006f8bd20",
+          "target": "0xfffffff0059ae1f8"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a692cc",
+          "stub": "0xfffffff006a6c9b8",
+          "got": "0xfffffff006f8bd20",
+          "target": "0xfffffff0059ae1f8"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a692e4",
+          "stub": "0xfffffff006a6c9b8",
+          "got": "0xfffffff006f8bd20",
+          "target": "0xfffffff0059ae1f8"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a692fc",
+          "stub": "0xfffffff006a6c9b8",
+          "got": "0xfffffff006f8bd20",
+          "target": "0xfffffff0059ae1f8"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a69340",
+          "stub": "0xfffffff006a6ca00",
+          "got": "0xfffffff006f8bd50",
+          "target": "0xfffffff0059ae37c"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a69354",
+          "stub": "0xfffffff006a6ca00",
+          "got": "0xfffffff006f8bd50",
+          "target": "0xfffffff0059ae37c"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a69374",
+          "stub": "0xfffffff006a6ca00",
+          "got": "0xfffffff006f8bd50",
+          "target": "0xfffffff0059ae37c"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a69388",
+          "stub": "0xfffffff006a6ca00",
+          "got": "0xfffffff006f8bd50",
+          "target": "0xfffffff0059ae37c"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a693f8",
+          "stub": "0xfffffff006a6ca3c",
+          "got": "0xfffffff006f8bd78",
+          "target": "0xfffffff0059a8044"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a69410",
+          "stub": "0xfffffff006a6ca3c",
+          "got": "0xfffffff006f8bd78",
+          "target": "0xfffffff0059a8044"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6947c",
+          "stub": "0xfffffff006a6ca3c",
+          "got": "0xfffffff006f8bd78",
+          "target": "0xfffffff0059a8044"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a694c4",
+          "stub": "0xfffffff006a6ca24",
+          "got": "0xfffffff006f8bd68",
+          "target": "0xfffffff0059a7e50"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a694e4",
+          "stub": "0xfffffff006a6c9ac",
+          "got": "0xfffffff006f8bd18",
+          "target": "0xfffffff0059a7e04"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a69504",
+          "stub": "0xfffffff006a6ca24",
+          "got": "0xfffffff006f8bd68",
+          "target": "0xfffffff0059a7e50"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a69524",
+          "stub": "0xfffffff006a6c9ac",
+          "got": "0xfffffff006f8bd18",
+          "target": "0xfffffff0059a7e04"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a69590",
+          "stub": "0xfffffff006a6ca24",
+          "got": "0xfffffff006f8bd68",
+          "target": "0xfffffff0059a7e50"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a695a8",
+          "stub": "0xfffffff006a6ca78",
+          "got": "0xfffffff006f8bda0",
+          "target": "0xfffffff0059c24d0"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a695e4",
+          "stub": "0xfffffff006a6ca84",
+          "got": "0xfffffff006f8bda8",
+          "target": "0xfffffff0059bb828"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a69610",
+          "stub": "0xfffffff006a6ca3c",
+          "got": "0xfffffff006f8bd78",
+          "target": "0xfffffff0059a8044"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a696a8",
+          "stub": "0xfffffff006a6ca84",
+          "got": "0xfffffff006f8bda8",
+          "target": "0xfffffff0059bb828"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a697e4",
+          "stub": "0xfffffff006a6c9dc",
+          "got": "0xfffffff006f8bd38",
+          "target": "0xfffffff0059c1448"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a697fc",
+          "stub": "0xfffffff006a6ca0c",
+          "got": "0xfffffff006f8bd58",
+          "target": "0xfffffff0059c147c"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a698c8",
+          "stub": "0xfffffff006a6ca3c",
+          "got": "0xfffffff006f8bd78",
+          "target": "0xfffffff0059a8044"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a698ec",
+          "stub": "0xfffffff006a6ca3c",
+          "got": "0xfffffff006f8bd78",
+          "target": "0xfffffff0059a8044"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a69c84",
+          "stub": "0xfffffff006a6ca6c",
+          "got": "0xfffffff006f8bd98",
+          "target": "0xfffffff0059c25fc"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a69eb0",
+          "stub": "0xfffffff006a6ca48",
+          "got": "0xfffffff006f8bd80",
+          "target": "0xfffffff0059c1520"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a69f68",
+          "stub": "0xfffffff006a6c9f4",
+          "got": "0xfffffff006f8bd48",
+          "target": "0xfffffff0059c2800"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a69ff4",
+          "stub": "0xfffffff006a6c9f4",
+          "got": "0xfffffff006f8bd48",
+          "target": "0xfffffff0059c2800"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6a06c",
+          "stub": "0xfffffff006a6c9d0",
+          "got": "0xfffffff006f8bd30",
+          "target": "0xfffffff0059a9860"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6a164",
+          "stub": "0xfffffff006a6ca48",
+          "got": "0xfffffff006f8bd80",
+          "target": "0xfffffff0059c1520"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6a1d4",
+          "stub": "0xfffffff006a6c9dc",
+          "got": "0xfffffff006f8bd38",
+          "target": "0xfffffff0059c1448"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6a1ec",
+          "stub": "0xfffffff006a6ca0c",
+          "got": "0xfffffff006f8bd58",
+          "target": "0xfffffff0059c147c"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6a23c",
+          "stub": "0xfffffff006a6ca0c",
+          "got": "0xfffffff006f8bd58",
+          "target": "0xfffffff0059c147c"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6a26c",
+          "stub": "0xfffffff006a6ca0c",
+          "got": "0xfffffff006f8bd58",
+          "target": "0xfffffff0059c147c"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6a288",
+          "stub": "0xfffffff006a6c9dc",
+          "got": "0xfffffff006f8bd38",
+          "target": "0xfffffff0059c1448"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6a29c",
+          "stub": "0xfffffff006a6c9dc",
+          "got": "0xfffffff006f8bd38",
+          "target": "0xfffffff0059c1448"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6a460",
+          "stub": "0xfffffff006a6ca3c",
+          "got": "0xfffffff006f8bd78",
+          "target": "0xfffffff0059a8044"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6a7e8",
+          "stub": "0xfffffff006a6ca60",
+          "got": "0xfffffff006f8bd90",
+          "target": "0xfffffff0059bba48"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6a804",
+          "stub": "0xfffffff006a6ca60",
+          "got": "0xfffffff006f8bd90",
+          "target": "0xfffffff0059bba48"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6ae70",
+          "stub": "0xfffffff006a6c9dc",
+          "got": "0xfffffff006f8bd38",
+          "target": "0xfffffff0059c1448"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6ae8c",
+          "stub": "0xfffffff006a6ca0c",
+          "got": "0xfffffff006f8bd58",
+          "target": "0xfffffff0059c147c"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6af64",
+          "stub": "0xfffffff006a6c9dc",
+          "got": "0xfffffff006f8bd38",
+          "target": "0xfffffff0059c1448"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6afd0",
+          "stub": "0xfffffff006a6c9dc",
+          "got": "0xfffffff006f8bd38",
+          "target": "0xfffffff0059c1448"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6aff0",
+          "stub": "0xfffffff006a6c9dc",
+          "got": "0xfffffff006f8bd38",
+          "target": "0xfffffff0059c1448"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6b024",
+          "stub": "0xfffffff006a6c9dc",
+          "got": "0xfffffff006f8bd38",
+          "target": "0xfffffff0059c1448"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6b050",
+          "stub": "0xfffffff006a6c9dc",
+          "got": "0xfffffff006f8bd38",
+          "target": "0xfffffff0059c1448"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6b080",
+          "stub": "0xfffffff006a6c9dc",
+          "got": "0xfffffff006f8bd38",
+          "target": "0xfffffff0059c1448"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6b0bc",
+          "stub": "0xfffffff006a6c9dc",
+          "got": "0xfffffff006f8bd38",
+          "target": "0xfffffff0059c1448"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6b0ec",
+          "stub": "0xfffffff006a6c9dc",
+          "got": "0xfffffff006f8bd38",
+          "target": "0xfffffff0059c1448"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6b11c",
+          "stub": "0xfffffff006a6c9dc",
+          "got": "0xfffffff006f8bd38",
+          "target": "0xfffffff0059c1448"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6b14c",
+          "stub": "0xfffffff006a6c9dc",
+          "got": "0xfffffff006f8bd38",
+          "target": "0xfffffff0059c1448"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6b1f8",
+          "stub": "0xfffffff006a6c9dc",
+          "got": "0xfffffff006f8bd38",
+          "target": "0xfffffff0059c1448"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6b20c",
+          "stub": "0xfffffff006a6c9dc",
+          "got": "0xfffffff006f8bd38",
+          "target": "0xfffffff0059c1448"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6b664",
+          "stub": "0xfffffff006a6c9dc",
+          "got": "0xfffffff006f8bd38",
+          "target": "0xfffffff0059c1448"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6b6cc",
+          "stub": "0xfffffff006a6ca0c",
+          "got": "0xfffffff006f8bd58",
+          "target": "0xfffffff0059c147c"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6b6dc",
+          "stub": "0xfffffff006a6c9dc",
+          "got": "0xfffffff006f8bd38",
+          "target": "0xfffffff0059c1448"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6b70c",
+          "stub": "0xfffffff006a6ca0c",
+          "got": "0xfffffff006f8bd58",
+          "target": "0xfffffff0059c147c"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6b71c",
+          "stub": "0xfffffff006a6c9dc",
+          "got": "0xfffffff006f8bd38",
+          "target": "0xfffffff0059c1448"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6b74c",
+          "stub": "0xfffffff006a6ca0c",
+          "got": "0xfffffff006f8bd58",
+          "target": "0xfffffff0059c147c"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6b75c",
+          "stub": "0xfffffff006a6c9dc",
+          "got": "0xfffffff006f8bd38",
+          "target": "0xfffffff0059c1448"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6b79c",
+          "stub": "0xfffffff006a6ca0c",
+          "got": "0xfffffff006f8bd58",
+          "target": "0xfffffff0059c147c"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6b7ac",
+          "stub": "0xfffffff006a6c9dc",
+          "got": "0xfffffff006f8bd38",
+          "target": "0xfffffff0059c1448"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6b800",
+          "stub": "0xfffffff006a6c9f4",
+          "got": "0xfffffff006f8bd48",
+          "target": "0xfffffff0059c2800"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6b820",
+          "stub": "0xfffffff006a6c9f4",
+          "got": "0xfffffff006f8bd48",
+          "target": "0xfffffff0059c2800"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6b840",
+          "stub": "0xfffffff006a6c9f4",
+          "got": "0xfffffff006f8bd48",
+          "target": "0xfffffff0059c2800"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6b894",
+          "stub": "0xfffffff006a6c9f4",
+          "got": "0xfffffff006f8bd48",
+          "target": "0xfffffff0059c2800"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6b8f4",
+          "stub": "0xfffffff006a6c9f4",
+          "got": "0xfffffff006f8bd48",
+          "target": "0xfffffff0059c2800"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6b914",
+          "stub": "0xfffffff006a6c9f4",
+          "got": "0xfffffff006f8bd48",
+          "target": "0xfffffff0059c2800"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6b934",
+          "stub": "0xfffffff006a6c9f4",
+          "got": "0xfffffff006f8bd48",
+          "target": "0xfffffff0059c2800"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6b98c",
+          "stub": "0xfffffff006a6c9f4",
+          "got": "0xfffffff006f8bd48",
+          "target": "0xfffffff0059c2800"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6b9f0",
+          "stub": "0xfffffff006a6c9f4",
+          "got": "0xfffffff006f8bd48",
+          "target": "0xfffffff0059c2800"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6ba2c",
+          "stub": "0xfffffff006a6c9f4",
+          "got": "0xfffffff006f8bd48",
+          "target": "0xfffffff0059c2800"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6ba5c",
+          "stub": "0xfffffff006a6c9f4",
+          "got": "0xfffffff006f8bd48",
+          "target": "0xfffffff0059c2800"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6ba88",
+          "stub": "0xfffffff006a6c9f4",
+          "got": "0xfffffff006f8bd48",
+          "target": "0xfffffff0059c2800"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6baac",
+          "stub": "0xfffffff006a6c9f4",
+          "got": "0xfffffff006f8bd48",
+          "target": "0xfffffff0059c2800"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6badc",
+          "stub": "0xfffffff006a6c9f4",
+          "got": "0xfffffff006f8bd48",
+          "target": "0xfffffff0059c2800"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6bb58",
+          "stub": "0xfffffff006a6c9f4",
+          "got": "0xfffffff006f8bd48",
+          "target": "0xfffffff0059c2800"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6bb94",
+          "stub": "0xfffffff006a6c9f4",
+          "got": "0xfffffff006f8bd48",
+          "target": "0xfffffff0059c2800"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6bbc4",
+          "stub": "0xfffffff006a6c9f4",
+          "got": "0xfffffff006f8bd48",
+          "target": "0xfffffff0059c2800"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6bbf0",
+          "stub": "0xfffffff006a6c9f4",
+          "got": "0xfffffff006f8bd48",
+          "target": "0xfffffff0059c2800"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6bc14",
+          "stub": "0xfffffff006a6c9f4",
+          "got": "0xfffffff006f8bd48",
+          "target": "0xfffffff0059c2800"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6bc44",
+          "stub": "0xfffffff006a6c9f4",
+          "got": "0xfffffff006f8bd48",
+          "target": "0xfffffff0059c2800"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6bd9c",
+          "stub": "0xfffffff006a6ca18",
+          "got": "0xfffffff006f8bd60",
+          "target": "0xfffffff0059d5000"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006a6bdcc",
+          "stub": "0xfffffff006a6ca18",
+          "got": "0xfffffff006f8bd60",
+          "target": "0xfffffff0059d5000"
+        }
+      ]
+    },
+    {
+      "bundle": "com.apple.driver.AppleT8010CLPC",
+      "references": [
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006fe9f68",
+          "target": "0xfffffff0059dde2c"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006fe9f70",
+          "target": "0xfffffff0059de218"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006fe9f78",
+          "target": "0xfffffff0059de0a8"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006fe9f80",
+          "target": "0xfffffff0059de1d4"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006fe9f88",
+          "target": "0xfffffff0059de060"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006fe9f90",
+          "target": "0xfffffff0059de0ec"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006fe9f98",
+          "target": "0xfffffff0059ddce4"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006fe9fa0",
+          "target": "0xfffffff0059ddbfc"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006fe9fa8",
+          "target": "0xfffffff0059ddda8"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006fe9fb0",
+          "target": "0xfffffff0059de084"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006fe9fb8",
+          "target": "0xfffffff0059dde14"
+        },
+        {
+          "kind": "pointer",
+          "address": "0xfffffff006fe9fc0",
+          "target": "0xfffffff006ce1048"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006c336c4",
+          "stub": "0xfffffff006c4df2c",
+          "got": "0xfffffff006fe9fa0",
+          "target": "0xfffffff0059ddbfc"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006c336e8",
+          "stub": "0xfffffff006c4df2c",
+          "got": "0xfffffff006fe9fa0",
+          "target": "0xfffffff0059ddbfc"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006c33864",
+          "stub": "0xfffffff006c4ded8",
+          "got": "0xfffffff006fe9f68",
+          "target": "0xfffffff0059dde2c"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006c33884",
+          "stub": "0xfffffff006c4ded8",
+          "got": "0xfffffff006fe9f68",
+          "target": "0xfffffff0059dde2c"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006c339c4",
+          "stub": "0xfffffff006c4ded8",
+          "got": "0xfffffff006fe9f68",
+          "target": "0xfffffff0059dde2c"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006c339e4",
+          "stub": "0xfffffff006c4ded8",
+          "got": "0xfffffff006fe9f68",
+          "target": "0xfffffff0059dde2c"
+        },
+        {
+          "kind": "import-call",
+          "address": "0xfffffff006c34f30",
+          "stub": "0xfffffff006c4df38",
+          "got": "0xfffffff006fe9fa8",
+          "target": "0xfffffff0059ddda8"
+        }
+      ]
+    }
+  ]
+}

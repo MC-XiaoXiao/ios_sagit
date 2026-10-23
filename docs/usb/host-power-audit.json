@@ -1,0 +1,147 @@
+{
+  "status": "device-selective-pause-and-platform-cold-system-PM-integrated-offline-runtime-unverified",
+  "runtime_source": "drivers/usb/QcomUSB/QcomUSBHost.cpp",
+  "runtime_header": "drivers/usb/QcomUSB/QcomUSBHost.h",
+  "admission_backend": "drivers/usb/QcomUSB/XHCIPower.h",
+  "transfer_backend": "drivers/usb/QcomUSB/XHCITransfers.h",
+  "request_backend": "drivers/usb/QcomUSB/XHCIRequests.h",
+  "tests": [
+    "tests/xhci_power_test.cpp",
+    "tests/usb_host_abi_compile.cpp"
+  ],
+  "native_evidence": {
+    "file": "build/usb/host-power-native-evidence.json",
+    "sha256": "e0f31ff26ab4d284cd8d89974e39fff732f9411126d28c0b6dcc235be2129a69"
+  },
+  "native_interface": {
+    "wrapper_slots": [
+      205,
+      206
+    ],
+    "hardware_slots": [
+      221,
+      222
+    ],
+    "return_type": "IOReturn",
+    "argument": "original IOUSBHostDevice*",
+    "Native_wrapper_checks_device_owner_and_dispatches_under_command_gate": true,
+    "actual_HCD_overrides_compiled_in_probe_vtable": true,
+    "Native_EHCI_is_framework_and_lifecycle_reference_only": true,
+    "EHCI_private_address_ledger_and_register_model_not_reused": true
+  },
+  "device_fence": {
+    "states": [
+      "Running",
+      "Quiescing",
+      "Suspended",
+      "Resuming"
+    ],
+    "new_Native_IO_rejected_while_fenced": true,
+    "new_prepare_and_hardware_publication_prohibited": true,
+    "already_prepared_bounce_waits_without_remapping": true,
+    "already_busy_request_work_is_joined_without_holding_workloop_gate": true,
+    "cleanup_and_Native_completion_remain_available": true,
+    "request_recovery_serialized_with_PM_transition": true,
+    "create_adjust_and_clear_stall_rejected_while_paused": true,
+    "device_lease_and_controller_waiter_fence_joined_on_stop": true,
+    "suspend_failure_rolls_back_previously_paused_queues": true,
+    "resume_failure_isolates_controller": true,
+    "synchronous_sleep_on_HCD_workloop_thread_rejected": true
+  },
+  "ordinary_requests": {
+    "types": [
+      "Control",
+      "Bulk",
+      "Interrupt"
+    ],
+    "running_endpoint_uses_actual_Stop_Endpoint_SP_1": true,
+    "output_context_must_be_Stopped_with_dequeue_inside_own_ring": true,
+    "successful_Stop_with_untrusted_context_isolates_instead_of_reopening": true,
+    "pause_does_not_retire_DMA_or_ring_slots": true,
+    "partial_TRB_short_packet_and_EDTLA_state_retained_in_controller": true,
+    "normal_resume_uses_doorbell_without_Set_Dequeue_or_TRB_rewrite": true,
+    "control_DATA_short_still_waits_for_STATUS": true,
+    "terminating_Event_Data_TRBs_have_CH_clear_and_complete_normally_before_forced_Stop_event": true,
+    "physical_Stopped_events_require_actual_fresh_SP_Stop_record_and_release_no_DMA": true,
+    "Stop_record_may_be_acknowledged_after_actual_validation": true,
+    "durable_Stop_proof_valid_only_during_continuous_queue_pause": true,
+    "paused_cancel_requires_new_actual_successful_Set_Dequeue_with_matching_owner_slot_DCI_DCS_and_current_producer": true,
+    "Stop_proof_cleared_on_resume_doorbell_failure_or_isolation": true,
+    "empty_non_running_endpoint_can_pause_without_claiming_DMA_stop_proof": true,
+    "minimum_endpoint_stop_microseconds": 10000,
+    "Native_and_transfer_deadlines_extended_by_device_fence_duration": true,
+    "deadline_overflow_and_nonmonotonic_clock_rejected": true
+  },
+  "isochronous": {
+    "Native_suspend_policy_aborts_affected_ISO_requests": true,
+    "published_payloads_quarantined_until_actual_SP_Stop_and_Set_Dequeue_or_isolation": true,
+    "unpublished_frames_cancel_without_new_DMA_publication": true,
+    "completed_frames_keep_original_completion": true,
+    "ordered_DMA_cleanup_and_Native_update_then_one_original_completer_handoff": true,
+    "future_ISO_work_requires_verified_Configure_Endpoint_Drop_Add": true,
+    "fresh_context_required_even_if_queue_was_empty_at_pause": true
+  },
+  "clock_and_platform_scope": {
+    "device_selective_queue_pause_implemented": true,
+    "MFINDEX_keeps_running_during_device_queue_pause": true,
+    "port_link_suspend_resume_uses_separate_existing_Native_port_hooks": true,
+    "controller_system_PM_and_frame_clock_reset_resynchronization_complete": false,
+    "platform_PHY_clocks_NOC_mapper_and_source_power_sleep_wake_integrated": true,
+    "cold_system_suspend_policy_implemented": true,
+    "cold_resume_recreates_Native_controller_frame_epoch": true,
+    "retained_controller_context_and_USB_remote_system_wake_implemented": false
+  },
+  "offline_models": [
+    "bulk physical partial Stop preserves owned bounce and ring, then one full ED completion",
+    "control short DATA before or after its ED survives pause; STATUS gates final release",
+    "ordinary completion wins racing Stop; producer-gap and Link FSE release nothing",
+    "paused cancel succeeds with new actual Set Dequeue after old validated Stop record was acknowledged",
+    "stale, pending, wrong-owner, wrong-endpoint and rejected Stop records cannot confirm pause",
+    "wrong-owner and wrong-dequeue recovery records cannot retire DMA",
+    "ISO two published payloads remain quarantined until SP Stop and actual Set Dequeue",
+    "software-only prepared payload cleans without hardware stop proof",
+    "empty pause rejects pending or retained ownership",
+    "minimum 10ms, frozen and extended deadlines, resumed timeout, overflow and monotonic time",
+    "revoked generation and failed resume doorbell pin DMA until real backend isolation",
+    "device fence latest-stop timing, rejected-suspend rollback and boundary arithmetic",
+    "160 pauses reuse and wrap the real command ring without exhausting command records or remapping the owned payload"
+  ],
+  "verification": {
+    "model_test_command": "make test-usb",
+    "model_test_log": "build/usb/tests.log",
+    "sanitizer_command": "make test-usb-sanitize",
+    "sanitizer_log": "build/usb/sanitized.log",
+    "arm64_object": "build/drivers/obj/QcomUSB/QcomUSBHost.cpp.o",
+    "compiler_vtable": "build/tests/kernel/usb/2-usb_host_abi_compile.cpp.vtable.txt",
+    "new_build_or_test_scripts_added": false,
+    "model_test_log_sha256": "13472b3c3992b5f517c419d143c08a897e20d5cf3e7674161afa31f12d05b537",
+    "sanitizer_log_sha256": "d344bb23b828a1702209e574b12854d5d99446576aeba077514f6cc366c3e9ee",
+    "arm64_object_sha256": "5316a1e6a98f921bf6380802605571ee3fe32f97c9b09cce3fee5b07ec3490f9",
+    "compiler_vtable_sha256": "9abdcf2b0aea95edf912c892e5b39bb5d6d453647495d53cccb86134c2c1bf79"
+  },
+  "kernel_runtime_tested": false,
+  "hardware_tested": false,
+  "matching_personality_enabled": false,
+  "remaining": [
+    "Complete Native registration/feature policy, bundled buffers and current/source budgeting.",
+    "Produce authoritative live DMA and board handoff; finish Device extensions and kernelcache closure.",
+    "Retained controller context/remote system wake are outside the implemented cold suspend policy. Native PM callbacks are compiled, not executed in a kernel."
+  ],
+  "hub_runtime_audit": "docs/usb/host-hub-audit.json",
+  "Native_registered_hub_and_routed_TT_slot_hooks_integrated": true,
+  "tt_recovery_audit": "docs/usb/host-tt-recovery-audit.json",
+  "Native_control_bulk_TT_error_recovery_integrated": true,
+  "failed_Address_Device_default_TT_recovery_integrated": true,
+  "controller_lifecycle_audit": "docs/usb/controller-lifecycle-audit.json",
+  "Native_power_scalar_hooks": {
+    "slots": [
+      182,
+      183
+    ],
+    "argument": "unsigned long targetState",
+    "return_type": "IOReturn",
+    "Native_field_stores_serialized_with_IRQ_observer": true,
+    "full_power_vote_while_published": true,
+    "evidence": "build/usb/controller-power-native-evidence.json"
+  }
+}

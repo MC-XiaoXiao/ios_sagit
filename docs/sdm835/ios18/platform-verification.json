@@ -1,0 +1,38 @@
+{
+  "status": "passed",
+  "errors": [],
+  "warnings": [],
+  "sha256": "c2922b33bb2e9a048ceef8d87a718c2eb7d11bc280564169502d8bc2f0457166",
+  "bytes": 21565440,
+  "kext_count": 11,
+  "bundle_ids": [
+    "com.apple.driver.AppleARMPlatform",
+    "com.apple.iokit.IOReportFamily",
+    "com.apple.iokit.IOSlowAdaptiveClockingFamily",
+    "com.apple.iokit.IOStorageFamily",
+    "com.apple.kec.corecrypto",
+    "com.apple.kpi.bsd",
+    "com.apple.kpi.iokit",
+    "com.apple.kpi.libkern",
+    "com.apple.kpi.mach",
+    "com.apple.kpi.private",
+    "com.apple.kpi.unsupported"
+  ],
+  "entry": "0xfffffff00748a488",
+  "checks": [
+    "Mach-O commands",
+    "segments and sections",
+    "file/VM mappings and overlap",
+    "symbol/relocation ranges, indices and relocation sites",
+    "Kext metadata, versions and dependency closure",
+    "Kext segment ownership",
+    "structor/GOT pointers and ARM64 import stubs",
+    "kmod records",
+    "kernel entry",
+    "native kernel segment contents and non-prelink commands preserved",
+    "source SHA256 constant tables preserved: 2"
+  ],
+  "source_sha256": "aa65c36c486a8b5cb1d7a2d565d1d6b3cc228b3c172f8c69c5da664ee19832cf",
+  "local_kernel_sha256": "c462c7500517120b6727d410c68277112be33899bb4b52f8f71d23d351aad226",
+  "scope": "offline structure and listed invariants; runtime/private ABI/crypto POST are not certified"
+}

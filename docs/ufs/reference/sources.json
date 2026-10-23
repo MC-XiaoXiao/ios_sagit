@@ -1,0 +1,46 @@
+{
+  "ufshci.h": {
+    "url": "https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux/+/v6.12/include/ufs/ufshci.h?format=TEXT",
+    "sha256": "86962bca355e518b2c7c810e7fab375964eb56110f16d37e244e269483d2d4e1"
+  },
+  "ufs.h": {
+    "url": "https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux/+/v6.12/include/ufs/ufs.h?format=TEXT",
+    "sha256": "203f22e70db6a9aa55ba5f08d716ca4809e8ba918fff0976ab5bc90f31c5cc97"
+  },
+  "unipro.h": {
+    "url": "https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux/+/v6.12/include/ufs/unipro.h?format=TEXT",
+    "sha256": "c116f99d2810f8499858659bbb8bb07df0815bf8b61663a60088df94b9d29504"
+  },
+  "ufs-qcom.c": {
+    "url": "https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux/+/v6.12/drivers/ufs/host/ufs-qcom.c?format=TEXT",
+    "sha256": "346ed6bbcef691a35a2689eefdd3a31c00af535e92ac4ec57001cb48687a8841"
+  },
+  "ufs-qcom.h": {
+    "url": "https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux/+/v6.12/drivers/ufs/host/ufs-qcom.h?format=TEXT",
+    "sha256": "f8efabc8179d50af6c62bae51676f848686dc1fccb3fd7477335ff5fb6022d8f"
+  },
+  "phy-qcom-qmp-ufs.c": {
+    "url": "https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux/+/v6.12/drivers/phy/qualcomm/phy-qcom-qmp-ufs.c?format=TEXT",
+    "sha256": "88e8d5ca94f14948cc25d9820773e6b7bf4c9b39bbe9be6578f287ab1b330ea8"
+  },
+  "phy-qcom-qmp-qserdes-com-v3.h": {
+    "url": "https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux/+/v6.12/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v3.h?format=TEXT",
+    "sha256": "1375cba01d3124f36514877a40e247028d28312d650f7dc4d490866fd740cf46"
+  },
+  "phy-qcom-qmp-qserdes-txrx-v3.h": {
+    "url": "https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux/+/v6.12/drivers/phy/qualcomm/phy-qcom-qmp-qserdes-txrx-v3.h?format=TEXT",
+    "sha256": "62da2ec2e394ec3ef70d33280f44814dc3d55e900ab2620c4c4e35f276320688"
+  },
+  "phy-qcom-qmp-pcs-ufs-v3.h": {
+    "url": "https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux/+/v6.12/drivers/phy/qualcomm/phy-qcom-qmp-pcs-ufs-v3.h?format=TEXT",
+    "sha256": "af2676e8a79ba1c469153c0fe9a2bbf3a66d19748fcb623ba9784a03c87a7348"
+  },
+  "ufshcd.c": {
+    "url": "https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux/+/v6.12/drivers/ufs/core/ufshcd.c?format=TEXT",
+    "sha256": "2227c918113dbca6f99a37f5e6b7c2eff7baf8bdf0d20a9dd1d9c9042e0a97cd"
+  },
+  "ufs_quirks.h": {
+    "url": "https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux/+/v6.12/include/ufs/ufs_quirks.h?format=TEXT",
+    "sha256": "e14b98aca341a07a04e725c9c2980dfdf916a8ff4fc0158367b89de1610e7e55"
+  }
+}

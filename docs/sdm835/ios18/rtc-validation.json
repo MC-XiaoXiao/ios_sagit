@@ -1,0 +1,216 @@
+{
+  "date": "2026-10-15T03:52:26.522481-07:00",
+  "status": "rtc-wait-fixed-hardware-validated",
+  "root_causes": [
+    "No IORTC provider; platform calendar callbacks returned zero.",
+    "Apple arm-io compatible needed to match SDM835IO was missing.",
+    "Short SPMI polling used IODelay, which can block during early startup; counter-bounded busy waits allow the real PMIC read to complete."
+  ],
+  "implementation": {
+    "device_tree": "/arm-io -> native AppleARMIODevice SPMI controller -> QcomPMICRTC : IORTC",
+    "route": {
+      "sid": 0,
+      "base": "0x6000",
+      "control": "0x6046",
+      "seconds": "0x6048"
+    },
+    "read_only_pmic": true,
+    "boot_sample_before_controller_publication": true,
+    "calendar_source": "PM8998 raw seconds plus XNU uptime elapsed from boot sample",
+    "corrections": "RAM only",
+    "vendor_utc_offset_imported": false,
+    "utc_calibrated": false,
+    "persistent_set_supported": false,
+    "wake_alarm_supported": false,
+    "publish_only_after_successful_read": true,
+    "xnu_wait_seconds_unchanged": 30,
+    "startup_order_changed": false
+  },
+  "apple_dt_reference": "docs/sdm835/ios18/rtc-apple-arm-io-reference.json",
+  "reference_sources": "docs/sdm835/ios18/rtc-reference-sources.json",
+  "kernelcache": {
+    "path": "build/rtc-diagnosis/kernelcache.rtc-validated",
+    "published_path_at_test": "build/output/kernelcache.sdm835.platform",
+    "sha256": "7eb124e7a1e7d19b67275dd7221cde7e2551fb8e34743ce482c17dc4e5ed6403",
+    "bytes": 25362432,
+    "kext_count": 27,
+    "local_kernel_sha256": "aebc0007df19f384e2a9ffdc6714c3a9b63cb52d2b4d3fd17c834943b1657a80",
+    "integrity": {
+      "modules": [
+        {
+          "bundle": "com.apple.kec.corecrypto",
+          "algorithm": "HMAC-SHA256",
+          "hashed_bytes": 335056,
+          "hmac_offset": 20587968,
+          "hmac": "7ee1bc17cb3129789b1f28185fd32678dd44230b93815fc9798f6244f5d77e5d"
+        }
+      ]
+    },
+    "verification": "docs/sdm835/ios18/rtc-kernelcache-verification.json"
+  },
+  "bridge": {
+    "path": "build/rtc-diagnosis/bridge-final/XnuBridge.efi",
+    "sha256": "0397dc8cc800ec90a518831185ea01ee8c8ffde535e26d7398f89c206bf57869",
+    "default_dual_console": true
+  },
+  "checks": {
+    "native_kernel_build": "passed",
+    "local_kext_verification": "7 passed",
+    "collection_verifier": "passed",
+    "patcher_ctest": 5,
+    "kernelcache_python_tests": 23,
+    "bridge_python_tests": 15,
+    "platform_tests": [
+      "arm-platform-config",
+      "gicv3",
+      "gcc",
+      "rtc"
+    ],
+    "rtc_test_coverage": [
+      "observer reads only",
+      "disabled/error rejection",
+      "bounded rollover retry",
+      "calendar carry/overflow",
+      "invalid correction rejected"
+    ],
+    "unrelated_suite_note": "An intermediate broad driver test failed during concurrent GPU API edits. Final platform tests explicitly select included hardware modules; GPU source was not changed."
+  },
+  "hardware_cases": [
+    {
+      "name": "hardware-poll",
+      "log": "build/rtc-diagnosis/hardware-poll/uart.txt",
+      "report": "build/rtc-diagnosis/hardware-poll/report.json",
+      "payload_sha256": "0ee708846df817bd0a773cfa4fc1da4761b5f91f457bd86c498fb95b5d3f66d4",
+      "kernelcache_sha256": "7eb124e7a1e7d19b67275dd7221cde7e2551fb8e34743ce482c17dc4e5ed6403",
+      "checks": {
+        "GenericARMIO: starting Apple arm-io bus": true,
+        "QcomSPMI: starting power-controller@800f000": true,
+        "QcomSPMI: arbiter ready": true,
+        "QcomPMICRTC: IORTC ready": true,
+        "[XNU RTC] IORTC ready": true,
+        "[XNU RTC] calendar initialized": true,
+        "mbinit: done": true,
+        "pthread kernel extension not loaded": true,
+        "no_rtc_timeout": true,
+        "native_panic_complete": true
+      },
+      "raw_pmic_seconds": 94607,
+      "observed_rtc_wait_seconds": 0.267,
+      "requested_watchdog_seconds": 31,
+      "watchdog_marker_detected": true,
+      "native_backtrace_frames": 12,
+      "evidence": [
+        {
+          "line": 149,
+          "text": "[XNU RTC] waiting for IORTC"
+        },
+        {
+          "line": 180,
+          "text": "QcomSPMI: PM8998 RTC boot seconds=94607"
+        },
+        {
+          "line": 193,
+          "text": "QcomPMICRTC: IORTC ready, raw PMIC seconds=94607 (vendor UTC offset not imported)"
+        },
+        {
+          "line": 194,
+          "text": "[XNU RTC] IORTC ready"
+        },
+        {
+          "line": 195,
+          "text": "[XNU RTC] calendar initialized"
+        },
+        {
+          "line": 197,
+          "text": "mbinit: done [64 MB total pool size, (64/0) split]"
+        },
+        {
+          "line": 198,
+          "text": "panic(cpu 0 caller 0xfffffff007777478): pthread kernel extension not loaded (function table is NULL). @pthread_shims.c:318"
+        },
+        {
+          "line": 256,
+          "text": "** Stackshot Succeeded ** Bytes Traced 5099 (Uncompressed 14992) **"
+        },
+        {
+          "line": 258,
+          "text": "panic(cpu 0 caller 0xfffffff007777478): pthread kernel extension not loaded (function table is NULL). @pthread_shims.c:318"
+        }
+      ],
+      "device_recovery_confirmed": true
+    },
+    {
+      "name": "hardware-final",
+      "log": "build/rtc-diagnosis/hardware-final/uart.txt",
+      "report": "build/rtc-diagnosis/hardware-final/report.json",
+      "payload_sha256": "0397dc8cc800ec90a518831185ea01ee8c8ffde535e26d7398f89c206bf57869",
+      "kernelcache_sha256": "7eb124e7a1e7d19b67275dd7221cde7e2551fb8e34743ce482c17dc4e5ed6403",
+      "checks": {
+        "GenericARMIO: starting Apple arm-io bus": true,
+        "QcomSPMI: starting power-controller@800f000": true,
+        "QcomSPMI: arbiter ready": true,
+        "QcomPMICRTC: IORTC ready": true,
+        "[XNU RTC] IORTC ready": true,
+        "[XNU RTC] calendar initialized": true,
+        "mbinit: done": true,
+        "pthread kernel extension not loaded": true,
+        "no_rtc_timeout": true,
+        "native_panic_complete": true
+      },
+      "raw_pmic_seconds": 94722,
+      "observed_rtc_wait_seconds": 0.823,
+      "requested_watchdog_seconds": 31,
+      "watchdog_marker_detected": false,
+      "native_backtrace_frames": 12,
+      "evidence": [
+        {
+          "line": 150,
+          "text": "[XNU RTC] waiting for IORTC"
+        },
+        {
+          "line": 181,
+          "text": "QcomSPMI: PM8998 RTC boot seconds=94722"
+        },
+        {
+          "line": 194,
+          "text": "QcomPMICRTC: IORTC ready, raw PMIC seconds=94722 (vendor UTC offset not imported)"
+        },
+        {
+          "line": 195,
+          "text": "[XNU RTC] IORTC ready"
+        },
+        {
+          "line": 196,
+          "text": "[XNU RTC] calendar initialized"
+        },
+        {
+          "line": 198,
+          "text": "mbinit: done [64 MB total pool size, (64/0) split]"
+        },
+        {
+          "line": 199,
+          "text": "panic(cpu 0 caller 0xfffffff007777478): pthread kernel extension not loaded (function table is NULL). @pthread_shims.c:318"
+        },
+        {
+          "line": 257,
+          "text": "** Stackshot Succeeded ** Bytes Traced 5073 (Uncompressed 14992) **"
+        },
+        {
+          "line": 259,
+          "text": "panic(cpu 0 caller 0xfffffff007777478): pthread kernel extension not loaded (function table is NULL). @pthread_shims.c:318"
+        }
+      ],
+      "device_recovery_confirmed": true,
+      "recovery_probe": "build/rtc-diagnosis/final-fastboot-probe.log",
+      "recovery_note": "Firmware reboot captured; UART missed the Fastboot-entry marker, but separate Fastboot getvar product succeeded."
+    }
+  ],
+  "rtc_wait_resolved": true,
+  "calendar_initialization_passed": true,
+  "full_boot_completed": false,
+  "security_checks_bypassed": false,
+  "partitions_written": false,
+  "current_blocker": "Waiting for an IOMedia root device with Content=Apple_HFS. RTC/calendar, pthread and network/lo0 initialization passed. No panic observed in the final test. No mountable root filesystem has been handed off; full userspace boot is not complete.",
+  "pthread_followup": "docs/sdm835/ios18/pthread-validation.json",
+  "pthread_panic_resolved": true
+}

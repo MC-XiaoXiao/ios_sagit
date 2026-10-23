@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleIdentifier</key>
+	<string>org.darwin.driver.QcomInterconnect</string>
+	<key>CFBundleExecutable</key>
+	<string>QcomInterconnect</string>
+	<key>CFBundleName</key>
+	<string>QcomInterconnect</string>
+	<key>CFBundleVersion</key>
+	<string>1.0.0</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0.0</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundlePackageType</key>
+	<string>KEXT</string>
+	<key>CFBundleSupportedPlatforms</key>
+	<array>
+		<string>iPhoneOS</string>
+	</array>
+	<key>OSBundleCompatibleVersion</key>
+	<string>1.0.0</string>
+	<key>OSBundleRequired</key>
+	<string>Root</string>
+	<key>OSBundleLibraries</key>
+	<dict>
+		<key>com.apple.kpi.iokit</key>
+		<string>8.0.0</string>
+		<key>com.apple.kpi.libkern</key>
+		<string>8.0.0</string>
+		<key>com.apple.kpi.mach</key>
+		<string>8.0.0</string>
+		<key>com.apple.kpi.unsupported</key>
+		<string>8.0.0</string>
+		<key>com.apple.kpi.private</key>
+		<string>22.0</string>
+		<key>com.apple.driver.AppleARMPlatform</key>
+		<string>1.0.2</string>
+		<key>org.darwin.driver.QcomGCC</key>
+		<string>1.0.0</string>
+		<key>org.darwin.driver.QcomRPM</key>
+		<string>1.0.0</string>
+	</dict>
+	<key>IOKitPersonalities</key>
+	<dict>
+		<key>QcomInterconnect</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>org.darwin.driver.QcomInterconnect</string>
+			<key>IOClass</key>
+			<string>QcomInterconnect</string>
+			<key>IOProviderClass</key>
+			<string>AppleARMIODevice</string>
+			<key>IONameMatch</key>
+			<string>qcom,msm8998-a1noc</string>
+			<key>IOProbeScore</key>
+			<integer>1000</integer>
+		</dict>
+	</dict>
+</dict>
+</plist>

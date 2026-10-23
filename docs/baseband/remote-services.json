@@ -1,0 +1,139 @@
+{
+  "schema": 1,
+  "source": "firmware/sagit-baseband/modem.mbn",
+  "source_kind": "community extraction; original Xiaomi package identity not established",
+  "bytes": 56381664,
+  "sha256": "380248bc2f3068064b40697aef5b6b8376a547c0991cb6d49d084fae4f516eb1",
+  "read_only": true,
+  "references": {
+    "qcom_sysmon.c": {
+      "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/remoteproc/qcom_sysmon.c",
+      "ref": "v6.12",
+      "sha256": "ac9134027510ad57eb9159ad88d589a830939f6ce974bc9c17e9bbf7844ed9d6",
+      "bytes": 20014,
+      "purpose": "Remoteproc sysmon/SSR and cross-edge lifecycle reference; not linked into the driver",
+      "license": "See source SPDX and retained notices"
+    },
+    "qcom_glink_ssr.c": {
+      "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/rpmsg/qcom_glink_ssr.c",
+      "ref": "v6.12",
+      "sha256": "8d9357ede12cd460ae93cd77c0c18ded01cc776279d865a4e47f4892384360e7",
+      "bytes": 4204,
+      "purpose": "Remoteproc sysmon/SSR and cross-edge lifecycle reference; not linked into the driver",
+      "license": "See source SPDX and retained notices"
+    },
+    "qcom_q6v5_mss.c": {
+      "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/remoteproc/qcom_q6v5_mss.c",
+      "ref": "v6.12",
+      "sha256": "d76df78ae58de5784f7850a4c006a3a3220532e52064d8db88c91a1ed075d2df",
+      "purpose": "Protocol and register reference; not linked into the driver",
+      "license": "GPL-2.0; see source SPDX and retained notices"
+    },
+    "qcom_q6v5_pas.c": {
+      "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/remoteproc/qcom_q6v5_pas.c",
+      "ref": "v6.12",
+      "sha256": "3043e72a0265d84dc6d1e5b8c6537e2ebfafea824698b61f6e3ce15cc0d14772",
+      "bytes": 36680,
+      "license": "GPL-2.0-only; see source SPDX",
+      "purpose": "MSM8998 peer subsystem sysmon/GLINK edge names; not compiled into driver"
+    },
+    "qcom_common.c": {
+      "url": "https://raw.githubusercontent.com/torvalds/linux/v6.12/drivers/remoteproc/qcom_common.c",
+      "ref": "v6.12",
+      "sha256": "476eca693cfa80cd1f5acd09e27db67dea001851f136911ff2fa0f9a406a09f9",
+      "bytes": 16349,
+      "purpose": "Remoteproc sysmon/SSR and cross-edge lifecycle reference; not linked into the driver",
+      "license": "See source SPDX and retained notices"
+    }
+  },
+  "msm8998_peer_descriptors": {
+    "ADSP": {
+      "ssr_name": "lpass",
+      "sysmon_name": "adsp",
+      "ssctl_instance": 20,
+      "compatible": "qcom,msm8998-adsp-pas",
+      "descriptor": "msm8996_adsp_resource"
+    },
+    "SLPI": {
+      "ssr_name": "dsps",
+      "sysmon_name": "slpi",
+      "ssctl_instance": 22,
+      "compatible": "qcom,msm8998-slpi-pas",
+      "descriptor": "msm8996_slpi_resource_init"
+    }
+  },
+  "literal_observations": [
+    {
+      "literal": "IPCRTR",
+      "includes_trailing_nul": true,
+      "file_offsets": [
+        35521057
+      ]
+    },
+    {
+      "literal": "sys_mon",
+      "includes_trailing_nul": true,
+      "file_offsets": []
+    },
+    {
+      "literal": "glink_ssr",
+      "includes_trailing_nul": true,
+      "file_offsets": [
+        35447961,
+        35520392
+      ]
+    },
+    {
+      "literal": "ssr:shutdown",
+      "includes_trailing_nul": true,
+      "file_offsets": [
+        35496713,
+        56193653
+      ]
+    },
+    {
+      "literal": "ssr:ack",
+      "includes_trailing_nul": true,
+      "file_offsets": [
+        35496726,
+        56193666
+      ]
+    },
+    {
+      "literal": "lpass",
+      "includes_trailing_nul": true,
+      "file_offsets": [
+        35512676
+      ]
+    },
+    {
+      "literal": "dsps",
+      "includes_trailing_nul": true,
+      "file_offsets": [
+        35512682
+      ]
+    },
+    {
+      "literal": "wcnss",
+      "includes_trailing_nul": true,
+      "file_offsets": [
+        35512687
+      ]
+    }
+  ],
+  "ssctl_reference": {
+    "service": 43,
+    "modem_instance": 18,
+    "preferred_version": 2,
+    "fallback_version": 1,
+    "fallback_instance": 0,
+    "shutdown_request": 33,
+    "shutdown_ready_indication": 33,
+    "subsystem_event": 35
+  },
+  "scope": "Static literal locations and pinned Linux source bindings; no disassembly-based protocol proof or device trace.",
+  "runtime_channel_names_proven": false,
+  "runtime_qmi_version_proven": false,
+  "foreign_stop_events_connected": false,
+  "hardware_tested": false
+}
