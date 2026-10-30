@@ -25,6 +25,11 @@ struct AIRCompileInfo {
     uint64_t lowerNS=0,backendNS=0;
     std::string nirDiagnostic;
 };
+struct AIRVisibleFunction { std::string name;std::vector<uint8_t> air; };
+bool inspectAIRLinkage(const void *,size_t,const std::string &,unsigned &,bool &,std::string &);
+bool specializeVisibleAIR(const void *,size_t,const std::string &,const std::vector<FunctionConstantValue> &,std::vector<uint8_t> &,std::string &);
+bool linkVisibleAIR(const void *,size_t,const std::string &,const std::vector<AIRVisibleFunction> &,
+    const std::vector<FunctionConstantValue> &,std::vector<uint8_t> &,std::string &);
 // Selected functions and whole AIR libraries try the direct frontend first. Every unsuccessful
 // attempt is discarded before the existing GLSL compiler is invoked.
 // Both routes use the same compiler mutex as compile().

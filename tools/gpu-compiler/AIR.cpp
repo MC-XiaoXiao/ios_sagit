@@ -4,6 +4,7 @@
 // implementation.
 #include <array>
 #include "Semantic.h"
+#include "AIRSIMD.h"
 #include "AIRControlFlow.h"
 #include "LibraryArchive.h"
 #include "AIRSpecialization.h"
@@ -142,7 +143,7 @@ class Lower {
   std::map<const Value *,GPU::Compiler::AIRTextureBinding> imageBindings;
   std::map<const Value *,unsigned> samplerBindings;std::set<unsigned> samplePairs;
   std::vector<QGPUConstantSampler> constantSamplers;
-  bool imageIncluded=false,samplerIncluded=false,usesDiscard=false;
+  bool imageIncluded=false,samplerIncluded=false,usesDiscard=false,usesSIMD=false;
   bool usesHalf=false;std::set<unsigned> halfBuffers;
   std::set<unsigned> graphicsHeaders,cubeHeaders,fetchSlots;
   unsigned sharedSerial=0,sharedBytes=0;
@@ -527,6 +528,24 @@ class Lower {
       // Keep earlier SSBO writes observable before helper-lane suppression.
       usesDiscard=true;body+="memoryBarrierBuffer(); demote;\n";return;
     }
+    GPU::Compiler::AIRSIMD simd;
+    if(GPU::Compiler::airSIMD(name.str(),simd)) {
+      if(!GPU::Compiler::validAIRSIMD(wrap(&i),simd,stage))fail("invalid SIMD signature/stage");
+      std::vector<std::string> arguments;for(auto &a:i.args())arguments.push_back(expr(a.get()));
+      auto expression=GPU::Compiler::airSIMDExpression(simd,arguments);
+      if(expression.empty())fail("SIMD operation requires the NIR frontend");
+      usesSIMD=true;assign(i,expression);return;
+    }
+    if(name=="air.simdgroup.barrier") {
+      if(stage || i.arg_size()!=2 || !i.getType()->isVoidTy() ||
+          !i.getArgOperand(0)->getType()->isIntegerTy(32) || !i.getArgOperand(1)->getType()->isIntegerTy(32))fail("invalid SIMD barrier signature");
+      auto *flagValue=dyn_cast<ConstantInt>(i.getArgOperand(0)),*scopeValue=dyn_cast<ConstantInt>(i.getArgOperand(1));
+      if(!flagValue || !scopeValue)fail("SIMD barrier flags/scope must be constant");
+      auto flags=flagValue->getZExtValue(),scope=scopeValue->getZExtValue();
+      if(flags>7 || (scope!=1 && scope!=2 && scope!=4))fail("invalid SIMD barrier flags/scope");
+      usesSIMD=true;if(flags&5)body+="memoryBarrierBuffer();\n";if(flags&2)body+="memoryBarrierShared();\n";
+      body+="subgroupBarrier();\n";return;
+    }
     GPU::Compiler::AIRAtomic operation;
     if (GPU::Compiler::airAtomic(name.str(),operation)) {
       unsigned count=operation.op=="cas"?7:operation.op=="load"?4:5;
@@ -610,7 +629,7 @@ class Lower {
       unsigned access=binding.access==4?0:binding.access;
       if(!immediate(t.access,32,access))fail("texture access operand disagrees with metadata");
       if(read || write) {
-        if(arg(t.coord)->getType()!=FixedVectorType::get(i32,2) || !isInt(t.lod,32) ||
+        if(arg(t.coord)->getType()!=FixedVectorType::get(IntegerType::get(f.getContext(),t.indexBits),2) || !isInt(t.lod,t.indexBits) ||
             (write?(stage || !(binding.access&2)):(binding.access!=4 && !(binding.access&1))))fail("unsupported texture coordinates/access/stage");
         if(t.currentRead && get(arg(1)).kind!=AIRValue::ReadSampler)fail("read requires air.get_read_sampler");
         if(read && (stage || binding.access==4) && fetchSlots.insert(binding.slot).second)
@@ -618,10 +637,10 @@ class Lower {
               binding.shape&2?GPU::Compiler::cubeImageFunctions(binding.slot,1,binding.shape&1):GPU::Compiler::imageFunctions(binding.slot,1,binding.shape&1);
         auto call=GPU::Compiler::airTextureFunction(binding,stage)+(read?"_read(":"_write(");
         if(write) {auto *valueType=arg(t.value)->getType();if(!texelTypeMatches(valueType) || !i.getType()->isVoidTy())fail("texture write requires matching float4/half4/uint4 and void");call+=(t.half?"vec4("+expr(arg(t.value))+")":expr(arg(t.value)))+",";}
-        call+="uvec2("+expr(arg(t.coord))+"),";
+        call+="uvec2("+GPU::Compiler::airIntegerMask(expr(arg(t.coord)),t.indexBits,2)+"),";
         if(t.face!=UINT32_MAX)call+=expr(arg(t.face))+",";
         if(t.layer!=UINT32_MAX)call+=expr(arg(t.layer))+",";
-        call+=expr(arg(t.lod))+")";
+        call+=GPU::Compiler::airIntegerMask(expr(arg(t.lod)),t.indexBits,1)+")";
         if(write)body+=call+";\n";else result(call);return;
       }
       bool gradient=t.op==TextureCall::Gradient,cube=binding.shape&2;
@@ -644,6 +663,12 @@ class Lower {
           t.layer==UINT32_MAX?"":expr(arg(t.layer)),gradient?"":stage!=2 && !level?"0.0":expr(arg(t.lod)),
           gradient?expr(arg(t.dx)):"",gradient?expr(arg(t.dy)):"",literal,offset));return;
     }
+    if(name=="air.unpack.unorm4x8.v4f16" || name=="air.unpack.unorm4x8.v4f32") {
+      bool useHalf=name=="air.unpack.unorm4x8.v4f16";
+      if(i.arg_size()!=1 || !i.getArgOperand(0)->getType()->isIntegerTy(32) || !floating(i.getType()) ||
+          half(i.getType())!=useHalf || lanes(i.getType())!=4)fail("invalid unorm4x8 unpack signature");
+      assign(i,GPU::Compiler::airFloatType(useHalf,4)+"(unpackUnorm4x8("+expr(i.getArgOperand(0))+"))");return;
+    }
     if(name=="air.pack.unorm4x8.v4f16" || name=="air.pack.unorm4x8.v4f32") {
       bool useHalf=name.ends_with("v4f16");
       if(i.arg_size()!=1 || !i.getType()->isIntegerTy(32) || !floating(i.getArgOperand(0)->getType()) ||
@@ -661,25 +686,27 @@ class Lower {
       if (!((bits[2] == "f" || bits[2] == "s" || bits[2] == "u") &&
             (bits[4] == "f" || bits[4] == "s" || bits[4] == "u")))
         fail("unsupported AIR conversion signedness");
-      auto *inputConstant=dyn_cast<ConstantInt>(i.getArgOperand(0));
-      bool narrow=inputConstant && (inputConstant->getBitWidth()==8 || inputConstant->getBitWidth()==16);
-      auto spelling = [](Type *t, bool isFloat,bool allowNarrow) {
-        if (isFloat ? !floating(t) : !(scalar(t)->isIntegerTy(32) || scalar(t)->isIntegerTy(1) || allowNarrow))
+      auto spelling = [](Type *t, bool isFloat) {
+        if (isFloat ? !floating(t) : !(scalar(t)->isIntegerTy(32) || scalar(t)->isIntegerTy(16) || scalar(t)->isIntegerTy(8) || scalar(t)->isIntegerTy(1)))
           fail("AIR conversion type disagrees with its intrinsic name");
         return isFloat?GPU::Compiler::airFloatSuffix(half(t),lanes(t)):(lanes(t) == 1 ? std::string()
                               : "v" + std::to_string(lanes(t))) +
                "i"+std::to_string(scalar(t)->getIntegerBitWidth());
       };
-      if (bits[3] != spelling(i.getType(), bits[2] == "f",false) ||
-          bits[5] != spelling(i.getArgOperand(0)->getType(), bits[4] == "f",narrow))
+      if (bits[3] != spelling(i.getType(), bits[2] == "f") ||
+          bits[5] != spelling(i.getArgOperand(0)->getType(), bits[4] == "f"))
         fail("AIR conversion mangling disagrees with its types");
       std::string value = expr(i.getArgOperand(0));
-      if (signIn)
-        value = narrow?std::to_string(inputConstant->getSExtValue()):type(i.getArgOperand(0)->getType(), true) + "(" + value + ")";
+      if (bits[4] != "f") {
+        auto width=scalar(i.getArgOperand(0)->getType())->getIntegerBitWidth();
+        value=signIn?GPU::Compiler::airSignedInteger(value,width,lanes(i.getType())):
+            GPU::Compiler::airIntegerMask(value,width,lanes(i.getType()));
+      }
       std::string target = type(i.getType(), signOut);
       std::string out = target + "(" + value + ")";
       if (signOut)
         out = type(i.getType()) + "(" + out + ")";
+      if (bits[2] != "f")out=GPU::Compiler::airIntegerMask(out,scalar(i.getType())->getIntegerBitWidth(),lanes(i.getType()));
       assign(i, out);
       return;
     }
@@ -689,6 +716,17 @@ class Lower {
       auto output=memory(i.getArgOperand(1),i.getType(),true);
       body+=output.first+" = cos("+expr(i.getArgOperand(0))+");\n";
       assign(i,"sin("+expr(i.getArgOperand(0))+")");return;
+    }
+    std::string integerMath;
+    auto integerCount=GPU::Compiler::airIntegerMath(name.str(),lanes(i.getType()),integerMath);
+    if(integerCount) {
+      if(i.arg_size()!=integerCount || !scalar(i.getType())->isIntegerTy(32))fail("invalid integer math signature");
+      std::vector<std::string> args;
+      for(auto &argument:i.args()) {
+        if(argument->getType()!=i.getType())fail("integer math types disagree");
+        args.push_back(expr(argument));
+      }
+      assign(i,GPU::Compiler::airIntegerMathExpression(integerMath,args,lanes(i.getType())));return;
     }
     std::string extraMath;
     auto extraCount=GPU::Compiler::airExtraMath(name.str(),GPU::Compiler::airFloatSuffix(half(i.getType()),lanes(i.getType())),extraMath);
@@ -1158,8 +1196,8 @@ public:
     i32 = Type::getInt32Ty(f.getContext());
   }
   json::Object run(MDNode *entry) {
-    if (f.isDeclaration() || f.size()>128 || f.getInstructionCount()>4096)
-      fail("entry must have at most 128 blocks and 4096 instructions (inline helper functions before AIR import)");
+    if (f.isDeclaration() || f.size()>512 || f.getInstructionCount()>8192)
+      fail("entry must have at most 512 blocks and 8192 instructions (inline helper functions before AIR import)");
     usesHalf=containsHalf(f.getReturnType());
     for(const auto &arg:f.args())usesHalf|=containsHalf(arg.getType());
     for(const auto &block:f)for(const auto &i:block)usesHalf|=containsHalf(i.getType());
@@ -1249,7 +1287,7 @@ public:
         auto kind = stringField(desc, "air.arg_type_name");
         Buffer b;
         b.slot = slot;
-        b.readonly = has(desc, "air.read") || space == 2;
+        b.readonly = has(desc, "air.read") || space == 2 || arg->hasAttribute(Attribute::ReadOnly);
         if (space==3) {if (b.readonly) fail("readonly threadgroup arguments are unsupported");b.dynamicSlot=slot;}
         if (!b.readonly && !has(desc, "air.write") &&
             !has(desc, "air.read_write"))
@@ -1261,8 +1299,8 @@ public:
           b.stride=(components==3?4:components)*(kind.rfind("half",0)==0?2:4);
           b.valueType=components==1?i32:FixedVectorType::get(i32,components);
           if (auto *size=field(desc,"air.arg_type_size")) if (number(size)!=b.stride) fail("AIR buffer layout disagrees with metadata");
-        } else if (!kind.empty() && field(desc,"air.arg_type_size") && number(field(desc,"air.arg_type_size")) &&
-            number(field(desc,"air.arg_type_size"))<=4096) { b.valueType=i32;b.stride=4; }
+        } else if (kind=="void" || (!kind.empty() && field(desc,"air.arg_type_size") && number(field(desc,"air.arg_type_size")) &&
+            number(field(desc,"air.arg_type_size"))<=GPU::MaxBufferBytes)) { b.valueType=i32;b.stride=4; }
         else fail("unsupported AIR buffer type: "+Twine(kind));
         bindings[arg] = b;
         if (space!=3) strides[slot] = b.stride;
@@ -1279,7 +1317,8 @@ public:
         if(slot>=QGPU_STAGE_TEXTURE_COUNT || !GPU::Compiler::airTextureMetadata(stringField(desc,"air.arg_type_name"),binding) ||
             (stage && (binding.unsignedInteger || (binding.access!=4 && binding.access!=1))) || !arg->getType()->isPointerTy() || arg->getType()->getPointerAddressSpace()!=1)fail("unsupported texture metadata");
         for(const auto &bound:imageBindings)if(bound.second.slot==slot)fail("duplicate texture slot");
-        bool cube=binding.shape&2,array=binding.shape&1;
+        if(binding.shape==8)fail("3D textures require the NIR frontend");
+                bool cube=binding.shape&2,array=binding.shape&1;
         if(stage) {if(graphicsHeaders.insert(binding.shape).second)declarations+=GPU::Compiler::graphicsTextureHeader(binding.shape,stage);}
         else if(cube) {if(cubeHeaders.insert(unsigned(array)).second)declarations+=GPU::Compiler::cubeImageHeader(array);}
         else if(!imageIncluded) {declarations+=GPU::Compiler::imageHeader();imageIncluded=true;}
@@ -1323,12 +1362,13 @@ public:
       } else if (stage==2 && has(desc,"air.fragment_input")) {
         x.text=varying(desc,arg->getType(),false);
       } else if (stage==0 && !computeInput.empty()) {
-        auto *t=arg->getType();const auto value=GPU::Compiler::computeSystemValue(computeInput);
-        if (value.empty() || !computeInputs.insert(computeInput).second || !scalar(t)->isIntegerTy(32) ||
-            (lanes(t)!=1 && ((lanes(t)!=2 && lanes(t)!=3) || computeInput=="thread_index_in_threadgroup"))) fail("invalid compute input type/semantic");
-        x.text=value+(lanes(t)==1 && computeInput!="thread_index_in_threadgroup"?".x":"");
+        auto *t=arg->getType();const auto value=GPU::Compiler::computeSystemValue(computeInput);if(computeInput.find("simdgroup")!=std::string::npos)usesSIMD=true;
+        if (value.empty() || !computeInputs.insert(computeInput).second || (!scalar(t)->isIntegerTy(32) && !scalar(t)->isIntegerTy(16)) ||
+            (lanes(t)!=1 && ((lanes(t)!=2 && lanes(t)!=3) || GPU::Compiler::scalarComputeInput(computeInput)))) fail("invalid compute input type/semantic");
+        x.text=value+(lanes(t)==1 && !GPU::Compiler::scalarComputeInput(computeInput)?".x":"");
         if (lanes(t)==2) x.text="uvec2("+x.text+")";
-        if (computeInput=="thread_position_in_grid") { haveSystem=true;x.linear=1; }
+        if(scalar(t)->isIntegerTy(16))x.text=GPU::Compiler::airIntegerMask(x.text,16,lanes(t));
+        if (computeInput=="thread_position_in_grid") { haveSystem=true;x.linear=scalar(t)->isIntegerTy(32); }
       } else if (has(desc, "air.thread_position_in_grid") ||
                  has(desc, "air.vertex_id")) {
         if (haveSystem ||
@@ -1345,9 +1385,10 @@ public:
         x.text = lanes(t) == 1 ? "_qindex" : "uvec3(_qindex,0u,0u)";
         if(scalar(t)->isIntegerTy(16))x.text=GPU::Compiler::airIntegerMask(x.text,16,1);
         x.linear = scalar(t)->isIntegerTy(32);
-      } else if (has(desc, "air.instance_id") && stage == 1 && !haveInstance && arg->getType()->isIntegerTy(32)) {
+      } else if (has(desc, "air.instance_id") && stage == 1 && !haveInstance && (arg->getType()->isIntegerTy(32) || arg->getType()->isIntegerTy(16))) {
         haveInstance = true;
-        x.text = "_qinstance"; x.linear = 2;
+        x.text = "_qinstance"; x.linear = arg->getType()->isIntegerTy(32)?2:0;
+        if(arg->getType()->isIntegerTy(16))x.text=GPU::Compiler::airIntegerMask(x.text,16,1);
       } else if (has(desc, "air.position") && stage == 2) {
         // Native AIR can carry both the ordinary and a conditional alias of
         // the same position builtin. Both refer to one hardware value.
@@ -1399,7 +1440,7 @@ public:
                         {"textureBindings",textureSlots.encoding()},
                         {"varyings",std::move(interface)},
                         {"strides", std::move(sizes)},
-                        {"glsl", "#version 430\n" + std::string(usesHalf?"#extension GL_AMD_gpu_shader_half_float : require\n":"") + std::string(usesDiscard?"#extension GL_EXT_demote_to_helper_invocation : require\n":"") + declarations +
+                        {"glsl", "#version 430\n" + std::string(usesHalf?"#extension GL_AMD_gpu_shader_half_float : require\n":"") + std::string(usesDiscard?"#extension GL_EXT_demote_to_helper_invocation : require\n":"") + (usesSIMD?GPU::Compiler::simdHeader():std::string()) + declarations +
                                      "void main() {\n" + framebufferInputs + body + "}\n"}};
   }
 };

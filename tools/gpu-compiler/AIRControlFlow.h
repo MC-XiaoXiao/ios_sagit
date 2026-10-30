@@ -31,7 +31,7 @@ inline std::vector<unsigned> successors(const Block &b) {
 // https://llvm.org/docs/LangRef.html#phi-instruction
 inline bool emit(const std::vector<Block> &blocks,unsigned entry,std::string &out,std::string &error) {
     out.clear();const unsigned count=unsigned(blocks.size());
-    if (!count || count>128 || entry>=count) { error="AIR CFG exceeds 128 blocks";return false; }
+    if (!count || count>512 || entry>=count) { error="AIR CFG exceeds 512 blocks";return false; }
     std::set<unsigned> live;bool bad=false,cyclic=false;std::vector<unsigned> color(count);
     std::function<void(unsigned)> visit=[&](unsigned id) {
         if (id>=count) { bad=true;return; }
@@ -82,7 +82,7 @@ inline bool emit(const std::vector<Block> &blocks,unsigned entry,std::string &ou
         std::function<std::string(unsigned,unsigned)> path=[&](unsigned id,unsigned stop) {
             std::string code;
             while (id!=stop && id!=count && !overflow) {
-                if (++visits>512) { overflow=true;break; }
+                if (++visits>2048) { overflow=true;break; }
                 const auto &b=blocks[id];code+=b.code;
                 if (b.term==Block::Return) { code+="return;\n";break; }
                 if (b.term==Block::Jump) { code+=edge(id,b.destination);id=b.destination;continue; }

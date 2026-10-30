@@ -2387,6 +2387,25 @@ def translate_gpu_msl(source):
     return json.loads(result.stdout)
 
 
+def patch_gpu_register_delays(mesa):
+    """Keep IR3's ALU latency accounting within each physical register file."""
+    path = mesa / 'src/freedreno/ir3/ir3_legalize.c'
+    text = path.read_text()
+    needle = '            for (unsigned matching_size = 0; matching_size < 2; matching_size++) {\n'
+    replacement = needle + '''               /* A5xx has independent half/full register files. A texture
+                * write must not clear an unrelated ALU result's ready cycle.
+                * Only merged register files have cross-size aliases.
+                */
+               if (!matching_size && !mergedregs)
+                  continue;
+'''
+    if replacement in text:
+        return
+    if text.count(needle) != 1:
+        raise RuntimeError('Mesa IR3 register delay accounting changed')
+    path.write_text(text.replace(needle, replacement, 1))
+
+
 def prepare_gpu_compiler():
     root = BUILD / 'gpu-compiler'
     source = root / 'mesa'
@@ -2397,6 +2416,7 @@ def prepare_gpu_compiler():
         run([host('git'), '-C', source, 'sparse-checkout', 'set', *spec['sparse_paths']])
     commit = subprocess.check_output([host('git'), '-C', source, 'rev-parse', 'HEAD'],text=True).strip()
     if commit != spec['commit']: raise RuntimeError('Mesa compiler source commit changed')
+    patch_gpu_register_delays(source)
     # Modern glibc exposes C23 call_once from stdlib.h. Mesa 24's emulation
     # conflicts with that type; use the detected native C11 API on Linux.
     meson_root = source / 'meson.build'
@@ -2646,6 +2666,8 @@ def prepare_gpu_air_compiler():
               'library_archive_sha256':digest(TOOLS/'gpu-compiler/LibraryArchive.h'),
               'function_constants_sha256':digest(TOOLS/'gpu-compiler/FunctionConstants.h'),
               'air_specialization_sha256':digest(TOOLS/'gpu-compiler/AIRSpecialization.h'),
+              'air_indirect_calls_sha256':digest(TOOLS/'gpu-compiler/AIRIndirectCalls.h'),
+              'air_simd_sha256':digest(TOOLS/'gpu-compiler/AIRSIMD.h'),
               'interface_sha256':digest(DRIVERS_ROOT/'include/GPUShaderInterface.h'),
               'protocol_sha256':digest(DRIVERS_ROOT/'include/GPUShaderProtocol.h'),
               'user_protocol_sha256':digest(DRIVERS_ROOT/'include/GPUUserProtocol.h'), 'llvm_version':version, 'flags':flags}
@@ -2663,6 +2685,7 @@ def prepare_gpu_air_compiler():
 
 def prepare_gpu_jit_compiler(mesa):
     """In-process iOS shader compiler; share the pinned AOT Mesa checkout."""
+    patch_gpu_register_delays(mesa)
     root = BUILD / 'gpu-compiler'; venv = root / 'venv'
     sdk = TOOLS / 'sdk/iPhoneOS18.6.sdk'
     # The AIR builder uses LLVM's exported C ABI inside the compiler dylib.
@@ -2681,6 +2704,14 @@ def prepare_gpu_jit_compiler(mesa):
         '__normal_user() ? debug_get_option_ir3_shader_override_path() : NULL;',
         '(!options->qcom_runtime && __normal_user()) ? debug_get_option_ir3_shader_override_path() : NULL;')
     if compiler_source.read_text() != text: compiler_source.write_text(text)
+    nir_source=mesa/'src/freedreno/ir3/ir3_nir.c'
+    text=nir_source.read_text()
+    # The memory compiler exports code/immediates, not an auxiliary constant
+    # buffer. Keep finite local function tables in registers; don't introduce
+    # a hidden UBO after our resource validation has already run.
+    if 'so->compiler->options.qcom_runtime ? UINT32_MAX' not in text:
+        text=text.replace('32 /* bytes */);','so->compiler->options.qcom_runtime ? UINT32_MAX : 32 /* bytes */);')
+    if nir_source.read_text()!=text:nir_source.write_text(text)
     cache = mesa / 'src/freedreno/ir3/ir3_disk_cache.c'
     text = cache.read_text()
     if '#ifdef ENABLE_SHADER_CACHE\n   if (ir3_shader_debug' not in text:
@@ -2691,6 +2722,17 @@ def prepare_gpu_jit_compiler(mesa):
         cache.write_text(text)
     standalone = mesa / 'src/compiler/glsl/standalone.cpp'
     text = standalone.read_text()
+    if 'ctx->Extensions.KHR_shader_subgroup = true;' not in text:
+        needle = 'ctx->Extensions.ARB_ES3_2_compatibility = true;'
+        if needle not in text: raise RuntimeError('Mesa standalone subgroup initialization changed')
+        text = text.replace(needle,needle+'''
+   ctx->Extensions.KHR_shader_subgroup = true;
+   ctx->Const.ShaderSubgroupSize = 64;
+   ctx->Const.ShaderSubgroupSupportedStages = GL_COMPUTE_SHADER_BIT;
+   ctx->Const.ShaderSubgroupSupportedFeatures = GL_SUBGROUP_FEATURE_BASIC_BIT_KHR |
+      GL_SUBGROUP_FEATURE_ARITHMETIC_BIT_KHR | GL_SUBGROUP_FEATURE_BALLOT_BIT_KHR |
+      GL_SUBGROUP_FEATURE_SHUFFLE_BIT_KHR | GL_SUBGROUP_FEATURE_VOTE_BIT_KHR;
+''',1)
     if 'qgpu_standalone_source' not in text:
         signature = 'standalone_compile_shader(const struct standalone_options *_options,\n      unsigned num_files, char* const* files, struct gl_context *ctx)'
         replacement = 'qgpu_standalone_inputs(const struct standalone_options *_options,\n      unsigned num_files, char* const* files, const char *const *sources,\n      struct gl_context *ctx, char *error, unsigned error_bytes)'
@@ -2720,12 +2762,13 @@ qgpu_standalone_source(const char *source, unsigned stage, struct gl_context *ct
 '''
         if replacement not in text: raise RuntimeError('Mesa memory compiler insertion failed')
         standalone.write_text(text)
+    if standalone.read_text()!=text:standalone.write_text(text)
     compiler_meson = mesa / 'src/compiler/meson.build'
     text = compiler_meson.read_text().replace("if with_gallium\n  subdir('glsl')", "if with_gallium or with_tools.contains('freedreno')\n  subdir('glsl')")
     if compiler_meson.read_text() != text: compiler_meson.write_text(text)
     for name in ['Backend.c','AIRNIR.cpp']:
         shutil.copyfile(TOOLS / 'gpu-compiler' / name, mesa / 'src/freedreno' / ('Qcom' + name))
-    for name in ['AIRRuntime.cpp','AIRNIR.h','AIRNIRLowering.h','AIRSpecialization.h','AIRControlFlow.h','FunctionConstants.h','Semantic.h']:
+    for name in ['AIRRuntime.cpp','AIRNIR.h','AIRNIRLowering.h','AIRSpecialization.h','AIRIndirectCalls.h','AIRSIMD.h','AIRMatrixNIR.h','AIRVisibleFunctions.h','AIRControlFlow.h','FunctionConstants.h','Semantic.h']:
         shutil.copyfile(TOOLS/'gpu-compiler'/name,mesa/'src/freedreno'/name)
     shutil.copyfile(TOOLS / 'gpu-compiler/Interface.h', mesa / 'src/freedreno/QcomInterface.h')
     # Compiler.h includes the shared kernel wire description, not an IOKit ABI.
@@ -2818,7 +2861,7 @@ qcom_gpu_compiler = shared_library('QcomGPUCompiler', ['QcomBackend.c', 'QcomAIR
                   TOOLS/'gpu-compiler/Backend.c',TOOLS/'gpu-compiler/Interface.h',TOOLS/'gpu-compiler/Compiler.h',
                   TOOLS/'gpu-compiler/AIRNIR.cpp',TOOLS/'gpu-compiler/AIRNIR.h',TOOLS/'gpu-compiler/AIRNIRLowering.h',
                   DRIVERS_ROOT/'include/GPUJITProtocol.h',DRIVERS_ROOT/'include/GPUShaderInterface.h',
-                  standalone,mesa/'src/compiler/glsl/gl_nir_linker.c',mesa/'src/freedreno/ir3/ir3_a4xx.c',compiler_source,options,cache,compiler_meson,meson_file]}}
+                  standalone,mesa/'src/compiler/glsl/gl_nir_linker.c',mesa/'src/freedreno/ir3/ir3_a4xx.c',compiler_source,nir_source,options,cache,compiler_meson,meson_file]}}
     (root/'jit-compiler.json').write_text(json.dumps(report,indent=2)+'\n')
     return libraries
 
@@ -2894,7 +2937,7 @@ def test_gpu_compiler():
 
 def extract_gpu_metallib(data):
     """Use the same bounded FAT/MTLB parser as Metal's in-process loader."""
-    if not data or len(data) > 16*1024*1024: raise RuntimeError('invalid or oversized metallib header')
+    if not data or len(data) > 64*1024*1024: raise RuntimeError('invalid or oversized metallib header')
     compiler, _ = prepare_gpu_air_compiler()
     result = subprocess.run([compiler, '--library-index'], input=data, capture_output=True)
     if result.returncode: raise RuntimeError(result.stderr.decode(errors='replace').strip())
@@ -2946,7 +2989,7 @@ def build_gpu_shaders():
     sources = [(root / name).resolve() for name,_ in definitions]
     inputs = [config, *sources, TOOLS / 'gpu-compiler/Export.h', TOOLS / 'gpu-compiler/Interface.h',
               TOOLS / 'gpu-compiler/MSL.cpp', TOOLS / 'gpu-compiler/MSLMain.cpp', TOOLS / 'gpu-compiler/Compiler.h',
-              TOOLS / 'gpu-compiler/Semantic.h', TOOLS / 'gpu-compiler/AIRControlFlow.h', TOOLS / 'gpu-compiler/LibraryArchive.h', TOOLS / 'gpu-compiler/FunctionConstants.h', TOOLS / 'gpu-compiler/AIRSpecialization.h', TOOLS / 'gpu-compiler/Source.json', TOOLS / 'gpu-compiler/AIR.cpp', SELF,
+              TOOLS / 'gpu-compiler/Semantic.h', TOOLS / 'gpu-compiler/AIRControlFlow.h', TOOLS / 'gpu-compiler/LibraryArchive.h', TOOLS / 'gpu-compiler/FunctionConstants.h', TOOLS / 'gpu-compiler/AIRSpecialization.h', TOOLS / 'gpu-compiler/AIRIndirectCalls.h', TOOLS / 'gpu-compiler/AIRSIMD.h', TOOLS / 'gpu-compiler/AIRMatrixNIR.h', TOOLS / 'gpu-compiler/AIRVisibleFunctions.h', TOOLS / 'gpu-compiler/Source.json', TOOLS / 'gpu-compiler/AIR.cpp', SELF,
               DRIVERS_ROOT / 'include/GPUShaderProtocol.h', DRIVERS_ROOT / 'include/GPUShaderInterface.h', DRIVERS_ROOT / 'include/GPUJITProtocol.h']
     generated = BUILD / 'drivers/generated/GPU'
     manifest = generated / 'shaders.json'; header = generated / 'GPUPrograms.h'
@@ -3040,7 +3083,7 @@ def build_gpu_shaders():
         interface = []
         for v in m['varyings']:
             interface.append('{{'+','.join(map(str,v['semantic']))+'},'+','.join(str(v[f]) for f in ['components','mode','regid','mask','inloc','reserved'])+'}')
-        return '{'+','.join(str(m[f]) for f in fields)+',{'+','.join(map(str,m['strides']))+'},{'+','.join(interface)+'},'+str(m['attributeMask'])+',{'+','.join('{'+','.join(str(a[f]) for f in ['components','type','regid','mask'])+'}' for a in m['attributes'])+'},'+','.join(str(m[f]) for f in sampler_fields)+',{'+','.join(map(str,m['constantSamplerSlots']))+'},{'+','.join(map(str,m['constantSamplerLevelSlots']))+'},{'+','.join('{'+','.join(str(a[f]) for f in sampler_state_fields)+'}' for a in m['constantSamplers'])+'},'+str(m['colorMask'])+',{'+','.join(map(str,m['colorRegisters']))+'},'+str(m['depthReg'])+','+str(m['multisampleMask'])+','+str(m['depthTextureMask'])+','+','.join(str(m[f]) for f in sample_fields)+','+str(m['constantWindowCount'])+',{'+','.join('{'+str(v['buffer'])+','+str(v['byteOffset'])+'}' for v in m['constantWindows'])+'},Code'+symbol+',Immediates'+symbol+','+json.dumps(m['name'])+','+variant+'}'
+        return '{'+','.join(str(m[f]) for f in fields)+',{'+','.join(map(str,m['strides']))+'},{'+','.join(interface)+'},'+str(m['attributeMask'])+',{'+','.join('{'+','.join(str(a[f]) for f in ['components','type','regid','mask'])+'}' for a in m['attributes'])+'},'+','.join(str(m[f]) for f in sampler_fields)+',{'+','.join(map(str,m['constantSamplerSlots']))+'},{'+','.join(map(str,m['constantSamplerLevelSlots']))+'},{'+','.join('{'+','.join(str(a[f]) for f in sampler_state_fields)+'}' for a in m['constantSamplers'])+'},'+str(m['colorMask'])+',{'+','.join(map(str,m['colorRegisters']))+'},'+str(m['depthReg'])+','+str(m['multisampleMask'])+','+str(m['depthTextureMask'])+','+str(m['volumeMask'])+','+str(m['imageblockMask'])+','+str(m['imageblockBindings'])+','+str(m['imageblockSampleBytes'])+','+','.join(str(m[f]) for f in sample_fields)+','+str(m['constantWindowCount'])+',{'+','.join('{'+str(v['buffer'])+','+str(v['byteOffset'])+'}' for v in m['constantWindows'])+'},Code'+symbol+',Immediates'+symbol+','+json.dumps(m['name'])+','+variant+'}'
     for owner in programs:
         for suffix,program in [('',owner)]+([('MSAA',owner['msaa'])] if 'msaa' in owner else []):
             symbol=str(program['metadata']['id'])+suffix
@@ -3127,7 +3170,7 @@ def build_gpu_metal():
                                       'IODataQueueDataAvailable', 'IODataQueueDequeue',
                                       'IOConnectSetNotificationPort', 'IODataQueueAllocateNotificationPort'],
                        headers=['gpuctl/GPUConnection.h', 'include/IOKitUser.h',
-                                'gpu-compiler/Compiler.h','gpu-compiler/AIRNIR.h','gpu-compiler/AIRNIRLowering.h','gpu-compiler/AIRNIR.cpp','gpu-compiler/Semantic.h','gpu-compiler/AIRControlFlow.h','gpu-compiler/LibraryArchive.h','gpu-compiler/FunctionConstants.h','gpu-compiler/AIRSpecialization.h','gpu-compiler/Interface.h','gpu-compiler/Source.json','gpu-compiler/NOTICE.txt',
+                                'gpu-compiler/Compiler.h','gpu-compiler/AIRNIR.h','gpu-compiler/AIRNIRLowering.h','gpu-compiler/AIRNIR.cpp','gpu-compiler/Semantic.h','gpu-compiler/AIRControlFlow.h','gpu-compiler/LibraryArchive.h','gpu-compiler/FunctionConstants.h','gpu-compiler/AIRSpecialization.h','gpu-compiler/AIRIndirectCalls.h','gpu-compiler/AIRSIMD.h','gpu-compiler/AIRMatrixNIR.h','gpu-compiler/AIRVisibleFunctions.h','gpu-compiler/Interface.h','gpu-compiler/Source.json','gpu-compiler/NOTICE.txt',
                                 '../drivers/gpu/QcomMTL/QcomMTL.h', '../drivers/gpu/QcomMTL/NativeMetal.h', '../drivers/gpu/QcomMTL/MetalSync.h', '../drivers/gpu/QcomMTL/MetalTexture.h', '../drivers/gpu/QcomMTL/MetalColor.h', '../drivers/gpu/QcomMTL/MetalHeap.h', '../drivers/gpu/QcomMTL/MetalReference.h', '../drivers/gpu/QcomMTL/MetalArchive.h', '../drivers/gpu/QcomMTL/CoreFSCache.h', '../drivers/gpu/QcomMTL/MetalBatch.h', '../drivers/gpu/QcomMTL/MetalUploadPool.h', '../drivers/gpu/QcomMTL/MetalRetirement.h',
                                 'gpu-compiler/SystemShaderCatalog.h', '../build/drivers/generated/GPU/GPUSystemShaders.h',
                                 '../build/drivers/generated/GPU/GPUArchiveBuild.h', '../build/drivers/generated/GPU/archive-build.json',
@@ -3599,7 +3642,7 @@ def build_iokit_client(name, source_paths, extra_exports=(), headers=(), protoco
                        'universal_air64_metallib_import':True,'metallib_parser_shared_with_aot':True,
                        'metallib_function_compilation':'on-demand, exact selected AIR entry',
                        'bundled_system_shaders':{key:value for key,value in json.loads((BUILD/'gpu-system-shaders/report.json').read_text()).items()
-                           if key in ('registry','entry_count','variant_count','packed_bytes','header_sha256')},
+                           if key in ('registry','attempted_entry_count','entry_count','compiled_entry_count','variant_count','packed_bytes','header_sha256')},
                        'bundled_system_shader_match':'full AIR SHA-256, entry name, resolved constant indices/types/bytes; current registry',
                        'bundled_system_shader_miss':'normal exact compiler/cache path; no substitute shader',
                        'native_submission_dispatch_target':True,'native_completion_dispatch_target':True,
@@ -3687,7 +3730,13 @@ def build_iokit_client(name, source_paths, extra_exports=(), headers=(), protoco
                        'compute_max_threads_per_group':1024,'compute_max_local_dimensions':[1024,1024,64],
                        'compute_max_invocations':16777216,'compute_buffer_index_proof':'NIR byte-range guards from SSBO descriptors',
                        'compute_nonuniform_workgroups':True,'compute_nonuniform_backend':'up to eight exact-size CP regions in one native submission, original grid/group coordinates and requested local size in native constants, no padded barrier lanes','compile_option_thread_limit_preserved':True,
-                       'air_cfg_max_blocks':128, 'air_phi_parallel_copies':True,
+                       'air_cfg_max_blocks':512, 'air_cfg_max_instructions':8192, 'air_phi_parallel_copies':True,
+                       'air_texture_3d':'direct NIR; uncompressed color sample/read/write/query; mip chains and depth-plane views',
+                       'texture_3d_mipmap_generation':False,
+                       'air_tile_shader':'implicit half4/float4 imageblocks with dynamic 1/2/4 samples via compute and render attachment barriers',
+                       'air_simd':'compute subgroup arithmetic, shuffle, vote and ballot; A540 subgroup width 64',
+                       'air_indirect_calls':'finite local function-pointer selects, PHIs and tables lowered to direct-call dispatch',
+                       'metal_visible_function_tables':True,'metal_visible_function_targets_max':64,'metal_visible_function_table_entries_max':256,'air_simd_matrix_8x8':True,
                        'air_cyclic_cfg':'per-invocation dispatch without an artificial iteration limit',
                        'runtime_llvm_compatibility':{'branch_opcodes':[2,70,71],
                            'switch_case_access':'legacy operand pairs or optional exported LLVMGetSwitchCaseValue'},
@@ -3701,7 +3750,7 @@ def build_iokit_client(name, source_paths, extra_exports=(), headers=(), protoco
                        'gpu_depth_stencil_resolve':True, 'depth_resolve_filters':['sample0','min','max'], 'stencil_resolve_filters':['sample0','depth-resolved-sample'],
                        'msl_as_type_32bit_same_lanes':True,
                        'sample_frequency_shading':True, 'centroid_sample_interpolation':True, 'fragment_sample_mask':True,
-                       'fragment_single_msaa_variants':True, 'program_description_bytes':2468, 'jit_program_image_bytes':83720, 'fragment_constant_window_variants':True,
+                       'fragment_single_msaa_variants':True, 'program_description_bytes':2484, 'jit_program_image_bytes':83784, 'fragment_constant_window_variants':True,
                        'fragment_depth_output':True, 'fragment_colorless_output':True, 'depth_only_nil_fragment':True,
                        'fragment_discard':True, 'fragment_software_demote':True, 'fragment_derivatives':True, 'air_float_comparisons':True,
                        'air_compilation':True, 'metallib_import':True, 'runtime_air_compilation':True,

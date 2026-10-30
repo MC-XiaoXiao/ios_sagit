@@ -88,7 +88,7 @@ static void qcom_export_program(struct ir3_shader_variant *v, const uint32_t *co
         QGPU_BOUNDED_BUFFERS | (v->type == MESA_SHADER_FRAGMENT ? QGPU_FRAGMENT_BUFFER_BANK : 0) |
         (v->has_barrier ? QGPU_THREADGROUP_BARRIER : 0) | (qcom_interface.threadgroupMask ? QGPU_DYNAMIC_THREADGROUP : 0));
     FIELD("attributeMask",qcom_interface.attributeMask);
-    FIELD("colorMask",qcom_interface.colorMask);FIELD("depthReg",qcom_interface.depthReg);FIELD("multisampleMask",qcom_interface.multisampleMask);FIELD("depthTextureMask",qcom_interface.depthTextureMask);
+    FIELD("colorMask",qcom_interface.colorMask);FIELD("depthReg",qcom_interface.depthReg);FIELD("multisampleMask",qcom_interface.multisampleMask);FIELD("depthTextureMask",qcom_interface.depthTextureMask);FIELD("volumeMask",qcom_interface.volumeMask);FIELD("imageblockMask",qcom_interface.imageblockMask);FIELD("imageblockBindings",qcom_interface.imageblockBindings);FIELD("imageblockSampleBytes",qcom_interface.imageblockSampleBytes);
     FIELD("sampleFlags",qcom_interface.sampleFlags|(getenv("QCOM_IR3_MSAA")?QGPU_SAMPLE_MSAA:0));
     FIELD("sampleID",qcom_interface.sampleID);FIELD("sampleMaskIn",qcom_interface.sampleMaskIn);FIELD("sampleMaskOut",qcom_interface.sampleMaskOut);
     FIELD("perspectiveCentroid",qcom_interface.perspectiveCentroid);FIELD("linearCentroid",qcom_interface.linearCentroid);

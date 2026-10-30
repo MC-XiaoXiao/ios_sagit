@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-2-Clause
 // Shared AIR lowering, included after AIRRuntime.cpp in the same translation unit.
 #pragma once
+#include "AIRSIMD.h"
 #include "compiler/glsl_types.h"
 #include "compiler/nir/nir_builder.h"
 #include "compiler/nir/nir_builtin_builder.h"
@@ -18,7 +19,7 @@ double elapsed(Clock::time_point a, Clock::time_point b) {
     return std::chrono::duration<double, std::milli>(b - a).count();
 }
 struct NV {
-    enum Kind { Data, Pointer, Private, Texture, Sampler, ReadSampler, Aggregate, Unavailable } kind = Data;
+    enum Kind { Data, Matrix, Pointer, Private, Texture, Sampler, ReadSampler, Aggregate, Unavailable } kind = Data;
     nir_def *def = nullptr;
     nir_variable *cell = nullptr;
     LLVMValueRef root = nullptr;
@@ -43,6 +44,7 @@ class Direct {
     std::map<LLVMValueRef, unsigned> rootIDs;
     std::map<LLVMValueRef, AIRTextureBinding> textures;
     std::map<LLVMValueRef, unsigned> samplers;
+    std::map<unsigned,AIRTextureBinding> imageblocks;
     std::vector<QGPUConstantSampler> literals;
     std::vector<nir_variable *> outputs;
     std::map<std::string, nir_variable *> uniforms;
@@ -62,7 +64,12 @@ class Direct {
     nir_def *vec(const std::vector<nir_def *> &v) {
         return nir_vec(&b, const_cast<nir_def **>(v.data()), v.size());
     }
+    bool matrixType(LLVMTypeRef t) {
+        return LLVMGetTypeKind(t)==LLVMVectorTypeKind && LLVMGetVectorSize(t)==64 &&
+            (floating(t) || LLVMGetTypeKind(scalar(t))==LLVMBFloatTypeKind);
+    }
     unsigned bits(LLVMTypeRef t) {
+        if(LLVMGetTypeKind(scalar(t))==LLVMBFloatTypeKind)return 16;
         if (half(t))
             return 16;
         if (floating(t))
@@ -89,14 +96,19 @@ class Direct {
         return v;
     }
     nir_def *read(NV v) {
-        if (v.kind != NV::Data)
+        if (v.kind != NV::Data && v.kind != NV::Matrix)
             fail("NIR frontend: nonnumeric operand");
         return v.cell ? nir_load_var(&b, v.cell) : v.def;
     }
     NV reserve(LLVMTypeRef t) {
         NV v;
         auto k = LLVMGetTypeKind(t);
-        if (k == LLVMStructTypeKind) {
+        if(matrixType(t)) {
+            v.kind=NV::Matrix;
+            auto type=bits(t)==32?glsl_float_type():half(t)?glsl_float16_t_type():glsl_uint16_t_type();
+            v.cell=nir_local_variable_create(b.impl,type,("matrix"+std::to_string(serial++)).c_str());
+            if(initializeSSA)nir_store_var(&b,v.cell,nir_imm_zero(&b,1,bits(t)),1);
+        } else if (k == LLVMStructTypeKind) {
             v.kind = NV::Aggregate;
             for (unsigned n = 0; n < LLVMCountStructElementTypes(t); ++n)
                 v.members.push_back(reserve(LLVMStructGetTypeAtIndex(t, n)));
@@ -169,8 +181,11 @@ class Direct {
         }
         values[i] = std::move(v);
     }
-    void set(LLVMValueRef i, nir_def *v) { set(i, data(v)); }
+    void set(LLVMValueRef i, nir_def *v) {
+        auto value=data(v);if(matrixType(LLVMTypeOf(i)))value.kind=NV::Matrix;set(i,value);
+    }
     NV zero(LLVMTypeRef t) {
+        if(matrixType(t)){auto v=data(nir_imm_zero(&b,1,bits(t)));v.kind=NV::Matrix;return v;}
         if (LLVMGetTypeKind(t) == LLVMPointerTypeKind) {
             NV v;
             v.kind = NV::Pointer;
@@ -209,6 +224,10 @@ class Direct {
             return values.at(v);
         auto t = LLVMTypeOf(v);
         auto k = LLVMGetTypeKind(t);
+        if(k==LLVMBFloatTypeKind && LLVMIsAConstantFP(v)) {
+            LLVMBool loses=false;float value=float(LLVMConstRealGetDouble(v,&loses));uint32_t encoded;
+            memcpy(&encoded,&value,4);return data(nir_imm_intN_t(&b,encoded>>16,16));
+        }
         if (LLVMIsAAllocaInst(v)) {
             auto allocated = LLVMGetAllocatedType(v);
             if (LLVMGetInstructionParent(v) != LLVMGetFirstBasicBlock(f) ||
@@ -350,6 +369,14 @@ class Direct {
             return zero(t);
         // LLVM 23 scalar-backed splats must retain their vector width.
         if (LLVMIsAConstant(v) && k == LLVMVectorTypeKind) {
+            if(matrixType(t)) {
+                auto lane=nir_load_subgroup_invocation(&b),result=nir_imm_zero(&b,1,bits(t));
+                for(unsigned n=0;n<64;++n) {
+                    auto component=LLVMConstExtractElement(v,LLVMConstInt(LLVMInt32TypeInContext(LLVMGetTypeContext(t)),n,false));
+                    result=nir_bcsel(&b,nir_ieq_imm(&b,lane,n),read(get(component)),result);
+                }
+                auto value=data(result);value.kind=NV::Matrix;return value;
+            }
             std::vector<nir_def *> parts;
             for (unsigned n = 0; n < lanes(t); ++n)
                 parts.push_back(read(get(LLVMConstExtractElement(
@@ -360,8 +387,9 @@ class Direct {
             return data(nir_imm_intN_t(&b, number(v), bits(t)));
         }
         if (LLVMIsAConstantFP(v)) {
-            LLVMBool loses;
-            return data(nir_imm_floatN_t(&b, LLVMConstRealGetDouble(v, &loses), bits(t)));
+            auto width = bits(t);
+            auto raw = LLVMConstBitCast(v, LLVMIntTypeInContext(LLVMGetTypeContext(t), width));
+            return data(nir_imm_intN_t(&b, number(raw), width));
         }
         if (LLVMIsAConstantStruct(v)) {
             NV out;
@@ -825,6 +853,7 @@ class Direct {
         t->sampler_dim = op == nir_texop_txf_ms ? GLSL_SAMPLER_DIM_MS
                          : shape & 2            ? GLSL_SAMPLER_DIM_CUBE
                                                 : GLSL_SAMPLER_DIM_2D;
+        if(shape==8)t->sampler_dim=GLSL_SAMPLER_DIM_3D;
         t->is_array = shape & 1;
         t->coord_components = coordinate->num_components;
         t->dest_type = nir_type_float32;
@@ -851,8 +880,21 @@ class Direct {
         unsigned unit = literal ? 256 + texture * 16 + sampler - 8 + (level ? 128 : 0)
                                 : texture * 8 + sampler + (level ? 64 : 0);
         nir_def *flags = literal ? u(Shader::samplerMirrorFlags(*literal)) : nativeConstants(sampler, 1);
-        nir_def *p[2], *direction[2];
-        for (unsigned n = 0; n < 2; ++n) {
+        if (!level && literal && !Shader::samplerMirrorFlags(*literal))
+            return tex(nir_texop_txb, unit, coord, bias);
+        constexpr unsigned dimensions=2;
+        const bool dynamicImplicit = !level && !literal;
+        auto result = dynamicImplicit ? nir_local_variable_create(b.impl, glsl_vec4_type(), "sample") : nullptr;
+        if (dynamicImplicit) {
+            // Sampler flags come from the draw's constant bank, so this branch
+            // is uniform. Keep mirror transforms and derivatives in its slow
+            // arm: ordinary sampling must not execute them at every pixel.
+            nir_push_if(&b, nir_ieq_imm(&b, nir_iand_imm(&b, flags, (1u<<dimensions)-1), 0));
+            nir_store_var(&b, result, tex(nir_texop_txb, unit, coord, bias), 15);
+            nir_push_else(&b, nullptr);
+        }
+        nir_def *p[dimensions], *direction[dimensions];
+        for (unsigned n = 0; n < dimensions; ++n) {
             auto mirrored = nir_ine_imm(&b, nir_iand_imm(&b, flags, 1u << n), 0);
             auto raw = c(coord, n);
             p[n] = nir_bcsel(&b, mirrored, nir_fabs(&b, raw), raw);
@@ -862,24 +904,14 @@ class Direct {
         auto point = nir_vec2(&b, p[0], p[1]);
         if (level)
             return tex(nir_texop_txl, unit, point, bias);
-        if (literal && !Shader::samplerMirrorFlags(*literal))
-            return tex(nir_texop_txb, unit, coord, bias);
-        auto result = nir_local_variable_create(b.impl, glsl_vec4_type(), "sample");
-        // Match production's implicit path when an external sampler needs no
-        // mirror fix; compute derivatives before control flow.
         nir_def *scale = nir_fexp2(&b, bias), *dx = nir_fmul(&b, derivative(coord, false), scale),
                 *dy = nir_fmul(&b, derivative(coord, true), scale);
-        if (!literal) {
-            nir_push_if(&b, nir_ieq_imm(&b, nir_iand_imm(&b, flags, 3), 0));
-            nir_store_var(&b, result, tex(nir_texop_txb, unit, coord, bias), 15);
-            nir_push_else(&b, nullptr);
-        }
-        auto dir = nir_vec2(&b, direction[0], direction[1]);
-        nir_store_var(&b, result,
-                      tex(nir_texop_txd, unit, point, nullptr, nir_fmul(&b, dx, dir), nir_fmul(&b, dy, dir)),
-                      15);
-        if (!literal)
-            nir_pop_if(&b, nullptr);
+        auto dir = nir_vec(&b,direction,dimensions);
+        auto value = tex(nir_texop_txd, unit, point, nullptr, nir_fmul(&b, dx, dir), nir_fmul(&b, dy, dir));
+        if (!dynamicImplicit)
+            return value;
+        nir_store_var(&b, result, value, 15);
+        nir_pop_if(&b, nullptr);
         return nir_load_var(&b, result);
     }
     nir_def *sampleGeneral(const AIRTextureBinding &binding, unsigned sampler, nir_def *coord, nir_def *lod,
@@ -906,14 +938,15 @@ class Direct {
                        unit, point(coord), dx ? nullptr : lod, dx, dy, binding.shape, offset);
         auto flags = literal ? u(Shader::samplerMirrorFlags(*literal))
                              : uniform(stage == 1 ? "_qvertex_sampler_info" : "_qsampler_info", 1, sampler);
-        nir_def *p[2], *direction[2];
-        for (unsigned n = 0; n < 2; ++n) {
+        unsigned dimensions=binding.shape==8?3:2;
+        nir_def *p[3], *direction[3];
+        for (unsigned n = 0; n < dimensions; ++n) {
             auto mirror = nir_ine_imm(&b, nir_iand_imm(&b, flags, 1u << n), 0), raw = c(coord, n);
             p[n] = nir_bcsel(&b, mirror, nir_fabs(&b, raw), raw);
             direction[n] = nir_bcsel(&b, nir_iand(&b, mirror, nir_flt_imm(&b, raw, 0)), nir_imm_float(&b, -1),
                                      nir_imm_float(&b, 1));
         }
-        auto transformed = point(nir_vec2(&b, p[0], p[1]));
+        auto transformed = point(nir_vec(&b,p,dimensions));
         if (level || (stage != 2 && !dx))
             return tex(nir_texop_txl, unit, transformed, lod, nullptr, nullptr, binding.shape, offset);
         if (!dx && literal && !Shader::samplerMirrorFlags(*literal))
@@ -924,12 +957,12 @@ class Direct {
             dx = nir_fmul(&b, derivative(coord, false), scale);
             dy = nir_fmul(&b, derivative(coord, true), scale);
         }
-        auto dir = nir_vec2(&b, direction[0], direction[1]);
+        auto dir = nir_vec(&b,direction,dimensions);
         if (!implicit || literal)
             return tex(nir_texop_txd, unit, transformed, nullptr, nir_fmul(&b, dx, dir),
                        nir_fmul(&b, dy, dir), binding.shape, offset);
         auto result = nir_local_variable_create(b.impl, glsl_vec4_type(), "sample");
-        nir_push_if(&b, nir_ieq_imm(&b, nir_iand_imm(&b, flags, 3), 0));
+        nir_push_if(&b, nir_ieq_imm(&b, nir_iand_imm(&b, flags, (1u<<dimensions)-1), 0));
         nir_store_var(&b, result,
                       tex(nir_texop_txb, unit, point(coord), lod, nullptr, nullptr, binding.shape, offset),
                       15);
@@ -944,6 +977,7 @@ class Direct {
     nir_def *imageInfo(const AIRTextureBinding &binding, bool array = false) {
         if (stage)
             return uniform(graphicsTexturePrefix(binding.shape, stage) + "_info", 4, binding.slot);
+        if(binding.shape==8)return uniform(array?"_qvolume_layout":"_qvolume_info",array?2:4,binding.slot);
         auto name = binding.shape & 2 ? cubeImagePrefix(binding.shape & 1) + (array ? "_face_info" : "_info")
                                       : std::string(array ? "_qimage_array_info" : "_qimage_info");
         return uniform(name, array ? 2 : 4, binding.slot);
@@ -993,13 +1027,25 @@ class Direct {
                              linear);
         return nir_vec4(&b, c(out, 0), c(out, 1), c(out, 2), c(value, 3));
     }
+#include "AIRMatrixNIR.h"
     nir_def *imageReadWrite(const AIRTextureBinding &binding, nir_def *coord, nir_def *lod, nir_def *layer,
-                            nir_def *face, nir_def *writeValue) {
+                            nir_def *face, nir_def *writeValue, nir_def *tileSample=nullptr) {
         auto info = imageInfo(binding), size = imageSize(info, lod),
              format = nir_iand_imm(&b, c(info, 3), 255);
         auto valid = nir_iand(&b, nir_ult(&b, c(coord, 0), c(size, 0)), nir_ult(&b, c(coord, 1), c(size, 1)));
+        nir_def *sampleCount=tileSample?nir_ishl(&b,u(1),nir_iand_imm(&b,nir_ushr_imm(&b,c(info,3),28),3)):u(1);
+        if(tileSample)valid=nir_iand(&b,valid,nir_ult(&b,tileSample,sampleCount));
         auto slice = layer ? layer : u(0), count = u(1), stride = u(0);
-        if (binding.shape) {
+        bool volume=binding.shape==8;
+        nir_def *depth=nullptr,*minimum=nullptr;
+        if(volume) {
+            auto v=stage?info:imageInfo(binding,true);
+            depth=stage?c(info,2):nir_iand_imm(&b,c(v,0),65535);
+            minimum=stage?u(0):nir_ishl_imm(&b,nir_ushr_imm(&b,c(v,0),16),12);
+            stride=stage?u(0):c(v,1);slice=c(coord,2);
+            valid=nir_iand(&b,valid,nir_ult(&b,slice,nir_umax(&b,nir_ushr(&b,depth,lod),u(1))));
+        }
+        if (binding.shape && !volume) {
             auto array = stage ? info : imageInfo(binding, true);
             count = c(array, stage ? 2 : 0);
             if (!stage)
@@ -1016,11 +1062,11 @@ class Direct {
         if (stage) {
             auto result = nir_local_variable_create(b.impl, glsl_vec4_type(), "fetch");
             nir_push_if(&b, valid);
-            auto point = binding.shape ? nir_vec3(&b, c(coord, 0), c(coord, 1), slice) : coord;
+            auto point = volume?coord:binding.shape ? nir_vec3(&b, c(coord, 0), c(coord, 1), slice) : coord;
             // Cube fetches use the native 2D-array descriptor view.
             nir_store_var(&b, result,
                           tex(nir_texop_txf, 128 + binding.shape * 8 + binding.slot, point, lod, nullptr,
-                              nullptr, binding.shape ? 1 : 0),
+                              nullptr, volume?8:binding.shape ? 1 : 0),
                           15);
             nir_push_else(&b, nullptr);
             nir_store_var(&b, result,
@@ -1049,6 +1095,10 @@ class Direct {
                                      nir_iadd_imm(&b, alignment, -1)),
                             alignMask);
         };
+        auto sliceFor=[&](nir_def *level) {
+            auto natural=nir_iand_imm(&b,nir_iadd_imm(&b,nir_imul(&b,pitchFor(level),nir_umax(&b,nir_ushr(&b,c(info,1),level),u(1))),4095),~4095u);
+            return nir_bcsel(&b,nir_ieq_imm(&b,level,0),stride,nir_umax(&b,natural,minimum));
+        };
         auto offset = nir_local_variable_create(b.impl, glsl_uint_type(), "mip_offset"),
              level = nir_local_variable_create(b.impl, glsl_uint_type(), "mip_level");
         nir_store_var(&b, offset, u(0), 1);
@@ -1059,6 +1109,7 @@ class Direct {
         nir_jump(&b, nir_jump_break);
         nir_pop_if(&b, nullptr);
         auto bytes = nir_imul(&b, pitchFor(current), nir_umax(&b, nir_ushr(&b, c(info, 1), current), u(1)));
+        if(volume)bytes=nir_imul(&b,sliceFor(current),nir_umax(&b,nir_ushr(&b,depth,current),u(1)));
         nir_store_var(&b, offset, nir_iadd(&b, nir_load_var(&b, offset), bytes), 1);
         nir_store_var(&b, level, nir_iadd_imm(&b, current, 1), 1);
         nir_pop_loop(&b, nullptr);
@@ -1066,11 +1117,12 @@ class Direct {
         auto pitch = nir_bcsel(&b, nir_ult(&b, u(1), levels), pitchFor(lod), c(info, 2));
         auto address =
             nir_iadd(&b, nir_load_var(&b, offset),
-                     nir_iadd(&b, nir_imul(&b, c(coord, 1), pitch), nir_imul(&b, c(coord, 0), cpp)));
+                     nir_iadd(&b, nir_imul(&b, c(coord, 1), pitch),
+                         nir_imul(&b, nir_iadd(&b,nir_imul(&b,c(coord,0),sampleCount),tileSample?tileSample:u(0)),cpp)));
         if (binding.shape)
-            address = nir_iadd(&b, address, nir_imul(&b, slice, stride));
+            address = nir_iadd(&b, address, nir_imul(&b, slice, volume?sliceFor(lod):stride));
         auto wordAddress = nir_iand_imm(&b, address, ~3u);
-        auto shift = nir_ishl_imm(&b, nir_iand_imm(&b, nir_imul(&b, c(coord, 0), cpp), 3), 3);
+        auto shift = nir_ishl_imm(&b, nir_iand_imm(&b, address, 3), 3);
         auto load = [&](unsigned relative) {
             return ssboLoad(slot, nir_iadd_imm(&b, wordAddress, relative), 1, 32, ACCESS_COHERENT);
         };
@@ -1243,7 +1295,7 @@ class Direct {
         unsigned instructions = 0;
         for (auto block = LLVMGetFirstBasicBlock(f); block; block = LLVMGetNextBasicBlock(block))
             for (auto i = LLVMGetFirstInstruction(block); i; i = LLVMGetNextInstruction(i)) {
-                if (++instructions > 4096)
+                if (++instructions > 8192)
                     fail("NIR instruction limit");
                 if (LLVMIsAAllocaInst(i))
                     prepare(i);
@@ -1354,6 +1406,33 @@ void Direct::interface(LLVMValueRef metadata) {
                 fail("NIR texture slots");
     textureSlots.prepare();
     reflection.textureBindings = textureSlots.encoding();
+    uint32_t occupied=0;
+    for(auto md:declarations)if(AIRSpecialization::enabled(md) && has(md,"air.texture")) {
+        unsigned slot=textureSlots.physical(number(field(md,"air.location_index")));
+        if(slot>=8)fail("NIR tile texture slot limit");occupied|=1u<<slot;
+    }
+    for(auto md:declarations)if(AIRSpecialization::enabled(md) && has(md,"air.imageblock")) {
+        if(stage || !imageblocks.empty() || !has(md,"implicit"))fail("NIR only one implicit compute imageblock is supported");
+        auto fields=node(field(md,"air.struct_type_info"));
+        if(fields.empty() || fields.size()%7)fail("NIR imageblock structure metadata");
+        bool occupiedBytes[128]{};
+        for(size_t at=0;at<fields.size();at+=7) {
+            unsigned offset=number(fields[at]),bytes=number(fields[at+1]),color=number(fields[at+6]);
+            auto type=text(fields[at+3]);
+            if(color>=8 || text(fields[at+5])!="air.render_target" || (type!="half4" && type!="float4") ||
+                bytes!=(type=="half4"?8u:16u) || offset>128-bytes || imageblocks.count(color))fail("NIR imageblock field layout");
+            for(unsigned byte=offset;byte<offset+bytes;++byte) {
+                if(occupiedBytes[byte])fail("NIR overlapping imageblock fields");
+                occupiedBytes[byte]=true;
+            }
+            unsigned slot=8;while(slot && (occupied&(1u<<(slot-1))))--slot;
+            if(!slot)fail("NIR imageblock and textures exceed eight bindings");--slot;occupied|=1u<<slot;
+            AIRTextureBinding binding;binding.slot=slot;binding.access=3;binding.half=type=="half4";
+            imageblocks[color]=binding;
+            reflection.imageblockSampleBytes=std::max(reflection.imageblockSampleBytes,offset+bytes);
+        }
+        reflection.flags|=QGPU_TILE_SHADER;
+    }
     std::set<unsigned> seen, bufferSlots, sharedSlots, samplerSlots, framebufferSlots, attributeSlots;
     std::set<std::string> systemInputs;
     for (auto md : declarations) {
@@ -1371,7 +1450,12 @@ void Direct::interface(LLVMValueRef metadata) {
         }
         if (has(md, "air.raster_order_group"))
             fail("NIR raster order group unsupported");
-        if (has(md, "air.buffer")) {
+        if(has(md,"air.imageblock")) {
+            if(LLVMGetTypeKind(t)!=LLVMStructTypeKind || LLVMCountStructElementTypes(t)!=1 ||
+                LLVMGetTypeKind(LLVMStructGetTypeAtIndex(t,0))!=LLVMPointerTypeKind ||
+                LLVMGetPointerAddressSpace(LLVMStructGetTypeAtIndex(t,0))!=4)fail("NIR implicit imageblock handle shape");
+            value.kind=NV::Unavailable;
+        } else if ((has(md, "air.buffer") || has(md,"air.visible_function_table"))) {
             if (LLVMGetTypeKind(t) != LLVMPointerTypeKind)
                 fail("NIR buffer parameter type");
             unsigned slot = number(field(md, "air.location_index"));
@@ -1381,16 +1465,16 @@ void Direct::interface(LLVMValueRef metadata) {
                 LLVMPointerSizeForAS(layout, space) != 8 ||
                 (field(md, "air.address_space") && number(field(md, "air.address_space")) != space))
                 fail("NIR buffer metadata");
-            bool readonly = space == 2 || has(md, "air.read");
+            bool readonly = space == 2 || has(md, "air.read") || LLVMGetEnumAttributeAtIndex(f,at+1,LLVMGetEnumAttributeKindForName("readonly",8));
             if ((!readonly && !has(md, "air.write") && !has(md, "air.read_write")) ||
                 (stage == 1 && !readonly) || (space == 3 && readonly))
                 fail("NIR buffer access");
-            auto kind = text(field(md, "air.arg_type_name"));
-            unsigned n = bufferComponents(kind),
-                     stride = n ? (n == 3 ? 4 : n) * (kind.rfind("half", 0) == 0 ? 2 : 4) : 4;
-            if ((!n && (kind.empty() || !field(md, "air.arg_type_size") ||
+            auto kind = has(md,"air.visible_function_table")?std::string("uint"):text(field(md, "air.arg_type_name"));
+            unsigned n = kind=="bfloat"?1:bufferComponents(kind),
+                     stride = n ? (n == 3 ? 4 : n) * (kind.rfind("half", 0) == 0 || kind=="bfloat" ? 2 : 4) : 4;
+            if ((!n && kind!="void" && (kind.empty() || !field(md, "air.arg_type_size") ||
                         !number(field(md, "air.arg_type_size")) ||
-                        number(field(md, "air.arg_type_size")) > 4096)) ||
+                        number(field(md, "air.arg_type_size")) > GPU::MaxBufferBytes)) ||
                 (n && field(md, "air.arg_type_size") && number(field(md, "air.arg_type_size")) != stride))
                 fail("NIR buffer layout");
             rootIDs[a] = rootIDs.size() + 1;
@@ -1432,7 +1516,7 @@ void Direct::interface(LLVMValueRef metadata) {
             value.root = a;
         } else if (stage == 1 && has(md, "air.vertex_input")) {
             unsigned slot = number(field(md, "air.location_index"));
-            auto kind = text(field(md, "air.arg_type_name"));
+            auto kind = has(md,"air.visible_function_table")?std::string("uint"):text(field(md, "air.arg_type_name"));
             bool sign = kind.rfind("int", 0) == 0;
             if (slot >= QGPU_MAX_ATTRIBUTES || !attributeSlots.insert(slot).second || lanes(t) > 4 ||
                 (!floating(t) && !integer(scalar(t), 32)) ||
@@ -1453,13 +1537,13 @@ void Direct::interface(LLVMValueRef metadata) {
         } else if (stage == 1 && (has(md, "air.vertex_id") || has(md, "air.instance_id"))) {
             bool instance = has(md, "air.instance_id");
             if (!systemInputs.insert(instance ? "instance" : "vertex").second ||
-                (!integer(t, 32) && (instance || !integer(t, 16))))
+                (!integer(t, 32) && !integer(t, 16)))
                 fail("NIR vertex system input");
             value.def = instance ? nir_iadd(&b, nir_load_instance_id(&b), nir_load_base_instance(&b))
                                  : nir_load_vertex_id(&b);
             if (integer(t, 16))
                 value.def = nir_u2u16(&b, value.def);
-            value.index = instance ? 2 : 1;
+            value.index = integer(t, 32) ? (instance ? 2 : 1) : 0;
         } else if (stage == 2 && has(md, "air.fragment_input")) {
             value.def = nir_f2fN(&b, nir_load_var(&b, varying(md, t, false)), bits(t));
         } else if (stage == 2 && (has(md, "air.sample_id") || has(md, "air.sample_mask"))) {
@@ -1490,8 +1574,8 @@ void Direct::interface(LLVMValueRef metadata) {
                               }).empty()) {
             auto input =
                 computeInputSemantic([&](const char *key) { return has(md, std::string("air.") + key); });
-            if (!systemInputs.insert(input).second || !integer(scalar(t), 32) || lanes(t) > 3 ||
-                (input == "thread_index_in_threadgroup" && lanes(t) != 1))
+            if (!systemInputs.insert(input).second || (!integer(scalar(t), 32) && !integer(scalar(t), 16)) || lanes(t) > 3 ||
+                (scalarComputeInput(input) && lanes(t) != 1))
                 fail("NIR compute system input");
             nir_def *v = nullptr;
             auto dispatch = [&](unsigned index) {
@@ -1514,9 +1598,18 @@ void Direct::interface(LLVMValueRef metadata) {
                 v = nir_load_local_invocation_id(&b);
             else if (input == "thread_index_in_threadgroup")
                 v = nir_load_local_invocation_index(&b);
+            else if (input == "thread_index_in_simdgroup")
+                v = nir_load_subgroup_invocation(&b);
+            else if (input == "simdgroup_index_in_threadgroup")
+                v = nir_load_subgroup_id(&b);
+            else if (input == "simdgroups_per_threadgroup")
+                v = nir_load_num_subgroups(&b);
+            else if (input == "threads_per_simdgroup")
+                v = nir_load_subgroup_size(&b);
             else
                 fail("NIR compute semantic");
             value.def = lanes(t) == 1 ? c(v, 0) : nir_channels(&b, v, (1u << lanes(t)) - 1);
+            if (integer(scalar(t), 16))value.def = nir_u2u16(&b, value.def);
         } else
             fail("NIR frontend unsupported argument semantic");
         values[a] = value;
@@ -1533,6 +1626,69 @@ void Direct::call(LLVMValueRef i) {
         fail("NIR indirect/uninlined call");
     if (n.rfind("llvm.lifetime.", 0) == 0 || n.rfind("llvm.dbg.", 0) == 0)
         return;
+    if(matrixCall(i,n))return;
+    AIRSIMD simd;
+    if(airSIMD(n,simd)) {
+        if(!validAIRSIMD(i,simd,stage))fail("NIR SIMD signature/stage");
+        auto op=simd.op;nir_def *result=nullptr;
+        if(op=="size")result=nir_u2u16(&b,nir_load_subgroup_size(&b));
+        else if(op=="first")result=nir_elect(&b,1);
+        else if(op=="all")result=nir_vote_all(&b,1,arg(i,0));
+        else if(op=="any")result=nir_vote_any(&b,1,arg(i,0));
+        else if(op=="ballot")result=nir_pack_64_2x32(&b,nir_channels(&b,nir_ballot(&b,4,32,arg(i,0)),3));
+        else {
+            auto a=arg(i,0);
+            if(op=="broadcast_first")result=nir_read_first_invocation(&b,a);
+            else if(simd.count>=2) {
+                auto lane=nir_load_subgroup_invocation(&b),width=nir_load_subgroup_size(&b);
+                auto delta=nir_u2u32(&b,arg(i,simd.count==4?2:1));nir_def *index=delta,*fill=nullptr;
+                if(op=="shuffle_xor")index=nir_ixor(&b,lane,delta);
+                if(op=="shuffle_down" || op=="shuffle_up") {
+                    index=op=="shuffle_down"?nir_iadd(&b,lane,delta):nir_isub(&b,lane,delta);
+                    index=nir_bcsel(&b,nir_ult(&b,index,width),index,lane);
+                }
+                if(simd.count==4) {
+                    auto modulo=nir_u2u32(&b,arg(i,3)),mask=nir_iadd_imm(&b,modulo,-1);
+                    auto relative=nir_iand(&b,lane,mask),base=nir_iand(&b,lane,nir_inot(&b,mask));
+                    bool down=op=="shuffle_and_fill_down";
+                    auto shifted=down?nir_iadd(&b,relative,delta):nir_isub(&b,relative,delta);
+                    fill=down?nir_uge(&b,shifted,modulo):nir_ult(&b,relative,delta);
+                    index=nir_ior(&b,base,nir_iand(&b,shifted,mask));
+                }
+                // IR3 shuffle lowering works on 32-bit payloads. Zero-extend
+                // narrow bits (including half NaNs) and restore their width.
+                result=nir_shuffle(&b,simd.bits<32?nir_u2u32(&b,a):a,index);
+                if(fill) {
+                    auto second=arg(i,1);if(simd.bits<32)second=nir_u2u32(&b,second);
+                    result=nir_bcsel(&b,fill,nir_shuffle(&b,second,index),result);
+                }
+                if(simd.bits<32)result=nir_u2uN(&b,result,simd.bits);
+            } else {
+                nir_op reduction=op=="min"?(simd.floating?nir_op_fmin:simd.sign?nir_op_imin:nir_op_umin):
+                    op=="max"?(simd.floating?nir_op_fmax:simd.sign?nir_op_imax:nir_op_umax):
+                    op=="product"?(simd.floating?nir_op_fmul:nir_op_imul):
+                    op=="and"?nir_op_iand:op=="or"?nir_op_ior:op=="xor"?nir_op_ixor:(simd.floating?nir_op_fadd:nir_op_iadd);
+                bool narrow=!simd.floating && simd.bits<32;
+                if(narrow)a=simd.sign?nir_i2i32(&b,a):nir_u2u32(&b,a);
+                if(op=="prefix_exclusive_sum")result=nir_exclusive_scan(&b,a,reduction);
+                else if(op=="prefix_inclusive_sum")result=nir_inclusive_scan(&b,a,reduction);
+                else result=nir_reduce(&b,a,reduction,0);
+                if(narrow)result=nir_u2uN(&b,result,simd.bits);
+            }
+        }
+        set(i,result);return;
+    }
+    if(n=="air.simdgroup.barrier") {
+        if(stage || count!=2 || LLVMGetTypeKind(t)!=LLVMVoidTypeKind ||
+            !integer(LLVMTypeOf(LLVMGetOperand(i,0)),32) || !integer(LLVMTypeOf(LLVMGetOperand(i,1)),32))fail("NIR SIMD barrier signature");
+        unsigned flags=number(LLVMGetOperand(i,0)),scope=number(LLVMGetOperand(i,1));
+        if(flags>7 || (scope!=1 && scope!=2 && scope!=4))fail("NIR SIMD barrier flags/scope");
+        _nir_barrier_indices barrier{};barrier.execution_scope=SCOPE_SUBGROUP;
+        barrier.memory_scope=scope==4?SCOPE_SUBGROUP:scope==1?SCOPE_WORKGROUP:SCOPE_DEVICE;
+        barrier.memory_semantics=NIR_MEMORY_ACQ_REL;
+        barrier.memory_modes=nir_variable_mode((flags&5?nir_var_mem_ssbo:0)|(flags&2?nir_var_mem_shared:0));
+        _nir_build_barrier(&b,barrier);return;
+    }
     for (unsigned width = 2; width <= 4; ++width)
         for (bool all : {false, true})
             if (n == std::string(all ? "air.all.v" : "air.any.v") + std::to_string(width) + "i1") {
@@ -1616,6 +1772,11 @@ void Direct::call(LLVMValueRef i) {
         values[i] = v;
         return;
     }
+    if (n == "air.unpack.unorm4x8.v4f16" || n == "air.unpack.unorm4x8.v4f32") {
+        if (count!=1 || !integer(LLVMTypeOf(LLVMGetOperand(i,0)),32) || !floating(t) || lanes(t)!=4 ||
+            half(t)!=(n=="air.unpack.unorm4x8.v4f16"))fail("NIR unpack unorm4x8 signature");
+        set(i,nir_f2fN(&b,nir_unpack_unorm_4x8(&b,arg(i,0)),bits(t)));return;
+    }
     if (n == "air.pack.unorm4x8.v4f16" || n == "air.pack.unorm4x8.v4f32") {
         if (count != 1 || !integer(t, 32) || !floating(LLVMTypeOf(LLVMGetOperand(i, 0))) ||
             lanes(LLVMTypeOf(LLVMGetOperand(i, 0))) != 4 ||
@@ -1662,6 +1823,37 @@ void Direct::call(LLVMValueRef i) {
         set(i, nir_fsin(&b, x));
         return;
     }
+    const bool tileLoad=n=="air.load.implicit_imageblock.v4f16" || n=="air.load.implicit_imageblock.v4f32";
+    const bool tileStore=n=="air.store.implicit_imageblock.v4f16" || n=="air.store.implicit_imageblock.v4f32";
+    if(tileLoad || tileStore) {
+        unsigned first=tileStore?1:0;
+        if(stage || count!=first+4 || imageblocks.empty())fail("NIR imageblock call stage/arity");
+        auto constant=[&](unsigned at,unsigned width) {
+            auto v=LLVMGetOperand(i,at);
+            if(!integer(LLVMTypeOf(v),width) || !LLVMIsAConstantInt(v))fail("NIR imageblock constant operand");
+            return number(v);
+        };
+        unsigned attachment=constant(first,32);
+        if(!imageblocks.count(attachment) || constant(first+2,32) || !integer(LLVMTypeOf(LLVMGetOperand(i,first+3)),16))fail("NIR imageblock attachment/layer/sample");
+        const auto binding=imageblocks.at(attachment);
+        auto coordType=LLVMTypeOf(LLVMGetOperand(i,first+1)),valueType=tileStore?LLVMTypeOf(LLVMGetOperand(i,0)):t;
+        bool halfValue=n.find("v4f16")!=std::string::npos;
+        if(lanes(coordType)!=2 || !integer(scalar(coordType),16) || lanes(valueType)!=4 ||
+            !floating(valueType) || half(valueType)!=halfValue || halfValue!=binding.half ||
+            (tileStore && LLVMGetTypeKind(t)!=LLVMVoidTypeKind))fail("NIR imageblock operand precision");
+        reflection.imageblockMask|=1u<<attachment;
+        reflection.imageblockBindings|=binding.slot<<(attachment*4);
+        auto packed=c(uniform("_qdispatch_info",4,3),3);
+        auto tileSize=nir_vec2(&b,nir_iand_imm(&b,packed,65535),nir_ushr_imm(&b,packed,16));
+        auto local=nir_u2u32(&b,arg(i,first+1));
+        auto group=nir_iadd(&b,nir_load_workgroup_id(&b),nir_channels(&b,uniform("_qdispatch_info",4,1),7));
+        auto pixel=nir_iadd(&b,local,nir_imul(&b,nir_channels(&b,group,3),tileSize));
+        auto inTile=nir_iand(&b,nir_ult(&b,c(local,0),c(tileSize,0)),nir_ult(&b,c(local,1),c(tileSize,1)));
+        pixel=nir_bcsel(&b,inTile,pixel,nir_imm_ivec2(&b,-1,-1));
+        auto result=imageReadWrite(binding,pixel,u(0),nullptr,nullptr,tileStore?nir_f2f32(&b,arg(i,0)):nullptr,nir_u2u32(&b,arg(i,first+3)));
+        if(tileLoad)set(i,nir_f2fN(&b,result,halfValue?16:32));
+        return;
+    }
     AIRTextureCall tc;
     if (airTextureOperation(n, tc)) {
         if (!airTextureLayout(tc, count))
@@ -1695,7 +1887,11 @@ void Direct::call(LLVMValueRef i) {
             auto info = imageInfo(binding), level = tc.lod == UINT32_MAX ? u(0) : arg(i, tc.lod);
             nir_def *result;
             auto array = !stage && (binding.shape & 1) ? imageInfo(binding, true) : nullptr;
-            if (tc.op == AIRTextureCall::Width || tc.op == AIRTextureCall::Height) {
+            if(tc.op==AIRTextureCall::Depth) {
+                auto v=stage?c(info,2):nir_iand_imm(&b,c(imageInfo(binding,true),0),65535);
+                auto levels=nir_iand_imm(&b,nir_ushr_imm(&b,c(info,3),8),255);
+                result=nir_bcsel(&b,nir_ult(&b,level,levels),nir_umax(&b,nir_ushr(&b,v,level),u(1)),u(0));
+            } else if (tc.op == AIRTextureCall::Width || tc.op == AIRTextureCall::Height) {
                 result = c(imageSize(info, level), tc.op == AIRTextureCall::Width ? 0 : 1);
                 if (array)
                     result = nir_bcsel(&b, nir_ine_imm(&b, c(array, 0), 0), result, u(0));
@@ -1721,13 +1917,13 @@ void Direct::call(LLVMValueRef i) {
             fail("NIR texture offset flag");
         if (tc.offset != UINT32_MAX) {
             auto type = LLVMTypeOf(operand(tc.offset));
-            if (lanes(type) != 2 || !integer(scalar(type), 32))
+            if (lanes(type) != (binding.shape==8?3u:2u) || !integer(scalar(type), 32))
                 fail("NIR texture offset type");
             if (!zero(tc.offset)) {
                 if (!sampleOp || !LLVMIsAConstant(operand(tc.offset)) || tc.offsetFlag == UINT32_MAX ||
                     !immediate(tc.offsetFlag, 1, 1))
                     fail("NIR texture offset mode");
-                for (unsigned k = 0; k < 2; ++k) {
+                for (unsigned k = 0; k < (binding.shape==8?3u:2u); ++k) {
                     auto component = LLVMConstExtractElement(
                         operand(tc.offset),
                         LLVMConstInt(LLVMInt32TypeInContext(LLVMGetTypeContext(type)), k, false));
@@ -1761,7 +1957,7 @@ void Direct::call(LLVMValueRef i) {
         };
         if (read || write) {
             auto coordinate = LLVMTypeOf(operand(tc.coord));
-            if (lanes(coordinate) != 2 || !integer(scalar(coordinate), 32) || !isInt(tc.lod, 32) ||
+            if (lanes(coordinate) != (binding.shape==8?3u:2u) || !integer(scalar(coordinate), tc.indexBits) || !isInt(tc.lod, tc.indexBits) ||
                 (write ? (stage || !(binding.access & 2)) : (binding.access != 4 && !(binding.access & 1))))
                 fail("NIR texture read/write stage/access");
             if (tc.currentRead && get(operand(1)).kind != NV::ReadSampler)
@@ -1772,7 +1968,7 @@ void Direct::call(LLVMValueRef i) {
             auto value = write ? arg(i, tc.value) : nullptr;
             if (write && !tc.unsignedInteger)
                 value = nir_f2f32(&b, value);
-            auto r = imageReadWrite(binding, arg(i, tc.coord), arg(i, tc.lod),
+            auto r = imageReadWrite(binding, nir_u2u32(&b, arg(i, tc.coord)), nir_u2u32(&b, arg(i, tc.lod)),
                                     tc.layer == UINT32_MAX ? nullptr : arg(i, tc.layer),
                                     tc.face == UINT32_MAX ? nullptr : arg(i, tc.face), value);
             if (!write)
@@ -1783,7 +1979,7 @@ void Direct::call(LLVMValueRef i) {
         auto sampler = get(operand(1));
         auto coordType = LLVMTypeOf(operand(tc.coord));
         if (binding.access != 4 || sampler.kind != NV::Sampler || !samplers.count(sampler.root) ||
-            lanes(coordType) != (cube ? 3u : 2u) || LLVMGetTypeKind(scalar(coordType)) != LLVMFloatTypeKind ||
+            lanes(coordType) != (cube || binding.shape==8 ? 3u : 2u) || LLVMGetTypeKind(scalar(coordType)) != LLVMFloatTypeKind ||
             LLVMGetTypeKind(LLVMTypeOf(operand(tc.minLod))) != LLVMFloatTypeKind || !zero(tc.minLod))
             fail("NIR sample operands");
         unsigned slot = samplers.at(sampler.root);
@@ -1816,6 +2012,20 @@ void Direct::call(LLVMValueRef i) {
     }
     if (n.rfind("air.", 0) != 0 && n.rfind("llvm.", 0) != 0)
         fail("NIR uninlined function " + n);
+    std::string integerMath;
+    unsigned integerCount = airIntegerMath(n, lanes(t), integerMath);
+    if (integerCount) {
+        if (count != integerCount || !integer(scalar(t), 32))fail("NIR integer math signature");
+        for (unsigned j = 0; j < count; ++j)
+            if (LLVMTypeOf(LLVMGetOperand(i, j)) != t)fail("NIR integer math operand");
+        auto a = arg(i, 0);
+        auto d = count == 2 ? arg(i, 1) : nullptr;
+        set(i, integerMath == "reverse" ? nir_bitfield_reverse(&b, a)
+               : integerMath == "smin" ? nir_imin(&b, a, d)
+               : integerMath == "smax" ? nir_imax(&b, a, d)
+               : integerMath == "umin" ? nir_umin(&b, a, d) : nir_umax(&b, a, d));
+        return;
+    }
     std::string extra;
     unsigned extraCount = airExtraMath(n, airFloatSuffix(half(t), lanes(t)), extra);
     if (extraCount) {
@@ -1826,7 +2036,14 @@ void Direct::call(LLVMValueRef i) {
                 fail("NIR extra math operand");
         auto x = arg(i, 0);
         nir_def *result = nullptr;
-        if (extra == "fmin3" || extra == "fmax3") {
+        if (extra == "sign") {
+            auto zero = nir_imm_floatN_t(&b, 0.0, bits(t));
+            result = nir_bcsel(&b, nir_feq(&b, x, zero), x,
+                nir_bcsel(&b, nir_flt(&b, x, zero), nir_imm_floatN_t(&b, -1.0, bits(t)),
+                    nir_bcsel(&b, nir_flt(&b, zero, x), nir_imm_floatN_t(&b, 1.0, bits(t)), zero)));
+        } else if (extra == "copysign") {
+            result = nir_ior(&b, nir_iand_imm(&b, x, 0x7fffffff), nir_iand_imm(&b, arg(i, 1), 0x80000000));
+        } else if (extra == "fmin3" || extra == "fmax3") {
             auto extrema = [&](nir_def *a, nir_def *d) {
                 auto value = extra == "fmin3" ? nir_fmin(&b, a, d) : nir_fmax(&b, a, d);
                 return nir_bcsel(&b, nir_fneu(&b, a, a), d, nir_bcsel(&b, nir_fneu(&b, d, d), a, value));
@@ -2009,10 +2226,14 @@ void Direct::instruction(LLVMValueRef i) {
         return;
     }
     if (op == LLVMExtractElement) {
+        if(get(LLVMGetOperand(i,0)).kind==NV::Matrix)fail("NIR raw matrix elements require a verified AIR per-thread layout");
         set(i, nir_vector_extract(&b, arg(i, 0), nir_u2u32(&b, arg(i, 1))));
         return;
     }
     if (op == LLVMInsertElement || op == LLVMShuffleVector) {
+        if(matrixType(t) || get(LLVMGetOperand(i,0)).kind==NV::Matrix ||
+            (op==LLVMShuffleVector && get(LLVMGetOperand(i,1)).kind==NV::Matrix))
+            fail("NIR raw matrix repacking requires a verified AIR per-thread layout");
         std::vector<nir_def *> parts;
         unsigned size = lanes(LLVMTypeOf(LLVMGetOperand(i, 0)));
         for (unsigned n = 0; n < lanes(t); ++n) {
@@ -2098,6 +2319,7 @@ void Direct::instruction(LLVMValueRef i) {
         auto from = LLVMTypeOf(LLVMGetOperand(i, 0));
         auto v = get(LLVMGetOperand(i, 0));
         if (op == LLVMBitCast) {
+            if(v.kind==NV::Matrix && (lanes(from)!=lanes(t) || bits(from)!=bits(t)))fail("NIR matrix bitcast changes element ownership");
             if (LLVMGetTypeKind(t) == LLVMPointerTypeKind)
                 set(i, v);
             else {
@@ -2185,7 +2407,7 @@ void Direct::flow() {
         ids[block] = blocks.size();
         blocks.push_back(block);
     }
-    if (blocks.empty() || blocks.size() > 128)
+    if (blocks.empty() || blocks.size() > 512)
         fail("NIR CFG limit");
     unsigned count = blocks.size();
     std::vector<unsigned> color(count);
@@ -2660,6 +2882,15 @@ void mergeReflection(QGPUProgramImage &image, const QGPUProgramDescription &refl
         p.writeMask = reflection.writeMask;
         p.instanceMask = reflection.instanceMask;
         p.textureBindings = reflection.textureBindings;
+        p.flags|=reflection.flags&QGPU_SIMD_MATRIX;
+        if(reflection.flags&QGPU_TILE_SHADER) {
+            p.flags|=QGPU_TILE_SHADER|QGPU_DISPATCH_GEOMETRY;
+            p.imageblockSampleBytes=reflection.imageblockSampleBytes;
+            for(unsigned i=0;i<8;++i)if(reflection.imageblockMask&(1u<<i)) {
+                unsigned slot=(reflection.imageblockBindings>>(i*4))&15;
+                if(p.imageMask&(1u<<slot)){p.imageblockMask|=1u<<i;p.imageblockBindings|=slot<<(i*4);}
+            }
+        }
         if (p.framebufferMask & ~reflection.framebufferMask)
             fail("NIR undeclared framebuffer");
         p.depthTextureMask =

@@ -1277,5 +1277,23 @@
     "cache": "Immutable LLVM decode templates for AIR >=32 KiB: four entries, 32 MiB retained source bytes, exact source equality, per-call specialization clones and context lifetime mutex. Direct capability-failure LRU: eight entries, 32 MiB source bytes, exact source/entry/constants/registry key; backend failures are retried. Process-local only; final existing shader caches are unchanged.",
     "validation": "Host compiler/interface/cache regressions, existing 54-entry finalized-NIR output differential, Compute/Welcome/eight Fluidity profile matrix, and independent integer/control-flow references for the remaining-features suite. Candidate-specific receipts live under build/air-nir-remaining-20261021. A540 hardware results remain separate.",
     "fallback_limits": "Unsupported Metal resource/intrinsic families, raw pointer-integer conversions, pointer ordering, unsupported aggregate/type shapes and atomic orders still use GLSL or report a checked error. Existing input/CFG/JIT machine-code and register limits remain enforced; expanded 64-bit division can reach those limits."
+  },
+  "ios18_extended_air_profile": {
+    "shader_version": 46,
+    "jit_version": 41,
+    "render_pass_version": 2,
+    "program_description_bytes": 2484,
+    "program_image_bytes": 83784,
+    "texture_3d": "AIR direct NIR sampling/read/write/queries; uncompressed color, mip chains, depth-plane attachments, CPU and buffer/texture volume transfers. No compressed 3D storage or 3D mip generation.",
+    "tile": "Implicit half4/float4 imageblocks via bounded attachment SSBO access, dynamic sample indices and 1/2/4 samples. Explicit imageblocks remain unsupported.",
+    "simd": "Compute reductions/scans, broadcasts/shuffles, election/votes/ballot and barriers; cooperative 8x8 float/half/bfloat matrices use 64 lanes, transposed device/shared loads/stores and FP32 multiply accumulation. Full subgroups required.",
+    "indirect_calls": "Finite local pointers and dynamic Metal visible function tables. Visible AIR functions link into a stage, GPU tables store bounded uint function IDs; up to 64 linked targets and 256 slots per table. Host function addresses are not executed.",
+    "cfg_limits": {
+      "blocks": 512,
+      "instructions": 8192
+    },
+    "apple_gpu_archives": "Bounded Apple GPU Mach-O embedded AIR import; AIRC SBUF/SPCI specialization recovery, exact source AIR SHA256 match, AIR to NIR to A540 rebuild. No Apple machine-code instruction translator.",
+    "agx_runtime": "Bounded symbol-table extraction preserves each helper AIR module. Helpers are not independently dispatchable shader entries.",
+    "hardware_tested": false
   }
 }

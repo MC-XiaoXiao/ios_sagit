@@ -194,14 +194,14 @@ inline bool airTextureMetadata(std::string name,AIRTextureBinding &out) {
     for(size_t i=0;i<name.size();) {
         if(name[i]==' ' || name[i]=='\t')name.erase(i,1);else ++i;
     }
-    static const char *shapes[]={"texture2d","texture2d_array","texturecube","texturecube_array"};
-    for(unsigned shape=0;shape<4;++shape)for(unsigned access=1;access<=4;++access) {
+    static const char *shapes[]={"texture2d","texture2d_array","texturecube","texturecube_array","texture3d"};
+    for(unsigned shape=0;shape<5;++shape)for(unsigned access=1;access<=4;++access) {
         const char *qualifier=access==1?"read":access==2?"write":access==3?"read_write":"sample";
         for(unsigned type=0;type<3;++type) {
             if(type==2 && access==4)continue; // Integer filtering has no lowering.
             std::string stem=std::string(shapes[shape])+(type==2?"<uint":type==1?"<half":"<float");
             if(name==stem+","+qualifier+">" || name==stem+",access::"+qualifier+">" || (access==4 && name==stem+">")) {
-                out.shape=shape;out.access=access;out.half=type==1;out.unsignedInteger=type==2;return true;
+                out.shape=shape==4?8:shape;out.access=access;out.half=type==1;out.unsignedInteger=type==2;return true;
             }
         }
     }
@@ -211,29 +211,34 @@ inline bool airTextureMetadata(std::string name,AIRTextureBinding &out) {
 // Current reads add get_read_sampler and a planar offset; legacy reads omit
 // both. Every position is validated by each LLVM API adapter before lowering.
 struct AIRTextureCall {
-    enum Operation { Read,Write,Width,Height,MipLevels,ArraySize,Sample,Gradient } op=Read;
+    enum Operation { Read,Write,Width,Height,MipLevels,ArraySize,Depth,Sample,Gradient } op=Read;
     unsigned shape=0,coord=UINT32_MAX,face=UINT32_MAX,layer=UINT32_MAX,value=UINT32_MAX,
         lod=UINT32_MAX,access=UINT32_MAX,offset=UINT32_MAX,offsetFlag=UINT32_MAX,
-        levelFlag=UINT32_MAX,minLod=UINT32_MAX,dx=UINT32_MAX,dy=UINT32_MAX;
+        levelFlag=UINT32_MAX,minLod=UINT32_MAX,dx=UINT32_MAX,dy=UINT32_MAX,indexBits=32;
     bool currentRead=false,half=false,unsignedInteger=false;
 };
 inline bool airTextureOperation(const std::string &name,AIRTextureCall &out) {
-    static const char *shapes[]={"2d","2d_array","cube","cube_array"};
-    static const char *operations[]={"read","write","get_width","get_height","get_num_mip_levels","get_array_size","sample","sample"};
-    for(unsigned shape=0;shape<4;++shape)for(unsigned op=0;op<8;++op) {
+    static const char *shapes[]={"2d","2d_array","cube","cube_array","3d"};
+    static const char *operations[]={"read","write","get_width","get_height","get_num_mip_levels","get_array_size","get_depth","sample","sample"};
+    for(unsigned shape=0;shape<5;++shape)for(unsigned op=0;op<9;++op) {
         if(op==AIRTextureCall::ArraySize && !(shape&1))continue;
+        if(op==AIRTextureCall::Depth && shape!=4)continue;
         std::string candidate=std::string("air.")+operations[op]+"_texture_"+shapes[shape];
         if(op==AIRTextureCall::Gradient)candidate+="_grad";
+        bool narrow=shape==0 && op<=AIRTextureCall::Write &&
+            (name==candidate+".i16.v4f16" || name==candidate+".i16.v4f32");
+        if(narrow)candidate+=".i16";
         bool texel=op==AIRTextureCall::Read || op==AIRTextureCall::Write || op>=AIRTextureCall::Sample;
         bool unsignedInteger=(op==AIRTextureCall::Read || op==AIRTextureCall::Write) && name==candidate+".u.v4i32";
         if(name==candidate+(texel?".v4f32":"") || (texel && name==candidate+".v4f16") || unsignedInteger) {
-            out.op=AIRTextureCall::Operation(op);out.shape=shape;out.half=texel && name==candidate+".v4f16";out.unsignedInteger=unsignedInteger;return true;
+            out.op=AIRTextureCall::Operation(op);out.shape=shape==4?8:shape;out.half=texel && name==candidate+".v4f16";
+            out.unsignedInteger=unsignedInteger;out.indexBits=narrow?16:32;return true;
         }
     }
     return false;
 }
 inline bool airTextureLayout(AIRTextureCall &out,unsigned count) {
-    if(out.op==AIRTextureCall::Width || out.op==AIRTextureCall::Height) {out.lod=1;return count==2;}
+    if(out.op==AIRTextureCall::Width || out.op==AIRTextureCall::Height || out.op==AIRTextureCall::Depth) {out.lod=1;return count==2;}
     if(out.op==AIRTextureCall::MipLevels || out.op==AIRTextureCall::ArraySize)return count==1;
     bool array=out.shape&1,cube=out.shape&2;
     unsigned at=1;
@@ -401,7 +406,7 @@ inline std::string sampleDeclaration(unsigned texture,unsigned sampler,bool expl
 }
 inline std::string graphicsTexturePrefix(unsigned shape,unsigned stage) {
     static const char *names[]={"texture2d","texture2d_array","texturecube","texturecube_array","texture2d_ms","texture2d_ms_array"};
-    return std::string(stage==1?"_qvertex_":"_q")+names[shape];
+    return std::string(stage==1?"_qvertex_":"_q")+(shape==8?"texture3d":names[shape]);
 }
 inline std::string graphicsTextureHeader(unsigned shape,unsigned stage) {
     auto p=graphicsTexturePrefix(shape,stage);
@@ -575,11 +580,32 @@ inline std::string airFloatName(bool half,unsigned lanes) {
 inline std::string airFloatSuffix(bool half,unsigned lanes) {
     return (lanes==1?std::string():"v"+std::to_string(lanes))+(half?"f16":"f32");
 }
+inline unsigned airIntegerMath(const std::string &name,unsigned lanes,std::string &operation) {
+    if(lanes<1 || lanes>4)return 0;
+    auto suffix=(lanes==1?std::string():"v"+std::to_string(lanes))+"i32";
+    for(const char *op:{"min","max"})for(const char *sign:{"s","u"}) {
+        if(name==std::string("air.")+op+"."+sign+"."+suffix || name==std::string("llvm.")+sign+op+"."+suffix) {
+            operation=std::string(sign)+op;return 2;
+        }
+    }
+    if(name=="air.reverse_bits."+suffix || name=="llvm.bitreverse."+suffix) {
+        operation="reverse";return 1;
+    }
+    return 0;
+}
+inline std::string airIntegerMathExpression(const std::string &op,const std::vector<std::string> &args,unsigned lanes) {
+    if(op=="reverse")return "bitfieldReverse("+args[0]+")";
+    auto input=airIntegerType(lanes,op[0]=='s'),output=airIntegerType(lanes);
+    return output+"("+op.substr(1)+"("+input+"("+args[0]+"),"+input+"("+args[1]+")))";
+}
 // Additional math observed in iOS18 QuartzCore AIR. Both LLVM readers check
 // exact signatures before using this shared expression builder.
 inline unsigned airExtraMath(const std::string &name,const std::string &suffix,std::string &operation) {
+    if(suffix.size()>=3 && suffix.substr(suffix.size()-3)=="f32" && name=="llvm.copysign."+suffix) {
+        operation="copysign";return 2;
+    }
     static constexpr struct {const char *name;unsigned count;} operations[]={
-        {"exp",1},{"log",1},{"atan2",2},{"powr",2},{"fmin3",3},{"fmax3",3}};
+        {"exp",1},{"log",1},{"atan2",2},{"powr",2},{"fmin3",3},{"fmax3",3},{"sign",1}};
     for(const auto &item:operations)
         if(name==std::string("air.")+item.name+"."+suffix || name==std::string("air.fast_")+item.name+"."+suffix) {
             operation=item.name;return item.count;
@@ -592,7 +618,18 @@ inline std::string airExtraMathExpression(const std::string &op,const std::vecto
     const bool extrema=op=="fmin3" || op=="fmax3";
     auto arg=[&](unsigned i){return half && !extrema?airFloatType(false,lanes)+"("+args[i]+")":args[i];};
     std::string value;
-    if(extrema) {
+    if(op=="sign") {
+        // Metal sign preserves both zeros and returns +0 for NaN.
+        value=airFloatType(false,lanes)+"(";
+        for(unsigned i=0;i<lanes;++i) {
+            auto x="("+arg(0)+")"+(lanes==1?std::string():std::string(".")+"xyzw"[i]);
+            value+=std::string(i?",":"")+"(isnan("+x+")?0.0:("+x+">0.0?1.0:("+x+"<0.0?-1.0:"+x+")))";
+        }
+        value+=")";
+    } else if(op=="copysign") {
+        // LLVM copysign is a bit operation, including signed zero and NaNs.
+        value="uintBitsToFloat((floatBitsToUint("+arg(0)+") & 2147483647u) | (floatBitsToUint("+arg(1)+") & 2147483648u))";
+    } else if(extrema) {
         auto combine=[&](const std::string &a,const std::string &b) {
             auto result=std::string(op=="fmin3"?"min(":"max(")+a+","+b+")";
             // Unlike GLSL min/max, Metal returns the numeric operand if
@@ -707,14 +744,77 @@ inline std::string computeSystemValue(const std::string &attribute) {
     if (attribute=="threads_per_grid") return "_q_grid_size()";
     if (attribute=="dispatch_threads_per_threadgroup") return "_q_dispatch_local_size()";
     if (attribute=="thread_index_in_threadgroup") return "gl_LocalInvocationIndex";
+    if (attribute=="thread_index_in_simdgroup") return "gl_SubgroupInvocationID";
+    if (attribute=="simdgroup_index_in_threadgroup") return "gl_SubgroupID";
+    if (attribute=="simdgroups_per_threadgroup") return "gl_NumSubgroups";
+    if (attribute=="threads_per_simdgroup") return "gl_SubgroupSize";
     return {};
 }
 template<class Has> inline std::string computeInputSemantic(Has has) {
     std::string input;
     for (auto semantic:{"thread_position_in_grid","thread_position_in_threadgroup","threadgroup_position_in_grid",
-        "threads_per_threadgroup","dispatch_threads_per_threadgroup","threadgroups_per_grid","threads_per_grid","thread_index_in_threadgroup"})
+        "threads_per_threadgroup","dispatch_threads_per_threadgroup","threadgroups_per_grid","threads_per_grid","thread_index_in_threadgroup",
+        "thread_index_in_simdgroup","simdgroup_index_in_threadgroup","simdgroups_per_threadgroup","threads_per_simdgroup"})
         if (has(semantic)) { if (!input.empty()) return "?";input=semantic; }
     return input;
+}
+inline bool scalarComputeInput(const std::string &input) {
+    return input=="thread_index_in_threadgroup" || input.find("simdgroup")!=std::string::npos;
+}
+struct AIRSIMD {
+    std::string op;unsigned bits=0,lanes=1,count=0;bool floating=false,sign=false;
+};
+inline bool airSIMD(const std::string &name,AIRSIMD &s) {
+    if(name=="air.get_simdgroup_size.i16"){s.op="size";s.bits=16;return true;}
+    if(name=="air.simd_is_first"){s.op="first";s.bits=1;return true;}
+    if(name=="air.simd_all" || name=="air.simd_any"){s.op=name.substr(9);s.bits=1;s.count=1;return true;}
+    if(name=="air.simd_ballot.i64"){s.op="ballot";s.bits=64;s.count=1;return true;}
+    for(const auto *op:{"sum","product","min","max","and","or","xor","prefix_exclusive_sum","prefix_inclusive_sum",
+        "broadcast_first","broadcast","shuffle","shuffle_down","shuffle_up","shuffle_xor","shuffle_and_fill_down","shuffle_and_fill_up"}) {
+        std::string prefix=std::string("air.simd_")+op+".";if(name.find(prefix)!=0)continue;
+        auto suffix=name.substr(prefix.size());s.op=op;s.count=1;
+        if(s.op=="broadcast" || s.op.find("shuffle")==0)s.count=2;
+        if(s.op.find("shuffle_and_fill")==0)s.count=4;
+        if(suffix.find("s.")==0 || suffix.find("u.")==0){s.sign=suffix[0]=='s';suffix.erase(0,2);}
+        for(unsigned lanes=1;lanes<=4;++lanes)for(unsigned bits:{8u,16u,32u})for(bool fp:{false,true}) {
+            auto type=(lanes==1?"":"v"+std::to_string(lanes))+std::string(fp?"f":"i")+std::to_string(bits);
+            if(suffix==type && (!fp || bits>=16)){s.bits=bits;s.lanes=lanes;s.floating=fp;return true;}
+        }
+        return false;
+    }
+    return false;
+}
+inline std::string simdHeader() {
+    return "#extension GL_KHR_shader_subgroup_basic : require\n"
+        "#extension GL_KHR_shader_subgroup_arithmetic : require\n"
+        "#extension GL_KHR_shader_subgroup_ballot : require\n"
+        "#extension GL_KHR_shader_subgroup_shuffle : require\n"
+        "#extension GL_KHR_shader_subgroup_vote : require\n";
+}
+inline std::string airSIMDExpression(const AIRSIMD &s,const std::vector<std::string> &args) {
+    if(s.op=="size")return "gl_SubgroupSize";
+    if(s.op=="first")return "subgroupElect()";
+    if(s.op=="all" || s.op=="any")return std::string(s.op=="all"?"subgroupAll(":"subgroupAny(")+args[0]+")";
+    if(s.op=="ballot")return {};
+    std::string value=args[0];
+    if(!s.floating)value=s.sign?airSignedInteger(value,s.bits,s.lanes):airIntegerMask(value,s.bits,s.lanes);
+    if(s.floating && s.bits==16)value=airFloatType(false,s.lanes)+"("+value+")";
+    std::string function=s.op=="sum"?"subgroupAdd":s.op=="product"?"subgroupMul":s.op=="min"?"subgroupMin":
+        s.op=="max"?"subgroupMax":s.op=="and"?"subgroupAnd":s.op=="or"?"subgroupOr":s.op=="xor"?"subgroupXor":
+        s.op=="prefix_exclusive_sum"?"subgroupExclusiveAdd":s.op=="prefix_inclusive_sum"?"subgroupInclusiveAdd":
+        s.op=="broadcast_first"?"subgroupBroadcastFirst":"subgroupShuffle";
+    std::string result;
+    if(s.count==1)result=function+"("+value+")";
+    else if(s.count==2) {
+        auto delta="("+args[1]+" & 65535u)",lane=std::string("gl_SubgroupInvocationID");
+        auto index=s.op=="shuffle_down"?"("+lane+"+"+delta+")":s.op=="shuffle_up"?"("+lane+"-"+delta+")":
+            s.op=="shuffle_xor"?"("+lane+"^"+delta+")":delta;
+        if(s.op=="shuffle_down" || s.op=="shuffle_up")index="("+index+"<gl_SubgroupSize?"+index+":"+lane+")";
+        result=function+"("+value+","+index+")";
+    } else return {}; // Fill-shuffles require two convergent reads; lowered directly in NIR.
+    if(s.floating && s.bits==16)return airFloatType(true,s.lanes)+"("+result+")";
+    if(!s.floating)return airIntegerMask(airIntegerType(s.lanes)+"("+result+")",s.bits,s.lanes);
+    return result;
 }
 inline std::string booleanBinary(const std::string &op,const std::string &a,const std::string &b,unsigned lanes) {
     const std::string logical=op=="&"?"&&":op=="|"?"||":op=="^"?"!=":"";

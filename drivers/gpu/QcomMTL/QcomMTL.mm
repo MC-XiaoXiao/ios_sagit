@@ -147,13 +147,13 @@ bool stencilFormat(MTLPixelFormat format) { return format==MTLPixelFormatStencil
 bool cubeTextureType(MTLTextureType type) {return type==MTLTextureTypeCube || type==MTLTextureTypeCubeArray;}
 bool arrayTextureType(MTLTextureType type) {return type==MTLTextureType2DArray || type==MTLTextureTypeCubeArray || type==MTLTextureType2DMultisampleArray;}
 bool multisampleTextureType(MTLTextureType type) {return type==MTLTextureType2DMultisample || type==MTLTextureType2DMultisampleArray;}
-bool colorTextureType(MTLTextureType type) {return type==MTLTextureType2D || multisampleTextureType(type) || arrayTextureType(type) || type==MTLTextureTypeCube;}
+bool colorTextureType(MTLTextureType type) {return type==MTLTextureType3D || type==MTLTextureType2D || multisampleTextureType(type) || arrayTextureType(type) || type==MTLTextureTypeCube;}
 NSUInteger textureSliceCount(id<MTLTexture> texture) {return texture.arrayLength*(cubeTextureType(texture.textureType)?6:1);}
 bool textureDescriptor(MTLTextureDescriptor *d) {
     return d && [d respondsToSelector:@selector(protectionOptions)] && !d.protectionOptions &&
         colorTextureType(d.textureType) && d.width && d.height &&
         d.width<=GPU::Surface::MaxDimension && d.height<=GPU::Surface::MaxDimension &&
-        d.depth==1 && d.mipmapLevelCount && d.mipmapLevelCount<=GPU::Shader::mipLevelCount(uint32_t(d.width),uint32_t(d.height)) &&
+        (d.textureType==MTLTextureType3D?(d.depth && d.depth<=2048 && colorFormat(d.pixelFormat) && !GPU::Shader::compressedFormat(nativeColorFormat(d.pixelFormat))):d.depth==1) && d.mipmapLevelCount && d.mipmapLevelCount<=GPU::Shader::mipLevelCount(uint32_t(d.width>d.depth?d.width:d.depth),uint32_t(d.height)) &&
         d.arrayLength && d.arrayLength<=2048 && (arrayTextureType(d.textureType) || d.arrayLength==1) && (!cubeTextureType(d.textureType) || d.width==d.height) &&
         ((multisampleTextureType(d.textureType) && (d.sampleCount==2 || d.sampleCount==4) && d.mipmapLevelCount==1 && d.storageMode==MTLStorageModePrivate && !(d.usage&MTLTextureUsageShaderWrite)) ||
          (!multisampleTextureType(d.textureType) && d.sampleCount==1)) &&
@@ -265,8 +265,8 @@ public:
     }
     ~MetalTimingScope(){if(record.begin){record.end=mach_absolute_time();[device_ reportMetalTiming:record];}}
 };
-void metalTimingSpan(QcomMTLDevice *d,GPU::MetalTiming::Stage stage,uint64_t begin,uint64_t end,uint64_t identity=0) {
-    GPU::MetalTiming::Record r;r.stage=stage;r.begin=begin;r.end=end;r.identity=identity;[d reportMetalTiming:r];
+void metalTimingSpan(QcomMTLDevice *d,GPU::MetalTiming::Stage stage,uint64_t begin,uint64_t end,uint64_t identity=0,uint64_t detail=0) {
+    GPU::MetalTiming::Record r;r.stage=stage;r.begin=begin;r.end=end;r.identity=identity;r.detail=detail;[d reportMetalTiming:r];
 }
 uint64_t airLowerBoundary(uint64_t begin,uint64_t end,const GPU::Compiler::AIRCompileInfo &info) {
     static const mach_timebase_info_data_t scale=[] {mach_timebase_info_data_t s{};mach_timebase_info(&s);return s;}();
@@ -493,7 +493,7 @@ public:
     dispatch_source_t _completionSource;
     uint64_t _eventWakeups,_eventRetired,_watchdogRetired,_nextCompletionReport;
     uint64_t _admissionPressureSince;
-    dispatch_queue_t _worker, _callbacks, _cleanup;
+    dispatch_queue_t _worker, _callbacks, _cleanup, _progress;
     MetalRetirement::Budget _cleanupBudget;
     uint64_t _cleanupRuns,_cleanupNanos,_cleanupMaxNanos,_cleanupQueueNanos,_cleanupWaits,_cleanupExclusiveRuns;
     NSRecursiveLock *_orderLock;
@@ -606,6 +606,7 @@ public:
 @public
     QcomMTLBuffer *_backing;
     QcomMTLTexture *_parent;
+    NSUInteger _depth,_minSliceStride;
     NSUInteger _width, _height, _pitch, _stencilPitch, _stencilOffset, _bytesPerPixel, _levels, _offset, _parentLevel, _samples;
     NSUInteger _layers, _layerStride, _stencilLayerStride, _parentSlice,_storageBytes;
     MTLTextureType _type;
@@ -655,6 +656,8 @@ public:
 @interface QcomMTLFunction : QcomMTLObject <MTLFunction> {
 @public QcomMTLDevice *_owner; const GPU::Shader::Program *_program; id _dynamicProgram; NSUInteger _maxThreads;
     NSString *_declaredName;NSDictionary *_constantInfo;unsigned _reflectedStage;
+    NSData *_air;std::vector<GPU::Compiler::FunctionConstantValue> _airConstants;
+    NSArray<QcomMTLFunction *> *_linkedTargets;
     MTLFunctionOptions _options;
     NSData *_binaryKey;
 }
@@ -667,7 +670,7 @@ public:
     QcomMTLDevice *_owner; NSArray<NSString *> *_names; NSMutableDictionary *_programs; NSUInteger _maxThreads;
     QcomMTLLibrary *_compiledLibrary;
     NSData *_archive,*_binaryIdentity;NSLock *_entryLock;
-    NSMutableDictionary *_reflectionCache;
+    NSMutableDictionary *_reflectionCache,*_linkageCache;
     std::vector<GPU::Compiler::LibraryArchive::Function> _archiveFunctions;
 }
 @property (atomic, copy) NSString *label;
@@ -679,6 +682,19 @@ public:
     archives:(NSArray *)archives failOnMiss:(BOOL)fail error:(NSError **)error;
 - (QcomMTLLibrary *)withMaxThreads:(NSUInteger)limit;
 @end
+
+@interface QcomMTLFunctionHandle : QcomMTLObject <MTLFunctionHandle> {
+@public QcomMTLFunction *_function;NSData *_token;uint32_t _identifier;
+}
+@end
+@interface QcomMTLVisibleFunctionTable : QcomMTLBuffer <MTLVisibleFunctionTable> {
+@public NSData *_token;NSLock *_tableLock;NSUInteger _functionCount;
+}
+- (instancetype)initWithFunction:(QcomMTLFunction *)function descriptor:(MTLVisibleFunctionTableDescriptor *)descriptor;
+@end
+static QcomMTLFunction *linkedAIRFunction(QcomMTLDevice *,QcomMTLFunction *,MTLLinkedFunctions *,NSError **);
+static id<MTLFunctionHandle> visibleFunctionHandle(QcomMTLFunction *,id<MTLFunction>);
+static bool visibleTableMatches(QcomMTLBuffer *,QcomMTLFunction *);
 
 @interface QcomMTLProgram : NSObject {
 @public GPU::Shader::Program program;
@@ -697,7 +713,9 @@ public:
 @end
 
 @interface QcomMTLRenderPipeline : QcomMTLObject <MTLRenderPipelineState> {
-@public QcomMTLFunction *_vertex, *_fragment; MTLPixelFormat _formats[QGPU_COLOR_TARGET_COUNT],_depthFormat,_stencilFormat;
+@public QcomMTLFunction *_tile;NSUInteger _tileMaxThreads;BOOL _tileMatches;
+    MTLRenderPipelineDescriptor *_descriptor;MTLTileRenderPipelineDescriptor *_tileDescriptor;
+    QcomMTLFunction *_vertex, *_fragment; MTLPixelFormat _formats[QGPU_COLOR_TARGET_COUNT],_depthFormat,_stencilFormat;
     GPU::Shader::ColorState _colorStates[QGPU_COLOR_TARGET_COUNT];
     uint32_t _samples,_alphaToCoverage;
     GPU::Shader::RenderState _state;
@@ -705,6 +723,7 @@ public:
 }
 @property (atomic, strong) NSString *label;
 - (instancetype)initWithDevice:(QcomMTLDevice *)device descriptor:(MTLRenderPipelineDescriptor *)descriptor;
+- (instancetype)initWithDevice:(QcomMTLDevice *)device tileDescriptor:(MTLTileRenderPipelineDescriptor *)descriptor;
 @end
 
 @interface QcomMTLBinaryArchive : QcomMTLObject <MTLBinaryArchive> {
@@ -730,6 +749,10 @@ public:
 @end
 
 @interface QcomMTLComputeEncoder : QcomMTLObject <MTLComputeCommandEncoder> {
+@public
+    uint32_t _tileDimensions, _tileImageMask;
+    GPU::Shader::Texture _tileImages[8];
+    MetalLifetime::Reference<QcomMTLTexture *> _tileTargets[8];
     QcomMTLCommandBuffer *_buffer; MetalLifetime::Reference<QcomMTLComputePipeline *> _pipeline;
     QcomMTLEncoderScope *_scope;
     MetalLifetime::Reference<QcomMTLBuffer *> _buffers[GPU::Shader::MaxBindings]; NSUInteger _offsets[GPU::Shader::MaxBindings];
@@ -746,6 +769,7 @@ public:
 @end
 
 @interface QcomMTLRenderEncoder : QcomMTLObject <MTLRenderCommandEncoder> {
+    QcomMTLComputeEncoder *_tileEncoder;NSUInteger _tileWidth,_tileHeight;
     QcomMTLCommandBuffer *_buffer; MetalLifetime::Reference<QcomMTLRenderPipeline *> _pipeline;
     MetalLifetime::Reference<QcomMTLTexture *> _targets[QGPU_COLOR_TARGET_COUNT],_depth,_stencil;
     QcomMTLEncoderScope *_scope;
@@ -1258,14 +1282,25 @@ void recordShaderCacheMiss(QcomMTLDevice *device,NSData *binaryKey,NSData *libra
 
 bool libraryIndex(NSData *data,std::vector<GPU::Compiler::LibraryArchive::Function> &functions,std::string &error) {
     if(!GPU::Compiler::LibraryArchive::parse(data.bytes,data.length,functions,error))return false;
-    if(functions.size()>GPU::JIT::MaxPrograms) {error="Metal library function count exceeds the driver quota";return false;}
     for(const auto &function:functions) {
-        if(function.type>2 || ![[NSString alloc] initWithBytes:function.name.data() length:function.name.size() encoding:NSUTF8StringEncoding]) {
-            error="External functions or invalid UTF8 Metal names are unsupported";return false;
+        if(function.type>7 || ![[NSString alloc] initWithBytes:function.name.data() length:function.name.size() encoding:NSUTF8StringEncoding]) {
+            error="Unknown function type or invalid UTF8 Metal name";return false;
         }
         unsigned char hash[CC_SHA256_DIGEST_LENGTH];
         CC_SHA256(static_cast<const uint8_t *>(data.bytes)+function.offset,(CC_LONG)function.size,hash);
         if(memcmp(hash,function.hash.data(),sizeof(hash))) {error="MTLB AIR SHA-256 mismatch";return false;}
+    }
+    // Mixed stock libraries contain callable/stitchable functions alongside
+    // ordinary stage entries. Authenticate every module, then expose the
+    // stages supported by this driver without rejecting unrelated kernels.
+    functions.erase(std::remove_if(functions.begin(),functions.end(),
+        [](const auto &function){return (function.type>2 && function.type!=4) || function.specialized;}),functions.end());
+    std::map<std::string,std::array<uint8_t,32>> names;
+    for(auto at=functions.begin();at!=functions.end();) {
+        auto result=names.emplace(at->name,at->hash);
+        if(result.second){++at;continue;}
+        if(result.first->second!=at->hash){error="Archive contains ambiguous source functions";return false;}
+        at=functions.erase(at);
     }
     return true;
 }
@@ -1274,7 +1309,7 @@ QcomMTLLibrary *loadLibrary(QcomMTLDevice *device, NSData *data, NSError **error
     NSError *__autoreleasing diagnosticError=nil;if(!error)error=&diagnosticError;*error=nil;
     MetalFailureScope failureScope(device,GPU::Diagnostics::Library,error);
     if(!data.length || data.length>GPU::Compiler::LibraryArchive::MaxBytes) {
-        if(error)*error=shaderFailure(@"A nonempty Metal library of at most16 MiB is required");return nil;
+        if(error)*error=shaderFailure(@"A nonempty Metal library of at most 64 MiB is required");return nil;
     }
     // Own the bytes before hashing or retaining an archive from a mapped file.
     data=[NSData dataWithBytes:data.bytes length:data.length];
@@ -1575,8 +1610,8 @@ QCOM_FALSE_QUERY(areProgrammableSamplePositionsSupported)
 QCOM_FALSE_QUERY(supportsDynamicLibraries)
 QCOM_FALSE_QUERY(supportsRenderDynamicLibraries)
 QCOM_FALSE_QUERY(supportsRaytracing)
-QCOM_FALSE_QUERY(supportsFunctionPointers)
-QCOM_FALSE_QUERY(supportsFunctionPointersFromRender)
+- (BOOL)supportsFunctionPointers {return _jit;}
+- (BOOL)supportsFunctionPointersFromRender {return _jit;}
 QCOM_FALSE_QUERY(supportsRaytracingFromRender)
 QCOM_FALSE_QUERY(supportsPrimitiveMotionBlur)
 #undef QCOM_FALSE_QUERY
@@ -1735,7 +1770,7 @@ QCOM_FALSE_QUERY(supportsPrimitiveMotionBlur)
     return [compileLibrary(self,[source dataUsingEncoding:NSUTF8StringEncoding],YES,error) withMaxThreads:options.maxTotalThreadsPerThreadgroup];
 }
 - (id<MTLLibrary>)newLibraryWithData:(dispatch_data_t)data error:(NSError **)error {
-    if (!data || dispatch_data_get_size(data) > 16*1024*1024) { if (error) *error = shaderFailure(@"Invalid A540 library size"); return nil; }
+    if (!data || dispatch_data_get_size(data) > GPU::Compiler::LibraryArchive::MaxBytes) { if (error) *error = shaderFailure(@"Invalid A540 library size"); return nil; }
     const void *bytes = nullptr; size_t length = 0;
     dispatch_data_t mapping = dispatch_data_create_map(data, &bytes, &length);
     if (!mapping) return nil;
@@ -1745,8 +1780,8 @@ QCOM_FALSE_QUERY(supportsPrimitiveMotionBlur)
     NSNumber *size = nil;
     NSError *readError = nil;
     if (!url.isFileURL || ![url getResourceValue:&size forKey:NSURLFileSizeKey error:&readError] ||
-        !size || size.unsignedLongLongValue > 16*1024*1024) {
-        if (error) *error = readError ?: shaderFailure(@"A local AIR/metallib file of at most 16 MiB is required");
+        !size || size.unsignedLongLongValue > GPU::Compiler::LibraryArchive::MaxBytes) {
+        if (error) *error = readError ?: shaderFailure(@"A local AIR/metallib file of at most 64 MiB is required");
         return nil;
     }
     return loadLibrary(self, [NSData dataWithContentsOfURL:url options:NSDataReadingMappedIfSafe error:error], error);
@@ -1798,6 +1833,26 @@ QCOM_FALSE_QUERY(supportsPrimitiveMotionBlur)
         handler(pipeline,reflection,error);
     }});
 }
+- (id<MTLRenderPipelineState>)newRenderPipelineStateWithTileDescriptor:(MTLTileRenderPipelineDescriptor *)descriptor
+    options:(MTLPipelineOption)options reflection:(MTLAutoreleasedRenderPipelineReflection *)reflection error:(NSError **)error {
+    if(error)*error=nil;if(reflection)*reflection=nil;
+    if(!pipelineOptions(options,error))return nil;
+    if(![descriptor isKindOfClass:[MTLTileRenderPipelineDescriptor class]]) {
+        if(error)*error=shaderFailure(@"A native tile pipeline descriptor is required");return nil;
+    }
+    descriptor=[descriptor copy];
+    auto pipeline=[[QcomMTLRenderPipeline alloc] initWithDevice:self tileDescriptor:descriptor];
+    if(!pipeline && error)*error=shaderFailure(@"Unsupported tile pipeline descriptor or imageblock layout",MTLLibraryErrorUnsupported);
+    return pipeline;
+}
+- (void)newRenderPipelineStateWithTileDescriptor:(MTLTileRenderPipelineDescriptor *)descriptor options:(MTLPipelineOption)options
+    completionHandler:(MTLNewRenderPipelineStateWithReflectionCompletionHandler)handler {
+    if(!handler)return;descriptor=[descriptor copy];
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT,0),^{@autoreleasepool {
+        NSError *error=nil;id<MTLRenderPipelineState> pipeline=[self newRenderPipelineStateWithTileDescriptor:descriptor options:options reflection:nullptr error:&error];
+        handler(pipeline,nil,error);
+    }});
+}
 - (id<MTLComputePipelineState>)newComputePipelineStateWithFunction:(id<MTLFunction>)function error:(NSError **)error {
     return [self newComputePipelineStateWithFunction:function options:MTLPipelineOptionNone reflection:nullptr error:error];
 }
@@ -1823,15 +1878,16 @@ QCOM_FALSE_QUERY(supportsPrimitiveMotionBlur)
     }
     descriptor=[descriptor copy];id<MTLFunction> function=descriptor.computeFunction;
     QcomMTLFunction *native=[function isKindOfClass:[QcomMTLFunction class]]?(QcomMTLFunction *)function:nil;
-    if(!native || !native->_program || native->_owner!=self || native->_program->stage!=GPU::Shader::Compute) {
+    native=linkedAIRFunction(self,native,descriptor.linkedFunctions,error);
+    if(!native || !native->_program || native->_owner!=self || native->_program->stage!=GPU::Shader::Compute || (native->_program->flags&QGPU_TILE_SHADER)) {
         if(error)*error=shaderFailure(@"Expected a registered A540 kernel function from this device");return nil;
     }
     // The native getter lazily constructs an empty descriptor. Compare its
     // actual state using Apple's implementation, not its object presence.
     auto stageInput=descriptor.stageInputDescriptor;
     if((stageInput && ![stageInput isEqual:[MTLStageInputOutputDescriptor stageInputOutputDescriptor]]) ||
-        descriptor.supportIndirectCommandBuffers || descriptor.supportAddingBinaryFunctions ||
-        descriptor.preloadedLibraries.count || !emptyLinkedFunctions(descriptor.linkedFunctions) || descriptor.maxCallStackDepth>1 ||
+        descriptor.supportIndirectCommandBuffers ||
+        descriptor.preloadedLibraries.count || descriptor.maxCallStackDepth>64 ||
         descriptor.shaderValidation==MTLShaderValidationEnabled || descriptor.maxTotalThreadsPerThreadgroup>GPU::Shader::MaxComputeThreads) {
         if(error)*error=shaderFailure(@"Unsupported A540 compute pipeline descriptor features",MTLLibraryErrorUnsupported);return nil;
     }
@@ -1923,8 +1979,8 @@ QCOM_FALSE_QUERY(supportsPrimitiveMotionBlur)
     }
     BOOL valid=[fence isKindOfClass:[QcomMTLFence class]] && fence.device==_buffer.device;
     auto contains=[&](const auto &list){for(const auto &entry:list)if(entry.get()==fence)return true;return false;};
-    if (!valid || (!signal && contains(_updates)) || _waits.size()+_updates.size()>=256) {
-        if (!_buffer->_error) _buffer->_error=failure(@"Invalid fence, same-pass wait after update, or fence limit",MTLCommandBufferErrorInvalidResource);
+    if (!valid || (!signal && contains(_updates))) {
+        if (!_buffer->_error) _buffer->_error=failure(@"Invalid fence or same-pass wait after update",MTLCommandBufferErrorInvalidResource);
     } else {
         auto &list=signal?_updates:_waits;
         if(!contains(list)) {MetalLifetime::Reference<QcomMTLFence *> reference;reference.set((QcomMTLFence *)fence,_buffer.retainedReferences);list.push_back(reference);}
@@ -1936,8 +1992,8 @@ QCOM_FALSE_QUERY(supportsPrimitiveMotionBlur)
     if (_buffer->_status>=MTLCommandBufferStatusCommitted || !_buffer->_encoderActive) {
         [_buffer->_condition unlock];[NSException raise:NSInvalidArgumentException format:@"Encoder is no longer recording"];return;
     }
-    if (_start>_buffer->_operations.count || _buffer->_operations.count+_waits.size()+_updates.size()>256) {
-        if (!_buffer->_error) _buffer->_error=failure(@"Encoder fence command limit exceeded",MTLCommandBufferErrorOutOfMemory);
+    if (_start>_buffer->_operations.count) {
+        if (!_buffer->_error) _buffer->_error=failure(@"Encoder operation cursor is invalid",MTLCommandBufferErrorOutOfMemory);
     } else {
         // iOS waits precede load actions; updates follow all draws/resolves.
         NSUInteger at=_start;
@@ -2299,7 +2355,7 @@ static void reportUnsupportedMetalCall(id object,SEL selector) {
     if(!shape || shape->_storageBytes>device.maxBufferLength)return nil;
     GPU::Shader::Texture plane{1,0,uint32_t(shape->_width),uint32_t(shape->_height),uint32_t(shape->_pitch),
         nativeColorFormat(shape->_format),uint32_t(shape->_levels),shape->_swizzle,
-        uint32_t(arrayTextureType(shape->_type)?shape->_layers:0),0,uint32_t(cubeTextureType(shape->_type))};
+        uint32_t(arrayTextureType(shape->_type)?shape->_layers:0),0,uint32_t(cubeTextureType(shape->_type)),0,uint32_t(shape->_depth)};
     return _memoryLayout.initialize(plane) && _memoryLayout.dataSize()==shape->_storageBytes?self:nil;
 }
 - (NSUInteger)size {return NSUInteger(_memoryLayout.size());}
@@ -2374,11 +2430,11 @@ static void reportUnsupportedMetalCall(id object,SEL selector) {
     bool color=colorFormat(d.pixelFormat), combined=d.pixelFormat==MTLPixelFormatDepth32Float_Stencil8;
     if (!color && (d.storageMode!=MTLStorageModePrivate ||
         (d.usage&~(MTLTextureUsageRenderTarget|MTLTextureUsagePixelFormatView|(depthFormat(d.pixelFormat)?MTLTextureUsageShaderRead:0))))) return nil;
-    _width = d.width; _height = d.height; _levels=d.mipmapLevelCount;
+    _width = d.width; _height = d.height; _depth=d.textureType==MTLTextureType3D?d.depth:0; _levels=d.mipmapLevelCount;
     _bytesPerPixel=color?GPU::Shader::formatBytes(nativeColorFormat(d.pixelFormat)):d.pixelFormat==MTLPixelFormatStencil8?1:4;
     _type=d.textureType;_layers=d.arrayLength;_samples=d.sampleCount;_bytesPerPixel*=_samples;
     const auto nativeFormat=nativeColorFormat(d.pixelFormat);
-    NSUInteger alignment=(_samples>1 || _levels>1 || GPU::Shader::compressedFormat(nativeFormat))?64*_bytesPerPixel:64;
+    NSUInteger alignment=(_depth || _samples>1 || _levels>1 || GPU::Shader::compressedFormat(nativeFormat))?64*_bytesPerPixel:64;
     _pitch = (GPU::Shader::formatBlocks(uint32_t(_width),nativeFormat) * _bytesPerPixel + alignment-1) & ~(alignment-1);
     _stencilPitch = combined ? (_width*_samples+64*_samples-1)&~NSUInteger(64*_samples-1) : d.pixelFormat==MTLPixelFormatStencil8 ? _pitch : 0;
     _stencilOffset = combined ? _pitch*_height : 0;
@@ -2386,8 +2442,9 @@ static void reportUnsupportedMetalCall(id object,SEL selector) {
     NSUInteger bytes=_pitch*_height+(combined?_stencilPitch*_height:0);
     if (color) {
         GPU::Shader::Texture plane{1,0,uint32_t(_width),uint32_t(_height),uint32_t(_pitch),nativeColorFormat(_format),uint32_t(_levels),_swizzle,
-            uint32_t(arrayTextureType(_type)?_layers:0),0,uint32_t(cubeTextureType(_type)),uint32_t(_samples>1?_samples:0)};
+            uint32_t(arrayTextureType(_type)?_layers:0),0,uint32_t(cubeTextureType(_type)),uint32_t(_samples>1?_samples:0),uint32_t(_depth)};
         if (!GPU::Shader::textureLayout(plane,_layout)) return nil;bytes=_layout.bytes;_layerStride=_layout.layerStride;
+        if(_depth)_minSliceStride=_layout.level[_layout.levels-1].sliceStride;
     } else {
         GPU::Shader::Texture plane{1,0,uint32_t(_width),uint32_t(_height),uint32_t(_pitch),
             _format==MTLPixelFormatStencil8?GPU::Shader::Stencil8:GPU::Shader::Depth32,uint32_t(_levels>1?_levels:0),0,
@@ -2488,8 +2545,9 @@ static void reportUnsupportedMetalCall(id object,SEL selector) {
     if (colorFormat(parent->_format)) {
         GPU::Shader::Texture view;
         if (!GPU::Shader::textureView([parent nativeTexture],uint32_t(levels.location),uint32_t(levels.length),uint32_t(slices.location),uint32_t(slices.length),
-            arrayTextureType(type),nativeColorFormat(format),view,swizzle,cubeTextureType(type)) ||
+            arrayTextureType(type),nativeColorFormat(format),view,swizzle,cubeTextureType(type),type==MTLTextureType3D) ||
             !GPU::Shader::textureLayout(view,_layout,false)) return nil;
+        _depth=view.depth;_minSliceStride=view.minSliceStride;
         _offset=view.offset;_width=view.width;_height=view.height;_pitch=view.pitch;_bytesPerPixel=GPU::Shader::formatBytes(view.format)*parent->_samples;_swizzle=view.swizzle;_layerStride=_layout.layerStride;
     } else {
         if (format!=parent->_format || cubeTextureType(type) || swizzle) return nil;
@@ -2514,7 +2572,7 @@ static void reportUnsupportedMetalCall(id object,SEL selector) {
     if(_memoryless)return {};
     if (!colorFormat(_format))return [self nativeAspect:stencilFormat(_format) && !depthFormat(_format)];
     return {_backing->_resource.id, (uint32_t)_offset, (uint32_t)_width, (uint32_t)_height, (uint32_t)_pitch,
-        nativeColorFormat(_format),uint32_t(_levels>1?_levels:0),_swizzle,uint32_t(arrayTextureType(_type)?_layers:0),uint32_t((arrayTextureType(_type) || cubeTextureType(_type))?_layerStride:0),uint32_t(cubeTextureType(_type)),uint32_t(_samples>1?_samples:0)};
+        nativeColorFormat(_format),uint32_t(_levels>1?_levels:0),_swizzle,uint32_t(arrayTextureType(_type)?_layers:0),uint32_t((_depth || arrayTextureType(_type) || cubeTextureType(_type))?_layerStride:0),uint32_t(cubeTextureType(_type)),uint32_t(_samples>1?_samples:0),uint32_t(_depth),uint32_t(_minSliceStride)};
 }
 - (GPU::Shader::Texture)nativeTextureAtLevel:(NSUInteger)level {
     return [self nativeTextureAtLevel:level slice:0];
@@ -2578,7 +2636,7 @@ static void reportUnsupportedMetalCall(id object,SEL selector) {
 - (MTLPixelFormat)pixelFormat { return _format; }
 - (NSUInteger)width { return _width; }
 - (NSUInteger)height { return _height; }
-- (NSUInteger)depth { return 1; }
+- (NSUInteger)depth { return _depth?_depth:1; }
 - (NSUInteger)mipmapLevelCount { return _levels; }
 - (NSUInteger)sampleCount { return _samples; }
 - (NSUInteger)arrayLength { return _layers; }
@@ -2599,14 +2657,16 @@ static void reportUnsupportedMetalCall(id object,SEL selector) {
 - (BOOL)validRegion:(MTLRegion)r level:(NSUInteger)level slice:(NSUInteger)slice pitch:(NSUInteger)pitch {
     auto plane=[self nativeTextureAtLevel:level slice:slice];
     GPU::Shader::TextureCopyRegion copy;
-    return plane.resource && !r.origin.z && r.size.depth == 1 &&
+    return plane.resource && r.origin.z<=(plane.depth?plane.depth:1) && r.size.depth<=(plane.depth?plane.depth:1)-r.origin.z &&
         GPU::Shader::textureCopyRegion(plane,r.origin.x,r.origin.y,r.size.width,r.size.height,copy) &&
         pitch >= copy.rowBytes && (!copy.rows || pitch <= NSUIntegerMax / copy.rows);
 }
 - (void)getBytes:(void *)bytes bytesPerRow:(NSUInteger)pitch bytesPerImage:(NSUInteger)imagePitch
     fromRegion:(MTLRegion)region mipmapLevel:(NSUInteger)level slice:(NSUInteger)slice {
-    (void)imagePitch;
-    if (_framebufferOnly || !bytes || self.storageMode != MTLStorageModeShared || ![self validRegion:region level:level slice:slice pitch:pitch]) {
+    auto plane=[self nativeTextureAtLevel:level slice:slice];GPU::Shader::TextureTransfer copy;
+    if (_framebufferOnly || !bytes || self.storageMode != MTLStorageModeShared ||
+        !GPU::Shader::textureTransfer(plane,region.origin.x,region.origin.y,region.origin.z,region.size.width,region.size.height,region.size.depth,pitch,imagePitch,copy) ||
+        copy.linearSpan>UINTPTR_MAX-reinterpret_cast<uintptr_t>(bytes)) {
         [NSException raise:NSInvalidArgumentException format:@"Invalid CPU texture read or private texture"]; return;
     }
     auto *owner = _backing->_owner; [owner->_transportLock lock]; publishCPU();
@@ -2614,18 +2674,18 @@ static void reportUnsupportedMetalCall(id object,SEL selector) {
     if (surface && IOSurfaceLock(surface,kIOSurfaceLockReadOnly,nullptr)!=KERN_SUCCESS) {
         [owner->_transportLock unlock];[NSException raise:NSInternalInconsistencyException format:@"IOSurface CPU read lock failed"];return;
     }
-    auto plane=[self nativeTextureAtLevel:level slice:slice];
-    GPU::Shader::TextureCopyRegion copy;GPU::Shader::textureCopyRegion(plane,region.origin.x,region.origin.y,region.size.width,region.size.height,copy);
     const auto *source = (const uint8_t *)(uintptr_t)_backing->_resource.cpuAddress + plane.offset + copy.offset;
-    for (NSUInteger y = 0; y < copy.rows; ++y) memcpy((uint8_t *)bytes+y*pitch,source+y*plane.pitch,copy.rowBytes);
+    for(NSUInteger z=0;z<copy.planes;++z)for (NSUInteger y = 0; y < copy.rows; ++y) memcpy((uint8_t *)bytes+z*copy.linearStride+y*pitch,source+z*copy.sliceStride+y*plane.pitch,copy.rowBytes);
     auto status=surface?IOSurfaceUnlock(surface,kIOSurfaceLockReadOnly,nullptr):KERN_SUCCESS;
     [owner->_transportLock unlock];
     if (status) [NSException raise:NSInternalInconsistencyException format:@"IOSurface CPU read unlock failed"];
 }
 - (void)replaceRegion:(MTLRegion)region mipmapLevel:(NSUInteger)level slice:(NSUInteger)slice withBytes:(const void *)bytes
     bytesPerRow:(NSUInteger)pitch bytesPerImage:(NSUInteger)imagePitch {
-    (void)imagePitch;
-    if (_framebufferOnly || !bytes || self.storageMode != MTLStorageModeShared || ![self validRegion:region level:level slice:slice pitch:pitch]) {
+    auto plane=[self nativeTextureAtLevel:level slice:slice];GPU::Shader::TextureTransfer copy;
+    if (_framebufferOnly || !bytes || self.storageMode != MTLStorageModeShared ||
+        !GPU::Shader::textureTransfer(plane,region.origin.x,region.origin.y,region.origin.z,region.size.width,region.size.height,region.size.depth,pitch,imagePitch,copy) ||
+        copy.linearSpan>UINTPTR_MAX-reinterpret_cast<uintptr_t>(bytes)) {
         [NSException raise:NSInvalidArgumentException format:@"Invalid CPU texture write or private texture"]; return;
     }
     auto *owner = _backing->_owner; [owner->_transportLock lock];
@@ -2633,10 +2693,8 @@ static void reportUnsupportedMetalCall(id object,SEL selector) {
     if (surface && IOSurfaceLock(surface,0,nullptr)!=KERN_SUCCESS) {
         [owner->_transportLock unlock];[NSException raise:NSInternalInconsistencyException format:@"IOSurface CPU write lock failed"];return;
     }
-    auto plane=[self nativeTextureAtLevel:level slice:slice];
-    GPU::Shader::TextureCopyRegion copy;GPU::Shader::textureCopyRegion(plane,region.origin.x,region.origin.y,region.size.width,region.size.height,copy);
     auto *destination = (uint8_t *)(uintptr_t)_backing->_resource.cpuAddress + plane.offset + copy.offset;
-    for (NSUInteger y = 0; y < copy.rows; ++y) memcpy(destination+y*plane.pitch,(const uint8_t *)bytes+y*pitch,copy.rowBytes);
+    for(NSUInteger z=0;z<copy.planes;++z)for (NSUInteger y = 0; y < copy.rows; ++y) memcpy(destination+z*copy.sliceStride+y*plane.pitch,(const uint8_t *)bytes+z*copy.linearStride+y*pitch,copy.rowBytes);
     publishCPU();auto status=surface?IOSurfaceUnlock(surface,0,nullptr):KERN_SUCCESS;[owner->_transportLock unlock];
     if (status) [NSException raise:NSInternalInconsistencyException format:@"IOSurface CPU write unlock failed"];
 }
@@ -2704,14 +2762,14 @@ static void reportUnsupportedMetalCall(id object,SEL selector) {
     } return self;
 }
 - (instancetype)initWithDevice:(QcomMTLDevice *)device name:(NSString *)name stage:(unsigned)stage constants:(NSDictionary *)constants {
-    if(!(self=[super init]) || stage>GPU::Shader::Fragment)return nil;
+    if(!(self=[super init]) || stage>3)return nil;
     _owner=device;_declaredName=[name copy];_reflectedStage=stage;_constantInfo=[constants copy];_maxThreads=GPU::Shader::MaxComputeThreads;return self;
 }
 - (id<MTLDevice>)device { return _owner; }
 - (NSString *)name { return _declaredName ?: [NSString stringWithUTF8String:_program->name]; }
 - (MTLFunctionType)functionType {
     unsigned stage=_program?_program->stage:_reflectedStage;
-    return stage == GPU::Shader::Compute ? MTLFunctionTypeKernel : stage == GPU::Shader::Vertex ? MTLFunctionTypeVertex : MTLFunctionTypeFragment;
+    return stage==3?MTLFunctionTypeVisible:stage == GPU::Shader::Compute ? MTLFunctionTypeKernel : stage == GPU::Shader::Vertex ? MTLFunctionTypeVertex : MTLFunctionTypeFragment;
 }
 - (MTLPatchType)patchType { return MTLPatchTypeNone; }
 - (NSInteger)patchControlPointCount { return 0; }
@@ -2924,7 +2982,7 @@ static void reportUnsupportedMetalCall(id object,SEL selector) {
     if ((self = [super init])) {
         _owner = device; _names = [names copy];_maxThreads=GPU::Shader::MaxComputeThreads;
         _binaryIdentity=builtinLibraryIdentity();
-        _entryLock=[NSLock new];_programs=[NSMutableDictionary new];_reflectionCache=[NSMutableDictionary new];
+        _entryLock=[NSLock new];_programs=[NSMutableDictionary new];_reflectionCache=[NSMutableDictionary new];_linkageCache=[NSMutableDictionary new];
     } return self;
 }
 - (instancetype)initWithDevice:(QcomMTLDevice *)device images:(const std::vector<QGPUProgramImage> &)images error:(NSError **)error {
@@ -2956,7 +3014,7 @@ static void reportUnsupportedMetalCall(id object,SEL selector) {
     // option without changing another library's functions or registrations.
     QcomMTLLibrary *copy=[[QcomMTLLibrary alloc] initWithDevice:_owner names:_names];
     copy->_programs=_programs;copy->_entryLock=_entryLock;copy->_archive=_archive;copy->_archiveFunctions=_archiveFunctions;
-    copy->_reflectionCache=_reflectionCache;copy->_binaryIdentity=_binaryIdentity;
+    copy->_reflectionCache=_reflectionCache;copy->_linkageCache=_linkageCache;copy->_binaryIdentity=_binaryIdentity;
     copy->_compiledLibrary=self;copy->_maxThreads=MIN(_maxThreads,limit);return copy;
 }
 - (id<MTLDevice>)device { return _owner; }
@@ -2983,6 +3041,51 @@ static void reportUnsupportedMetalCall(id object,SEL selector) {
         const GPU::Compiler::LibraryArchive::Function *selected=nullptr;
         for(const auto &function:_archiveFunctions)if(function.name==name.UTF8String){selected=&function;break;}
         if(!selected){[_entryLock unlock];if(error)*error=shaderFailure(@"Function is absent from the AIR index");return nil;}
+        const auto *airBytes=static_cast<const uint8_t *>(_archive.bytes)+selected->offset;
+        // Linkage belongs to this immutable AIR entry, not its constants or
+        // thread limit. Parse it once across all variants and library wrappers.
+        // In particular, restoring an exact bundled binary must not reparse
+        // the same LLVM module for every new function-constant combination.
+        NSDictionary *linkage=_linkageCache[name];
+        unsigned linkageStage=UINT32_MAX;bool hasTables=false;
+        if(linkage) {
+            linkageStage=[linkage[@"stage"] unsignedIntValue];hasTables=[linkage[@"tables"] boolValue];
+        } else {
+            std::string linkageError;const auto begin=mach_absolute_time();
+            const bool inspected=GPU::Compiler::inspectAIRLinkage(airBytes,selected->size,selected->name,linkageStage,hasTables,linkageError);
+            metalTimingSpan(_owner,GPU::MetalTiming::AIRInspect,begin,mach_absolute_time(),timing.record.identity,1);
+            if(!inspected) {
+                [_entryLock unlock];if(error)*error=shaderFailure([NSString stringWithUTF8String:linkageError.c_str()]);return nil;
+            }
+        }
+        unsigned expectedLinkage=selected->type==4?3:selected->type==0?1:selected->type==1?2:0;
+        if(linkageStage!=expectedLinkage) {[_entryLock unlock];if(error)*error=shaderFailure(@"MTLB TYPE disagrees with AIR linkage stage");return nil;}
+        if(!linkage)_linkageCache[name]=@{@"stage":@(linkageStage),@"tables":@(hasTables)};
+        if(linkageStage==3 || hasTables) {
+            NSData *sourceAIR=[NSData dataWithBytes:airBytes length:selected->size];
+            std::vector<GPU::Compiler::FunctionConstant> declarations;unsigned stage;std::string diagnostic;
+            if(!GPU::Compiler::inspectAIRConstants(sourceAIR.bytes,sourceAIR.length,selected->name,declarations,stage,diagnostic)) {
+                [_entryLock unlock];if(error)*error=shaderFailure([NSString stringWithUTF8String:diagnostic.c_str()]);return nil;
+            }
+            auto info=constantReflection(declarations,error);if(!info){[_entryLock unlock];return nil;}
+            std::vector<GPU::Compiler::FunctionConstantValue> effective;
+            if(specialized || declarations.empty()) {
+                if(!GPU::Compiler::resolveFunctionConstants(declarations,supplied,effective,diagnostic)) {
+                    [_entryLock unlock];if(error)*error=shaderFailure([NSString stringWithUTF8String:diagnostic.c_str()]);return nil;
+                }
+                if(stage==3) {
+                    std::vector<uint8_t> specializedAIR;
+                    if(!GPU::Compiler::specializeVisibleAIR(sourceAIR.bytes,sourceAIR.length,selected->name,effective,specializedAIR,diagnostic)) {
+                        [_entryLock unlock];if(error)*error=shaderFailure([NSString stringWithUTF8String:diagnostic.c_str()]);return nil;
+                    }
+                    sourceAIR=[NSData dataWithBytes:specializedAIR.data() length:specializedAIR.size()];
+                }
+            }
+            auto function=[[QcomMTLFunction alloc] initWithDevice:_owner name:name stage:stage constants:info];
+            function->_air=sourceAIR;function->_airConstants=effective;function->_maxThreads=MIN(function->_maxThreads,_maxThreads);
+            function->_binaryKey=functionBinaryKey(_binaryIdentity,constantCacheKey(name,effective),_maxThreads);
+            [_entryLock unlock];return function;
+        }
         static_assert(GPUSystemShaders::Registry==GPUPrograms::Registry,"System shader registry mismatch");
         // libraryIndex already verifies the full AIR payload digest. The
         // bundled catalog matches that digest AND the entry name, never just
@@ -3181,6 +3284,82 @@ static void reportUnsupportedMetalCall(id object,SEL selector) {
 
 @end
 
+static QcomMTLFunction *linkedAIRFunction(QcomMTLDevice *device,QcomMTLFunction *function,MTLLinkedFunctions *linked,NSError **error) {
+    if(!function || function.device!=device)return nil;
+    if(function->_program && emptyLinkedFunctions(linked))return function;
+    if(!function->_air || function.functionType==MTLFunctionTypeVisible) {
+        if(error)*error=shaderFailure(@"Pipeline linkage requires source AIR for its stage function");return nil;
+    }
+    NSMutableArray<QcomMTLFunction *> *targets=[NSMutableArray new];
+    NSMutableArray *lists=[NSMutableArray arrayWithObjects:linked.functions?:@[],linked.binaryFunctions?:@[],linked.privateFunctions?:@[],nil];
+    for(NSString *group in [[linked.groups allKeys] sortedArrayUsingSelector:@selector(compare:)])[lists addObject:linked.groups[group]];
+    for(NSArray *list in lists)for(id value in list) {
+        QcomMTLFunction *target=[value isKindOfClass:[QcomMTLFunction class]]?value:nil;
+        if(!target || target.device!=device || target.functionType!=MTLFunctionTypeVisible || !target->_air) {
+            if(error)*error=shaderFailure(@"Linked targets must be visible AIR functions from this device");return nil;
+        }
+        if(![targets containsObject:target])[targets addObject:target];
+    }
+    std::vector<GPU::Compiler::AIRVisibleFunction> sources;
+    for(QcomMTLFunction *target in targets) {
+        GPU::Compiler::AIRVisibleFunction item;item.name=target.name.UTF8String;
+        auto bytes=static_cast<const uint8_t *>(target->_air.bytes);item.air.assign(bytes,bytes+target->_air.length);sources.push_back(std::move(item));
+    }
+    std::vector<uint8_t> air;std::vector<QGPUProgramImage> images;std::string diagnostic;
+    [device->_compilerLock lock];
+    bool ok=GPU::Compiler::linkVisibleAIR(function->_air.bytes,function->_air.length,function.name.UTF8String,sources,function->_airConstants,air,diagnostic);
+    if(ok)ok=GPU::Compiler::compileAIR(air.data(),air.size(),GPUPrograms::Registry,images,diagnostic,function.name.UTF8String,function->_airConstants);
+    [device->_compilerLock unlock];
+    if(!ok || images.size()!=1){if(error)*error=shaderFailure([NSString stringWithUTF8String:diagnostic.c_str()]);return nil;}
+    auto program=[[QcomMTLProgram alloc] initWithDevice:device image:images[0] error:error];if(!program)return nil;
+    uint8_t hash[32];CC_SHA256(air.data(),CC_LONG(air.size()),hash);
+    auto identity=[NSData dataWithBytes:hash length:32];auto key=functionBinaryKey(identity,function.name,function->_maxThreads);
+    auto result=[[QcomMTLFunction alloc] initWithDevice:device program:&program->program binaryKey:key];
+    result->_dynamicProgram=program;result->_air=function->_air;result->_airConstants=function->_airConstants;
+    result->_linkedTargets=[targets copy];result->_maxThreads=function->_maxThreads;return result;
+}
+static id<MTLFunctionHandle> visibleFunctionHandle(QcomMTLFunction *pipeline,id<MTLFunction> function) {
+    if(!pipeline || !function || !pipeline->_linkedTargets.count)return nil;
+    NSUInteger index=[pipeline->_linkedTargets indexOfObject:function];
+    if(index==NSNotFound || index>=64)return nil;
+    auto handle=[QcomMTLFunctionHandle new];handle->_function=(QcomMTLFunction *)function;handle->_token=pipeline->_binaryKey;handle->_identifier=uint32_t(index+1);return handle;
+}
+static bool visibleTableMatches(QcomMTLBuffer *buffer,QcomMTLFunction *function) {
+    if(![buffer isKindOfClass:[QcomMTLVisibleFunctionTable class]])return true;
+    return [((QcomMTLVisibleFunctionTable *)buffer)->_token isEqualToData:function->_binaryKey];
+}
+@implementation QcomMTLFunctionHandle
++ (Protocol *)metalProtocol { return @protocol(MTLFunctionHandle); }
+- (id<MTLDevice>)device { return _function.device; }
+- (NSString *)name { return _function.name; }
+- (MTLFunctionType)functionType { return _function.functionType; }
+@end
+@implementation QcomMTLVisibleFunctionTable
++ (Protocol *)metalProtocol { return @protocol(MTLVisibleFunctionTable); }
+- (MTLResourceID)gpuResourceID {return {_resource.id};}
+- (instancetype)initWithFunction:(QcomMTLFunction *)function descriptor:(MTLVisibleFunctionTableDescriptor *)descriptor {
+    if(!descriptor || !descriptor.functionCount || descriptor.functionCount>256 || !function->_linkedTargets.count)return nil;
+    if(!(self=[super initWithDevice:(QcomMTLDevice *)function.device length:4*(descriptor.functionCount+1) options:MTLResourceStorageModeShared]))return nil;
+    _token=function->_binaryKey;_functionCount=descriptor.functionCount;_tableLock=[NSLock new];
+    memset(self.contents,0,self.length);static_cast<uint32_t *>(self.contents)[0]=uint32_t(_functionCount);publishCPU();return self;
+}
+- (void)setFunction:(id<MTLFunctionHandle>)function atIndex:(NSUInteger)index {
+    id<MTLFunctionHandle> functions[]={function};[self setFunctions:functions withRange:NSMakeRange(index,1)];
+}
+- (void)setFunctions:(const id<MTLFunctionHandle>[])functions withRange:(NSRange)range {
+    if(!functions || !validRange(_functionCount,range.location,range.length)) {
+        [NSException raise:NSInvalidArgumentException format:@"Visible function table range"];return;
+    }
+    for(NSUInteger i=0;i<range.length;++i)if(functions[i] &&
+        (![functions[i] isKindOfClass:[QcomMTLFunctionHandle class]] || ![((QcomMTLFunctionHandle *)functions[i])->_token isEqualToData:_token])) {
+        [NSException raise:NSInvalidArgumentException format:@"Function handle belongs to another pipeline"];return;
+    }
+    [_tableLock lock];auto data=static_cast<uint32_t *>(self.contents);
+    for(NSUInteger i=0;i<range.length;++i)data[range.location+i+1]=functions[i]?((QcomMTLFunctionHandle *)functions[i])->_identifier:0;
+    publishCPU();[_tableLock unlock];
+}
+@end
+
 @implementation QcomMTLComputePipeline
 + (Protocol *)metalProtocol { return @protocol(MTLComputePipelineState); }
 - (instancetype)initWithFunction:(QcomMTLFunction *)function {
@@ -3194,6 +3373,16 @@ static void reportUnsupportedMetalCall(id object,SEL selector) {
 - (MTLShaderValidation)shaderValidation { return MTLShaderValidationDisabled; }
 - (MTLResourceID)gpuResourceID { return {_function->_program->id}; }
 - (NSUInteger)imageblockMemoryLengthForDimensions:(MTLSize)dimensions { (void)dimensions; return 0; }
+- (id<MTLFunctionHandle>)functionHandleWithFunction:(id<MTLFunction>)function {return visibleFunctionHandle(_function,function);}
+- (id<MTLVisibleFunctionTable>)newVisibleFunctionTableWithDescriptor:(MTLVisibleFunctionTableDescriptor *)descriptor {
+    return [[QcomMTLVisibleFunctionTable alloc] initWithFunction:_function descriptor:descriptor];
+}
+- (id<MTLComputePipelineState>)newComputePipelineStateWithAdditionalBinaryFunctions:(NSArray<id<MTLFunction>> *)functions error:(NSError **)error {
+    MTLLinkedFunctions *linked=[MTLLinkedFunctions new];linked.functions=[(_function->_linkedTargets?:@[]) arrayByAddingObjectsFromArray:functions?:@[]];
+    auto function=linkedAIRFunction((QcomMTLDevice *)self.device,_function,linked,error);
+    auto pipeline=function?[[QcomMTLComputePipeline alloc] initWithFunction:function]:nil;
+    if(pipeline){pipeline->_maxThreads=_maxThreads;pipeline->_threadgroupMultiple=_threadgroupMultiple;}return pipeline;
+}
 @end
 
 @implementation QcomMTLDepthStencilState
@@ -3232,6 +3421,8 @@ static void reportUnsupportedMetalCall(id object,SEL selector) {
             fragment=[[QcomMTLFunction alloc] initWithDevice:device program:&program binaryKey:key];break;
         }
     }
+    vertex=linkedAIRFunction(device,vertex,d.vertexLinkedFunctions,nullptr);
+    fragment=linkedAIRFunction(device,fragment,d.fragmentLinkedFunctions,nullptr);
     if (!vertex || !fragment || !vertex->_program || !fragment->_program || vertex.device != device || fragment.device != device ||
         vertex->_program->stage != GPU::Shader::Vertex || fragment->_program->stage != GPU::Shader::Fragment ||
         (d.rasterSampleCount!=1 && d.rasterSampleCount!=2 && d.rasterSampleCount!=4) || !d.rasterizationEnabled || d.alphaToOneEnabled ||
@@ -3242,9 +3433,8 @@ static void reportUnsupportedMetalCall(id object,SEL selector) {
     if(d.maxVertexAmplificationCount>1 ||
         (d.inputPrimitiveTopology!=MTLPrimitiveTopologyClassUnspecified && d.inputPrimitiveTopology!=MTLPrimitiveTopologyClassTriangle) ||
         d.vertexPreloadedLibraries.count || d.fragmentPreloadedLibraries.count ||
-        !emptyLinkedFunctions(d.vertexLinkedFunctions) || !emptyLinkedFunctions(d.fragmentLinkedFunctions) ||
-        d.supportAddingVertexBinaryFunctions || d.supportAddingFragmentBinaryFunctions ||
-        d.maxVertexCallStackDepth>1 || d.maxFragmentCallStackDepth>1 || d.shaderValidation==MTLShaderValidationEnabled)return nil;
+
+        d.maxVertexCallStackDepth>64 || d.maxFragmentCallStackDepth>64 || d.shaderValidation==MTLShaderValidationEnabled)return nil;
     GPU::Shader::Linkage linkage;
     if(!GPU::Shader::link(*vertex->_program,GPU::Shader::rasterProgram(*fragment->_program,uint32_t(d.rasterSampleCount)),linkage))return nil;
     bool attachmentPresent=d.depthAttachmentPixelFormat!=MTLPixelFormatInvalid || d.stencilAttachmentPixelFormat!=MTLPixelFormatInvalid;
@@ -3283,20 +3473,63 @@ static void reportUnsupportedMetalCall(id object,SEL selector) {
     _state.sourceRGB=color.sourceRGB;_state.destinationRGB=color.destinationRGB;_state.sourceAlpha=color.sourceAlpha;_state.destinationAlpha=color.destinationAlpha;
     _vertex=vertex;_fragment=fragment;_samples=uint32_t(d.rasterSampleCount);_alphaToCoverage=d.alphaToCoverageEnabled;
     _depthFormat=d.depthAttachmentPixelFormat;_stencilFormat=d.stencilAttachmentPixelFormat;
-    self.label = d.label; return self;
+    self.label = d.label;_descriptor=[d copy]; return self;
 }
-- (id<MTLDevice>)device { return _vertex.device; }
-- (NSUInteger)maxTotalThreadsPerThreadgroup { return 0; }
+- (instancetype)initWithDevice:(QcomMTLDevice *)device tileDescriptor:(MTLTileRenderPipelineDescriptor *)d {
+    if(!(self=[super init]))return nil;
+    QcomMTLFunction *function=[d.tileFunction isKindOfClass:[QcomMTLFunction class]]?(QcomMTLFunction *)d.tileFunction:nil;
+    function=linkedAIRFunction(device,function,d.linkedFunctions,nullptr);
+    if(!function || !function->_program || function.device!=device || !(function->_program->flags&QGPU_TILE_SHADER) ||
+        (d.rasterSampleCount!=1 && d.rasterSampleCount!=2 && d.rasterSampleCount!=4) ||
+        d.maxTotalThreadsPerThreadgroup>GPU::Shader::MaxComputeThreads ||
+        d.binaryArchives.count || d.maxCallStackDepth>64)return nil;
+    for(unsigned i=0;i<8;++i) {
+        auto format=d.colorAttachments[i].pixelFormat;
+        if(format!=MTLPixelFormatInvalid && !renderableColorFormat(format))return nil;
+        if((function->_program->imageblockMask&(1u<<i)) && format==MTLPixelFormatInvalid)return nil;
+        _formats[i]=format;
+    }
+    _tile=function;_samples=uint32_t(d.rasterSampleCount);_tileMatches=d.threadgroupSizeMatchesTileSize;
+    _tileMaxThreads=MIN(d.maxTotalThreadsPerThreadgroup?:function->_maxThreads,function->_maxThreads);
+    self.label=d.label;_tileDescriptor=[d copy];return self;
+}
+- (id<MTLDevice>)device { return _tile?_tile.device:_vertex.device; }
+- (NSUInteger)maxTotalThreadsPerThreadgroup { return _tile?_tileMaxThreads:0; }
 - (NSUInteger)maxTotalThreadsPerObjectThreadgroup { return 0; }
 - (NSUInteger)maxTotalThreadsPerMeshThreadgroup { return 0; }
 - (NSUInteger)objectThreadExecutionWidth { return 0; }
 - (NSUInteger)meshThreadExecutionWidth { return 0; }
 - (NSUInteger)maxTotalThreadgroupsPerMeshGrid { return 0; }
 - (MTLShaderValidation)shaderValidation { return MTLShaderValidationDisabled; }
-- (BOOL)threadgroupSizeMatchesTileSize { return NO; }
-- (NSUInteger)imageblockSampleLength { return 0; }
+- (BOOL)threadgroupSizeMatchesTileSize { return _tileMatches; }
+- (NSUInteger)imageblockSampleLength { return _tile?_tile->_program->imageblockSampleBytes:0; }
+- (QcomMTLFunction *)visibleStage:(MTLRenderStages)stage {
+    return stage==MTLRenderStageVertex?_vertex:stage==MTLRenderStageFragment?_fragment:stage==MTLRenderStageTile?_tile:nil;
+}
+- (id<MTLFunctionHandle>)functionHandleWithFunction:(id<MTLFunction>)function stage:(MTLRenderStages)stage {
+    auto entry=[self visibleStage:stage];return entry?visibleFunctionHandle(entry,function):nil;
+}
+- (id<MTLVisibleFunctionTable>)newVisibleFunctionTableWithDescriptor:(MTLVisibleFunctionTableDescriptor *)descriptor stage:(MTLRenderStages)stage {
+    auto entry=[self visibleStage:stage];return entry?[[QcomMTLVisibleFunctionTable alloc] initWithFunction:entry descriptor:descriptor]:nil;
+}
+- (id<MTLRenderPipelineState>)newRenderPipelineStateWithAdditionalBinaryFunctions:(NSArray<id<MTLFunction>> *)functions stage:(MTLRenderStages)stage error:(NSError **)error {
+    auto entry=[self visibleStage:stage];
+    if(!entry){if(error)*error=shaderFailure(@"Invalid stage for additional visible functions");return nil;}
+    MTLLinkedFunctions *linked=[MTLLinkedFunctions new];linked.functions=[(entry->_linkedTargets?:@[]) arrayByAddingObjectsFromArray:functions?:@[]];
+    QcomMTLRenderPipeline *pipeline=nil;
+    if(_tileDescriptor && stage==MTLRenderStageTile) {
+        MTLTileRenderPipelineDescriptor *descriptor=[_tileDescriptor copy];descriptor.tileFunction=entry;descriptor.linkedFunctions=linked;
+        pipeline=[[QcomMTLRenderPipeline alloc] initWithDevice:(QcomMTLDevice *)self.device tileDescriptor:descriptor];
+    } else if(_descriptor && (stage==MTLRenderStageVertex || stage==MTLRenderStageFragment)) {
+        MTLRenderPipelineDescriptor *descriptor=[_descriptor copy];
+        if(stage==MTLRenderStageVertex){descriptor.vertexFunction=entry;descriptor.vertexLinkedFunctions=linked;}
+        else {descriptor.fragmentFunction=entry;descriptor.fragmentLinkedFunctions=linked;}
+        pipeline=[[QcomMTLRenderPipeline alloc] initWithDevice:(QcomMTLDevice *)self.device descriptor:descriptor];
+    }
+    if(!pipeline && error)*error=shaderFailure(@"Could not link additional visible functions");return pipeline;
+}
 - (BOOL)supportIndirectCommandBuffers { return NO; }
-- (MTLResourceID)gpuResourceID { return {(uint64_t(_vertex->_program->id)<<32)|_fragment->_program->id}; }
+- (MTLResourceID)gpuResourceID { return {_tile?_tile->_program->id:(uint64_t(_vertex->_program->id)<<32)|_fragment->_program->id}; }
 @end
 
 static bool makeBlitDispatch(const GPU::Blit::ComputePlan &plan,GPU::Shader::Dispatch &dispatch) {
@@ -3332,6 +3565,12 @@ static bool makeBlitDispatch(const GPU::Blit::ComputePlan &plan,GPU::Shader::Dis
     _worker = dispatch_queue_create("QcomMTL.submit", DISPATCH_QUEUE_SERIAL);
     _callbacks = dispatch_queue_create("QcomMTL.callbacks", DISPATCH_QUEUE_SERIAL);
     _cleanup = dispatch_queue_create("QcomMTL.retired-resources", DISPATCH_QUEUE_SERIAL);
+    // Native completions unblock the next frame even after the submitter has
+    // returned. Default-QoS notification/retirement callbacks lose that urgency
+    // and compete with background work on the efficiency cluster. Keep this
+    // short progress path independent of caller-supplied submission targets.
+    _progress = dispatch_queue_create("QcomMTL.progress",
+        dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_CONCURRENT,QOS_CLASS_USER_INITIATED,0));
     _capacity = dispatch_semaphore_create(capacity);
     [device->_transportLock lock];
     auto status = device->_submissionError;
@@ -3352,7 +3591,7 @@ static bool makeBlitDispatch(const GPU::Blit::ComputePlan &plan,GPU::Shader::Dis
         if(!_completionPort)status=kIOReturnNoResources;
         else {
             _completionSource=dispatch_source_create(DISPATCH_SOURCE_TYPE_MACH_RECV,_completionPort,0,
-                dispatch_get_global_queue(QOS_CLASS_DEFAULT,0));
+                _progress);
             if(!_completionSource) {
                 mach_port_mod_refs(mach_task_self(),_completionPort,MACH_PORT_RIGHT_RECEIVE,-1);_completionPort=MACH_PORT_NULL;
                 status=kIOReturnNoResources;
@@ -3499,8 +3738,8 @@ static bool makeBlitDispatch(const GPU::Blit::ComputePlan &plan,GPU::Shader::Dis
         dispatch_block_t retire=^{
             @autoreleasepool {[self finishRetirements];}
         };
-        if(_owner->_completionNotifications)dispatch_async(dispatch_get_global_queue(QOS_CLASS_DEFAULT,0),retire);
-        else dispatch_after(dispatch_time(DISPATCH_TIME_NOW,NSEC_PER_MSEC),dispatch_get_global_queue(QOS_CLASS_DEFAULT,0),retire);
+        if(_owner->_completionNotifications)dispatch_async(_progress,retire);
+        else dispatch_after(dispatch_time(DISPATCH_TIME_NOW,NSEC_PER_MSEC),_progress,retire);
     }
 }
 - (void)drain { [self drainThrough:nil]; }
@@ -3593,7 +3832,7 @@ static bool makeBlitDispatch(const GPU::Blit::ComputePlan &plan,GPU::Shader::Dis
     if(_pollScheduled || (!_completions.pending() && !_completionError))return;
     _pollScheduled=YES;
     const uint64_t delay=_completionSource?50*NSEC_PER_MSEC:NSEC_PER_MSEC;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW,delay),dispatch_get_global_queue(QOS_CLASS_DEFAULT,0),^{
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW,delay),_progress,^{
         @autoreleasepool {[self pollNative:YES];}
     });
 }
@@ -3684,7 +3923,7 @@ static bool makeBlitDispatch(const GPU::Blit::ComputePlan &plan,GPU::Shader::Dis
     [_owner->_nativeWaiters addObject:buffer];
     if(!_retryScheduled) {
         _retryScheduled=YES;
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW,2*NSEC_PER_MSEC),dispatch_get_global_queue(QOS_CLASS_DEFAULT,0),^{@autoreleasepool {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW,2*NSEC_PER_MSEC),_progress,^{@autoreleasepool {
             [_owner->_transportLock lock];_retryScheduled=NO;
             NSArray *wakeups=_owner->_nativeWaiters.allObjects;[_owner->_nativeWaiters removeAllObjects];
             [_owner->_transportLock unlock];
@@ -3897,7 +4136,7 @@ static bool makeBlitDispatch(const GPU::Blit::ComputePlan &plan,GPU::Shader::Dis
         [NSException raise:NSInvalidArgumentException format:@"Responsible task IDs require an uncommitted command buffer without an active encoder"];
         return;
     }
-    if(count>GPU::Native::MaxResponsibleTaskIDs || _operations.count>=256) {
+    if(count>GPU::Native::MaxResponsibleTaskIDs) {
         if(!_error)_error=failure(@"Responsible task metadata exceeds the native command limit",MTLCommandBufferErrorOutOfMemory);
     } else if(!_error) {
         auto operation=[QcomMTLOperation new];
@@ -3976,8 +4215,9 @@ static bool makeBlitDispatch(const GPU::Blit::ComputePlan &plan,GPU::Shader::Dis
     if (_status >= MTLCommandBufferStatusCommitted || !_encoderActive) {
         [_condition unlock]; [NSException raise:NSInvalidArgumentException format:@"Command buffer is no longer encoding"]; return;
     }
-    if (_operations.count >= 256) { if (!_error) _error = failure(@"Metal bring-up command limit exceeded", MTLCommandBufferErrorOutOfMemory); }
-    else if(!_error){
+    // CPU command storage grows with the encoded stream. Native submissions
+    // split independently at their actual byte/resource/index budgets in run.
+    if(!_error){
         // Keep this decision in the immutable encoded stream, before borrowed
         // references are converted. Only real drawable destinations qualify.
         for(id resource in operation.resources)if([resource isKindOfClass:[QcomMTLTexture class]]) {
@@ -4135,8 +4375,8 @@ static bool makeBlitDispatch(const GPU::Blit::ComputePlan &plan,GPU::Shader::Dis
     BOOL local=[event isKindOfClass:[QcomMTLEvent class]] && event.device==self.device;
     BOOL shared=[event conformsToProtocol:@protocol(MTLSharedEvent)] && !event.device &&
         [event respondsToSelector:@selector(waitUntilSignaledValue:timeoutMS:)];
-    if ((!local && !shared) || _encoderActive || _operations.count>=256) {
-        if(!_error)_error=failure(@"Invalid event, active encoder or command limit",MTLCommandBufferErrorInvalidResource);
+    if ((!local && !shared) || _encoderActive) {
+        if(!_error)_error=failure(@"Invalid event or active encoder",MTLCommandBufferErrorInvalidResource);
     } else if (!_error) {
         auto operation=[QcomMTLOperation new];operation.event=event;operation.eventValue=value;operation.signalEvent=signal;
         [operation configureRetainedReferences:_retainedReferences];[_operations addObject:operation];
@@ -4613,6 +4853,7 @@ void resourceBarrier(QcomMTLCommandBuffer *buffer,const id<MTLResource> resource
     _pipeline.set(nil,false);
     for(auto &reference:_buffers)reference.set(nil,false);
     for(auto &reference:_textures)reference.set(nil,false);
+    for(auto &reference:_tileTargets)reference.set(nil,false);
     for(auto &reference:_samplers)reference.set(nil,false);
 }
 - (NSArray *)copyLiveBindings {
@@ -4620,6 +4861,7 @@ void resourceBarrier(QcomMTLCommandBuffer *buffer,const id<MTLResource> resource
     NSMutableArray *live=[NSMutableArray new];if(!captureReference(_pipeline,live))return nil;
     for(const auto &reference:_buffers)if(!captureReference(reference,live))return nil;
     for(const auto &reference:_textures)if(!captureReference(reference,live))return nil;
+    for(const auto &reference:_tileTargets)if(!captureReference(reference,live))return nil;
     for(const auto &reference:_samplers)if(!captureReference(reference,live))return nil;
     return live;
 }
@@ -4648,6 +4890,14 @@ void resourceBarrier(QcomMTLCommandBuffer *buffer,const id<MTLResource> resource
         [_buffer fail:failure(@"Invalid compute buffer binding", MTLCommandBufferErrorInvalidResource)]; return;
     }
     _buffers[index].set((QcomMTLBuffer *)buffer,_buffer.retainedReferences); _offsets[index] = offset;
+}
+- (void)setVisibleFunctionTable:(id<MTLVisibleFunctionTable>)table atBufferIndex:(NSUInteger)index {
+    if(table && ![table isKindOfClass:[QcomMTLVisibleFunctionTable class]]){[_buffer fail:failure(@"Invalid visible function table")];return;}
+    [self setBuffer:(id<MTLBuffer>)table offset:0 atIndex:index];
+}
+- (void)setVisibleFunctionTables:(const id<MTLVisibleFunctionTable>[])tables withBufferRange:(NSRange)range {
+    if(!tables || !validRange(GPU::Shader::MaxBindings,range.location,range.length)){[_buffer fail:failure(@"Invalid visible function table range")];return;}
+    for(NSUInteger i=0;i<range.length;++i)[self setVisibleFunctionTable:tables[i] atBufferIndex:range.location+i];
 }
 - (void)setBytes:(const void *)bytes length:(NSUInteger)length atIndex:(NSUInteger)index {
     checkEncoder(_ended);
@@ -4731,15 +4981,22 @@ void resourceBarrier(QcomMTLCommandBuffer *buffer,const id<MTLResource> resource
         [_buffer fail:failure(@"Invalid A540 workgroup dimensions or thread count")]; return;
     }
     if (!groups.width || !groups.height || !groups.depth) return;
+    for(unsigned i=0;i<GPU::Shader::MaxBindings;++i)if(!visibleTableMatches(_buffers[i].get(),_pipeline.get()->_function)) {
+        [_buffer fail:failure(@"Visible function table belongs to a different pipeline")];return;
+    }
     const auto *program = _pipeline.get()->_function->_program;
     GPU::Shader::Dispatch dispatch{}; dispatch.registry = GPUPrograms::Registry;
-    dispatch.version = GPU::Shader::Version; dispatch.program = program->id;
+    dispatch.version = GPU::Shader::Version; dispatch.program = program->id;dispatch.tileDimensions=_tileDimensions;
     dispatch.groups[0]=(uint32_t)groups.width;dispatch.groups[1]=(uint32_t)groups.height;dispatch.groups[2]=(uint32_t)groups.depth;
     dispatch.local[0]=(uint32_t)local.width;dispatch.local[1]=(uint32_t)local.height;dispatch.local[2]=(uint32_t)local.depth;
     dispatch.grid[0]=(uint32_t)grid.width;dispatch.grid[1]=(uint32_t)grid.height;dispatch.grid[2]=(uint32_t)grid.depth;
     for (unsigned i=0;i<GPU::Shader::MaxBindings;++i) if (program->threadgroupMask&(1u<<i)) dispatch.threadgroupLengths[i]=_threadgroupLengths[i];
     NSMutableArray *retained = [NSMutableArray arrayWithObject:_pipeline.get()];
     for(unsigned i=0;i<QGPU_COMPUTE_IMAGE_COUNT;++i) if((program->imageMask|program->sampleMask)&(1u<<i)) {
+        if(_tileImageMask&(1u<<i)) {
+            if(!_tileTargets[i].get()){[_buffer fail:failure(@"Expired tile attachment")];return;}
+            dispatch.images[i]=_tileImages[i];[retained addObject:_tileTargets[i].get()];continue;
+        }
         auto *texture=_textures[i].get();MTLTextureUsage required=MTLTextureUsageUnknown;
         if((program->imageReadMask|program->sampleMask)&(1u<<i))required|=MTLTextureUsageShaderRead;
         if(program->imageWriteMask&(1u<<i))required|=MTLTextureUsageShaderWrite;
@@ -4801,6 +5058,7 @@ void resourceBarrier(QcomMTLCommandBuffer *buffer,const id<MTLResource> resource
     for(auto &stage:_sampledTextures)for(auto &reference:stage)reference.set(nil,false);
     for(auto &stage:_samplers)for(auto &reference:stage)reference.set(nil,false);
     for(auto &parameters:_resolveParameters)parameters=nil;
+    [_tileEncoder clearBindings];_tileEncoder=nil;
 }
 - (NSArray *)copyLiveBindings {
     if(_buffer.retainedReferences)return @[];
@@ -4815,8 +5073,8 @@ void resourceBarrier(QcomMTLCommandBuffer *buffer,const id<MTLResource> resource
     return live;
 }
 + (Protocol *)metalProtocol { return @protocol(MTLRenderCommandEncoder); }
-- (NSUInteger)tileWidth { return 0; }
-- (NSUInteger)tileHeight { return 0; }
+- (NSUInteger)tileWidth { return _tileWidth; }
+- (NSUInteger)tileHeight { return _tileHeight; }
 - (instancetype)initWithBuffer:(QcomMTLCommandBuffer *)buffer descriptor:(MTLRenderPassDescriptor *)d rejection:(NSString *__autoreleasing *)rejection {
     auto reject=[&](NSString *reason)->QcomMTLRenderEncoder * {
         if(rejection)*rejection=reason;return nil;
@@ -4825,6 +5083,9 @@ void resourceBarrier(QcomMTLCommandBuffer *buffer,const id<MTLResource> resource
     _buffer=buffer;_scope=[[QcomMTLEncoderScope alloc] initWithBuffer:buffer];
     _passStart=buffer->_operations.count;
     if(!d || d.visibilityResultBuffer || d.rasterizationRateMap || d.renderTargetArrayLength>1 || [d getSamplePositions:nullptr count:0])return reject(@"descriptor");
+    _tileWidth=d.tileWidth?:16;_tileHeight=d.tileHeight?:16;
+    if(_tileWidth>32 || _tileHeight>32 || _tileWidth*_tileHeight>GPU::Shader::MaxComputeThreads)return reject(@"tile-dimensions");
+    _tileEncoder=[[QcomMTLComputeEncoder alloc] initWithBuffer:buffer];
     constexpr unsigned count=QGPU_COLOR_TARGET_COUNT+2;
     MTLRenderPassAttachmentDescriptor *__strong attachments[count]={};
     QcomMTLTexture *__strong planes[count]={};
@@ -4835,7 +5096,7 @@ void resourceBarrier(QcomMTLCommandBuffer *buffer,const id<MTLResource> resource
         auto attachment=attachments[i];if(!attachment.texture)continue;
         if(![attachment.texture isKindOfClass:[QcomMTLTexture class]] || attachment.texture.device!=self.device ||
             (attachment.texture.usage && !(attachment.texture.usage&MTLTextureUsageRenderTarget)) ||
-            attachment.level>=attachment.texture.mipmapLevelCount || attachment.slice>=textureSliceCount(attachment.texture) || attachment.depthPlane ||
+            attachment.level>=attachment.texture.mipmapLevelCount || attachment.slice>=textureSliceCount(attachment.texture) || attachment.depthPlane>=MAX(NSUInteger(1),attachment.texture.depth>>attachment.level) ||
             attachment.loadAction>MTLLoadActionClear || attachment.storeActionOptions)return reject(@"attachment");
         bool resolve=attachment.storeAction==MTLStoreActionMultisampleResolve || attachment.storeAction==MTLStoreActionStoreAndMultisampleResolve;
         if(!resolve && attachment.storeAction!=MTLStoreActionStore && attachment.storeAction!=MTLStoreActionDontCare)return reject(@"store-action");
@@ -4852,6 +5113,11 @@ void resourceBarrier(QcomMTLCommandBuffer *buffer,const id<MTLResource> resource
         }
         _attachments[i]=i<QGPU_COLOR_TARGET_COUNT?[planes[i] nativeTextureAtLevel:attachment.level slice:attachment.slice]:
             [planes[i] nativePlane:i==QGPU_COLOR_TARGET_COUNT+1 level:attachment.level slice:attachment.slice];
+        if(_attachments[i].depth) {
+            GPU::Shader::Texture selected;
+            if(!GPU::Shader::textureDepthPlane(_attachments[i],uint32_t(attachment.depthPlane),selected))return reject(@"attachment-depth-plane");
+            _attachments[i]=selected;
+        }
         if(!_attachments[i].resource)return reject(@"native-plane");
         if(resolve) {
             auto target=attachment.resolveTexture;
@@ -5114,7 +5380,7 @@ void resourceBarrier(QcomMTLCommandBuffer *buffer,const id<MTLResource> resource
         [_buffer fail:failure(@"Invalid render pipeline",MTLCommandBufferErrorInvalidResource)];return;
     }
     auto *pipeline=(QcomMTLRenderPipeline *)state;
-    bool compatible=pipeline->_samples==_samples && pipeline->_depthFormat==_depth.get().pixelFormat && pipeline->_stencilFormat==_stencil.get().pixelFormat;
+    bool compatible=pipeline->_samples==_samples && (pipeline->_tile || (pipeline->_depthFormat==_depth.get().pixelFormat && pipeline->_stencilFormat==_stencil.get().pixelFormat));
     for(unsigned i=0;i<QGPU_COLOR_TARGET_COUNT;++i)if(pipeline->_formats[i]!=_targets[i].get().pixelFormat)compatible=false;
     if(!compatible) {
         NSMutableString *detail=[NSMutableString stringWithFormat:@"Render attachment mismatch extent=%lux%lu samples=%u/%lu depth=%lu/%lu stencil=%lu/%lu",
@@ -5126,6 +5392,72 @@ void resourceBarrier(QcomMTLCommandBuffer *buffer,const id<MTLResource> resource
         [_buffer fail:failure(detail,MTLCommandBufferErrorInvalidResource)];return;
     }
     _pipeline.set(pipeline,_buffer.retainedReferences);
+}
+- (void)dispatchThreadsPerTile:(MTLSize)local {
+    checkEncoder(_ended);
+    __attribute__((objc_precise_lifetime)) NSArray *live=[self copyLiveBindings];
+    auto pipeline=_pipeline.get();
+    if(!live || !pipeline || !pipeline->_tile || local.depth!=1 ||
+        (pipeline->_tileMatches && (local.width!=_tileWidth || local.height!=_tileHeight))) {
+        [_buffer fail:failure(@"Invalid tile pipeline, attachment lifetime or threadgroup dimensions")];return;
+    }
+    auto compute=[[QcomMTLComputePipeline alloc] initWithFunction:pipeline->_tile];compute->_maxThreads=pipeline->_tileMaxThreads;
+    _tileEncoder->_pipeline.set(compute,true);
+    _tileEncoder->_tileDimensions=uint32_t(_tileWidth)|uint32_t(_tileHeight)<<16;_tileEncoder->_tileImageMask=0;
+    const auto &program=*pipeline->_tile->_program;
+    for(unsigned i=0;i<8;++i)if(program.imageblockMask&(1u<<i)) {
+        unsigned slot=(program.imageblockBindings>>(i*4))&15;
+        if(!_attachments[i].resource || GPU::Shader::textureSamples(_attachments[i])!=_samples || !_targets[i].get()) {
+            [_buffer fail:failure(@"Missing imageblock attachment or incompatible sample count")];_tileEncoder->_pipeline.set(nil,false);return;
+        }
+        _tileEncoder->_tileImages[slot]=_attachments[i];_tileEncoder->_tileTargets[slot]=_targets[i];_tileEncoder->_tileImageMask|=1u<<slot;
+    }
+    // Flush prior draws to the attachment backing. Subsequent draws reload it;
+    // this pass cannot be folded into one GMEM-only operation after a tile dispatch.
+    _gmemCandidate=NO;[_buffer recordBarrierWithResources:nil];
+    [_tileEncoder encodeDispatch:MTLSizeMake((_width+_tileWidth-1)/_tileWidth,(_height+_tileHeight-1)/_tileHeight,1) local:local grid:MTLSizeMake(0,0,0)];
+    [_buffer recordBarrierWithResources:nil];
+    _tileEncoder->_pipeline.set(nil,false);
+    for(auto &reference:_tileEncoder->_tileTargets)reference.set(nil,false);
+}
+- (void)setTileBytes:(const void *)bytes length:(NSUInteger)length atIndex:(NSUInteger)index {checkEncoder(_ended);[_tileEncoder setBytes:bytes length:length atIndex:index];}
+- (void)setTileBuffer:(id<MTLBuffer>)buffer offset:(NSUInteger)offset atIndex:(NSUInteger)index {checkEncoder(_ended);[_tileEncoder setBuffer:buffer offset:offset atIndex:index];}
+- (void)setTileBufferOffset:(NSUInteger)offset atIndex:(NSUInteger)index {checkEncoder(_ended);[_tileEncoder setBufferOffset:offset atIndex:index];}
+- (void)setTileBuffers:(const id<MTLBuffer>[])buffers offsets:(const NSUInteger[])offsets withRange:(NSRange)range {checkEncoder(_ended);[_tileEncoder setBuffers:buffers offsets:offsets withRange:range];}
+- (void)setTileTexture:(id<MTLTexture>)texture atIndex:(NSUInteger)index {checkEncoder(_ended);[_tileEncoder setTexture:texture atIndex:index];}
+- (void)setTileTextures:(const id<MTLTexture>[])textures withRange:(NSRange)range {checkEncoder(_ended);[_tileEncoder setTextures:textures withRange:range];}
+- (void)setTileSamplerState:(id<MTLSamplerState>)sampler atIndex:(NSUInteger)index {checkEncoder(_ended);[_tileEncoder setSamplerState:sampler atIndex:index];}
+- (void)setTileSamplerStates:(const id<MTLSamplerState>[])samplers withRange:(NSRange)range {checkEncoder(_ended);[_tileEncoder setSamplerStates:samplers withRange:range];}
+- (void)setTileSamplerState:(id<MTLSamplerState>)sampler lodMinClamp:(float)minimum lodMaxClamp:(float)maximum atIndex:(NSUInteger)index {checkEncoder(_ended);[_tileEncoder setSamplerState:sampler lodMinClamp:minimum lodMaxClamp:maximum atIndex:index];}
+- (void)setTileSamplerStates:(const id<MTLSamplerState>[])samplers lodMinClamps:(const float[])minimum lodMaxClamps:(const float[])maximum withRange:(NSRange)range {checkEncoder(_ended);[_tileEncoder setSamplerStates:samplers lodMinClamps:minimum lodMaxClamps:maximum withRange:range];}
+- (void)setThreadgroupMemoryLength:(NSUInteger)length offset:(NSUInteger)offset atIndex:(NSUInteger)index {
+    checkEncoder(_ended);
+    if(offset){[_buffer fail:failure(@"Tile threadgroup memory offsets require a shared-pool layout")];return;}
+    [_tileEncoder setThreadgroupMemoryLength:length atIndex:index];
+}
+- (void)setVertexVisibleFunctionTable:(id<MTLVisibleFunctionTable>)table atBufferIndex:(NSUInteger)index {
+    checkEncoder(_ended);if(table && ![table isKindOfClass:[QcomMTLVisibleFunctionTable class]]){[_buffer fail:failure(@"Invalid visible function table")];return;}
+    [self setVertexBuffer:(id<MTLBuffer>)table offset:0 atIndex:index];
+}
+- (void)setVertexVisibleFunctionTables:(const id<MTLVisibleFunctionTable>[])tables withBufferRange:(NSRange)range {
+    if(!tables || !validRange(GPU::Shader::MaxBindings,range.location,range.length)){[_buffer fail:failure(@"Invalid visible function table range")];return;}
+    for(NSUInteger i=0;i<range.length;++i)[self setVertexVisibleFunctionTable:tables[i] atBufferIndex:range.location+i];
+}
+- (void)setFragmentVisibleFunctionTable:(id<MTLVisibleFunctionTable>)table atBufferIndex:(NSUInteger)index {
+    checkEncoder(_ended);if(table && ![table isKindOfClass:[QcomMTLVisibleFunctionTable class]]){[_buffer fail:failure(@"Invalid visible function table")];return;}
+    [self setFragmentBuffer:(id<MTLBuffer>)table offset:0 atIndex:index];
+}
+- (void)setFragmentVisibleFunctionTables:(const id<MTLVisibleFunctionTable>[])tables withBufferRange:(NSRange)range {
+    if(!tables || !validRange(GPU::Shader::MaxBindings,range.location,range.length)){[_buffer fail:failure(@"Invalid visible function table range")];return;}
+    for(NSUInteger i=0;i<range.length;++i)[self setFragmentVisibleFunctionTable:tables[i] atBufferIndex:range.location+i];
+}
+- (void)setTileVisibleFunctionTable:(id<MTLVisibleFunctionTable>)table atBufferIndex:(NSUInteger)index {
+    checkEncoder(_ended);if(table && ![table isKindOfClass:[QcomMTLVisibleFunctionTable class]]){[_buffer fail:failure(@"Invalid visible function table")];return;}
+    [_tileEncoder setVisibleFunctionTable:table atBufferIndex:index];
+}
+- (void)setTileVisibleFunctionTables:(const id<MTLVisibleFunctionTable>[])tables withBufferRange:(NSRange)range {
+    if(!tables || !validRange(GPU::Shader::MaxBindings,range.location,range.length)){[_buffer fail:failure(@"Invalid visible function table range")];return;}
+    for(NSUInteger i=0;i<range.length;++i)[self setTileVisibleFunctionTable:tables[i] atBufferIndex:range.location+i];
 }
 - (void)setVertexBuffer:(id<MTLBuffer>)buffer offset:(NSUInteger)offset atIndex:(NSUInteger)index {
     checkEncoder(_ended);
@@ -5343,7 +5675,7 @@ void resourceBarrier(QcomMTLCommandBuffer *buffer,const id<MTLResource> resource
     checkEncoder(_ended);
     __attribute__((objc_precise_lifetime)) NSArray *live=[self copyLiveBindings];
     if(!live){[_buffer fail:failure(@"An unretained render binding expired",MTLCommandBufferErrorInvalidResource)];return;}
-    if (!_pipeline.get() || (primitive != MTLPrimitiveTypeLine && primitive != MTLPrimitiveTypeTriangle && primitive != MTLPrimitiveTypeTriangleStrip) ||
+    if (!_pipeline.get() || _pipeline.get()->_tile || (primitive != MTLPrimitiveTypeLine && primitive != MTLPrimitiveTypeTriangle && primitive != MTLPrimitiveTypeTriangleStrip) ||
         start > UINT32_MAX || count > GPU::Shader::MaxDrawVertices || start+count > UINT32_MAX ||
         instances > GPU::Shader::MaxDrawInstances || uint64_t(count)*instances > GPU::Shader::MaxDrawInvocations ||
         baseInstance > UINT32_MAX || baseInstance+instances > UINT32_MAX ||
@@ -5385,6 +5717,9 @@ void resourceBarrier(QcomMTLCommandBuffer *buffer,const id<MTLResource> resource
     NSMutableArray *retained = [NSMutableArray arrayWithObject:_pipeline.get()];
     for(unsigned i=0;i<QGPU_COLOR_TARGET_COUNT;++i)if(_targets[i].get())[retained addObject:_targets[i].get()];if (_depth.get()) [retained addObject:_depth.get()];if (_stencil.get()) [retained addObject:_stencil.get()];
     if (indices) [retained addObject:indices];
+    for(unsigned i=0;i<GPU::Shader::MaxBindings;++i)if(!visibleTableMatches(_buffers[i].get(),_pipeline.get()->_vertex) || !visibleTableMatches(_fragmentBuffers[i].get(),_pipeline.get()->_fragment)) {
+        [_buffer fail:failure(@"Visible function table belongs to a different render pipeline")];return;
+    }
     const auto *vertex = _pipeline.get()->_vertex->_program;uint32_t fetchBindings=0;
     if (!GPU::Shader::vertexLayout(*vertex,draw,fetchBindings)) { [_buffer fail:failure(@"Invalid vertex layout")];return; }
     for (NSUInteger i = 0; i < GPU::Shader::MaxBindings; ++i) if ((vertex->bufferMask|fetchBindings) & (1u<<i)) {
@@ -5551,27 +5886,36 @@ void resourceBarrier(QcomMTLCommandBuffer *buffer,const id<MTLResource> resource
     sourceOrigin:(MTLOrigin)origin sourceSize:(MTLSize)size toBuffer:(id<MTLBuffer>)destination
     destinationOffset:(NSUInteger)offset destinationBytesPerRow:(NSUInteger)pitch destinationBytesPerImage:(NSUInteger)imagePitch
     options:(MTLBlitOption)options {
-    (void)imagePitch; checkEncoder(_ended); GPU::Shader::Texture plane{};
+    checkEncoder(_ended); GPU::Shader::Texture plane{};
     QcomMTLTexture *source=[sourceTexture isKindOfClass:[QcomMTLTexture class]] ? (QcomMTLTexture *)sourceTexture : nil;
     if (!source || source.sampleCount!=1 || ![source blitPlane:options level:level slice:slice descriptor:&plane] || source.device!=self.device ||
         ![destination isKindOfClass:[QcomMTLBuffer class]] || destination.device!=self.device ||
-        origin.z || size.depth!=1 || !validRange(plane.width,origin.x,size.width) ||
+        !validRange(plane.depth?plane.depth:1,origin.z,size.depth) || !validRange(plane.width,origin.x,size.width) ||
         !validRange(plane.height,origin.y,size.height)) {
         [_buffer fail:failure(@"Invalid texture-to-buffer plane or region",MTLCommandBufferErrorInvalidResource)];return;
     }
-    GPU::Shader::TextureCopyRegion copy;
-    if(!GPU::Shader::textureCopyRegion(plane,origin.x,origin.y,size.width,size.height,copy)) {
+    GPU::Shader::TextureTransfer copy;
+    if(!GPU::Shader::textureTransfer(plane,origin.x,origin.y,origin.z,size.width,size.height,size.depth,pitch,imagePitch,copy)) {
         [_buffer fail:failure(@"Invalid compressed texture-to-buffer region",MTLCommandBufferErrorInvalidResource)];return;
     }
     NSUInteger row=copy.rowBytes;
-    if (pitch<row || offset>destination.length ||
-        (copy.rows && (row>destination.length-offset || (copy.rows-1)>(destination.length-offset-row)/MAX(pitch,(NSUInteger)1)))) {
+    if (offset>destination.length || copy.linearSpan>destination.length-offset) {
         [_buffer fail:failure(@"Invalid texture-to-buffer range",MTLCommandBufferErrorInvalidResource)];return;
     }
-    if (!row || !copy.rows) return;
-    auto *operation=[self copyRows:source->_backing offset:plane.offset-source->_backing->_nativeOffset+copy.offset
-        stride:plane.pitch to:destination offset:offset stride:pitch bytes:row rows:copy.rows];
+    if (!row || !copy.rows || !copy.planes) return;
+    auto *destinationBuffer=(QcomMTLBuffer *)destination;
+    const uint64_t sourceStart=uint64_t(plane.offset)+copy.offset;
+    const uint64_t destinationStart=uint64_t(destinationBuffer->_nativeOffset)+offset;
+    const uint64_t textureSpan=(copy.planes-1)*copy.sliceStride+(copy.rows-1)*plane.pitch+row;
+    if(copy.planes>1 && source->_backing->_resource.id==destinationBuffer->_resource.id &&
+        sourceStart<destinationStart+copy.linearSpan && destinationStart<sourceStart+textureSpan) {
+        [_buffer fail:failure(@"Overlapping texture-to-buffer volume copy",MTLCommandBufferErrorInvalidResource)];return;
+    }
+    for(NSUInteger z=0;z<copy.planes;++z) {
+    auto *operation=[self copyRows:source->_backing offset:plane.offset-source->_backing->_nativeOffset+copy.offset+z*copy.sliceStride
+        stride:plane.pitch to:destination offset:offset+z*copy.linearStride stride:pitch bytes:row rows:copy.rows];
     operation.resources=@[source];
+    }
 }
 - (void)copyFromBuffer:(id<MTLBuffer>)source sourceOffset:(NSUInteger)offset sourceBytesPerRow:(NSUInteger)pitch
     sourceBytesPerImage:(NSUInteger)imagePitch sourceSize:(MTLSize)size toTexture:(id<MTLTexture>)destination
@@ -5582,28 +5926,37 @@ void resourceBarrier(QcomMTLCommandBuffer *buffer,const id<MTLResource> resource
 - (void)copyFromBuffer:(id<MTLBuffer>)source sourceOffset:(NSUInteger)offset sourceBytesPerRow:(NSUInteger)pitch
     sourceBytesPerImage:(NSUInteger)imagePitch sourceSize:(MTLSize)size toTexture:(id<MTLTexture>)destinationTexture
     destinationSlice:(NSUInteger)slice destinationLevel:(NSUInteger)level destinationOrigin:(MTLOrigin)origin options:(MTLBlitOption)options {
-    (void)imagePitch; checkEncoder(_ended); GPU::Shader::Texture plane{};
+    checkEncoder(_ended); GPU::Shader::Texture plane{};
     QcomMTLTexture *destination=[destinationTexture isKindOfClass:[QcomMTLTexture class]] ? (QcomMTLTexture *)destinationTexture : nil;
     if (!destination || destination.sampleCount!=1 || ![destination blitPlane:options level:level slice:slice descriptor:&plane] || destination.device!=self.device ||
         ![source isKindOfClass:[QcomMTLBuffer class]] || source.device!=self.device ||
-        origin.z || size.depth!=1 || !validRange(plane.width,origin.x,size.width) ||
+        !validRange(plane.depth?plane.depth:1,origin.z,size.depth) || !validRange(plane.width,origin.x,size.width) ||
         !validRange(plane.height,origin.y,size.height)) {
         [_buffer fail:failure(@"Invalid buffer-to-texture plane or region",MTLCommandBufferErrorInvalidResource)];return;
     }
-    GPU::Shader::TextureCopyRegion copy;
-    if(!GPU::Shader::textureCopyRegion(plane,origin.x,origin.y,size.width,size.height,copy)) {
+    GPU::Shader::TextureTransfer copy;
+    if(!GPU::Shader::textureTransfer(plane,origin.x,origin.y,origin.z,size.width,size.height,size.depth,pitch,imagePitch,copy)) {
         [_buffer fail:failure(@"Invalid compressed buffer-to-texture region",MTLCommandBufferErrorInvalidResource)];return;
     }
     NSUInteger row=copy.rowBytes;
-    if (pitch<row || offset>source.length ||
-        (copy.rows && (row>source.length-offset || (copy.rows-1)>(source.length-offset-row)/MAX(pitch,(NSUInteger)1)))) {
+    if (offset>source.length || copy.linearSpan>source.length-offset) {
         [_buffer fail:failure(@"Invalid buffer-to-texture range",MTLCommandBufferErrorInvalidResource)];return;
     }
-    if (!row || !copy.rows) return;
-    auto *operation=[self copyRows:source offset:offset stride:pitch to:destination->_backing
-        offset:plane.offset-destination->_backing->_nativeOffset+copy.offset
+    if (!row || !copy.rows || !copy.planes) return;
+    auto *sourceBuffer=(QcomMTLBuffer *)source;
+    const uint64_t sourceStart=uint64_t(sourceBuffer->_nativeOffset)+offset;
+    const uint64_t destinationStart=uint64_t(plane.offset)+copy.offset;
+    const uint64_t textureSpan=(copy.planes-1)*copy.sliceStride+(copy.rows-1)*plane.pitch+row;
+    if(copy.planes>1 && sourceBuffer->_resource.id==destination->_backing->_resource.id &&
+        sourceStart<destinationStart+textureSpan && destinationStart<sourceStart+copy.linearSpan) {
+        [_buffer fail:failure(@"Overlapping buffer-to-texture volume copy",MTLCommandBufferErrorInvalidResource)];return;
+    }
+    for(NSUInteger z=0;z<copy.planes;++z) {
+    auto *operation=[self copyRows:source offset:offset+z*copy.linearStride stride:pitch to:destination->_backing
+        offset:plane.offset-destination->_backing->_nativeOffset+copy.offset+z*copy.sliceStride
         stride:plane.pitch bytes:row rows:copy.rows];
     operation.resources=@[destination];
+    }
 }
 - (void)copyFromTexture:(id<MTLTexture>)sourceTexture sourceSlice:(NSUInteger)sourceSlice sourceLevel:(NSUInteger)sourceLevel
     sourceOrigin:(MTLOrigin)sourceOrigin sourceSize:(MTLSize)size toTexture:(id<MTLTexture>)destinationTexture
@@ -5613,7 +5966,7 @@ void resourceBarrier(QcomMTLCommandBuffer *buffer,const id<MTLResource> resource
     QcomMTLTexture *destination=[destinationTexture isKindOfClass:[QcomMTLTexture class]] ? (QcomMTLTexture *)destinationTexture : nil;
     if (!source || !destination || source.device!=self.device || destination.device!=self.device ||
         source.pixelFormat!=destination.pixelFormat || source.sampleCount!=destination.sampleCount || sourceSlice>=textureSliceCount(source) || sourceLevel>=source.mipmapLevelCount || destinationSlice>=textureSliceCount(destination) || destinationLevel>=destination.mipmapLevelCount ||
-        sourceOrigin.z || destinationOrigin.z || size.depth!=1 ||
+        !validRange(MAX(NSUInteger(1),source.depth>>sourceLevel),sourceOrigin.z,size.depth) || !validRange(MAX(NSUInteger(1),destination.depth>>destinationLevel),destinationOrigin.z,size.depth) ||
         !validRange(MAX(NSUInteger(1),source.width>>sourceLevel),sourceOrigin.x,size.width) || !validRange(MAX(NSUInteger(1),source.height>>sourceLevel),sourceOrigin.y,size.height) ||
         !validRange(MAX(NSUInteger(1),destination.width>>destinationLevel),destinationOrigin.x,size.width) || !validRange(MAX(NSUInteger(1),destination.height>>destinationLevel),destinationOrigin.y,size.height)) {
         [_buffer fail:failure(@"Invalid texture copy or overlap",MTLCommandBufferErrorInvalidResource)];return;
@@ -5624,17 +5977,25 @@ void resourceBarrier(QcomMTLCommandBuffer *buffer,const id<MTLResource> resource
         GPU::Shader::Texture from{},to{};
         if (![source blitPlane:option level:sourceLevel slice:sourceSlice descriptor:&from] ||
             ![destination blitPlane:option level:destinationLevel slice:destinationSlice descriptor:&to]) {[_buffer fail:failure(@"Invalid texture mip plane")];return;}
-        GPU::Shader::TextureCopyRegion read,write;
-        if(!GPU::Shader::textureCopyRegion(from,sourceOrigin.x,sourceOrigin.y,size.width,size.height,read) ||
-            !GPU::Shader::textureCopyRegion(to,destinationOrigin.x,destinationOrigin.y,size.width,size.height,write) ||
+        GPU::Shader::TextureTransfer read,write;
+        if(!GPU::Shader::textureTransfer(from,sourceOrigin.x,sourceOrigin.y,sourceOrigin.z,size.width,size.height,size.depth,from.pitch,uint64_t(from.pitch)*from.height,read) ||
+            !GPU::Shader::textureTransfer(to,destinationOrigin.x,destinationOrigin.y,destinationOrigin.z,size.width,size.height,size.depth,to.pitch,uint64_t(to.pitch)*to.height,write) ||
             read.rowBytes!=write.rowBytes || read.rows!=write.rows) {
             [_buffer fail:failure(@"Invalid compressed texture copy region",MTLCommandBufferErrorInvalidResource)];return;
         }
-        if(!read.rowBytes || !read.rows)continue;
-        auto *operation=[self copyRows:source->_backing offset:from.offset-source->_backing->_nativeOffset+read.offset stride:from.pitch
-            to:destination->_backing offset:to.offset-destination->_backing->_nativeOffset+write.offset stride:to.pitch
+        if(!read.rowBytes || !read.rows || !read.planes)continue;
+        const uint64_t readStart=uint64_t(from.offset)+read.offset,writeStart=uint64_t(to.offset)+write.offset;
+        const uint64_t readSpan=(read.planes-1)*read.sliceStride+(read.rows-1)*from.pitch+read.rowBytes;
+        const uint64_t writeSpan=(write.planes-1)*write.sliceStride+(write.rows-1)*to.pitch+write.rowBytes;
+        if(from.resource==to.resource && readStart<writeStart+writeSpan && writeStart<readStart+readSpan) {
+            [_buffer fail:failure(@"Overlapping texture volume copy",MTLCommandBufferErrorInvalidResource)];return;
+        }
+        for(NSUInteger z=0;z<read.planes;++z) {
+        auto *operation=[self copyRows:source->_backing offset:from.offset-source->_backing->_nativeOffset+read.offset+z*read.sliceStride stride:from.pitch
+            to:destination->_backing offset:to.offset-destination->_backing->_nativeOffset+write.offset+z*write.sliceStride stride:to.pitch
             bytes:read.rowBytes rows:read.rows];
         operation.resources=@[source,destination];
+        }
     }
 }
 - (void)copyFromTexture:(id<MTLTexture>)source sourceSlice:(NSUInteger)sourceSlice sourceLevel:(NSUInteger)sourceLevel
@@ -5647,7 +6008,7 @@ void resourceBarrier(QcomMTLCommandBuffer *buffer,const id<MTLResource> resource
         !validRange(destination.mipmapLevelCount,destinationLevel,levelCount)) {[_buffer fail:failure(@"Invalid texture mip range")];return;}
     if (!sliceCount || !levelCount) return;
     if (MAX(NSUInteger(1),source.width>>sourceLevel)!=MAX(NSUInteger(1),destination.width>>destinationLevel) ||
-        MAX(NSUInteger(1),source.height>>sourceLevel)!=MAX(NSUInteger(1),destination.height>>destinationLevel)) {[_buffer fail:failure(@"Texture mip dimensions differ")];return;}
+        MAX(NSUInteger(1),source.height>>sourceLevel)!=MAX(NSUInteger(1),destination.height>>destinationLevel) || MAX(NSUInteger(1),source.depth>>sourceLevel)!=MAX(NSUInteger(1),destination.depth>>destinationLevel)) {[_buffer fail:failure(@"Texture mip dimensions differ")];return;}
     auto *from=(QcomMTLTexture *)source,*to=(QcomMTLTexture *)destination;
     bool alias=from->_backing==to->_backing || from->_backing->_resource.id==to->_backing->_resource.id || (from->_backing->_surface && to->_backing->_surface &&
         IOSurfaceGetID(from->_backing->_surface)==IOSurfaceGetID(to->_backing->_surface));
@@ -5673,7 +6034,7 @@ void resourceBarrier(QcomMTLCommandBuffer *buffer,const id<MTLResource> resource
         }
     }
     for (NSUInteger slice=0;slice<sliceCount;++slice) for (NSUInteger level=0;level<levelCount;++level) [self copyFromTexture:source sourceSlice:sourceSlice+slice sourceLevel:sourceLevel+level sourceOrigin:MTLOriginMake(0,0,0)
-        sourceSize:MTLSizeMake(MAX(NSUInteger(1),source.width>>(sourceLevel+level)),MAX(NSUInteger(1),source.height>>(sourceLevel+level)),1) toTexture:destination destinationSlice:destinationSlice+slice destinationLevel:destinationLevel+level
+        sourceSize:MTLSizeMake(MAX(NSUInteger(1),source.width>>(sourceLevel+level)),MAX(NSUInteger(1),source.height>>(sourceLevel+level)),MAX(NSUInteger(1),source.depth>>(sourceLevel+level))) toTexture:destination destinationSlice:destinationSlice+slice destinationLevel:destinationLevel+level
         destinationOrigin:MTLOriginMake(0,0,0)];
 }
 - (void)copyFromTexture:(id<MTLTexture>)source toTexture:(id<MTLTexture>)destination {
@@ -5681,9 +6042,9 @@ void resourceBarrier(QcomMTLCommandBuffer *buffer,const id<MTLResource> resource
     if (![source isKindOfClass:[QcomMTLTexture class]] || ![destination isKindOfClass:[QcomMTLTexture class]] || textureSliceCount(source)!=textureSliceCount(destination)) {[_buffer fail:failure(@"Invalid texture copy")];return;}
     NSUInteger from=0,to=0;bool found=false;
     for (NSUInteger level=0;level<source.mipmapLevelCount;++level)
-        if (MAX(NSUInteger(1),source.width>>level)==destination.width && MAX(NSUInteger(1),source.height>>level)==destination.height) {from=level;found=true;break;}
+        if (MAX(NSUInteger(1),source.width>>level)==destination.width && MAX(NSUInteger(1),source.height>>level)==destination.height && MAX(NSUInteger(1),source.depth>>level)==destination.depth) {from=level;found=true;break;}
     if (!found) for (NSUInteger level=0;level<destination.mipmapLevelCount;++level)
-        if (MAX(NSUInteger(1),destination.width>>level)==source.width && MAX(NSUInteger(1),destination.height>>level)==source.height) {to=level;found=true;break;}
+        if (MAX(NSUInteger(1),destination.width>>level)==source.width && MAX(NSUInteger(1),destination.height>>level)==source.height && MAX(NSUInteger(1),destination.depth>>level)==source.depth) {to=level;found=true;break;}
     if (!found) {[_buffer fail:failure(@"No matching texture mip dimensions")];return;}
     [self copyFromTexture:source sourceSlice:0 sourceLevel:from toTexture:destination destinationSlice:0 destinationLevel:to
         sliceCount:textureSliceCount(source) levelCount:MIN(source.mipmapLevelCount-from,destination.mipmapLevelCount-to)];
@@ -5691,7 +6052,7 @@ void resourceBarrier(QcomMTLCommandBuffer *buffer,const id<MTLResource> resource
 - (void)generateMipmapsForTexture:(id<MTLTexture>)texture {
     checkEncoder(_ended);
     QcomMTLTexture *target=[texture isKindOfClass:[QcomMTLTexture class]]?(QcomMTLTexture *)texture:nil;
-    if (!target || target.sampleCount!=1 || target.device!=self.device || !renderableColorFormat(target.pixelFormat)) {
+    if (!target || target.textureType==MTLTextureType3D || target.sampleCount!=1 || target.device!=self.device || !renderableColorFormat(target.pixelFormat)) {
         [_buffer fail:failure(@"Invalid mipmap generation texture",MTLCommandBufferErrorInvalidResource)];return;
     }
     if (target.mipmapLevelCount<2) return;

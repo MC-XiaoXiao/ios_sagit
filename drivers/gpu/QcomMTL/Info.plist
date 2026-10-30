@@ -9,9 +9,9 @@
 	<key>CFBundleName</key>
 	<string>QcomMTLDriver</string>
 	<key>CFBundleVersion</key>
-	<string>1.52.7</string>
+	<string>1.54.9</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.52.7</string>
+	<string>1.54.9</string>
 	<key>CFBundlePackageType</key>
 	<string>BNDL</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -31,13 +31,13 @@
 	<key>QcomMTLNativeCommandVersion</key>
 	<integer>4</integer>
 	<key>QcomMTLShaderCommandVersion</key>
-	<integer>44</integer>
+	<integer>46</integer>
 	<key>QcomMTLAIRCompilation</key>
 	<true/>
 	<key>QcomMTLAIRCompilationMode</key>
 	<string>aot-and-runtime-jit</string>
 	<key>QcomMTLJITVersion</key>
-	<integer>39</integer>
+	<integer>41</integer>
 	<key>QcomMTLPurgeableStateMode</key>
 	<string>retained-backing</string>
 	<key>QcomMTLRuntimeMSLCompilation</key>

@@ -1,12 +1,30 @@
 #!/usr/bin/env python3
 """Build a signed-driver catalog from exact system AIR inputs, entirely offline."""
-import argparse, hashlib, importlib.util, itertools, json, os, re, shlex, struct, subprocess
+import argparse, concurrent.futures, hashlib, importlib.util, itertools, json, os, re, shlex, shutil, struct, subprocess, tempfile
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 def sha(data): return hashlib.sha256(data).hexdigest()
 def dump(path, value): path.write_text(json.dumps(value, indent=2, ensure_ascii=False)+'\n')
 def cbytes(data): return '{'+','.join(str(b) for b in data)+'}'
 def quoted(s): return json.dumps(s, ensure_ascii=True)
+def materialize_inputs(items, work, tc):
+    missing=[item for item in items if not (ROOT/item['path']).exists() and item.get('source_image')]
+    if not missing:return
+    # Reuse the project's read-only sealed APFS patch in an isolated checkout.
+    # The pinned output SHA256 is checked below before any AIR is consumed.
+    with tempfile.TemporaryDirectory(prefix='stock-reader-',dir=work) as temp:
+        directory=Path(temp);source=directory/'source'
+        shutil.copytree(ROOT/'tools/src/go-apfs',source,ignore=shutil.ignore_patterns('.git','vendor','testdata'))
+        subprocess.run([tc.host('patch'),'-p1','--batch','-i',str(ROOT/'tools/patches/go-apfs-sealed-readonly.patch')],cwd=source,check=True)
+        reader=directory/'apfs'
+        subprocess.run([str(ROOT/'tools/prefix/libexec/go/bin/go'),'build','-o',str(reader),'./cmd/apfs'],cwd=source,check=True)
+        for item in missing:
+            target=ROOT/item['path'];target.parent.mkdir(parents=True,exist_ok=True)
+            with tempfile.TemporaryDirectory(dir=directory) as output:
+                subprocess.run([str(reader),'extract',str(ROOT/item['source_image']),item['source_path'],'-C',output],check=True)
+                extracted=Path(output)/Path(item['source_path']).name
+                if sha(extracted.read_bytes())!=item['sha256']:raise RuntimeError('Extracted stock shader hash mismatch: '+item['source_path'])
+                shutil.copyfile(extracted,target)
 def pack(data):
     out=bytearray(); at=0
     # Small zero runs stay literal, reducing decoder work and table overhead.
@@ -19,8 +37,11 @@ def pack(data):
 def main():
     ap=argparse.ArgumentParser(description=__doc__)
     ap.add_argument('--output',type=Path,required=True);ap.add_argument('--work',type=Path,required=True)
+    ap.add_argument('--jobs',type=int,default=4)
     ap.add_argument('--manifest',type=Path,default=ROOT/'tools/gpu-compiler/SystemShaders.json')
-    a=ap.parse_args();work=a.work.resolve();work.mkdir(parents=True,exist_ok=True)
+    a=ap.parse_args()
+    if not 1<=a.jobs<=16:ap.error('--jobs must be in 1..16')
+    work=a.work.resolve();work.mkdir(parents=True,exist_ok=True)
     spec=importlib.util.spec_from_file_location('system_shader_toolchain',ROOT/'scripts/toolchain.py')
     tc=importlib.util.module_from_spec(spec);spec.loader.exec_module(tc)
     source=ROOT/'tools/gpu-compiler';generated=ROOT/'build/drivers/generated/GPU'
@@ -33,6 +54,7 @@ def main():
          *[str(source/f) for f in ['SystemShaderTool.cpp','AIRRuntime.cpp','Compiler.cpp','MSL.cpp']],
          str(library),*flags,'-Wl,-rpath,'+str(library.parent),'-o',str(helper)]
     manifest=json.loads(a.manifest.read_text());inputs={str(a.manifest.relative_to(ROOT)):sha(a.manifest.read_bytes())}
+    materialize_inputs(manifest['inputs'],work,tc)
     paths=[*source.glob('*.h'),*source.glob('*.cpp'),
            *(ROOT/'drivers/include'/name for name in ('GPUShaderInterface.h','GPUShaderProtocol.h','GPUJITProtocol.h')),
            Path(__file__),library,generated/'GPUPrograms.h',
@@ -54,7 +76,7 @@ def main():
     def run(*args):
         try:return subprocess.run([str(helper),*map(str,args)],capture_output=True,text=True,timeout=30)
         except subprocess.TimeoutExpired:return subprocess.CompletedProcess(args,124,'','offline compiler timeout')
-    modules={}
+    modules={};required=set();nonstage=[]
     for item in manifest['inputs']:
         path=ROOT/item['path'];data=path.read_bytes()
         if item.get('entry'):
@@ -66,9 +88,15 @@ def main():
             for line in index.stdout.splitlines():
                 digest,name,kind,offset,size=line.split('\t');payload=data[int(offset):int(offset)+int(size)]
                 if sha(payload)!=digest:raise RuntimeError('MTLB AIR digest mismatch')
-                functions.append((digest,bytes.fromhex(name).decode(),payload))
+                name=bytes.fromhex(name).decode()
+                if int(kind)>2:
+                    nonstage.append({'source':item['path'],'name':name,'type':int(kind),'air_sha256':digest});continue
+                functions.append((digest,name,payload))
+        absent=set(item.get('required_entries',[]))-{name for _,name,_ in functions}
+        if absent:raise RuntimeError('Required entries absent from pinned library: '+str(sorted(absent)))
         for digest,name,payload in functions:
             key=(digest,name)
+            if name in item.get('required_entries',[]):required.add(key)
             if key not in modules:modules[key]={'air':payload,'profiles':[],'sources':[]}
             modules[key]['sources'].append(item['path'])
             modules[key]['profiles']+=item.get('profiles',{}).get(name,[])
@@ -77,13 +105,20 @@ def main():
            'using namespace GPU::SystemShaders;']
     registry=int(json.loads((generated/'shaders.json').read_text())['registry'],16)
     lines+=['constexpr uint64_t Registry=0x%016xULL;'%registry]
-    records=[];report=[];variant_total=0;packed_total=0
-    for n,((digest,name),m) in enumerate(sorted(modules.items())):
-        air=work/(digest+'.air');air.write_bytes(m['air'])
+    ordered=sorted(modules.items())
+    for (digest,_),module in ordered:
+        path=work/(digest+'.air')
+        if not path.exists() or sha(path.read_bytes())!=digest:path.write_bytes(module['air'])
+    def build_entry(task):
+        n,((digest,name),m)=task
+        lines=[];records=[];variant_total=0;packed_total=0
+        air=work/(digest+'.air')
         inspected=run('inspect',air,name)
         row={'air_sha256':digest,'name':name,'sources':m['sources'],'variants':[]}
-        report.append(row)
-        if inspected.returncode:row['error']=inspected.stderr;continue
+        if inspected.returncode:
+            row['error']=inspected.stderr
+            if (digest,name) in required:raise RuntimeError('Required system entry reflection failed: '+name+' '+inspected.stderr)
+            return row,[],None,0,0
         entries=inspected.stdout.splitlines();stage=int(entries[0]);decl=[]
         for line in entries[1:]:
             i,t,r,hn=line.split('\t');decl.append({'index':int(i),'type':int(t),'required':bool(int(r)),'name':bytes.fromhex(hn).decode()})
@@ -114,10 +149,18 @@ def main():
             variants.append('{%s,%d,%sData,sizeof(%sData)}'%(tag+'Constants' if effective else 'nullptr',len(effective),tag,tag))
             row['variants'].append({'constants':effective,'image':str(image.relative_to(ROOT)),'sha256':sha(data),'packed_bytes':len(packed),'diagnostic':result.stderr.strip()})
             variant_total+=1
+        if (digest,name) in required and not variants:raise RuntimeError('Required system entry has no compiled variant: '+name)
         if decl:lines+=['static const Declaration S%dDeclarations[]={%s};'%(n,','.join('{%s,%d,%d,%s}'%(quoted(d['name']),d['index'],d['type'],'true' if d['required'] else 'false') for d in decl))]
         if variants:lines+=['static const Variant S%dVariants[]={%s};'%(n,','.join(variants))]
         records.append('{%s,%s,%d,%s,%d,%s,%d}'%(cbytes(bytes.fromhex(digest)),quoted(name),stage,
                        f'S{n}Declarations' if decl else 'nullptr',len(decl),f'S{n}Variants' if variants else 'nullptr',len(variants)))
+        return row,lines,records[0],variant_total,packed_total
+    records=[];report=[];variant_total=0;packed_total=0
+    with concurrent.futures.ThreadPoolExecutor(a.jobs) as pool:
+        for n,(row,entry_lines,record,variants,packed_bytes) in enumerate(pool.map(build_entry,enumerate(ordered))):
+            report.append(row);lines+=entry_lines;variant_total+=variants;packed_total+=packed_bytes
+            if record is not None:records.append(record)
+            if n%250==0:print(f'System shaders: processed {n+1}/{len(ordered)} entries, {variant_total} variants',flush=True)
     if not variant_total:raise RuntimeError('No system shader compiled')
     lines+=['static const Entry Entries[]={'+',\n'.join(records)+'};',
             'constexpr size_t Count=sizeof(Entries)/sizeof(Entries[0]);','}']
@@ -136,7 +179,9 @@ def main():
         if sha((staging/f'{i}.bin').read_bytes())!=v['sha256']:raise RuntimeError('Catalog roundtrip mismatch')
     tmp=a.output.with_suffix('.tmp');tmp.write_text(header);tmp.replace(a.output)
     dump(receipt,{'signature':signature,'inputs':inputs,'tool_versions':versions,'header_sha256':sha(a.output.read_bytes()),'hardware_tested':False,
-                  'registry':f'{registry:016x}','entry_count':len(records),'variant_count':variant_total,'packed_bytes':packed_total,
-                  'validation':json.loads(checked.stdout),'entries':report})
+                  'registry':f'{registry:016x}','attempted_entry_count':len(report),'entry_count':len(records),
+                  'compiled_entry_count':sum(any('sha256' in v for v in e['variants']) for e in report),
+                  'variant_count':variant_total,'packed_bytes':packed_total,
+                  'validation':json.loads(checked.stdout),'nonstage_functions':nonstage,'entries':report})
     print(f'System shaders: {len(records)} reflected entries, {variant_total} exact variants, {packed_total} packed bytes')
 if __name__=='__main__':main()

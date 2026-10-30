@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: BSD-2-Clause
 #pragma once
 #include "FunctionConstants.h"
+#include "AIRIndirectCalls.h"
 #include <llvm-c/Core.h>
 #include <llvm-c/Error.h>
 #include <llvm-c/Target.h>
@@ -359,15 +360,28 @@ class State {
     }
     std::vector<LLVMValueRef> reachableFunctions()const {
         std::vector<LLVMValueRef> functions=entries;std::set<LLVMValueRef> seen(entries.begin(),entries.end());
-        unsigned instructions=0;
+        unsigned instructions=0;std::set<LLVMValueRef> constants;
         for(size_t n=0;n<functions.size();++n) {
             if(functions.size()>256)fail("helper function graph is too large");
             for(auto b=LLVMGetFirstBasicBlock(functions[n]);b;b=LLVMGetNextBasicBlock(b))
                 for(auto i=LLVMGetFirstInstruction(b);i;i=LLVMGetNextInstruction(i)) {
                     if(++instructions>65536)fail("helper instruction graph is too large");
-                    if(LLVMGetInstructionOpcode(i)!=LLVMCall)continue;
-                    auto fn=root(LLVMGetCalledValue(i));
-                    if(LLVMIsAFunction(fn) && LLVMCountBasicBlocks(fn) && seen.insert(fn).second)functions.push_back(fn);
+                    // Address-taken helpers can contain constant-defined queries
+                    // too. Follow function values in selects, stores and global
+                    // tables before finite indirect-call lowering runs.
+                    std::vector<LLVMValueRef> pending;
+                    for(int operand=0;operand<LLVMGetNumOperands(i);++operand)pending.push_back(LLVMGetOperand(i,unsigned(operand)));
+                    while(!pending.empty()) {
+                        auto v=root(pending.back());pending.pop_back();
+                        if(!v || !LLVMIsAConstant(v) || !constants.insert(v).second)continue;
+                        if(constants.size()>65536)fail("helper constant graph is too large");
+                        if(LLVMIsAFunction(v)) {
+                            if(LLVMCountBasicBlocks(v) && seen.insert(v).second)functions.push_back(v);
+                        } else if(LLVMIsAGlobalVariable(v)) {
+                            if(auto initializer=LLVMGetInitializer(v))pending.push_back(initializer);
+                        } else for(int operand=0;operand<LLVMGetNumOperands(v);++operand)
+                            pending.push_back(LLVMGetOperand(v,unsigned(operand)));
+                    }
                 }
         }
         return functions;
@@ -406,12 +420,23 @@ class State {
     }
     void passes(const char *pipeline) {
         discardUnusedHelperBodies();
-        auto options=LLVMCreatePassBuilderOptions();auto error=LLVMRunPasses(module,pipeline,nullptr,options);LLVMDisposePassBuilderOptions(options);
+        std::string selected=pipeline;
+        // LLVM 23 added a default one-iteration fixpoint assertion which
+        // aborts on stock QuartzCore IR. Disable that diagnostic, preserving
+        // the pass itself. Query the loaded LLVM: iOS still supplies LLVM 18
+        // and must not receive a newer pass-pipeline option.
+        using Version=void (*)(unsigned *,unsigned *,unsigned *);
+        auto version=reinterpret_cast<Version>(dlsym(RTLD_DEFAULT,"LLVMGetVersion"));
+        unsigned major=0,minor=0,patch=0;if(version)version(&major,&minor,&patch);
+        if(major>=23)for(size_t at=0;(at=selected.find("instcombine",at))!=std::string::npos;) {
+            selected.replace(at,11,"instcombine<no-verify-fixpoint>");at+=29;
+        }
+        auto options=LLVMCreatePassBuilderOptions();auto error=LLVMRunPasses(module,selected.c_str(),nullptr,options);LLVMDisposePassBuilderOptions(options);
         if(error){auto message=LLVMGetErrorMessage(error);std::string diagnostic=message;LLVMDisposeErrorMessage(message);fail(diagnostic);}
     }
 public:
-    State(LLVMModuleRef m,const std::string &selected):State(m,selected.empty()?std::set<std::string>{}:std::set<std::string>{selected}) {}
-    State(LLVMModuleRef m,const std::set<std::string> &selected):module(m),context(LLVMGetModuleContext(m)),builder{LLVMCreateBuilderInContext(context)},layout{LLVMCreateTargetData(LLVMGetDataLayoutStr(m))} {
+    State(LLVMModuleRef m,const std::string &selected,bool visible=false):State(m,selected.empty()?std::set<std::string>{}:std::set<std::string>{selected},visible) {}
+    State(LLVMModuleRef m,const std::set<std::string> &selected,bool visible=false):module(m),context(LLVMGetModuleContext(m)),builder{LLVMCreateBuilderInContext(context)},layout{LLVMCreateTargetData(LLVMGetDataLayoutStr(m))} {
         unsigned count=LLVMGetNamedMetadataNumOperands(module,"air.function_constants");
         if(count>MaxFunctionConstants)fail("too many function constants");
         std::vector<LLVMValueRef> metadata(count);LLVMGetNamedMetadataOperands(module,"air.function_constants",metadata.data());
@@ -436,6 +461,20 @@ public:
             if(n>64)fail("too many AIR stage entries");std::vector<LLVMValueRef> list(n);LLVMGetNamedMetadataOperands(module,key,list.data());
             for(auto md:list) {auto a=node(md);if(a.size()!=3 || !LLVMIsAFunction(a[0]))fail("invalid AIR stage metadata");
                 if(selected.empty() || selected.count(name(a[0]))){entries.push_back(a[0]);entryMetadata.push_back(md);}}
+        }
+        if(entries.empty() && visible) {
+            unsigned n=LLVMGetNamedMetadataNumOperands(module,"air.visible");
+            if(n>256)fail("too many visible functions");
+            std::vector<LLVMValueRef> list(n);LLVMGetNamedMetadataOperands(module,"air.visible",list.data());
+            for(auto md:list) {
+                auto a=node(md);if(a.size()!=4 || !LLVMIsAFunction(a[0]))fail("invalid visible function metadata");
+                if(!selected.count(name(a[0])))continue;
+                auto type=LLVMGetReturnType(LLVMGlobalGetValueType(a[0]));
+                unsigned count=LLVMGetTypeKind(type)==LLVMStructTypeKind?LLVMCountStructElementTypes(type):0;
+                std::vector<LLVMValueRef> output(count,LLVMMDNodeInContext(context,nullptr,0));
+                LLVMValueRef values[]={a[0],LLVMMDNodeInContext(context,output.data(),count),a[2]};
+                entries.push_back(a[0]);entryMetadata.push_back(LLVMMDNodeInContext(context,values,3));
+            }
         }
         if(entries.empty())fail("selected AIR entry is absent");
         if(definitions.empty())return;
@@ -543,7 +582,6 @@ public:
         passes("function(instcombine,simplifycfg,adce)");
     }
     void lowerHelpers() {
-        auto functions=reachableFunctions();if(functions.size()==entries.size())return;
         const auto always=LLVMGetEnumAttributeKindForName("alwaysinline",12);
         const auto never=LLVMGetEnumAttributeKindForName("noinline",8);
         const auto optnone=LLVMGetEnumAttributeKindForName("optnone",7);
@@ -557,7 +595,7 @@ public:
                     LLVMRemoveCallSiteEnumAttribute(i,LLVMAttributeFunctionIndex,always);
         }
         for(unsigned round=0;round<=16;++round) {
-            std::vector<LLVMValueRef> calls;unsigned expansion=0;
+            std::vector<LLVMValueRef> calls,indirect;unsigned expansion=0;
             auto count=[&](LLVMValueRef fn) {
                 for(auto b=LLVMGetFirstBasicBlock(fn);b;b=LLVMGetNextBasicBlock(b))
                     for(auto i=LLVMGetFirstInstruction(b);i;i=LLVMGetNextInstruction(i))
@@ -568,13 +606,20 @@ public:
                 for(auto b=LLVMGetFirstBasicBlock(fn);b;b=LLVMGetNextBasicBlock(b))
                     for(auto i=LLVMGetFirstInstruction(b);i;i=LLVMGetNextInstruction(i))if(LLVMGetInstructionOpcode(i)==LLVMCall) {
                         auto callee=root(LLVMGetCalledValue(i));
-                        if(!LLVMIsAFunction(callee))fail("indirect helper calls are unsupported");
+                        if(!LLVMIsAFunction(callee)){indirect.push_back(i);continue;}
                         if(!LLVMCountBasicBlocks(callee))continue;
                         if(std::find(entries.begin(),entries.end(),callee)!=entries.end())fail("recursive/stage helper calls are unsupported");
                         count(callee);calls.push_back(i);
                     }
             }
-            if(calls.empty())return;
+            if(calls.empty()) {
+                if(indirect.empty())return;
+                if(round==16)fail("indirect-call expansion depth exceeded");
+                std::map<LLVMValueRef,std::vector<LLVMValueRef>> byFunction;
+                for(auto call:indirect)byFunction[LLVMGetBasicBlockParent(LLVMGetInstructionParent(call))].push_back(call);
+                for(const auto &group:byFunction)AIRIndirectCalls::Lower(module).run(group.second);
+                continue;
+            }
             if(round==16)fail("helper inlining depth exceeded or call cannot be inlined");
             for(auto call:calls) {
                 auto callee=root(LLVMGetCalledValue(call));

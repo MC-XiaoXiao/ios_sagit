@@ -93,7 +93,10 @@ static void qgpu_collect_constant_windows(nir_shader *nir,QGPUProgramDescription
     // use otherwise unused constant-bank capacity for those compact ranges.
     // Runtime range/alignment checks and the guarded SSBO fallback still
     // apply to the entire 64B source, including short Metal setBytes ranges.
-    for(unsigned pass=0;pass<2;++pass)
+    // Fill spare banks with sparse tails only after dense and compact ranges.
+    // A dense prefix must not strand its small half-value tail in per-pixel
+    // SSBO loads. Native planning already zero-pads short, word-aligned banks.
+    for(unsigned pass=0;pass<3;++pass)
     for(unsigned slot=0;slot<8 && p->constantWindowCount<QGPU_MAX_CONSTANT_WINDOWS;++slot) {
         uint64_t first=UINT64_MAX,last=0;unsigned total=0;
         nir_foreach_function_impl(impl,nir)nir_foreach_block(block,impl)nir_foreach_instr(instr,block) {
@@ -106,11 +109,12 @@ static void qgpu_collect_constant_windows(nir_shader *nir,QGPUProgramDescription
             if(at+bytes*in->num_components>last)last=at+bytes*in->num_components;
             total+=bytes*in->num_components;
         }
-        if(first==UINT64_MAX || (pass==0 ? total<32 : total>=32))continue;
-        if(pass && last-first>QGPU_CONSTANT_WINDOW_BYTES)continue;
+        if(first==UINT64_MAX || (pass==1 ? total>=32 : total<32))continue;
+        if(pass==1 && last-first>QGPU_CONSTANT_WINDOW_BYTES)continue;
         // Preserve the previous compact half range's ending alignment, so
         // its complete 64B source stays valid for the same real bindings.
         if(last-first<=QGPU_CONSTANT_WINDOW_BYTES) {
+            if(pass==2)continue;
             uint64_t end=(last+15)&~15ull;
             if(end<QGPU_CONSTANT_WINDOW_BYTES)end=QGPU_CONSTANT_WINDOW_BYTES;
             uint64_t start=end-QGPU_CONSTANT_WINDOW_BYTES;
@@ -140,7 +144,8 @@ static void qgpu_collect_constant_windows(nir_shader *nir,QGPUProgramDescription
                 if((at&(bytes-1)) || at<start || at+bytes*in->num_components>end)continue;
                 score+=in->num_components*bytes;
             }
-            if(score>=32)p->constantWindows[p->constantWindowCount++]=(QGPUConstantWindow){slot,(uint32_t)start};
+            if(pass==2 ? (score>0 && score<32) : score>=32)
+                p->constantWindows[p->constantWindowCount++]=(QGPUConstantWindow){slot,(uint32_t)start};
             floor=end;
         }
     }
@@ -369,7 +374,7 @@ static unsigned qgpu_memory_constants(const QGPUProgramDescription *p) {
     if(p->flags&QGPU_BUFFER_SIZE_CONSTANTS)return QGPU_MEMORY_CONSTANT_WORDS;
     if(p->flags&QGPU_FRAMEBUFFER_TILE_ORIGIN)return QGPU_FRAMEBUFFER_TILE_MEMORY_CONSTANT_WORDS;
     if(p->stage!=0)return p->framebufferMask?QGPU_FRAMEBUFFER_MEMORY_CONSTANT_WORDS:p->queryMask?QGPU_GRAPHICS_MEMORY_CONSTANT_WORDS:p->samplerMask?QGPU_SAMPLER_CONSTANT_WORDS:0;
-    return p->flags&(QGPU_ARRAY_TEXTURE_MASK|QGPU_CUBE_TEXTURE_MASK)?QGPU_ARRAY_MEMORY_CONSTANT_WORDS:p->flags&QGPU_DISPATCH_GEOMETRY?QGPU_DISPATCH_MEMORY_CONSTANT_WORDS:p->samplerMask?QGPU_SAMPLER_MEMORY_CONSTANT_WORDS:p->imageMask?QGPU_IMAGE_MEMORY_CONSTANT_WORDS:p->threadgroupMask?QGPU_THREADGROUP_CONSTANT_WORDS:0;
+    return p->volumeMask || (p->flags&(QGPU_ARRAY_TEXTURE_MASK|QGPU_CUBE_TEXTURE_MASK))?QGPU_ARRAY_MEMORY_CONSTANT_WORDS:p->flags&QGPU_DISPATCH_GEOMETRY?QGPU_DISPATCH_MEMORY_CONSTANT_WORDS:p->samplerMask?QGPU_SAMPLER_MEMORY_CONSTANT_WORDS:p->imageMask?QGPU_IMAGE_MEMORY_CONSTANT_WORDS:p->threadgroupMask?QGPU_THREADGROUP_CONSTANT_WORDS:0;
 }
 static void qgpu_pad_memory_constants(struct ir3_shader_variant *v,const QGPUProgramDescription *p) {
     unsigned reserved=((qgpu_memory_constants(p)+15)/16)*4;
@@ -397,7 +402,7 @@ static bool qgpu_bind_samples(nir_shader *nir,QGPUProgramDescription *p) {
             unsigned shape=0;
             const char *fetch=nir->info.stage==MESA_SHADER_VERTEX?"_qvertex_fetch%u_%u%n":"_qfetch%u_%u%n";
             if(var->name && sscanf(var->name,fetch,&shape,&texture,&consumed)==2) {
-                if(var->name[consumed] || shape>5 || texture>=QGPU_STAGE_TEXTURE_COUNT)return false;
+                if(var->name[consumed] || (shape>5 && shape!=8) || texture>=QGPU_STAGE_TEXTURE_COUNT)return false;
                 var->data.binding=128+shape*8+texture;continue;
             }
         }
@@ -477,15 +482,16 @@ static bool qgpu_remap_samples(nir_shader *nir,QGPUProgramDescription *p) {
                         BITSET_SET(nir->info.textures_used,tex->texture_index);}
                     continue;
                 }
-                if(nir->info.stage==MESA_SHADER_COMPUTE || tex->texture_index<128 || tex->texture_index>=176)return false;
+                if(nir->info.stage==MESA_SHADER_COMPUTE || tex->texture_index<128 || (tex->texture_index>=176 && (tex->texture_index<192 || tex->texture_index>=200)))return false;
                 unsigned shape=(tex->texture_index-128)/8,image=tex->texture_index%8;
-                if(tex->is_array!=((shape>0 && shape<4) || shape==5) || (shape>=4?
+                if(tex->is_array!=((shape>0 && shape<4) || shape==5) || ((shape==4 || shape==5)?
                     (tex->op!=nir_texop_txf_ms || tex->sampler_dim!=GLSL_SAMPLER_DIM_MS):
-                    (tex->op!=nir_texop_txf || tex->sampler_dim!=GLSL_SAMPLER_DIM_2D)))return false;
+                    (tex->op!=nir_texop_txf || tex->sampler_dim!=(shape==8?GLSL_SAMPLER_DIM_3D:GLSL_SAMPLER_DIM_2D))))return false;
                 if(!pass) {
                     if(shape&1)p->flags|=1u<<(QGPU_ARRAY_TEXTURE_SHIFT+image);
                     if(shape&2)p->flags|=1u<<(QGPU_CUBE_TEXTURE_SHIFT+image);
-                    if(shape>=4)p->multisampleMask|=1u<<image;
+                    if(shape==4 || shape==5)p->multisampleMask|=1u<<image;
+                    if(shape==8)p->volumeMask|=1u<<image;
                     p->fetchMask|=1u<<image;
                 } else {
                     tex->texture_index=QGPU_FETCH_TEXTURE_BASE+image;tex->sampler_index=0;
@@ -500,10 +506,11 @@ static bool qgpu_remap_samples(nir_shader *nir,QGPUProgramDescription *p) {
             unsigned pair=literal?(tex->texture_index-256)%128:tex->texture_index%64;
             unsigned image=pair/(literal?16:8),sampler=pair%(literal?16:8);
             bool cube=tex->sampler_dim==GLSL_SAMPLER_DIM_CUBE;
-            if(!cube && tex->sampler_dim!=GLSL_SAMPLER_DIM_2D)return false;
+            if(!cube && tex->sampler_dim!=GLSL_SAMPLER_DIM_2D && tex->sampler_dim!=GLSL_SAMPLER_DIM_3D)return false;
             if(literal && !(declared&(1u<<sampler)))return false;
             if(!pass) {
                 p->sampleMask|=1u<<image;
+                if(tex->sampler_dim==GLSL_SAMPLER_DIM_3D)p->volumeMask|=1u<<image;
                 if(tex->is_shadow)p->depthTextureMask|=1u<<image;
                 if(cube)p->flags|=1u<<(QGPU_CUBE_TEXTURE_SHIFT+image);
                 if(tex->is_array)p->flags|=1u<<(QGPU_ARRAY_TEXTURE_SHIFT+image);
@@ -620,6 +627,8 @@ static bool qgpu_guard_memory_profile(nir_shader *nir,QGPUProgramDescription *de
                 {"_qtexture2d_info","_qtexture2d_array_info","_qtexturecube_info","_qtexturecube_array_info","_qtexture2d_ms_info","_qtexture2d_ms_array_info"},
                 {"_qvertex_texture2d_info","_qvertex_texture2d_array_info","_qvertex_texturecube_info","_qvertex_texturecube_array_info","_qvertex_texture2d_ms_info","_qvertex_texture2d_ms_array_info"}};
             int graphics_shape=-1;unsigned graphics_stage=0;
+            if(!strcmp(var->name,"_qtexture3d_info"))graphics_shape=8;
+            if(!strcmp(var->name,"_qvertex_texture3d_info")){graphics_shape=8;graphics_stage=1;}
             for(unsigned stage=0;stage<2;++stage)for(unsigned shape=0;shape<6;++shape)
                 if(!strcmp(var->name,graphics_names[stage][shape])) {graphics_shape=shape;graphics_stage=stage;}
             if(graphics_shape>=0) {
@@ -630,7 +639,8 @@ static bool qgpu_guard_memory_profile(nir_shader *nir,QGPUProgramDescription *de
                 unsigned slot=nir_src_as_uint(deref->arr.index);description->queryMask|=1u<<slot;
                 if(graphics_shape&1)description->flags|=1u<<(QGPU_ARRAY_TEXTURE_SHIFT+slot);
                 if(graphics_shape&2)description->flags|=1u<<(QGPU_CUBE_TEXTURE_SHIFT+slot);
-                if(graphics_shape>=4)description->multisampleMask|=1u<<slot;
+                if(graphics_shape==4 || graphics_shape==5)description->multisampleMask|=1u<<slot;
+                if(graphics_shape==8)description->volumeMask|=1u<<slot;
                 b.cursor=nir_before_instr(instr);
                 nir_def *value=nir_load_const_ir3(&b,4,32,nir_imm_int(&b,QGPU_GRAPHICS_TEXTURE_CONSTANT_BASE+slot*4),.base=0);
                 nir_def_rewrite_uses(&in->def,value);nir_instr_remove(instr);continue;
@@ -640,9 +650,10 @@ static bool qgpu_guard_memory_profile(nir_shader *nir,QGPUProgramDescription *de
             bool cube_array=!strcmp(var->name,"_qcubearray_info") || !strcmp(var->name,"_qcubearray_face_info");
             bool ms_layout=!strcmp(var->name,"_qimage_ms_array_layout");
             bool ms_array=ms_layout || !strcmp(var->name,"_qimage_ms_array_info");
-            bool array=ms_layout || !strcmp(var->name,"_qimage_array_info") || !strcmp(var->name,"_qcube_face_info") || !strcmp(var->name,"_qcubearray_face_info");
+            bool volume=!strcmp(var->name,"_qvolume_info") || !strcmp(var->name,"_qvolume_layout");
+            bool array=!strcmp(var->name,"_qvolume_layout") || ms_layout || !strcmp(var->name,"_qimage_array_info") || !strcmp(var->name,"_qcube_face_info") || !strcmp(var->name,"_qcubearray_face_info");
             bool ms=ms_array || !strcmp(var->name,"_qimage_ms_info");
-            bool image=(ms && !ms_layout) || !strcmp(var->name,"_qimage_info") || !strcmp(var->name,"_qcube_info") || !strcmp(var->name,"_qcubearray_info");
+            bool image=!strcmp(var->name,"_qvolume_info") || (ms && !ms_layout) || !strcmp(var->name,"_qimage_info") || !strcmp(var->name,"_qcube_info") || !strcmp(var->name,"_qcubearray_info");
             bool sampler=vertex_sampler || !strcmp(var->name,"_qsampler_info"),dispatch=!strcmp(var->name,"_qdispatch_info");
             if (!image && !sampler && !dispatch && !array && strcmp(var->name,"_qthreadgroup_info")) continue;
             if ((!sampler && nir->info.stage!=MESA_SHADER_COMPUTE) ||
@@ -656,7 +667,8 @@ static bool qgpu_guard_memory_profile(nir_shader *nir,QGPUProgramDescription *de
                 if (!description) return false;
                 description->imageMask|=1u<<slot;
                 if(ms)description->multisampleMask|=1u<<slot;
-                if((array && !cube) || cube_array || ms_array)description->flags|=1u<<(QGPU_ARRAY_TEXTURE_SHIFT+slot);
+                if(volume)description->volumeMask|=1u<<slot;
+                if((array && !cube && !volume) || cube_array || ms_array)description->flags|=1u<<(QGPU_ARRAY_TEXTURE_SHIFT+slot);
                 if(cube || cube_array)description->flags|=1u<<(QGPU_CUBE_TEXTURE_SHIFT+slot);
             }
             else if (dispatch) {if (!description) return false;description->flags|=QGPU_DISPATCH_GEOMETRY;}

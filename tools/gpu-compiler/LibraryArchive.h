@@ -11,9 +11,13 @@
 #include <vector>
 
 namespace GPU { namespace Compiler { namespace LibraryArchive {
-constexpr size_t MaxBytes=16u*1024*1024;
+// A library is an index of lazily compiled modules, not one GPU allocation.
+// Stock 22H374 MPSCore is 33 MiB with 4,396 functions. Keep separate bounds
+// from the 16 MiB per-AIR input and 256 resident JIT programs.
+constexpr size_t MaxBytes=64u*1024*1024, MaxFunctions=8192;
 struct Function {
     std::string name;
+    bool specialized=false; // ALIS names an archived specialization of name.
     uint32_t type=0; // Apple's MTLB TYPE: vertex0, fragment1, kernel2.
     size_t offset=0,size=0; // Absolute spans in the original container.
     std::array<uint8_t,32> hash{};
@@ -22,6 +26,7 @@ inline bool container(const void *data,size_t size) {
     if(!data || size<4)return false;
     const auto *b=static_cast<const uint8_t *>(data);
     return !std::memcmp(b,"MTLB",4) ||
+        (b[0]==0xcf && b[1]==0xfa && b[2]==0xed && b[3]==0xfe) ||
         (b[0]==0xca && b[1]==0xfe && b[2]==0xba && (b[3]==0xbe || b[3]==0xbf)) ||
         ((b[0]==0xbe || b[0]==0xbf) && b[1]==0xba && b[2]==0xfe && b[3]==0xca);
 }
@@ -29,13 +34,60 @@ inline bool container(const void *data,size_t size) {
 // layout only: callers must verify each returned AIR SHA256 before use.
 // FAT headers/records follow Apple's mach-o/fat.h. The AIR64 MTLB slice in
 // the actual22H374 QuartzCore library has cputype0x01000017/subtype11;
-// Apple GPU MH_EXECUTE slices are never passed to LLVM or the A540 backend.
+// Apple GPU MH_EXECUTE code is never passed to LLVM or the A540 backend.
+// Some archives also retain source AIR in aligned __TEXT,__metallib members.
 inline bool parse(const void *data,size_t size,std::vector<Function> &out,std::string &error) {
     out.clear();error.clear();
     auto fail=[&](const char *message){out.clear();error=message;return false;};
     if(!container(data,size) || size>MaxBytes)return fail("Invalid or oversized Metal library container");
     const auto *b=static_cast<const uint8_t *>(data);
     auto word=[&](size_t at,unsigned n,bool big=false){uint64_t v=0;for(unsigned i=0;i<n;++i)v|=uint64_t(b[at+i])<<(8*(big?n-1-i:i));return v;};
+    if(b[0]==0xcf && b[1]==0xfa && b[2]==0xed && b[3]==0xfe) {
+        if(size<32 || word(4,4)!=0x01000013 || word(12,4)!=2)return fail("Not an Apple GPU executable archive");
+        uint64_t count=word(16,4),commands=word(20,4);
+        if(!count || count>4096 || commands>size-32)return fail("Invalid Apple GPU load commands");
+        size_t at=32,end=32+size_t(commands),start=0,length=0;
+        for(size_t n=0;n<count;++n) {
+            if(end-at<8)return fail("Truncated Apple GPU load command");
+            uint64_t command=word(at,4),bytes=word(at+4,4);
+            if(bytes<8 || bytes>end-at || bytes%8)return fail("Invalid Apple GPU load command size");
+            if(command==0x19) { // LC_SEGMENT_64, with section_64 records.
+                if(bytes<72)return fail("Truncated Apple GPU segment");
+                uint64_t sections=word(at+64,4),file=word(at+40,8),span=word(at+48,8);
+                if(sections>(bytes-72)/80 || bytes!=72+sections*80 || file>size || span>size-file)
+                    return fail("Invalid Apple GPU segment range");
+                for(size_t i=0;i<sections;++i) {
+                    size_t section=at+72+i*80;
+                    if(std::memcmp(b+section,"__metallib\0\0\0\0\0\0",16))continue;
+                    uint64_t offset=word(section+48,4),extent=word(section+40,8);
+                    if(start || offset<file || offset>file+span || extent>file+span-offset || offset<end)
+                        return fail("Invalid or duplicate Apple GPU AIR section");
+                    start=size_t(offset);length=size_t(extent);
+                }
+            }
+            at+=size_t(bytes);
+        }
+        if(at!=end || !start || !length)return fail("Apple GPU archive has no embedded AIR libraries");
+        // The section is a sequence of complete MTLBs, each padded to 16 bytes.
+        // Do not scan arbitrary machine code for magic strings.
+        for(at=0;at<length;) {
+            if(length-at<88 || std::memcmp(b+start+at,"MTLB",4))return fail("Invalid embedded AIR library");
+            uint64_t bytes=word(start+at+16,8);
+            if(bytes<88 || bytes>length-at)return fail("Embedded AIR library exceeds archive section");
+            if(word(start+at+80,8)) {
+                std::vector<Function> member;std::string diagnostic;
+                if(!parse(b+start+at,size_t(bytes),member,diagnostic)){out.clear();error=diagnostic;return false;}
+                if(member.size()>MaxFunctions-out.size())return fail("Too many archived AIR functions");
+                for(auto &f:member){f.offset+=start+at;out.push_back(std::move(f));}
+            }
+            size_t next=(at+size_t(bytes)+15)&~size_t(15);
+            if(next>length)return fail("Truncated embedded AIR alignment");
+            for(size_t p=at+size_t(bytes);p<next;++p)if(b[start+p])return fail("Nonzero embedded AIR alignment padding");
+            at=next;
+        }
+        if(out.empty())return fail("Apple GPU archive contains machine code without portable AIR");
+        return true;
+    }
     size_t base=0,span=size;
     if(std::memcmp(b,"MTLB",4)) {
         bool big=b[0]==0xca,wide=(big?b[3]:b[0])==0xbf;
@@ -77,7 +129,7 @@ inline bool parse(const void *data,size_t size,std::vector<Function> &out,std::s
     size_t end=list.start+list.size+4,pos=list.start+4;
     if(end>sections[1].start)return fail("MTLB function list overlaps metadata");
     uint64_t count=le(list.start,4);
-    if(!count || count>4096)return fail("Invalid MTLB function count");
+    if(!count || count>MaxFunctions)return fail("Invalid MTLB function count");
     std::set<std::string> names;std::set<size_t> offsets{air.size};
     for(size_t i=0;i<count;++i) {
         if(end-pos<4)return fail("Truncated MTLB function group");
@@ -92,11 +144,20 @@ inline bool parse(const void *data,size_t size,std::vector<Function> &out,std::s
             tags[tag]={pos,bytes};pos+=bytes;
         }
         if(finish-pos!=4 || std::memcmp(b+base+pos,"ENDT",4))return fail("Missing MTLB ENDT");
-        pos=finish;auto n=tags["NAME"],t=tags["TYPE"],o=tags["OFFT"],h=tags["HASH"],l=tags["MDSZ"];
+        pos=finish;auto n=tags["NAME"],alias=tags["ALIS"],t=tags["TYPE"],o=tags["OFFT"],h=tags["HASH"],l=tags["MDSZ"];
+        std::string identity;
+        if(alias.second) {
+            if(n.second || alias.second<4 || alias.second>8192)return fail("Invalid MTLB alias descriptor");
+            auto separator=static_cast<const uint8_t *>(std::memchr(b+base+alias.first,0,alias.second));
+            if(!separator || separator==b+base+alias.first)return fail("Invalid MTLB alias name");
+            size_t prefix=size_t(separator-(b+base+alias.first));
+            identity.assign(reinterpret_cast<const char *>(b+base+alias.first),prefix);
+            n={alias.first+prefix+1,alias.second-prefix-1};
+        }
         if(n.second<2 || n.second>4096 || b[base+n.first+n.second-1] || std::memchr(b+base+n.first,0,n.second-1) ||
             t.second!=1 || o.second!=24 || h.second!=32 || (l.second && l.second!=8))return fail("Invalid MTLB function descriptor");
-        Function f;f.name.assign(reinterpret_cast<const char *>(b+base+n.first),n.second-1);f.type=b[base+t.first];
-        if(!names.insert(f.name).second)return fail("Duplicate MTLB function name");
+        Function f;f.name.assign(reinterpret_cast<const char *>(b+base+n.first),n.second-1);f.type=b[base+t.first];f.specialized=alias.second!=0;
+        if(!names.insert(f.specialized?identity:f.name).second)return fail("Duplicate MTLB function name");
         uint64_t pub=le(o.first,8),priv=le(o.first+8,8),offset=le(o.first+16,8),bytes=l.second?le(l.first,8):0;
         if(pub>=sections[1].size || priv>=sections[2].size || offset>=air.size || bytes>air.size-offset)
             return fail("MTLB AIR span outside section");

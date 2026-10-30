@@ -40,6 +40,45 @@ static bool remap_buffers(nir_shader *nir, const struct gl_program *program,QGPU
 }
 #ifndef __APPLE__
 static int qgpu_check_msaa_reuse(void);
+// Feed a real post-RA instruction stream into the production legalizer. On
+// split register files, a texture write to hr4.z cannot clear r2.y's ALU
+// latency, nor can a full write clear the independent half-register latency.
+static bool qgpu_check_split_register_delays(void) {
+    struct fd_dev_id id={.gpu_id=540};
+    struct ir3_compiler *compiler=ir3_compiler_create(NULL,&id,fd_dev_info_raw(&id),
+        &(struct ir3_compiler_options){.disable_cache=true,.qcom_runtime=true});
+    if(!compiler)return false;
+    unsigned cases=0;bool passed=true;
+    for(unsigned merged=0;merged<2;++merged)for(unsigned half=0;half<2;++half) {
+        struct ir3_shader_variant *v=rzalloc(NULL,struct ir3_shader_variant);
+        v->compiler=compiler;v->type=MESA_SHADER_FRAGMENT;v->mergedregs=merged;
+        struct ir3 *ir=ir3_create(compiler,v);v->ir=ir;
+        struct ir3_block *block=ir3_block_create(ir);list_addtail(&block->node,&ir->block_list);
+        unsigned reg=half?18:9,flags=half?IR3_REG_HALF:0;
+        struct ir3_instruction *producer=ir3_instr_create(block,OPC_MOV,1,1);
+        ir3_dst_create(producer,reg,flags);ir3_src_create(producer,0,IR3_REG_CONST|flags);
+        producer->cat1.src_type=producer->cat1.dst_type=half?TYPE_F16:TYPE_F32;
+        struct ir3_instruction *sample=ir3_instr_create(block,OPC_SAM,1,1);
+        ir3_dst_create(sample,half?9:18,half?0:IR3_REG_HALF);
+        ir3_src_create(sample,48,0)->wrmask=3;sample->cat5.type=half?TYPE_F32:TYPE_F16;
+        struct ir3_instruction *consumer=ir3_instr_create(block,OPC_ADD_F,1,2);
+        ir3_dst_create(consumer,32,flags);ir3_src_create(consumer,reg,flags);
+        ir3_src_create(consumer,0,IR3_REG_CONST|flags);
+        ir3_instr_create(block,OPC_END,0,0);
+        int max_bary=-1;bool ok=ir3_legalize(ir,v,&max_bary);unsigned nops=0;
+        foreach_instr(instr,&block->instr_list) {
+            if(instr==consumer)break;
+            if(instr->opc==OPC_NOP)nops+=instr->repeat+1;
+        }
+        ok&=merged?((consumer->flags&IR3_INSTR_SY)!=0 && nops==0):nops==3;
+        if(!ok)fprintf(stderr,"IR3 register delays merged=%u half=%u nops=%u sync=%x failed\n",merged,half,nops,consumer->flags);
+        passed&=ok;++cases;ralloc_free(v);
+    }
+    ir3_compiler_destroy(compiler);
+    if(passed)printf("IR3 register delays: %u split/merged half/full texture-interleave cases passed\n",cases);
+    return passed;
+}
+
 // Compare the optimized literal path with the original symbolic-offset guard
 // on identical inputs. Both must preserve exact values and never issue a load
 // outside the binding, including end==2^32 and per-component offset wrap.
@@ -256,6 +295,40 @@ static bool qgpu_check_constant_windows(void) {
     }
     printf("NIR constant windows: %u cases, %u promoted paths without SSBO reads; oversized vector rejection passed\n",cases,promoted);
     return cases && promoted;
+}
+// Real compositor profile: dense float coordinates followed by a few half
+// weights. Spare banks must capture that tail without displacing compact
+// buffers or any existing dense window. Coherent/volatile loads stay guarded.
+static bool qgpu_check_sparse_window_tail(void) {
+    static const nir_shader_compiler_options options={0};
+    for(unsigned mode=0;mode<4;++mode) {
+        nir_builder b=nir_builder_init_simple_shader(MESA_SHADER_FRAGMENT,&options,"sparse uniform tail");
+        b.shader->info.num_ssbos=16;
+        unsigned access=ACCESS_NON_WRITEABLE|(mode==1?ACCESS_VOLATILE:mode==2?ACCESS_COHERENT:0);
+        for(unsigned slot=1;slot<=(mode==3?4u:1u);++slot)for(unsigned row=0;row<4;++row) {
+            nir_def *v=nir_load_ssbo(&b,4,32,nir_imm_int(&b,8+slot),nir_imm_int(&b,row*16),
+                .access=access,.align_mul=4);
+            nir_store_output(&b,v,nir_imm_int(&b,0),.base=slot*4+row,.write_mask=15);
+        }
+        const unsigned offsets[]={64,80};
+        for(unsigned i=0;i<2;++i) {
+            nir_def *v=nir_load_ssbo(&b,i?1:4,16,nir_imm_int(&b,9),nir_imm_int(&b,offsets[i]),
+                .access=access,.align_mul=2);
+            nir_store_output(&b,nir_u2u32(&b,v),nir_imm_int(&b,0),.base=20+i,.write_mask=i?1:15);
+        }
+        nir_def *compact=nir_load_ssbo(&b,1,32,nir_imm_int(&b,14),nir_imm_int(&b,0),
+            .access=ACCESS_NON_WRITEABLE,.align_mul=4);
+        nir_store_output(&b,compact,nir_imm_int(&b,0),.base=22,.write_mask=1);
+        QGPUProgramDescription p={0};p.stage=2;
+        qgpu_collect_constant_windows(b.shader,&p);bool ok=true;
+        if(mode==0)ok=p.constantWindowCount==3 && p.constantWindows[0].buffer==1 && p.constantWindows[0].byteOffset==0 &&
+            p.constantWindows[1].buffer==1 && p.constantWindows[1].byteOffset==64 && p.constantWindows[2].buffer==6 && p.constantWindows[2].byteOffset==0;
+        else if(mode<3)ok=p.constantWindowCount==1 && p.constantWindows[0].buffer==6 && p.constantWindows[0].byteOffset==0;
+        else {ok=p.constantWindowCount==4;for(unsigned i=0;i<4;++i)ok&=p.constantWindows[i].buffer==i+1 && p.constantWindows[i].byteOffset==0;}
+        ralloc_free(b.shader);if(!ok){fprintf(stderr,"sparse window tail mode=%u failed\n",mode);return false;}
+    }
+    printf("NIR sparse windows: mixed half/word tail, compact priority, capacity and coherent/volatile exclusions passed\n");
+    return true;
 }
 // Exercise independently enabled windows of one logical buffer. The payload
 // stays integer data so float NaNs, signed zero and packed half bits are all
@@ -618,7 +691,7 @@ __attribute__((visibility("default"))) int qgpu_check_buffer_guards(void) {
         if(!ok){fprintf(stderr,"NIR fragment demotion case %u failed\n",discarded);nir_print_shader(b.shader,stderr);}
         ralloc_free(b.shader);if(!ok)return 0;
     }
-    return qgpu_check_word_store_vectors() && qgpu_check_half_read_vectors() && qgpu_check_constant_windows() && qgpu_check_word_windows() &&
+    return qgpu_check_split_register_delays() && qgpu_check_word_store_vectors() && qgpu_check_half_read_vectors() && qgpu_check_constant_windows() && qgpu_check_sparse_window_tail() && qgpu_check_word_windows() &&
         qgpu_check_window_schedule() && qgpu_check_static_read_bounds() && qgpu_check_msaa_reuse();
 }
 #endif

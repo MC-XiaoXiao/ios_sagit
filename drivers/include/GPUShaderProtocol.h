@@ -5,7 +5,7 @@
 #include <GPUUserProtocol.h>
 #include <GPUShaderInterface.h>
 namespace GPU { namespace Shader {
-constexpr uint32_t Version = 44, MaxBindings = QGPU_STAGE_BUFFER_COUNT;
+constexpr uint32_t Version = 46, MaxBindings = QGPU_STAGE_BUFFER_COUNT;
 constexpr uint32_t MaxComputeThreads = 1024, MaxComputeGroups = 65535;
 // Mesa's A5xx compiler provisions 64 reconvergence entries; the SP register
 // encodes pairs. Barrier shaders retain the prior three-pair admission bound
@@ -57,6 +57,8 @@ struct Texture {
     uint32_t layers=0,layerStride=0; // Zero layers denotes a single2D/cube texture; arrays retain the original mip-chain stride in views.
     uint32_t cube=0; // Boolean dimension tag; layers counts cubes for cube arrays, zero denotes a single cube.
     uint32_t samples=0; // Canonical 0 means one sample; 2/4 are linear per-pixel sample arrays.
+    uint32_t depth=0; // Nonzero selects 3D storage, including depth-one volumes.
+    uint32_t minSliceStride=0; // 3D views retain the owner's smallest mip slice.
 };
 inline uint32_t textureSamples(const Texture &t) {return t.samples?t.samples:1;}
 inline bool validSamples(uint32_t samples) {return !samples || samples==2 || samples==4;}
@@ -83,7 +85,7 @@ struct Sampler {
 };
 template<class S> inline uint32_t addressMode(const S &s,unsigned axis) {return (s.addressModes>>(axis*3))&7;}
 template<class S> inline uint32_t samplerMirrorFlags(const S &s) {
-    return uint32_t(addressMode(s,0)==MirrorClampToEdge)|(uint32_t(addressMode(s,1)==MirrorClampToEdge)<<1);
+    return uint32_t(addressMode(s,0)==MirrorClampToEdge)|(uint32_t(addressMode(s,1)==MirrorClampToEdge)<<1)|(uint32_t(addressMode(s,2)==MirrorClampToEdge)<<2);
 }
 template<class S> inline uint32_t samplerInfoFlags(const S &s) {return samplerMirrorFlags(s);}
 template<class S> inline bool validSampler(const S &s) {
@@ -93,8 +95,8 @@ template<class S> inline bool validSampler(const S &s) {
     if(!s.normalized && (s.addressModes || s.maxAnisotropy!=1 || (s.filters&12u) || (s.filters&1u)!=((s.filters>>1)&1u)))return false;
     // A5xx has one border color per sampler. Two different axis colors need
     // a more general sampling lowering; do not silently select one of them.
-    bool zero=addressMode(s,0)==ClampToZero || addressMode(s,1)==ClampToZero;
-    bool border=addressMode(s,0)==ClampToBorderColor || addressMode(s,1)==ClampToBorderColor;
+    bool zero=addressMode(s,0)==ClampToZero || addressMode(s,1)==ClampToZero || addressMode(s,2)==ClampToZero;
+    bool border=addressMode(s,0)==ClampToBorderColor || addressMode(s,1)==ClampToBorderColor || addressMode(s,2)==ClampToBorderColor;
     return !(zero && border && s.borderColor);
 }
 inline bool emptySampler(const Sampler &s) {return !s.filters && !s.minLOD && s.maxLOD==32 && !s.addressModes && s.maxAnisotropy==1 && !s.borderColor && s.normalized==1;}
@@ -184,6 +186,7 @@ struct Dispatch {
     uint32_t threadgroupLengths[MaxBindings];
     Texture images[QGPU_COMPUTE_IMAGE_COUNT];
     Sampler samplers[QGPU_COMPUTE_IMAGE_COUNT];
+    uint32_t tileDimensions=0,tileReserved=0; // width | height<<16, zero for ordinary compute
 };
 struct Draw {
     uint64_t registry;
@@ -270,7 +273,7 @@ struct Program {
     uint32_t constantSamplerSlots[QGPU_MAX_CONSTANT_SAMPLERS],constantSamplerLevelSlots[QGPU_MAX_CONSTANT_SAMPLERS];
     QGPUConstantSampler constantSamplers[QGPU_MAX_CONSTANT_SAMPLERS];
     uint32_t colorMask,colorRegisters[QGPU_COLOR_TARGET_COUNT],depthReg;
-    uint32_t multisampleMask,depthTextureMask;
+    uint32_t multisampleMask,depthTextureMask,volumeMask,imageblockMask,imageblockBindings,imageblockSampleBytes;
     uint32_t sampleFlags,sampleID,sampleMaskIn,sampleMaskOut,
         perspectiveCentroid,linearCentroid,perspectiveSample,linearSample;
     uint32_t textureBindings; // Zero is identity; otherwise eight logical-index nibbles.
@@ -309,7 +312,9 @@ inline bool threadgroupFootprint(const Dispatch &d,const Program &p,uint32_t (&c
 inline bool dispatchGeometry(const Dispatch &d,uint64_t &elements,unsigned &dimensions) {
     elements=0;dimensions=1;
     bool explicitGrid=d.grid[0] || d.grid[1] || d.grid[2];
-    if (d.reserved) return false;
+    if (d.reserved || d.tileReserved) return false;
+    if(d.tileDimensions && (!(d.tileDimensions&65535) || !(d.tileDimensions>>16) ||
+        (d.tileDimensions&65535)>32 || (d.tileDimensions>>16)>32 || uint64_t(d.tileDimensions&65535)*(d.tileDimensions>>16)>MaxComputeThreads || d.groups[2]!=1 || d.local[2]!=1 || explicitGrid))return false;
     uint64_t threads=1,invocations=1;
     for (unsigned i=0;i<3;++i) {
         const uint32_t limit=i==2?64u:MaxComputeThreads;
@@ -356,11 +361,12 @@ inline void dispatchConstants(const Dispatch &d,const DispatchTile &tile,uint32_
         out[i]=tile.baseThread[i];out[4+i]=tile.baseGroup[i];
         out[8+i]=d.grid[0]?d.grid[i]:d.groups[i]*d.local[i];out[12+i]=d.groups[i];
     }
-    out[3]=d.local[0];out[7]=d.local[1];out[11]=d.local[2];out[15]=0;
+    out[3]=d.local[0];out[7]=d.local[1];out[11]=d.local[2];out[15]=d.tileDimensions;
 }
 inline bool dispatchFootprint(const Dispatch &d,const Program &p,uint64_t &elements,unsigned &dimensions) {
-    if (p.stage!=Compute || p.sharedBytes>QGPU_MAX_THREADGROUP_BYTES || (p.sharedBytes&3) ||
+    if (bool(p.flags&QGPU_TILE_SHADER)!=bool(d.tileDimensions) || p.stage!=Compute || p.sharedBytes>QGPU_MAX_THREADGROUP_BYTES || (p.sharedBytes&3) ||
         !dispatchGeometry(d,elements,dimensions)) return false;
+    if((p.flags&QGPU_SIMD_MATRIX) && ((uint64_t(d.local[0])*d.local[1]*d.local[2])%64 || (d.grid[0] && (d.grid[0]%d.local[0] || d.grid[1]%d.local[1] || d.grid[2]%d.local[2]))))return false;
     uint32_t memory[QGPU_THREADGROUP_CONSTANT_WORDS],total;
     if (!threadgroupFootprint(d,p,memory,total)) return false;
     uint32_t images[QGPU_IMAGE_CONSTANT_WORDS];if (!imageFootprint(d,p,images)) return false;
@@ -382,6 +388,7 @@ inline bool sameSemantic(const QGPUVarying &a, const QGPUVarying &b) {
     return true;
 }
 template<class P> inline bool validInterface(const P &p) {
+    if((p.flags&QGPU_SIMD_MATRIX) && (p.stage!=Compute || p.subgroupSize!=64))return false;
     if(p.branchStack>MaxBranchStack ||
         ((p.flags&QGPU_THREADGROUP_BARRIER) && p.branchStack>MaxBarrierBranchStack))return false;
     if(p.constantWindowCount>QGPU_MAX_CONSTANT_WINDOWS)return false;
@@ -425,6 +432,18 @@ template<class P> inline bool validInterface(const P &p) {
         unsigned limit=(i? p.fullRegs:p.halfRegs)*4,span=i>=3?2:1;
         if (active ? (p.stage!=Fragment || sampleRegs[i]>=252 || sampleRegs[i]+span>limit) : bool(sampleRegs[i])) return false;
     }
+    if(p.flags&QGPU_TILE_SHADER) {
+        if(p.stage!=Compute || !(p.flags&QGPU_DISPATCH_GEOMETRY) || p.imageblockMask>255 || !p.imageblockSampleBytes || p.imageblockSampleBytes>128)return false;
+        uint32_t used=0;
+        for(unsigned i=0;i<8;++i) {
+            unsigned slot=(p.imageblockBindings>>(i*4))&15;
+            if(!(p.imageblockMask&(1u<<i))){if(slot)return false;continue;}
+            if(slot>=8 || (used&(1u<<slot)) || !(p.imageMask&(1u<<slot)) || ((p.sampleMask|p.volumeMask|p.multisampleMask|p.depthTextureMask|p.imageUintMask)&(1u<<slot)) ||
+                (p.flags&((1u<<(QGPU_ARRAY_TEXTURE_SHIFT+slot))|(1u<<(QGPU_CUBE_TEXTURE_SHIFT+slot)))))return false;
+            used|=1u<<slot;
+        }
+    } else if(p.imageblockMask || p.imageblockBindings || p.imageblockSampleBytes)return false;
+    if(p.volumeMask>255 || (p.volumeMask&(~(p.imageMask|p.sampleMask|p.fetchMask|p.queryMask)|p.depthTextureMask|p.multisampleMask|((p.flags&QGPU_ARRAY_TEXTURE_MASK)>>QGPU_ARRAY_TEXTURE_SHIFT)|((p.flags&QGPU_CUBE_TEXTURE_MASK)>>QGPU_CUBE_TEXTURE_SHIFT))))return false;
     if(p.depthTextureMask>255 || (p.depthTextureMask&(~(p.imageMask|p.sampleMask|p.fetchMask|p.queryMask)|p.imageWriteMask|((p.flags&QGPU_CUBE_TEXTURE_MASK)>>QGPU_CUBE_TEXTURE_SHIFT))))return false;
     uint32_t descriptors=p.sampleMask|(p.fetchMask<<QGPU_FETCH_TEXTURE_BASE);
     if(p.framebufferMask>255 || (p.framebufferMask && (p.stage!=Fragment ||
@@ -615,7 +634,7 @@ inline bool link(const Program &vs,const Program &fs,Linkage &out) {
 }
 struct TextureLayout {
     uint32_t levels=0,bytes=0,accessBytes=0,layerStride=0;
-    struct Level {uint32_t offset,width,height,pitch,bytes;} level[MaxMipLevels]={};
+    struct Level {uint32_t offset,width,height,pitch,bytes,depth=1,sliceStride=0;} level[MaxMipLevels]={};
 };
 inline uint32_t mipLevelCount(uint32_t width,uint32_t height) {
     uint32_t size=width>height?width:height;return size?32-__builtin_clz(size):0;
@@ -628,6 +647,35 @@ inline bool linearTextureLayout(const Texture &t,TextureLayout &out,bool allocat
     out={};uint32_t levels=t.mipLevels?t.mipLevels:1;
     const bool plane=t.format==Depth32 || t.format==Stencil8;
     const uint32_t cpp=formatBytes(t.format),alignment=64u*cpp;
+    if(t.depth) {
+        if(!t.resource || !t.width || !t.height || t.width>MaxTextureDimension || t.height>MaxTextureDimension ||
+            t.depth>2048 || !colorFormat(t.format) || compressedFormat(t.format) || t.layers || t.cube || t.samples ||
+            !validSwizzle(t.swizzle) || (t.offset&63) || (t.pitch&(alignment-1)) || t.pitch>MaxTextureRowBytes ||
+            t.pitch<uint64_t(t.width)*cpp || levels>MaxMipLevels ||
+            levels>mipLevelCount(t.width>t.depth?t.width:t.depth,t.height) || (t.layerStride&4095) ||
+            (t.minSliceStride&4095) || t.minSliceStride>MaxBufferBytes || (t.minSliceStride && !t.layerStride))return false;
+        uint64_t offset=0,previous=t.layerStride;
+        for(uint32_t i=0;i<levels;++i) {
+            uint32_t width=t.width>>i,height=t.height>>i,depth=t.depth>>i,pitch=t.pitch>>i;
+            if(!width)width=1;if(!height)height=1;if(!depth)depth=1;
+            pitch=((pitch?pitch:1)+alignment-1)&~(alignment-1);
+            uint32_t rows=i+1==levels?(height+31)&~31u:height;
+            uint64_t stride=(uint64_t(rows)*pitch+4095)&~uint64_t(4095);
+            // fdl5_layout freezes small slices after mip1. Views retain both
+            // the first slice and the owner's minimum, including truncated
+            // mip ranges whose last level wasn't the owner's padded last mip.
+            if(t.layerStride)stride=!i?t.layerStride:(uint64_t(height)*pitch+4095)&~uint64_t(4095);
+            if(t.minSliceStride && stride<t.minSliceStride)stride=t.minSliceStride;
+            if(!t.layerStride && i>1 && previous<=0xf000)stride=previous;
+            uint64_t access=uint64_t(depth-1)*stride+uint64_t(height)*pitch;
+            if(stride<uint64_t(height)*pitch || stride>MaxBufferBytes || depth*stride>MaxBufferBytes ||
+                offset>MaxBufferBytes-depth*stride || access>MaxBufferBytes-offset)return false;
+            out.level[i]={uint32_t(offset),width,height,pitch,uint32_t(depth*stride),depth,uint32_t(stride)};
+            out.accessBytes=uint32_t(offset+access);offset+=depth*stride;previous=stride;
+        }
+        out.levels=levels;out.bytes=uint32_t(offset);out.layerStride=out.level[0].sliceStride;return true;
+    }
+    if(t.minSliceStride)return false;
     if (!t.resource || !t.width || !t.height || t.width > MaxTextureDimension || t.height > MaxTextureDimension ||
         (t.pitch & 63) || t.pitch > MaxTextureRowBytes || t.pitch < uint64_t(formatBlocks(t.width,t.format)) * cpp * textureSamples(t) || (t.offset & 63) ||
         (compressedFormat(t.format) && (t.pitch&(alignment-1))) ||
@@ -648,7 +696,7 @@ inline bool linearTextureLayout(const Texture &t,TextureLayout &out,bool allocat
         if (access>MaxBufferBytes || bytes>MaxBufferBytes-access ||
             (allocate && (size>MaxBufferBytes || bytes>MaxBufferBytes-size))) return false;
         out.accessBytes=uint32_t(bytes+access);
-        out.level[i]={uint32_t(bytes),width,height,pitch,uint32_t(size)};bytes+=size;
+        out.level[i]={uint32_t(bytes),width,height,pitch,uint32_t(size),1,0};bytes+=size;
     }
     if (levels>1) bytes=(bytes+4095)&~uint64_t(4095);
     uint64_t stride=t.layerStride?t.layerStride:(bytes+4095)&~uint64_t(4095);
@@ -681,10 +729,38 @@ inline bool textureSize(const Texture &t,uint64_t &bytes) {
 inline bool textureLevel(const Texture &t,uint32_t level,Texture &out) {
     TextureLayout layout;out={};if (!textureStorageLayout(t,layout,false) || level>=layout.levels) return false;
     const auto &l=layout.level[level];if (uint64_t(t.offset)+l.offset>UINT32_MAX) return false;
-    out={t.resource,t.offset+l.offset,l.width,l.height,l.pitch,t.format,0,t.swizzle,t.layers,(t.layers || t.cube)?layout.layerStride:0,t.cube,t.samples};return true;
+    out={t.resource,t.offset+l.offset,l.width,l.height,l.pitch,t.format,0,t.swizzle,t.layers,t.depth?l.sliceStride:(t.layers || t.cube)?layout.layerStride:0,t.cube,t.samples,t.depth?l.depth:0,
+        t.depth?(t.minSliceStride?t.minSliceStride:layout.level[layout.levels-1].sliceStride):0};return true;
+}
+// Select one z plane for render attachments and row-based transfer packets.
+inline bool textureDepthPlane(const Texture &t,uint32_t z,Texture &out) {
+    out={};TextureLayout layout;
+    if(!t.depth || !textureStorageLayout(t,layout,false) || z>=t.depth)return false;
+    uint64_t offset=uint64_t(t.offset)+uint64_t(z)*layout.level[0].sliceStride;
+    if(offset>UINT32_MAX)return false;
+    out=t;out.offset=uint32_t(offset);out.depth=out.minSliceStride=out.layerStride=out.mipLevels=0;return true;
+}
+struct TextureTransfer {
+    uint64_t offset=0,rowBytes=0,rows=0,planes=0,sliceStride=0,linearStride=0,linearSpan=0;
+};
+inline bool textureTransfer(const Texture &t,uint64_t x,uint64_t y,uint64_t z,uint64_t width,uint64_t height,uint64_t depth,
+    uint64_t pitch,uint64_t imagePitch,TextureTransfer &out) {
+    out={};TextureLayout layout;TextureCopyRegion row;
+    if(!textureStorageLayout(t,layout,false) || z>(t.depth?t.depth:1) || depth>(t.depth?t.depth:1)-z ||
+        !textureCopyRegion(t,x,y,width,height,row) || pitch<row.rowBytes)return false;
+    if(!row.rowBytes || !row.rows || !depth)return true;
+    uint64_t rows=row.rows-1;
+    if(rows && pitch>(UINT64_MAX-row.rowBytes)/rows)return false;
+    uint64_t span=rows*pitch+row.rowBytes;
+    if(depth>1 && imagePitch<span)return false;
+    if(imagePitch && imagePitch<span)return false;
+    if(depth>1 && imagePitch>(UINT64_MAX-span)/(depth-1))return false;
+    uint64_t stride=t.depth?layout.level[0].sliceStride:0;
+    out={row.offset+z*stride,row.rowBytes,row.rows,depth,stride,imagePitch,(depth-1)*imagePitch+span};return true;
 }
 inline bool textureSlice(const Texture &t,uint32_t slice,Texture &out) {
     TextureLayout layout;out={};
+    if(t.depth){if(slice || !textureStorageLayout(t,layout,false))return false;out=t;return true;}
     if (!textureStorageLayout(t,layout,false) || slice>=textureSlices(t)) return false;
     uint64_t offset=uint64_t(t.offset)+uint64_t(slice)*layout.layerStride;
     if (offset>UINT32_MAX) return false;
@@ -701,7 +777,11 @@ inline bool textureSubview(const Texture &source,uint32_t first,uint32_t count,u
     out=selected;return true;
 }
 inline bool textureView(const Texture &source,uint32_t first,uint32_t count,uint32_t slice,uint32_t slices,bool array,
-    uint32_t format,Texture &out,uint32_t swizzle=0,bool cube=false) {
+    uint32_t format,Texture &out,uint32_t swizzle=0,bool cube=false,bool volume=false) {
+    if(source.depth || volume) {
+        if(!source.depth || !volume || array || cube || slice || slices!=1){out={};return false;}
+        return textureSubview(source,first,count,format,out,swizzle);
+    }
     TextureLayout parent;out={};uint32_t layers=textureSlices(source);
     if (!slices || slice>=layers || slices>layers-slice || (cube ? ((slices%6) || (!array && slices!=6)) : (!array && slices!=1)) ||
         !textureStorageLayout(source,parent,false) || (source.samples && cube)) return false;
@@ -712,16 +792,21 @@ inline bool textureView(const Texture &source,uint32_t first,uint32_t count,uint
     TextureLayout child;if (!textureStorageLayout(selected,child,false) || uint64_t(selected.offset)-source.offset+child.accessBytes>parent.accessBytes) return false;
     out=selected;return true;
 }
-inline bool emptyTexture(const Texture &t) { return !t.resource && !t.offset && !t.width && !t.height && !t.pitch && !t.format && !t.mipLevels && !t.swizzle && !t.layers && !t.layerStride && !t.cube && !t.samples; }
+inline bool emptyTexture(const Texture &t) { return !t.resource && !t.offset && !t.width && !t.height && !t.pitch && !t.format && !t.mipLevels && !t.swizzle && !t.layers && !t.layerStride && !t.cube && !t.samples && !t.depth && !t.minSliceStride; }
 inline bool shaderTextureSize(const Program &p,unsigned slot,const Texture &t,uint64_t &bytes) {
     // Integer storage is bit-exact SSBO access. It must never reach a float
     // image helper or the unimplemented integer hardware sampler path.
     if(bool(p.imageUintMask&(1u<<slot))!=unsignedIntegerFormat(t.format) ||
         (unsignedIntegerFormat(t.format) && (p.stage!=Compute || t.samples ||
             !(p.imageMask&(1u<<slot)) || (p.sampleMask&(1u<<slot)))))return false;
-    if(bool(p.depthTextureMask&(1u<<slot))!=(t.format==Depth32))return false;
+    if(bool(p.volumeMask&(1u<<slot))!=bool(t.depth) || bool(p.depthTextureMask&(1u<<slot))!=(t.format==Depth32))return false;
     if(t.format==Depth32){TextureLayout layout;if(!planeLayout(t,Depth32,layout,false))return false;bytes=layout.accessBytes;return true;}
     return textureSize(t,bytes);
+}
+template<class P> inline bool tileImageSlot(const P &p,unsigned slot) {
+    if(!(p.flags&QGPU_TILE_SHADER))return false;
+    for(unsigned i=0;i<8;++i)if((p.imageblockMask&(1u<<i)) && ((p.imageblockBindings>>(i*4))&15)==slot)return true;
+    return false;
 }
 inline bool graphicsTextures(const Program &p,const Texture *textures,const Sampler *samplers) {
     if ((p.stage!=Vertex && p.stage!=Fragment) || !validInterface(p)) return false;
@@ -747,7 +832,7 @@ template<unsigned N> inline void graphicsConstants(const Program &p,const Textur
         if(p.samplerMask&(1u<<i))out[i]=samplerInfoFlags(samplers[i]);
     for(unsigned i=0;i<QGPU_STAGE_TEXTURE_COUNT;++i)if(p.queryMask&(1u<<i)) {
         const auto &t=textures[i];auto *info=out+QGPU_GRAPHICS_TEXTURE_CONSTANT_BASE+i*4;
-        info[0]=t.width;info[1]=t.height;info[2]=t.layers?t.layers:1;
+        info[0]=t.width;info[1]=t.height;info[2]=t.depth?t.depth:t.layers?t.layers:1;
         info[3]=t.format|((t.mipLevels?t.mipLevels:1)<<8)|(t.swizzle<<16)|((t.samples==4?2u:t.samples==2?1u:0u)<<28);
     }
     if(draw)for(unsigned i=0;i<QGPU_COLOR_TARGET_COUNT;++i)if(p.framebufferMask&(1u<<i)) {
@@ -766,7 +851,7 @@ template<class P> inline uint32_t memoryConstantWords(const P &p) {
     if(p.flags&QGPU_BUFFER_SIZE_CONSTANTS)return QGPU_MEMORY_CONSTANT_WORDS;
     if(p.flags&QGPU_FRAMEBUFFER_TILE_ORIGIN)return QGPU_FRAMEBUFFER_TILE_MEMORY_CONSTANT_WORDS;
     if(p.stage!=Compute)return p.framebufferMask?QGPU_FRAMEBUFFER_MEMORY_CONSTANT_WORDS:p.queryMask?QGPU_GRAPHICS_MEMORY_CONSTANT_WORDS:p.samplerMask?QGPU_SAMPLER_CONSTANT_WORDS:0;
-    return p.flags&(QGPU_ARRAY_TEXTURE_MASK|QGPU_CUBE_TEXTURE_MASK)?QGPU_ARRAY_MEMORY_CONSTANT_WORDS:p.flags&QGPU_DISPATCH_GEOMETRY?QGPU_DISPATCH_MEMORY_CONSTANT_WORDS:p.samplerMask?QGPU_SAMPLER_MEMORY_CONSTANT_WORDS:p.imageMask?QGPU_IMAGE_MEMORY_CONSTANT_WORDS:p.threadgroupMask?QGPU_THREADGROUP_CONSTANT_WORDS:0;
+    return p.volumeMask || (p.flags&(QGPU_ARRAY_TEXTURE_MASK|QGPU_CUBE_TEXTURE_MASK))?QGPU_ARRAY_MEMORY_CONSTANT_WORDS:p.flags&QGPU_DISPATCH_GEOMETRY?QGPU_DISPATCH_MEMORY_CONSTANT_WORDS:p.samplerMask?QGPU_SAMPLER_MEMORY_CONSTANT_WORDS:p.imageMask?QGPU_IMAGE_MEMORY_CONSTANT_WORDS:p.threadgroupMask?QGPU_THREADGROUP_CONSTANT_WORDS:0;
 }
 inline bool imageFootprint(const Dispatch &d,const Program &p,uint32_t (&constants)[QGPU_IMAGE_CONSTANT_WORDS]) {
     if (p.stage!=Compute || p.imageMask>255 || p.sampleMask>255 || p.samplerMask>255 ||
@@ -781,7 +866,7 @@ inline bool imageFootprint(const Dispatch &d,const Program &p,uint32_t (&constan
         if (!((p.imageMask|p.sampleMask)&(1u<<i))) {if (!emptyTexture(t)) return false;continue;}
         if (!shaderTextureSize(p,i,t,bytes) || bool(t.layers)!=bool(p.flags&(1u<<(QGPU_ARRAY_TEXTURE_SHIFT+i))) ||
             bool(t.cube)!=bool(p.flags&(1u<<(QGPU_CUBE_TEXTURE_SHIFT+i))) ||
-            bool(t.samples)!=bool(p.multisampleMask&(1u<<i))) return false;
+            (!tileImageSlot(p,i) && bool(t.samples)!=bool(p.multisampleMask&(1u<<i)))) return false;
         if (!(p.imageMask&(1u<<i))) continue;
         // These formats use native A5xx texture conversion. The raw SSBO
         // image encoder still implements only the existing formats.
@@ -794,7 +879,8 @@ inline bool imageFootprint(const Dispatch &d,const Program &p,uint32_t (&constan
 inline bool overlap(const Texture &a,const Texture &b) {
     uint64_t ab=0,bb=0;if (!textureBytes(a,ab) || !textureBytes(b,bb)) return false;
     if(!a.resource || a.resource!=b.resource)return false;
-    Texture as=a,bs=b;as.layers=as.layerStride=as.cube=bs.layers=bs.layerStride=bs.cube=0;
+    Texture as=a,bs=b;as.layers=as.cube=bs.layers=bs.cube=0;
+    if(!as.depth)as.layerStride=0;if(!bs.depth)bs.layerStride=0;
     if(!textureBytes(as,ab) || !textureBytes(bs,bb))return false;
     TextureLayout al,bl;uint64_t astride=0,bstride=0;
     if(a.layers || a.cube){if(!textureStorageLayout(a,al,false))return false;astride=al.layerStride;}
@@ -898,6 +984,6 @@ public:
         return false;
     }
 };
-static_assert(sizeof(Binding) == 16 && sizeof(Texture) == 48, "shader resource ABI");
-static_assert(sizeof(Texture)==48 && sizeof(Sampler)==28 && sizeof(ColorState)==32 && sizeof(RenderState) == 80 && sizeof(DepthStencilState)==72 && sizeof(Dispatch) == 824 && sizeof(Draw) == 2816, "shader submission ABI");
+static_assert(sizeof(Binding) == 16 && sizeof(Texture) == 56, "shader resource ABI");
+static_assert(sizeof(Texture)==56 && sizeof(Sampler)==28 && sizeof(ColorState)==32 && sizeof(RenderState) == 80 && sizeof(DepthStencilState)==72 && sizeof(Dispatch) == 896 && sizeof(Draw) == 3024, "shader submission ABI");
 } }

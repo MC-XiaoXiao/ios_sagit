@@ -18,7 +18,7 @@
     uint32_t constantSamplerSlots[QGPU_MAX_CONSTANT_SAMPLERS],constantSamplerLevelSlots[QGPU_MAX_CONSTANT_SAMPLERS]; \
     QGPUConstantSampler constantSamplers[QGPU_MAX_CONSTANT_SAMPLERS]; \
     uint32_t colorMask,colorRegisters[QGPU_COLOR_TARGET_COUNT],depthReg; \
-    uint32_t multisampleMask,depthTextureMask; \
+    uint32_t multisampleMask,depthTextureMask,volumeMask,imageblockMask,imageblockBindings,imageblockSampleBytes; \
     uint32_t sampleFlags,sampleID,sampleMaskIn,sampleMaskOut, \
         perspectiveCentroid,linearCentroid,perspectiveSample,linearSample; \
     uint32_t textureBindings; \
@@ -47,7 +47,7 @@ typedef struct QGPUProgramImage {
 #include <GPUShaderProtocol.h>
 #include <stddef.h>
 namespace GPU { namespace JIT {
-constexpr uint32_t Version = 39, MaxPrograms = 256, FirstID = 0x80000000;
+constexpr uint32_t Version = 41, MaxPrograms = 256, FirstID = 0x80000000;
 constexpr uint32_t UploadChunkBytes=64*1024, UploadChunks=2;
 constexpr uint32_t uploadChunkBytes(unsigned index) {
     return index>=UploadChunks || index*UploadChunkBytes>=sizeof(QGPUProgramImage)?0:
@@ -56,7 +56,7 @@ constexpr uint32_t uploadChunkBytes(unsigned index) {
 }
 enum Selector : uint32_t { RegisterProgram = 0x1000, DeleteProgram = 0x1001 };
 struct ProgramData { uint32_t version, id; };
-static_assert(sizeof(QGPUVarying)==40 && sizeof(QGPUProgramDescription) == 2468 && sizeof(QGPUProgramImage) == 83720, "JIT image ABI");
+static_assert(sizeof(QGPUVarying)==40 && sizeof(QGPUProgramDescription) == 2484 && sizeof(QGPUProgramImage) == 83784, "JIT image ABI");
 static_assert(sizeof(QGPUProgramImage)<=UploadChunks*UploadChunkBytes && uploadChunkBytes(1)>0,"bounded two-part shader upload");
 static_assert(offsetof(Shader::Program, strides) == offsetof(QGPUProgramDescription, strides) &&
               offsetof(Shader::Program, code) >= sizeof(QGPUProgramDescription), "program prefix ABI");
@@ -69,7 +69,7 @@ inline bool validDescription(const QGPUProgramDescription &p) {
         p.immediateBase > p.constlen * 4 || p.immediateCount > p.constlen * 4 - p.immediateBase ||
         p.driverBase > p.constlen * 4 || p.driverCount > p.constlen * 4 - p.driverBase ||
         p.driverCount > (p.stage == Shader::Vertex ? 40u : p.stage == Shader::Compute ? 16u : 4u) ||
-        p.bufferMask > 255 || (p.writeMask & ~p.bufferMask) || p.textureCount > (p.stage==Shader::Compute?QGPU_STAGE_TEXTURE_COUNT:QGPU_GRAPHICS_TEXTURE_COUNT) || (p.flags & ~(16777215u|QGPU_FRAGMENT_FLAGS|QGPU_BUFFER_SIZE_CONSTANTS|QGPU_CONSTANT_WINDOWS_REQUIRED|QGPU_FRAMEBUFFER_TILE_ORIGIN)) ||
+        p.bufferMask > 255 || (p.writeMask & ~p.bufferMask) || p.textureCount > (p.stage==Shader::Compute?QGPU_STAGE_TEXTURE_COUNT:QGPU_GRAPHICS_TEXTURE_COUNT) || (p.flags & ~(16777215u|QGPU_FRAGMENT_FLAGS|QGPU_BUFFER_SIZE_CONSTANTS|QGPU_CONSTANT_WINDOWS_REQUIRED|QGPU_FRAMEBUFFER_TILE_ORIGIN|QGPU_TILE_SHADER|QGPU_SIMD_MATRIX)) ||
         ((p.flags&QGPU_FRAMEBUFFER_TILE_ORIGIN) && (p.stage!=Shader::Fragment || !p.framebufferMask)) ||
         (p.stage==Shader::Compute ? (p.flags&19u) : p.stage==Shader::Vertex ? (p.flags&119u) : (p.flags&100u)) ||
         p.localID > 252 || p.groupID > 252 || p.vertexID > 252 || p.position > 252 ||
@@ -107,12 +107,12 @@ inline bool compatibleConstantWindow(const QGPUProgramDescription &p,const QGPUP
     const uint32_t a[]={p.stage,p.bufferMask,p.writeMask,p.imageUintMask,p.instanceMask,p.varyingCount,p.framebufferMask,
         p.textureBindings,p.textureCount,p.sampleMask,p.samplerMask,p.explicitSamplerMask,p.cubeSamplerMask,
         p.fetchMask,p.queryMask,p.implicitSamplerMask,p.constantSamplerMask,p.constantImplicitSamplerMask,
-        p.constantExplicitSamplerMask,p.constantCubeSamplerMask,p.colorMask,p.multisampleMask,p.depthTextureMask,
+        p.constantExplicitSamplerMask,p.constantCubeSamplerMask,p.colorMask,p.multisampleMask,p.depthTextureMask,p.volumeMask,p.imageblockMask,p.imageblockBindings,p.imageblockSampleBytes,
         p.sampleFlags,p.attributeMask,p.constantWindowCount};
     const uint32_t b[]={w.stage,w.bufferMask,w.writeMask,w.imageUintMask,w.instanceMask,w.varyingCount,w.framebufferMask,
         w.textureBindings,w.textureCount,w.sampleMask,w.samplerMask,w.explicitSamplerMask,w.cubeSamplerMask,
         w.fetchMask,w.queryMask,w.implicitSamplerMask,w.constantSamplerMask,w.constantImplicitSamplerMask,
-        w.constantExplicitSamplerMask,w.constantCubeSamplerMask,w.colorMask,w.multisampleMask,w.depthTextureMask,
+        w.constantExplicitSamplerMask,w.constantCubeSamplerMask,w.colorMask,w.multisampleMask,w.depthTextureMask,w.volumeMask,w.imageblockMask,w.imageblockBindings,w.imageblockSampleBytes,
         w.sampleFlags,w.attributeMask,w.constantWindowCount};
     if(!sameBytes(a,b,sizeof(a)) || !sameBytes(p.strides,w.strides,sizeof(p.strides)) ||
         !sameBytes(p.constantWindows,w.constantWindows,sizeof(p.constantWindows)) ||
@@ -134,7 +134,7 @@ inline bool valid(const QGPUProgramImage &image, uint64_t registry) {
     }
     if (m.stage!=p.stage || !(m.sampleFlags&QGPU_SAMPLE_MSAA) || (m.flags&QGPU_CONSTANT_WINDOWS_REQUIRED) || !validDescription(m) ||
         m.bufferMask!=p.bufferMask || m.writeMask!=p.writeMask || m.instanceMask!=p.instanceMask || m.varyingCount!=p.varyingCount || m.framebufferMask!=p.framebufferMask || m.textureBindings!=p.textureBindings ||
-        ((m.flags^p.flags)&QGPU_FRAMEBUFFER_TILE_ORIGIN)) return false;
+        ((m.flags^p.flags)&(QGPU_FRAMEBUFFER_TILE_ORIGIN|QGPU_TILE_SHADER|QGPU_SIMD_MATRIX))) return false;
     for (unsigned i=0;i<8;++i) if (m.strides[i]!=p.strides[i]) return false;
     if(m.constantWindowCount!=p.constantWindowCount)return false;
     for(unsigned i=0;i<QGPU_MAX_CONSTANT_WINDOWS;++i)

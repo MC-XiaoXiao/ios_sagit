@@ -450,8 +450,8 @@ class PipelineEncoder {
             A5XX_TEX_SAMP_1_COMPARE_FUNC((sampler.filters>>8)&7u) |
             ((max<<A5XX_TEX_SAMP_1_MAX_LOD__SHIFT)&A5XX_TEX_SAMP_1_MAX_LOD__MASK) |
             ((min<<A5XX_TEX_SAMP_1_MIN_LOD__SHIFT)&A5XX_TEX_SAMP_1_MIN_LOD__MASK);
-        if(modes[0]>=GPU::Shader::ClampToZero || modes[1]>=GPU::Shader::ClampToZero) {
-            borderColors();uint32_t color=modes[0]==GPU::Shader::ClampToZero || modes[1]==GPU::Shader::ClampToZero?0:sampler.borderColor;
+        if(modes[0]>=GPU::Shader::ClampToZero || modes[1]>=GPU::Shader::ClampToZero || modes[2]>=GPU::Shader::ClampToZero) {
+            borderColors();uint32_t color=modes[0]==GPU::Shader::ClampToZero || modes[1]==GPU::Shader::ClampToZero || modes[2]==GPU::Shader::ClampToZero?0:sampler.borderColor;
             sample[5]=color<<A5XX_TEX_SAMP_2_BCOLOR_OFFSET__SHIFT;
         }
         p(0x30,sample,7);
@@ -482,13 +482,14 @@ class PipelineEncoder {
             (GPU::Shader::srgbFormat(texture.format) ? A5XX_TEX_CONST_0_SRGB : 0)|
             A5XX_TEX_CONST_0_SAMPLES(texture.samples==4?2:texture.samples==2?1:0);
         values[4] = A5XX_TEX_CONST_1_WIDTH(texture.width) | A5XX_TEX_CONST_1_HEIGHT(texture.height);
-        uint32_t pitchAlign=tile || texture.samples || layout.levels>1 || GPU::Shader::compressedFormat(texture.format)?uint32_t(__builtin_ctz(GPU::Shader::formatBytes(texture.format)*GPU::Shader::textureSamples(texture))):0;
-        values[5] = A5XX_TEX_CONST_2_PITCH(texture.pitch) | A5XX_TEX_CONST_2_PITCHALIGN(pitchAlign) | A5XX_TEX_CONST_2_TYPE(texture.cube && !fetch?2:1); // Cube or 2D
+        uint32_t pitchAlign=tile || texture.depth || texture.samples || layout.levels>1 || GPU::Shader::compressedFormat(texture.format)?uint32_t(__builtin_ctz(GPU::Shader::formatBytes(texture.format)*GPU::Shader::textureSamples(texture))):0;
+        values[5] = A5XX_TEX_CONST_2_PITCH(texture.pitch) | A5XX_TEX_CONST_2_PITCHALIGN(pitchAlign) | A5XX_TEX_CONST_2_TYPE(texture.depth?3:texture.cube && !fetch?2:1);
         // Views preserve the owner's layer stride even when mip/slice ranges
         // are rebased. Native range checks cover only their actual access span.
         values[6] = A5XX_TEX_CONST_3_ARRAY_PITCH(layout.layerStride);
+        if(texture.depth)values[6]|=A5XX_TEX_CONST_3_MIN_LAYERSZ(texture.minSliceStride?texture.minSliceStride:layout.level[layout.levels-1].sliceStride);
         values[7] = A5XX_TEX_CONST_4_BASE_LO(uint32_t(address));
-        values[8] = A5XX_TEX_CONST_5_BASE_HI(uint32_t(address>>32)) | A5XX_TEX_CONST_5_DEPTH(fetch?GPU::Shader::textureSlices(texture):(texture.layers?texture.layers:1));
+        values[8] = A5XX_TEX_CONST_5_BASE_HI(uint32_t(address>>32)) | A5XX_TEX_CONST_5_DEPTH(texture.depth?texture.depth:fetch?GPU::Shader::textureSlices(texture):(texture.layers?texture.layers:1));
         p(0x30,values,15);
     }
     void constantSamplers(const GPU::Shader::Program &program,uint32_t block) {

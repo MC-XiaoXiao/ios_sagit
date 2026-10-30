@@ -3,7 +3,7 @@
 #include <GPUShaderProtocol.h>
 
 namespace GPU { namespace RenderPass {
-constexpr uint32_t Version=1;
+constexpr uint32_t Version=2;
 enum LoadAction : uint32_t { DontCare=0,Load=1,Clear=2 };
 enum StoreAction : uint32_t { Discard=0,Store=1 };
 struct Attachment {
@@ -31,7 +31,7 @@ inline bool valid(const Description &p) {
         }
         uint64_t bytes=0;
         if(!t.resource || t.width!=p.width || t.height!=p.height ||
-            t.samples || t.layers || t.layerStride || t.cube || t.mipLevels || t.swizzle ||
+            t.samples || t.layers || t.layerStride || t.cube || t.mipLevels || t.swizzle || t.depth || t.minSliceStride ||
             !Shader::renderableColorFormat(t.format) || Shader::formatBytes(t.format)<4 ||
             !Shader::textureBytes(t,bytes) || a.load>Clear || a.store>Store)return false;
         // A5xx GMEM transfers use the texture block layout, unlike the exact
@@ -100,7 +100,7 @@ inline uint64_t rootWords(const Description &pass,const TileLayout &tile,uint32_
         ((pass.width&31)?uint64_t(tile.rows)*stores*160:0);
 }
 // Four always-on timestamps per tile, outside ordinary operation cells and
-// the 64-byte tile origin at 2048. Larger passes simply omit this diagnostic.
+// the separate64-byte tile-origin bank. Larger passes simply omit this diagnostic.
 constexpr uint32_t TimingOffset=2112,TimingCapacity=(PageBytes-TimingOffset)/32;
 inline uint32_t timingTiles(const TileLayout &tile) {
     const uint32_t count=tile.columns*tile.rows;
@@ -118,5 +118,5 @@ inline bool programsEligible(const Shader::Program &vs,const Shader::Program &fs
         !(fs.framebufferMask&fs.colorMask) &&
         (!fs.framebufferMask || (fs.flags&QGPU_FRAMEBUFFER_TILE_ORIGIN));
 }
-static_assert(sizeof(Attachment)==72 && sizeof(Description)==608,"native render pass metadata ABI");
+static_assert(sizeof(Attachment)==80 && sizeof(Description)==672,"native render pass metadata ABI");
 } }

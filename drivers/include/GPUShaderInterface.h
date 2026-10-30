@@ -13,6 +13,10 @@
 // Framebuffer fetch coordinates are relative to a native-owned tile origin.
 // The bounds check and ordinary fragment coordinates remain attachment-global.
 #define QGPU_FRAMEBUFFER_TILE_ORIGIN (1u << 28)
+// Ordered compute emulation of implicit tile imageblocks (1/2/4 samples).
+#define QGPU_TILE_SHADER (1u << 29)
+// Cooperative 8x8 matrices use all 64 lanes of an A540 subgroup.
+#define QGPU_SIMD_MATRIX (1u << 30)
 // A5xx shares SB4_SSBO between graphics stages. Metal binding namespaces are
 // independent: VS uses [0,8), FS uses [8,16); CS has its own state block.
 #define QGPU_STAGE_BUFFER_COUNT 8u

@@ -3,12 +3,15 @@
 // Apple's private C++ class layouts. The host AOT reader remains independent.
 #include "Compiler.h"
 #include "Semantic.h"
+#include "AIRSIMD.h"
 #include "AIRControlFlow.h"
 #include "AIRSpecialization.h"
 #include <memory>
 #include <mutex>
 #include <llvm-c/Core.h>
 #include <llvm-c/IRReader.h>
+#include <llvm-c/Linker.h>
+#include <llvm-c/BitWriter.h>
 #include <llvm-c/Analysis.h>
 #include <llvm-c/Target.h>
 #include <cmath>
@@ -74,7 +77,7 @@ struct Value {
 struct Binding { unsigned slot,stride;bool readonly;LLVMTypeRef type;unsigned sharedWords=0,dynamicSlot=UINT32_MAX; };
 class Lower {
     LLVMValueRef f;LLVMTargetDataRef layout;Entry e;unsigned stage,serial=0;
-    std::string header,body,framebufferInputs;bool usesDiscard=false;std::map<LLVMValueRef,Value> values;std::map<LLVMValueRef,Binding> bindings;
+    std::string header,body,framebufferInputs;bool usesDiscard=false,usesSIMD=false;std::map<LLVMValueRef,Value> values;std::map<LLVMValueRef,Binding> bindings;
     std::map<LLVMValueRef,std::pair<std::string,LLVMTypeRef>> constantTables;
     std::map<LLVMValueRef,std::string> privateArrays;
     unsigned privateWords=0;
@@ -214,9 +217,11 @@ class Lower {
                 auto value="float16_t(unpackHalf2x16("+std::to_string(number(LLVMConstBitCast(element,LLVMInt16TypeInContext(LLVMGetTypeContext(t)))))+"u).x)";
                 return data(lanes(t)==1?value:type(t)+"("+value+")");
             }
-            LLVMBool loses;double n=LLVMConstRealGetDouble(v,&loses);(void)loses;
-            if (!std::isfinite(n)) fail("non-finite float constant");char s[64];std::snprintf(s,sizeof(s),"%.9g",n);
-            std::string result=s;if (result.find_first_of(".eE")==std::string::npos) result+=".0";
+            if (LLVMGetTypeKind(scalar(t))!=LLVMFloatTypeKind) fail("only float32 constants are supported");
+            // Preserve infinities, NaN payloads and signed zero exactly, as AIR.cpp does.
+            auto element=lanes(t)==1?v:LLVMConstExtractElement(v,LLVMConstInt(LLVMInt32TypeInContext(LLVMGetTypeContext(t)),0,false));
+            auto raw=number(LLVMConstBitCast(element,LLVMInt32TypeInContext(LLVMGetTypeContext(t))));
+            std::string result="uintBitsToFloat("+std::to_string(raw)+"u)";
             return data(lanes(t)==1?result:type(t)+"("+result+")");
         }
         if (LLVMIsUndef(v) || LLVMIsAConstantAggregateZero(v) || LLVMIsPoison(v)) return zero(t);
@@ -371,6 +376,22 @@ class Lower {
             if(stage!=2 || count || LLVMGetTypeKind(LLVMTypeOf(i))!=LLVMVoidTypeKind)fail("invalid fragment discard intrinsic");
             usesDiscard=true;body+="memoryBarrierBuffer(); demote;\n";return;
         }
+        AIRSIMD simd;
+        if(airSIMD(n,simd)) {
+            if(!validAIRSIMD(i,simd,stage))fail("invalid SIMD signature/stage");
+            std::vector<std::string> arguments;for(unsigned a=0;a<count;++a)arguments.push_back(expr(LLVMGetOperand(i,a)));
+            auto expression=airSIMDExpression(simd,arguments);
+            if(expression.empty())fail("SIMD operation requires the NIR frontend");
+            usesSIMD=true;assign(i,expression);return;
+        }
+        if(n=="air.simdgroup.barrier") {
+            if(stage || count!=2 || LLVMGetTypeKind(LLVMTypeOf(i))!=LLVMVoidTypeKind ||
+                !integer(LLVMTypeOf(LLVMGetOperand(i,0)),32) || !integer(LLVMTypeOf(LLVMGetOperand(i,1)),32))fail("invalid SIMD barrier signature");
+            auto flags=number(LLVMGetOperand(i,0)),scope=number(LLVMGetOperand(i,1));
+            if(flags>7 || (scope!=1 && scope!=2 && scope!=4))fail("invalid SIMD barrier flags/scope");
+            usesSIMD=true;if(flags&5)body+="memoryBarrierBuffer();\n";if(flags&2)body+="memoryBarrierShared();\n";
+            body+="subgroupBarrier();\n";return;
+        }
         AIRAtomic operation;
         if (airAtomic(n,operation)) {
             unsigned wanted=operation.op=="cas"?7:operation.op=="load"?4:5;
@@ -453,17 +474,17 @@ class Lower {
             if(!immediate(t.access,32,access))fail("texture access operand disagrees with metadata");
             if(read || write) {
                 auto coord=LLVMTypeOf(arg(t.coord));
-                if(lanes(coord)!=2 || !integer(scalar(coord),32) || !isInt(t.lod,32) ||
+                if(lanes(coord)!=2 || !integer(scalar(coord),t.indexBits) || !isInt(t.lod,t.indexBits) ||
                     (write?(stage || !(binding.access&2)):(binding.access!=4 && !(binding.access&1))))fail("unsupported texture coordinates/access/stage");
                 if(t.currentRead && get(arg(1)).kind!=Value::ReadSampler)fail("read requires air.get_read_sampler");
                 if(read && (stage || binding.access==4) && fetchSlots.insert(binding.slot).second)
                     header+=stage?graphicsFetchFunctions(binding.slot,binding.shape,stage):binding.shape&2?cubeImageFunctions(binding.slot,1,binding.shape&1):imageFunctions(binding.slot,1,binding.shape&1);
                 auto call=airTextureFunction(binding,stage)+(read?"_read(":"_write(");
                 if(write) {auto valueType=LLVMTypeOf(arg(t.value));if(!texelTypeMatches(valueType) || LLVMGetTypeKind(LLVMTypeOf(i))!=LLVMVoidTypeKind)fail("texture write requires matching float4/half4/uint4 and void");call+=(t.half?"vec4("+expr(arg(t.value))+")":expr(arg(t.value)))+",";}
-                call+="uvec2("+expr(arg(t.coord))+"),";
+                call+="uvec2("+airIntegerMask(expr(arg(t.coord)),t.indexBits,2)+"),";
                 if(t.face!=UINT32_MAX)call+=expr(arg(t.face))+",";
                 if(t.layer!=UINT32_MAX)call+=expr(arg(t.layer))+",";
-                call+=expr(arg(t.lod))+")";
+                call+=airIntegerMask(expr(arg(t.lod)),t.indexBits,1)+")";
                 if(write)body+=call+";\n";else result(call);return;
             }
             bool gradient=t.op==AIRTextureCall::Gradient,cube=binding.shape&2;
@@ -487,6 +508,11 @@ class Lower {
                 t.layer==UINT32_MAX?"":expr(arg(t.layer)),gradient?"":stage!=2 && !level?"0.0":expr(arg(t.lod)),
                 gradient?expr(arg(t.dx)):"",gradient?expr(arg(t.dy)):"",literal,offset));return;
         }
+        if(n=="air.unpack.unorm4x8.v4f16" || n=="air.unpack.unorm4x8.v4f32") {
+            auto result=LLVMTypeOf(i);bool useHalf=n=="air.unpack.unorm4x8.v4f16";
+            if(count!=1 || !integer(LLVMTypeOf(LLVMGetOperand(i,0)),32) || !floating(result) || half(result)!=useHalf || lanes(result)!=4)fail("invalid unorm4x8 unpack signature");
+            assign(i,airFloatType(useHalf,4)+"(unpackUnorm4x8("+expr(LLVMGetOperand(i,0))+"))");return;
+        }
         if(n=="air.pack.unorm4x8.v4f16" || n=="air.pack.unorm4x8.v4f32") {
             bool useHalf=n=="air.pack.unorm4x8.v4f16";auto input=count?LLVMTypeOf(LLVMGetOperand(i,0)):LLVMTypeOf(i);
             if(count!=1 || !integer(LLVMTypeOf(i),32) || !floating(input) || half(input)!=useHalf || lanes(input)!=4)fail("invalid unorm4x8 pack signature");
@@ -500,16 +526,19 @@ class Lower {
                 lanes(LLVMTypeOf(i))>4 || (bits[2]!="f" && bits[2]!="s" && bits[2]!="u") ||
                 (bits[4]!="f" && bits[4]!="s" && bits[4]!="u"))fail("unsupported AIR conversion");
             auto input=LLVMGetOperand(i,0);auto target=LLVMTypeOf(i);
-            bool narrow=LLVMIsAConstantInt(input) && (integer(LLVMTypeOf(input),8) || integer(LLVMTypeOf(input),16));
-            auto spelling=[&](LLVMTypeRef t,bool isFloat,bool allowNarrow) {
-                if(isFloat?!floating(t):!(integer(scalar(t),32) || integer(scalar(t),1) || allowNarrow))fail("AIR conversion type disagrees with its intrinsic name");
+            auto spelling=[&](LLVMTypeRef t,bool isFloat) {
+                if(isFloat?!floating(t):!(integer(scalar(t),32) || integer(scalar(t),16) || integer(scalar(t),8) || integer(scalar(t),1)))fail("AIR conversion type disagrees with its intrinsic name");
                 return isFloat?airFloatSuffix(half(t),lanes(t)):(lanes(t)==1?std::string():"v"+std::to_string(lanes(t)))+"i"+std::to_string(LLVMGetIntTypeWidth(scalar(t)));
             };
-            if(bits[3]!=spelling(target,bits[2]=="f",false) || bits[5]!=spelling(LLVMTypeOf(input),bits[4]=="f",narrow))fail("AIR conversion mangling disagrees with its types");
+            if(bits[3]!=spelling(target,bits[2]=="f") || bits[5]!=spelling(LLVMTypeOf(input),bits[4]=="f"))fail("AIR conversion mangling disagrees with its types");
             std::string value=expr(input);
-            if(bits[4]=="s")value=narrow?std::to_string(LLVMConstIntGetSExtValue(input)):type(LLVMTypeOf(input),true)+"("+value+")";
+            if(bits[4]!="f") {
+                auto width=LLVMGetIntTypeWidth(scalar(LLVMTypeOf(input)));
+                value=bits[4]=="s"?airSignedInteger(value,width,lanes(target)):airIntegerMask(value,width,lanes(target));
+            }
             value=type(target,bits[2]=="s")+"("+value+")";
             if(bits[2]=="s")value=type(target)+"("+value+")";
+            if(bits[2]!="f")value=airIntegerMask(value,LLVMGetIntTypeWidth(scalar(target)),lanes(target));
             assign(i,value);return;
         }
         if(n=="air.fast_sincos.f32" || n=="air.sincos.f32") {
@@ -519,6 +548,16 @@ class Lower {
                 get(output).kind!=Value::PrivatePointer)fail("invalid sincos signature");
             auto target=memory(output,t,true);body+=target.first+" = cos("+expr(input)+");\n";
             assign(i,"sin("+expr(input)+")");return;
+        }
+        std::string integerMath;auto integerCount=airIntegerMath(n,lanes(LLVMTypeOf(i)),integerMath);
+        if(integerCount) {
+            if(count!=integerCount || !integer(scalar(LLVMTypeOf(i)),32))fail("invalid integer math signature");
+            std::vector<std::string> args;
+            for(unsigned index=0;index<count;++index) {
+                if(LLVMTypeOf(LLVMGetOperand(i,index))!=LLVMTypeOf(i))fail("integer math types disagree");
+                args.push_back(expr(LLVMGetOperand(i,index)));
+            }
+            assign(i,airIntegerMathExpression(integerMath,args,lanes(LLVMTypeOf(i))));return;
         }
         std::string extraMath;auto resultType=LLVMTypeOf(i);
         auto extraCount=airExtraMath(n,airFloatSuffix(half(resultType),lanes(resultType)),extraMath);
@@ -807,10 +846,10 @@ public:
     Lower(LLVMValueRef function,unsigned kind,LLVMTargetDataRef data):f(function),layout(data),stage(kind) { e.name=name(f);e.reflection.stage=stage; }
     Entry run(LLVMValueRef metadata) {
         auto blockCount=LLVMCountBasicBlocks(f);
-        if (!blockCount || blockCount>128 || e.name.empty() || e.name.size()>=96) fail("entry must be a named function with at most 128 basic blocks");
+        if (!blockCount || blockCount>512 || e.name.empty() || e.name.size()>=96) fail("entry must be a named function with at most 512 basic blocks");
         unsigned instructionCount=0;
         for (auto b=LLVMGetFirstBasicBlock(f);b;b=LLVMGetNextBasicBlock(b)) for (auto i=LLVMGetFirstInstruction(b);i;i=LLVMGetNextInstruction(i))
-            if (++instructionCount>4096) fail("instruction limit exceeded");
+            if (++instructionCount>8192) fail("instruction limit exceeded");
         usesHalf=containsHalf(LLVMGetReturnType(LLVMGlobalGetValueType(f)));
         for(unsigned n=0;n<LLVMCountParams(f);++n)usesHalf|=containsHalf(LLVMTypeOf(LLVMGetParam(f,n)));
         for(auto b=LLVMGetFirstBasicBlock(f);b;b=LLVMGetNextBasicBlock(b))for(auto i=LLVMGetFirstInstruction(b);i;i=LLVMGetNextInstruction(i))usesHalf|=containsHalf(LLVMTypeOf(i));
@@ -865,19 +904,19 @@ public:
             if (n>=LLVMCountParams(f) || !seen.insert((unsigned)n).second) fail("invalid/duplicate parameter");
             auto arg=LLVMGetParam(f,(unsigned)n);auto t=LLVMTypeOf(arg);Value v;
             if(!AIRSpecialization::enabled(md)){v.kind=Value::Unavailable;values[arg]=v;continue;}
-            if (has(md,"air.buffer")) {
+            if ((has(md,"air.buffer") || has(md,"air.visible_function_table"))) {
                 auto slot=number(field(md,"air.location_index"));
                 if (slot>=8 || LLVMGetTypeKind(t)!=LLVMPointerTypeKind) fail("unsupported buffer binding");
                 unsigned space=LLVMGetPointerAddressSpace(t);
                 if ((space!=1 && space!=2 && space!=3) || (space==3 && stage) ||
                     !(space==3?threadgroupSlots:slots).insert((unsigned)slot).second ||
                     LLVMPointerSizeForAS(layout,space)!=8 || (field(md,"air.address_space") && number(field(md,"air.address_space"))!=space)) fail("invalid or duplicate buffer address space/binding");
-                bool readonly=has(md,"air.read") || space==2;
+                bool readonly=has(md,"air.read") || space==2 || LLVMGetEnumAttributeAtIndex(f,unsigned(n)+1,LLVMGetEnumAttributeKindForName("readonly",8));
                 if ((!readonly && !has(md,"air.write") && !has(md,"air.read_write")) || (stage==1 && !readonly) || (space==3 && readonly)) fail("unsupported buffer access");
-                auto kind=text(field(md,"air.arg_type_name"));unsigned n=bufferComponents(kind),stride=4;
+                auto kind=has(md,"air.visible_function_table")?std::string("uint"):text(field(md,"air.arg_type_name"));unsigned n=bufferComponents(kind),stride=4;
                 auto ctx=LLVMGetTypeContext(t);auto valueType=LLVMInt32TypeInContext(ctx);
                 if (n) stride=(n==3?4:n)*(kind.rfind("half",0)==0?2:4);
-                else if (kind.empty() || !field(md,"air.arg_type_size") || !number(field(md,"air.arg_type_size")) || number(field(md,"air.arg_type_size"))>4096)
+                else if (kind!="void" && (kind.empty() || !field(md,"air.arg_type_size") || !number(field(md,"air.arg_type_size")) || number(field(md,"air.arg_type_size"))>GPU::MaxBufferBytes))
                     fail("unsupported buffer element type");
                 if (n && field(md,"air.arg_type_size") && number(field(md,"air.arg_type_size"))!=stride) fail("buffer layout disagrees with metadata");
                 bindings[arg]={(unsigned)slot,stride,readonly,valueType};
@@ -885,12 +924,13 @@ public:
                 v.kind=Value::Pointer;v.root=arg;v.text="uvec2(0u)";
                 if (space!=3) header+="layout(std430,binding="+std::to_string(slot)+") "+(readonly?"readonly ":"")+"buffer QBuffer"+std::to_string(slot)+" { uint data[]; } _qbuffer"+std::to_string(slot)+";\n";
             } else if (has(md,"air.texture")) {
-                auto slot=number(field(md,"air.location_index"));auto kind=text(field(md,"air.arg_type_name"));
+                auto slot=number(field(md,"air.location_index"));auto kind=has(md,"air.visible_function_table")?std::string("uint"):text(field(md,"air.arg_type_name"));
                 if(stage)slot=textureSlots.physical(unsigned(slot));
                 AIRTextureBinding binding;binding.slot=unsigned(slot);
                 if(slot>=QGPU_STAGE_TEXTURE_COUNT || !airTextureMetadata(kind,binding) || (stage && (binding.unsignedInteger || (binding.access!=4 && binding.access!=1))) ||
                     LLVMGetTypeKind(t)!=LLVMPointerTypeKind || LLVMGetPointerAddressSpace(t)!=1)fail("unsupported texture metadata");
                 for(const auto &bound:imageBindings)if(bound.second.slot==slot)fail("duplicate texture slot");
+                if(binding.shape==8)fail("3D textures require the NIR frontend");
                 bool cube=binding.shape&2,array=binding.shape&1;
                 if(stage) {if(graphicsHeaders.insert(binding.shape).second)header+=graphicsTextureHeader(binding.shape,stage);}
                 else if(cube) {if(cubeHeaders.insert(unsigned(array)).second)header+=cubeImageHeader(array);}
@@ -905,7 +945,7 @@ public:
                 for(const auto &bound:samplerBindings)if(bound.second==slot)fail("duplicate sampler slot");
                 samplerBindings[arg]=(unsigned)slot;v.kind=Value::Sampler;v.root=arg;
             } else if (stage==1 && has(md,"air.vertex_input")) {
-                auto slot=number(field(md,"air.location_index"));auto kind=text(field(md,"air.arg_type_name"));bool sign=kind.rfind("int",0)==0;
+                auto slot=number(field(md,"air.location_index"));auto kind=has(md,"air.visible_function_table")?std::string("uint"):text(field(md,"air.arg_type_name"));bool sign=kind.rfind("int",0)==0;
                 if (slot>=QGPU_MAX_ATTRIBUTES || !attributeSlots.insert((unsigned)slot).second ||
                     (!floating(t) && !integer(scalar(t),32)) || lanes(t)>4 ||
                     kind!=(floating(t)?airFloatName(half(t),lanes(t)):(sign?"int":"uint")+(lanes(t)==1?std::string():std::to_string(lanes(t))))) fail("invalid vertex attribute type/location");
@@ -934,18 +974,20 @@ public:
                 v.text=varying(md,t,false);
             } else if (stage==0 && !computeInputSemantic([&](const char *s) { return has(md,std::string("air.")+s); }).empty()) {
                 const auto input=computeInputSemantic([&](const char *s) { return has(md,std::string("air.")+s); });
-                const auto value=computeSystemValue(input);
-                if (value.empty() || !computeInputs.insert(input).second || !integer(scalar(t),32) ||
-                    (lanes(t)!=1 && ((lanes(t)!=2 && lanes(t)!=3) || input=="thread_index_in_threadgroup"))) fail("invalid compute input type/semantic");
-                v.text=value+(lanes(t)==1 && input!="thread_index_in_threadgroup"?".x":"");
+                const auto value=computeSystemValue(input);if(input.find("simdgroup")!=std::string::npos)usesSIMD=true;
+                if (value.empty() || !computeInputs.insert(input).second || (!integer(scalar(t),32) && !integer(scalar(t),16)) ||
+                    (lanes(t)!=1 && ((lanes(t)!=2 && lanes(t)!=3) || scalarComputeInput(input)))) fail("invalid compute input type/semantic");
+                v.text=value+(lanes(t)==1 && !scalarComputeInput(input)?".x":"");
                 if (lanes(t)==2) v.text="uvec2("+v.text+")";
-                if (input=="thread_position_in_grid") { system=true;v.linear=1; }
+                if(integer(scalar(t),16))v.text=airIntegerMask(v.text,16,lanes(t));
+                if (input=="thread_position_in_grid") { system=true;v.linear=integer(scalar(t),32); }
             } else if (has(md,"air.thread_position_in_grid") || has(md,"air.vertex_id")) {
                 if (system || stage==2 || !has(md,stage==0?"air.thread_position_in_grid":"air.vertex_id") || !(integer(scalar(t),32) || (stage==1 && integer(t,16))) || (lanes(t)!=1 && (stage!=0 || lanes(t)!=3))) fail("invalid system index");
                 system=true;v.text=lanes(t)==1?"_qindex":"uvec3(_qindex,0u,0u)";
                 if(integer(t,16))v.text=airIntegerMask(v.text,16,1);v.linear=integer(scalar(t),32);
-            } else if (has(md,"air.instance_id") && stage==1 && !instance && integer(t,32)) {
-                instance=true;v.text="_qinstance";v.linear=2;
+            } else if (has(md,"air.instance_id") && stage==1 && !instance && (integer(t,32) || integer(t,16))) {
+                instance=true;v.text="_qinstance";v.linear=integer(t,32)?2:0;
+                if(integer(t,16))v.text=airIntegerMask(v.text,16,1);
             } else if (has(md,"air.position") && stage==2 && type(t)=="vec4" && text(field(md,"air.arg_type_name"))=="float4") {
                 system=true;v.text="gl_FragCoord";
             } else fail("unsupported argument semantic");
@@ -960,7 +1002,7 @@ public:
         if (controlFlow) flowBody();
         else for (auto i=LLVMGetFirstInstruction(LLVMGetFirstBasicBlock(f));i;i=LLVMGetNextInstruction(i)) instruction(i);
         for (unsigned i=0;i<8;++i) if (!(e.reflection.bufferMask&(1u<<i))) e.reflection.strides[i]=0;
-        e.glsl="#version 430\n"+std::string(usesHalf?"#extension GL_AMD_gpu_shader_half_float : require\n":"")+std::string(usesDiscard?"#extension GL_EXT_demote_to_helper_invocation : require\n":"")+header+"void main() {\n"+framebufferInputs+body+"}\n";return e;
+        e.glsl="#version 430\n"+std::string(usesHalf?"#extension GL_AMD_gpu_shader_half_float : require\n":"")+std::string(usesDiscard?"#extension GL_EXT_demote_to_helper_invocation : require\n":"")+(usesSIMD?simdHeader():std::string())+header+"void main() {\n"+framebufferInputs+body+"}\n";return e;
     }
 };
 // Decoded modules are immutable templates. A clone is specialized per call.
@@ -1005,9 +1047,9 @@ void initializeModule(const void *bytes,size_t length,Module &m) {
         auto triple=std::string(LLVMGetTarget(m.module));auto dl=LLVMGetDataLayoutStr(m.module);
         if (triple.rfind("air64",0)!=0 || !dl || !dl[0]) fail("AIR64 module with a data layout required");
         m.layout=LLVMCreateTargetData(dl);
-        unsigned versions=LLVMGetNamedMetadataNumOperands(m.module,"air.version");if (versions!=1) fail("AIR version metadata required");
-        LLVMValueRef version;LLVMGetNamedMetadataOperands(m.module,"air.version",&version);
-        auto v=node(version);if (v.size()!=3 || number(v[0])!=2) fail("AIR major version 2 required");
+        unsigned versions=LLVMGetNamedMetadataNumOperands(m.module,"air.version");if (!versions || versions>65) fail("AIR version metadata required");
+        std::vector<LLVMValueRef> version(versions);LLVMGetNamedMetadataOperands(m.module,"air.version",version.data());
+        for(auto item:version){auto v=node(item);if(v.size()!=3 || number(v[0])!=2)fail("AIR major version 2 required");}
         if(length>=32768) {
             // Four entries and 32 MiB of source bytes bound retained templates.
             // Byte equality, not a hash alone, decides a cache hit.
@@ -1023,6 +1065,7 @@ void initializeModule(const void *bytes,size_t length,Module &m) {
 }
 
 }
+#include "AIRVisibleFunctions.h"
 bool inspectAIREntries(const void *bytes,size_t length,std::vector<std::string> &out,std::string &error) {
     out.clear();error.clear();
     try {
@@ -1044,9 +1087,9 @@ bool inspectAIRConstants(const void *bytes,size_t length,const std::string &sele
     out.clear();stage=UINT32_MAX;
     try {
         if(selected.empty())fail("constant reflection requires one selected entry");
-        Module m;initializeModule(bytes,length,m);AIRSpecialization::State state(m.module,selected);state.inspect(out);
-        for(unsigned s=0;s<3;++s) {
-            auto key=s==0?"air.kernel":s==1?"air.vertex":"air.fragment";unsigned count=LLVMGetNamedMetadataNumOperands(m.module,key);
+        Module m;initializeModule(bytes,length,m);AIRSpecialization::State state(m.module,selected,true);state.inspect(out);
+        for(unsigned s=0;s<4;++s) {
+            auto key=s==0?"air.kernel":s==1?"air.vertex":s==2?"air.fragment":"air.visible";unsigned count=LLVMGetNamedMetadataNumOperands(m.module,key);
             std::vector<LLVMValueRef> entries(count);LLVMGetNamedMetadataOperands(m.module,key,entries.data());
             for(auto entry:entries)if(name(node(entry)[0])==selected) {if(stage!=UINT32_MAX)fail("duplicate selected stage entry");stage=s;}
         }

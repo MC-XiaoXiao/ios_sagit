@@ -43,7 +43,7 @@ int main(int argc,char **argv) {
     if(!GPU::Compiler::resolveFunctionConstants(declarations,supplied,effective,error)){std::cerr<<error;return 1;}
     std::vector<QGPUProgramImage> images;GPU::Compiler::AIRCompileInfo info;
     if(!GPU::Compiler::compileAIR(bytes.data(),bytes.size(),GPUPrograms::Registry,images,error,argv[3],effective,&info) ||
-       images.size()!=1 || !GPU::JIT::valid(images[0],GPUPrograms::Registry)){std::cerr<<error;return 1;}
+       images.size()!=1 || !GPU::JIT::valid(images[0],GPUPrograms::Registry)){std::cerr<<error;if(!info.nirDiagnostic.empty())std::cerr<<"\nNIR: "<<info.nirDiagnostic;return 1;}
     std::ofstream out(argv[5],std::ios::binary);out.write(reinterpret_cast<const char *>(&images[0]),sizeof(images[0]));
     if(!out)return 1;
     std::cerr<<"route="<<unsigned(info.route)<<" lower_ns="<<info.lowerNS<<" backend_ns="<<info.backendNS<<'\n';
