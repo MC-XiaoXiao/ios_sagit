@@ -5311,19 +5311,18 @@ void resourceBarrier(QcomMTLCommandBuffer *buffer,const id<MTLResource> resource
     GPU::RenderPass::TileLayout tiles;
     bool eligible=!_buffer->_error && end>_passDrawStart && GPU::RenderPass::tileLayout(_renderPass,tiles) &&
         GPU::RenderPass::rootWords(_renderPass,tiles,uint32_t(end-_passDrawStart))<=16384;
-    bool attachmentReads=false;
     GPU::MetalBatch::Plan plan(GPU::Native::MaxShmemBytes,GPU::Native::MaxResponsibleTaskIDs,GPU::Native::RenderPassCommandVersion);
     for(NSUInteger i=_passDrawStart;eligible && i<end;++i) {
         auto op=_buffer->_operations[i];
-        attachmentReads|=op.framebufferReads;
         eligible=op.gmemEligible && op.shaderOpcode==GPU::ShaderDraw && !op.event && !op.fence && !op.barrier && !op.responsibleTaskIDs &&
             op.shaderPayload.length==sizeof(GPU::Shader::Draw) &&
             GPU::RenderPass::drawMatches(_renderPass,*static_cast<const GPU::Shader::Draw *>(op.shaderPayload.bytes)) &&
             plan.append(op.shaderOpcode,op.shaderPayload.bytes,op.shaderPayload.length);
     }
-    // Attachment consumers reuse the producer's on-chip plane. Ordinary
-    // sysmem passes keep their established path until they need that reuse.
-    if(eligible && attachmentReads) {
+    // The explicit diagnostics switch also permits ordinary blending passes.
+    // Default _gmem remains NO. Keep all whole-pass, alias, load/store, size
+    // and command-budget gates; compare real output/timing before UI policy.
+    if(eligible) {
         auto first=_buffer->_operations[_passDrawStart];
         first.renderPass=[NSData dataWithBytes:&_renderPass length:sizeof(_renderPass)];first.renderPassDraws=end-_passDrawStart;
         // Draws keep their original retained/borrowed resource ownership.
