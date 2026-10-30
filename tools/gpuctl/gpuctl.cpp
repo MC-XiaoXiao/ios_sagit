@@ -527,8 +527,10 @@ static int shaderCounters()
     auto value=copyGPUProperty(CFSTR("GPUShaderCounters"));
     const auto *s=value && CFGetTypeID(value)==CFDataGetTypeID() && CFDataGetLength((CFDataRef)value)==sizeof(Snapshot)?
         reinterpret_cast<const Snapshot *>(CFDataGetBytePtr((CFDataRef)value)):nullptr;
-    if(!s || s->version!=1 || s->count>Capacity || s->next>=Capacity){if(value)CFRelease(value);return 1;}
-    puts("GPU_COUNTER_LAYOUT SP=busy,alu,efu,stall_tp,stall_uche,stall_rb,long_sync,short_sync TP=busy,stall_uche,l1_requests,l1_misses UCHE=busy,stall_vbif,read_beats_tp,read_beats_sp");
+    if(!s || (s->version!=ShaderLayout && s->version!=ColorLayout) || s->bytes!=sizeof(Snapshot) || s->count>Capacity || s->next>=Capacity){if(value)CFRelease(value);return 1;}
+    if(s->version==ColorLayout)
+        puts("GPU_COUNTER_LAYOUT version=2 SP=busy,alu,stall_rb,long_sync RB=busy,stall_ccu,color_read,color_write CCU=busy,color_blocks,color_block_hit,partial_block_read UCHE=busy,stall_vbif,read_beats_tp,read_beats_sp");
+    else puts("GPU_COUNTER_LAYOUT SP=busy,alu,efu,stall_tp,stall_uche,stall_rb,long_sync,short_sync TP=busy,stall_uche,l1_requests,l1_misses UCHE=busy,stall_vbif,read_beats_tp,read_beats_sp");
     for(unsigned i=0;i<s->count;++i) {
         const auto &r=s->records[(s->next+Capacity-s->count+i)%Capacity];
         printf("GPU_COUNTER retired=%llu sequence=%u index=%u fs=%016llx ticks=%llu values=",(unsigned long long)r.retired,r.sequence,r.index,(unsigned long long)r.hash,(unsigned long long)r.ticks);

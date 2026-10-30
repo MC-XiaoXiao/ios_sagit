@@ -438,7 +438,11 @@ IOReturn QcomGPU::configureHardware(IOService *provider)
         history.capacity=GPU::JobActivity::Capacity;history.timebaseTicks=1000000;
     }
     UInt32 shaderCounters=0;PE_parse_boot_argn("gpu-oc",&shaderCounters,sizeof(shaderCounters));
-    fShaderCounterProfile=shaderCounters<=GPU::MaxCommands?shaderCounters:0;
+    // Layout is fixed for this boot, so every record in the ring has the
+    // same meaning. Both layouts keep exactly 16 samples and the same ABI.
+    static_assert(GPU::MaxCommands<=0xffffu,"counter option draw index fits");
+    GPU::ShaderCounters::decodeSelection(shaderCounters,GPU::MaxCommands,
+        fShaderCounterProfile,fShaderCounters.version);
     UInt32 operationTiming=fShaderCounterProfile?1:0;PE_parse_boot_argn("gpu-op-timing",&operationTiming,sizeof(operationTiming));
     if(operationTiming && !fOperationActivity) {
         fOperationActivity=OSData::withCapacity(sizeof(GPU::OperationActivity::Snapshot));

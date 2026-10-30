@@ -251,14 +251,25 @@ class PipelineEncoder {
     ShaderObject profileShaderObjects[16]{};
     unsigned profileNextShaderObject=0;
     uint64_t operationTimestamp=0;
-    bool operationTimed=false,operationCounters=false;
+    bool operationTimed=false,operationCounters=false,colorCounterLayout=false;
     void shaderCounters(bool begin) {
         using namespace GPU::ShaderCounters;
-        if(begin) {idle();rr(0x0ed0,SP);rr(0x0f10,TP);rr(0x0ea0,UCHE);}
+        // Pinned Mesa a5xx.xml/fd5_perfcntr.c: color mode observes SP->RB,
+        // RB->CCU and actual color read/write/cache counts in the same draw.
+        // These are diagnostics, not rendering state or a cache policy.
+        if(begin) {
+            idle();
+            if(colorCounterLayout) {rr(0x0ed0,ColorSP);rr(0x0cd0,ColorRB);rr(0x0cd8,ColorCCU);}
+            else {rr(0x0ed0,SP);rr(0x0f10,TP);}
+            rr(0x0ea0,UCHE);
+        }
         const uint64_t address=completionScratch+ScratchOffset+(begin?0:Count*8);
-        const uint32_t registers[]={0x428,0x418,0x408},counts[]={8,4,4};
+        const uint32_t shaderRegisters[]={0x428,0x418,0x408},shaderCounts[]={8,4,4};
+        const uint32_t colorRegisters[]={0x428,0x440,0x3f0,0x408},colorCounts[]={4,4,4,4};
+        const auto *registers=colorCounterLayout?colorRegisters:shaderRegisters;
+        const auto *counts=colorCounterLayout?colorCounts:shaderCounts;
         unsigned offset=0;
-        for(unsigned i=0;i<3;++i)for(unsigned n=0;n<counts[i];++n) {
+        for(unsigned i=0;i<(colorCounterLayout?4u:3u);++i)for(unsigned n=0;n<counts[i];++n) {
             const auto destination=address+(offset++)*8;
             const uint32_t data[]={(registers[i]+n*2)|(1u<<30),uint32_t(destination),uint32_t(destination>>32)};
             p(0x3e,data,3); // Mesa fd5_query.c: one 64-bit counter per packet.
@@ -781,6 +792,7 @@ public:
     // A diagnostic operation is sampled only if its complete encoding fits
     // the current IB. Otherwise retry the ordinary path with exact pretrial
     // state; large/multi-IB draws are explicitly skipped, never truncated.
+    void selectColorCounters(bool enabled=true) {colorCounterLayout=enabled;}
     void profileNextOperation(unsigned index,bool counters=false) {
         operationCounters=counters && !gmem;
         operationTimestamp=!gmem && index<GPU::OperationActivity::CommandCapacity && scratchBytes>=GPU::PageBytes &&

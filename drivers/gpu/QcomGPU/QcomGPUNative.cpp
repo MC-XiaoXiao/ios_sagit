@@ -1793,6 +1793,7 @@ IOReturn QcomGPU::submitNative(QcomGPUCommandQueue *queue, IOGPUDevice *device,
     auto &pipeline=*new(const_cast<void *>(snapshot.encoding->getBytesNoCopy())) Adreno::PipelineEncoder(
         encoder,ibAddress,job.scratch?job.scratch->address:0,
         job.scratch?UInt32(job.scratch->length):GPU::PageBytes,fDirectShaderUploads);
+    pipeline.selectColorCounters(fShaderCounters.version==GPU::ShaderCounters::ColorLayout);
     if(renderPass)pipeline.renderInGMEM(encodingBindings.gmem);
     pipeline.enableFramebuffer2D(fFramebuffer2DMode==2 || (fFramebuffer2DMode==1 && !ticket->compositor &&
         IOUserClient::clientHasPrivilege(device->owningTask(),kIOClientPrivilegeAdministrator)==kIOReturnSuccess));
