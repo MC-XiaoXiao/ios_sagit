@@ -1800,6 +1800,13 @@ IOReturn QcomGPU::submitNative(QcomGPUCommandQueue *queue, IOGPUDevice *device,
     pipeline.enableFramebufferWord32(fFramebufferWord32);
     pipeline.enableFramebufferInplace(inplace);
     pipeline.enableFramebufferCompact(nativeFramebufferCompact());
+    pipeline.enableColorCacheReuse();
+    pipeline.enableRasterCacheReuse(); // Same write extents + physical input disjointness; staged CP windows retain invalidation
+    if(result==kIOReturnSuccess && job.commandBuffers && job.scratch && !renderPass) {
+        bool hasRaster=false;
+        for(UInt32 i=0;i<header.count;++i)if(commands[i].opcode==GPU::ShaderDraw){hasRaster=true;break;}
+        if(hasRaster && pipeline.enableDeferredColorWrites()!=GPU::Result::Success)result=kIOReturnNoResources;
+    }
     if(fOperationActivity && job.scratch && job.scratch->bytes() && job.scratch->length>=GPU::PageBytes) {
         job.operationProfile=OSData::withCapacity(header.count*sizeof(GPU::OperationActivity::Record));
         if(!job.operationProfile || !job.operationProfile->appendBytes(nullptr,header.count*sizeof(GPU::OperationActivity::Record))) {
@@ -1816,20 +1823,28 @@ IOReturn QcomGPU::submitNative(QcomGPUCommandQueue *queue, IOGPUDevice *device,
         const_cast<void *>(job.operationProfile->getBytesNoCopy())):nullptr;
     for (UInt32 i = 0; result == kIOReturnSuccess && i < header.count; ++i) {
         if(i && job.commandBuffers && !fCompactIndirectBuffers) {
-            if(allocator.next(encoder,ibAddress)!=GPU::Result::Success){result=kIOReturnNoResources;break;}
-            pipeline.beginOperation(ibAddress);
+            if(pipeline.nextIndirectBuffer(allocator)!=GPU::Result::Success){result=kIOReturnNoResources;break;}
+            ibAddress=pipeline.address();
         }
         const UInt64 previousWrites=ticket->surfaceWrites;
         const auto &command = commands[i];
+        if(command.opcode!=GPU::ShaderDraw)pipeline.invalidateRasterInputCache();
         auto *operation=operationRecords?&operationRecords[i]:nullptr;
         if(operation){operation->index=i;operation->description.opcode=command.opcode;
-            operation->flags=ticket->compositor?GPU::OperationActivity::Compositor:0;
-            pipeline.profileNextOperation(i,fShaderCounterProfile==i+1 && command.opcode==GPU::ShaderDraw);}
+            operation->flags=ticket->compositor?GPU::OperationActivity::Compositor:0;}
         const auto beforeFull=pipeline.fullRasterSetups(),beforeReused=pipeline.reusedRasterPrimitives();
         const auto beforeInplace=pipeline.inplaceFramebufferPrimitives(),beforeSnapshot=pipeline.framebufferPrimitives();
         const auto beforeFlush=pipeline.sequence();const auto beforeCopied=pipeline.copiedFramebufferBytes();
+        const auto beforeColorCache=pipeline.reusedRasterColorCaches();
+        const auto beforeUCHECache=pipeline.reusedRasterUCHECaches();
         if (command.reserved) { result = kIOReturnBadArgument; break; }
         GPU::Result encoded;bool shaderWrites=false;
+        if(command.opcode!=GPU::ShaderDraw && pipeline.hasPendingColorWrites()) {
+            encoded=pipeline.operation(job.commandBuffers?&allocator:nullptr,fCompactIndirectBuffers,
+                [&](Adreno::IndirectBufferAllocator *){return pipeline.prepareExternalOperation();});
+            if(encoded!=GPU::Result::Success){result=encoded==GPU::Result::NoResources?kIOReturnNoResources:kIOReturnBadArgument;break;}
+        }
+        if(operation)pipeline.profileNextOperation(i,fShaderCounterProfile==i+1 && command.opcode==GPU::ShaderDraw);
         if (command.opcode == GPU::Barrier) {
             if (command.destination || command.offset || command.bytes || command.value) {
                 result = kIOReturnBadArgument; break;
@@ -2155,7 +2170,7 @@ IOReturn QcomGPU::submitNative(QcomGPUCommandQueue *queue, IOGPUDevice *device,
             encoded = pipeline.operation(job.commandBuffers?&allocator:nullptr,fCompactIndirectBuffers,
                 [&](Adreno::IndirectBufferAllocator *chunks) {
                     return pipeline.draw(d,*vertex,*fragment,bindings,target,sampled,d.indexSize?job.indices->address+indexOffsets[i]:0,depth,stencil,additionalTargets,
-                        snapshotProgram,d.indexSize?static_cast<const UInt8 *>(snapshot.indices->getBytesNoCopy())+indexOffsets[i]:nullptr,false,fragment->framebufferMask?chunks:nullptr);
+                        snapshotProgram,d.indexSize?static_cast<const UInt8 *>(snapshot.indices->getBytesNoCopy())+indexOffsets[i]:nullptr,false,fragment->framebufferMask?chunks:nullptr,true);
                 });
             if(operation) {
                 auto &info=operation->description;encodingBindings.programDescriptions.describe(info.first,*vertex);
@@ -2187,6 +2202,9 @@ IOReturn QcomGPU::submitNative(QcomGPUCommandQueue *queue, IOGPUDevice *device,
         if(operation) {
             if(pipeline.lastOperationTimed())operation->flags|=GPU::OperationActivity::Timed;
             if(pipeline.lastOperationCounters()){operation->flags|=GPU::ShaderCounters::RecordFlag;}
+            if(pipeline.reusedRasterColorCaches()!=beforeColorCache)operation->flags|=16u; // Isolated CCU reuse diagnostic bit
+            if(pipeline.reusedRasterUCHECaches()!=beforeUCHECache)operation->flags|=64u; // Physically audited raster UCHE preservation
+            if(pipeline.hasPendingColorWrites())operation->flags|=32u; // Color publication deferred to an actual dependency/batch frontier
             auto &info=operation->description;
             info.constantWindowState=encoded==GPU::Result::Success?pipeline.lastConstantWindowState():0;
             info.fullSetups=pipeline.fullRasterSetups()-beforeFull;info.reused=pipeline.reusedRasterPrimitives()-beforeReused;
@@ -2207,6 +2225,12 @@ IOReturn QcomGPU::submitNative(QcomGPUCommandQueue *queue, IOGPUDevice *device,
             ticket->commandKinds|=GPU::Diagnostics::commandKind(command.opcode);
             if(command.opcode==GPU::ShaderDraw || command.opcode==GPU::ShaderDispatch)++job.shaderOperations;
         }
+    }
+    if(result==kIOReturnSuccess) {
+        const auto beforeFinal=pipeline.sequence();
+        if(pipeline.finishIndirectBuffer()!=GPU::Result::Success)result=kIOReturnNoResources;
+        job.progressLimit=pipeline.sequence();
+        if(operationRecords && header.count)operationRecords[header.count-1].description.flushes+=pipeline.sequence()-beforeFinal;
     }
     if(result==kIOReturnSuccess) {
         encoder.reserveTail(0);

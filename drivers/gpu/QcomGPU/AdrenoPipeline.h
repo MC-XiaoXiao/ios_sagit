@@ -7,9 +7,15 @@
 #include "AdrenoGMEM.h"
 #include <GPUShaderProtocol.h>
 #include <GPUShaderCounters.h>
+#include <GPUOperationActivity.h>
 #include <A5xxRegs.h>
+#include "AdrenoRasterState.h"
 
 namespace Adreno {
+static_assert(GPU::OperationActivity::ScratchOffset+GPU::OperationActivity::CommandCapacity*16<=GPU::ShaderCounters::ScratchOffset &&
+    GPU::ShaderCounters::ScratchOffset+GPU::ShaderCounters::Count*16<=ConstantWindowScratch &&
+    ConstantWindowScratch+QGPU_MAX_CONSTANT_WINDOWS*QGPU_CONSTANT_WINDOW_BYTES<=GMEMOrigin &&
+    GMEMOrigin+64<=GPU::PageBytes,"private progress, counter, constant and tile-origin banks must not overlap");
 // All addresses here were resolved and retained by the native device namespace.
 struct ShaderBuffers { uint64_t addresses[QGPU_GRAPHICS_BUFFER_COUNT]; uint32_t bytes[QGPU_GRAPHICS_BUFFER_COUNT]; };
 struct GraphicsTextures { uint64_t fragment[QGPU_STAGE_TEXTURE_COUNT]={},vertex[QGPU_STAGE_TEXTURE_COUNT]={}; };
@@ -150,6 +156,26 @@ protected:
     ~IndirectBufferAllocator()=default;
 };
 class PipelineEncoder {
+    struct RasterCache {
+        uint64_t ib=0,addresses[QGPU_COLOR_TARGET_COUNT+2]={},bytes[QGPU_COLOR_TARGET_COUNT+2]={};
+        GPU::Shader::Texture colors[QGPU_COLOR_TARGET_COUNT]{};
+        uint32_t samples=0;
+        bool valid=false,ucheReusable=false;
+        bool matches(const RasterCache &other) const {
+            if(!valid || !other.valid || ib!=other.ib)return false;
+            for(unsigned i=0;i<QGPU_COLOR_TARGET_COUNT+2;++i)
+                if(addresses[i]!=other.addresses[i] || bytes[i]!=other.bytes[i])return false;
+            return true;
+        }
+        bool matchesColor(const RasterCache &other) const {
+            // UCHE reuse needs stable write ranges. CCU reuse additionally
+            // needs the exact attachment interpretation, even at equal sizes.
+            static_assert(sizeof(GPU::Shader::Texture)==14*sizeof(uint32_t),"review color-cache layout key");
+            return matches(other) && !samples && !other.samples &&
+                !bytes[QGPU_COLOR_TARGET_COUNT] && !bytes[QGPU_COLOR_TARGET_COUNT+1] &&
+                !__builtin_memcmp(colors,other.colors,sizeof(colors));
+        }
+    };
     struct RasterContext {
         GPU::Shader::Linkage linkage;
         GPU::Shader::FramebufferLayout snapshots;
@@ -170,10 +196,43 @@ class PipelineEncoder {
         uint32_t vertexMemory[QGPU_MEMORY_CONSTANT_WORDS],fragmentMemory[QGPU_MAX_MEMORY_CONSTANT_WORDS];
         ConstantWindowPlan constantWindowPlans[QGPU_MAX_CONSTANT_WINDOWS];
         uint32_t constantWindowMask;
+        RasterCache rasterCache;
     } workspace;
     Encoder &e;
     uint64_t ib,completionScratch,borderAddress=0,snapshotBytes=0,snapshotPrimitives=0,snapshot2DBytes=0,snapshotUncroppedBytes=0,inplacePrimitives=0;
     uint32_t scratchBytes,flushSequence=0;
+    // The encoded stream has a CACHE_FLUSH_TS plus timestamp wait since its
+    // last shader memory write. This plans GPU ordering, not CPU-observed
+    // completion. Read-only draws preserve it; color/depth and CP stores keep
+    // their separate drain/invalidate/wait paths. Scope: this job only.
+    bool shaderMemoryPublished=false;
+    // A completed encoded color-cache flush remains valid until the next
+    // color producer or an explicit operation/mode reset. Scope: this job.
+    // Never use this as proof for shader-memory or depth publication.
+    bool colorMemoryPublished=false,colorPublicationReuse=true;
+    // Keep enough unused command space for a real color flush/wait at every
+    // IB boundary. No previously emitted command is patched or overwritten.
+    static constexpr uint32_t ColorDrainWords=14;
+    bool deferredColorWrites=false,pendingColorWrites=false,colorTailHeld=false;
+    uint32_t colorTailBase=0;
+    // Native admission checks actual backing pages, including separate imports.
+    // A read-only raster run with identical attachment extents cannot change
+    // its disjoint inputs. Keep their UCHE lines only inside this backing IB.
+    // Mesa fd5_emit_restore invalidates at batch start, not at every draw.
+    RasterCache rasterCache,ordinaryRasterCache,profileRasterCache,primitiveRasterCache;
+    bool rasterCacheReuse=false,colorCacheReuse=false;
+    uint64_t rasterInputCacheHits=0,rasterUCHECacheHits=0;
+    // fd5_gmem.c restores defaults at batch preparation, while fd5_emit.c
+    // updates draw state separately. Retain only invariant defaults between
+    // raster operations in this backing IB. Keep all per-draw mode, UCHE,
+    // HLSQ allocation and attachment synchronization packets unchanged.
+    bool rasterBaselineValid=false,rasterBaselineReuse=true;
+    uint64_t rasterBaselineIB=0;
+    bool rasterStateReuse=true,rasterRegisterFiltering=false;
+    // Three separate rollback levels can nest: compact admission, profiling,
+    // then a framebuffer primitive. Keep snapshots in the heap-owned encoder,
+    // never add whole register shadows to the kernel stack.
+    RasterStateShadow rasterState,ordinaryRasterState,profileRasterState,primitiveRasterState;
     const GMEMLayout *gmem=nullptr;
     bool directShaders=false,framebuffer2D=false,framebufferXCrop=false,framebufferWord32=false,framebufferInplace=false;
     bool framebufferCompact=true;
@@ -211,9 +270,21 @@ class PipelineEncoder {
         const uint32_t data[]={0x4d2u|(1u<<30)|(2u<<18),uint32_t(address),uint32_t(address>>32)};
         p(0x3e,data,3); // CP_REG_TO_MEM: always-on 64-bit counter, no new idle.
     }
-    void r(uint32_t reg, uint32_t value) { if (status == GPU::Result::Success) status = e.reg(reg,value); }
+    void r(uint32_t reg, uint32_t value) {
+        if(status!=GPU::Result::Success)return;
+        if(rasterRegisterFiltering && rasterState.matches(reg,value))return;
+        status=e.reg(reg,value);
+        if(status==GPU::Result::Success) {
+            if(rasterRegisterFiltering)rasterState.remember(reg,value);else rasterState.forget(reg);
+        }
+    }
     template<unsigned N> void rr(uint32_t reg, const uint32_t (&values)[N]) {
-        if (status == GPU::Result::Success) status = e.regs(reg,values,N);
+        if(status!=GPU::Result::Success)return;
+        if(rasterRegisterFiltering && rasterState.matches(reg,values))return;
+        status=e.regs(reg,values,N);
+        if(status==GPU::Result::Success)for(unsigned i=0;i<N;++i) {
+            if(rasterRegisterFiltering)rasterState.remember(reg+i,values[i]);else rasterState.forget(reg+i);
+        }
     }
     void p(uint32_t op, const uint32_t *data, uint32_t n) { if (status == GPU::Result::Success) status = e.packet(op,data,n); }
     void idle() { p(0x26,nullptr,0); }
@@ -227,14 +298,49 @@ class PipelineEncoder {
         idle();uint64_t address=completionScratch+(gmem?GMEMReplayCells:0)+cell*8;uint32_t sequence=++flushSequence;
         uint32_t payload[]={code,uint32_t(address),uint32_t(address>>32),sequence};p(0x46,payload,4);
         uint32_t wait[]={0x13,uint32_t(address),uint32_t(address>>32),sequence,0xffffffff,16};p(0x3c,wait,6);idle();
+        if(code==4 && status==GPU::Result::Success)shaderMemoryPublished=true;
+        if(code==29 && status==GPU::Result::Success)colorMemoryPublished=true;
+    }
+    void publishColorWrites() {
+        drainPendingColor();
+        if(!colorPublicationReuse || gmem || !colorMemoryPublished)flush(29,0);
+    }
+    void armColorTail() {
+        if(!deferredColorWrites || colorTailHeld || status!=GPU::Result::Success)return;
+        colorTailBase=e.checkpoint().reserved;
+        if(colorTailBase>UINT32_MAX-ColorDrainWords || !e.reserveTail(colorTailBase+ColorDrainWords)) {
+            status=GPU::Result::NoResources;return;
+        }
+        colorTailHeld=true;
+    }
+    void drainPendingColor() {
+        if(status!=GPU::Result::Success)return;
+        if(colorTailHeld) {
+            if(e.checkpoint().reserved<colorTailBase+ColorDrainWords || !e.reserveTail(colorTailBase)) {
+                status=GPU::Result::Invalid;return;
+            }
+            colorTailHeld=false;
+        }
+        if(pendingColorWrites) {
+            flush(29,0);
+            if(status==GPU::Result::Success)pendingColorWrites=false;
+        }
     }
     void invalidateUCHE() {
         r(REG_A5XX_UCHE_CACHE_INVALIDATE_MIN_LO,0); r(REG_A5XX_UCHE_CACHE_INVALIDATE_MIN_HI,0);
         r(REG_A5XX_UCHE_CACHE_INVALIDATE_MAX_LO,0); r(REG_A5XX_UCHE_CACHE_INVALIDATE_MAX_HI,0);
         r(REG_A5XX_UCHE_CACHE_INVALIDATE,0x12); idle();
     }
-    void restore() {
-        idle(); uint32_t mode[] = {gmem?3u:1u,0,0,gmem?16u:0u,0}; p(0x6c,mode,5);
+    void restore(bool raster=false,bool preserveUCHE=false,bool preserveDirtyColor=false) {
+        if(!raster)drainPendingColor();
+        if(!raster)colorMemoryPublished=false;
+        rasterCache.valid=false;
+        const bool reuse=raster && !gmem && rasterBaselineReuse && rasterBaselineValid && rasterBaselineIB==ib;
+        rasterRegisterFiltering=false;
+        if(!reuse)rasterState.invalidate();
+        rasterBaselineValid=false;
+        idle(); uint32_t mode[] = {gmem?3u:1u,0,0,gmem?16u:0u,0};
+        if(!preserveDirtyColor)p(0x6c,mode,5);
         // SP/RBCCU can lose non-context state in runtime power collapse.
         // Reassert the A5xx 64-bit addressing contract after domain resume,
         // through the same trusted CP stream as the following object state.
@@ -242,8 +348,9 @@ class PipelineEncoder {
         r(REG_A5XX_RB_ADDR_MODE_CNTL,1);
         r(REG_A5XX_TPL1_ADDR_MODE_CNTL,1);
         uint32_t skip = 0; p(0x1d,&skip,1); // no inherited IB2 skip state
-        invalidateUCHE();
+        if(!preserveUCHE)invalidateUCHE();
         r(REG_A5XX_HLSQ_UPDATE_CNTL,0xfffff);
+        if(reuse){rasterBaselineValid=status==GPU::Result::Success;return;}
         r(REG_A5XX_PC_RESTART_INDEX,0xffffffff); r(REG_A5XX_PC_RASTER_CNTL,0x12);
         r(REG_A5XX_UNKNOWN_E292,0); r(REG_A5XX_UNKNOWN_E292+1,0);
         r(REG_A5XX_TPL1_TP_FS_ROTATION_CNTL,0); r(REG_A5XX_UNKNOWN_E004,0);
@@ -279,6 +386,8 @@ class PipelineEncoder {
         r(REG_A5XX_PC_POWER_CNTL,3); r(REG_A5XX_VFD_POWER_CNTL,3); // A540: four SP cores
         r(REG_A5XX_RB_CCU_CNTL,gmem?0x7c13c080:0x10000000);
         r(REG_A5XX_RB_CNTL,gmem?A5XX_RB_CNTL_WIDTH(gmem->width)|A5XX_RB_CNTL_HEIGHT(gmem->height):A5XX_RB_CNTL_BYPASS);
+        rasterBaselineValid=raster && !gmem && status==GPU::Result::Success;
+        rasterBaselineIB=ib;
     }
     void snapshot2D(uint64_t source,uint64_t destination,const Framebuffer2DRegion (&regions)[Framebuffer2DRegionCount]) {
         // Mesa24.3.4 fd5_blitter.c emit_setup/emit_blit, linear R8_UNORM.
@@ -626,19 +735,45 @@ public:
     uint64_t fullRasterSetups() const {return rasterFullSetups;}
     uint64_t reusedRasterPrimitives() const {return rasterReusedPrimitives;}
     uint64_t updatedVertexDriverConstants() const {return rasterDriverUpdates;}
+    uint64_t reusedRasterColorCaches() const {return rasterInputCacheHits;}
+    uint64_t reusedRasterUCHECaches() const {return rasterUCHECacheHits;}
     void enableFramebuffer2D(bool enabled=true) {framebuffer2D=enabled;}
     void enableFramebufferXCrop(bool enabled=true) {framebufferXCrop=enabled;}
     void enableFramebufferWord32(bool enabled=true) {framebufferWord32=enabled;}
     void enableFramebufferInplace(bool enabled=true) {framebufferInplace=enabled;}
     void enableFramebufferCompact(bool enabled=true) {framebufferCompact=enabled;}
     void enableFramebufferStateReuse(bool enabled=true) {framebufferStateReuse=enabled;}
+    void enableRasterBaselineReuse(bool enabled=true) {rasterBaselineReuse=enabled;rasterBaselineValid=false;}
+    void enableRasterStateReuse(bool enabled=true) {rasterStateReuse=enabled;rasterState.invalidate();}
+    void enableColorPublicationReuse(bool enabled=true) {colorPublicationReuse=enabled;colorMemoryPublished=false;}
+    void enableRasterCacheReuse(bool enabled=true) {rasterCacheReuse=enabled;rasterCache.valid=false;}
+    void enableColorCacheReuse(bool enabled=true) {colorCacheReuse=enabled;}
+    GPU::Result enableDeferredColorWrites(bool enabled=true) {
+        if(!enabled) {drainPendingColor();deferredColorWrites=false;return status;}
+        if(gmem || scratchBytes<GPU::PageBytes || !deviceRange(completionScratch,GPU::PageBytes))return GPU::Result::Invalid;
+        deferredColorWrites=true;colorCacheReuse=true;return status;
+    }
+    bool hasPendingColorWrites() const {return pendingColorWrites;}
+    GPU::Result prepareExternalOperation() {drainPendingColor();rasterCache.valid=false;return status;}
+    GPU::Result finishIndirectBuffer() {drainPendingColor();rasterCache.valid=false;return status;}
+    GPU::Result nextIndirectBuffer(IndirectBufferAllocator &allocator) {
+        if(finishIndirectBuffer()!=GPU::Result::Success)return status;
+        auto result=allocator.next(e,ib);
+        if(result!=GPU::Result::Success)return result;
+        beginOperation(ib);return status;
+    }
+    void invalidateRasterInputCache() {rasterCache.valid=false;}
     GPU::Result flushShaderWrites() {
+        drainPendingColor();
         // Invalidation in restore() does not drain preceding SSBO/image writes.
         if(scratchBytes<GPU::PageBytes || !deviceRange(completionScratch,GPU::PageBytes))return GPU::Result::Invalid;
         flush(4,2);return status;
     }
     uint64_t address() const {return ib;}
-    void beginOperation(uint64_t address) {ib=address;borderAddress=0;forgetShaderObjects();}
+    void beginOperation(uint64_t address) {
+        if(pendingColorWrites || colorTailHeld){status=GPU::Result::Invalid;return;}
+        ib=address;borderAddress=0;forgetShaderObjects();rasterBaselineValid=false;rasterState.invalidate();colorMemoryPublished=false;rasterCache.valid=false;
+    }
     // The callback only encodes already-resolved, retained resources. Try one
     // existing IB without letting a draw seal it; a failed trial can therefore
     // restore BOTH command/data cursors and all private pipeline accounting.
@@ -648,7 +783,7 @@ public:
     // state; large/multi-IB draws are explicitly skipped, never truncated.
     void profileNextOperation(unsigned index,bool counters=false) {
         operationCounters=counters && !gmem;
-        operationTimestamp=!gmem && index<GPU::MaxCommands && scratchBytes>=GPU::PageBytes &&
+        operationTimestamp=!gmem && index<GPU::OperationActivity::CommandCapacity && scratchBytes>=GPU::PageBytes &&
             deviceRange(completionScratch,GPU::PageBytes)?completionScratch+128+uint64_t(index)*16:0;
     }
     bool lastOperationTimed() const {return operationTimed;}
@@ -671,8 +806,15 @@ public:
         const auto oldIB=ib,oldBorder=borderAddress,oldBytes=snapshotBytes,oldPrimitives=snapshotPrimitives;
         const auto old2D=snapshot2DBytes,oldUncropped=snapshotUncroppedBytes,oldInplace=inplacePrimitives;
         const auto oldSequence=flushSequence,oldNext=nextShaderObject;
+        const bool oldPublished=shaderMemoryPublished;
+        const bool oldColorPublished=colorMemoryPublished;
+        const bool oldPendingColor=pendingColorWrites,oldColorTailHeld=colorTailHeld;const auto oldColorTailBase=colorTailBase;
+        const bool oldBaseline=rasterBaselineValid;const auto oldBaselineIB=rasterBaselineIB;
+        profileRasterState=rasterState;
+        profileRasterCache=rasterCache;
         const auto oldHits=shaderObjectHits,oldSaved=shaderObjectSavedBytes;
         const auto oldFull=rasterFullSetups,oldReused=rasterReusedPrimitives,oldDriver=rasterDriverUpdates;
+        const auto oldInputCache=rasterInputCacheHits,oldUCHECache=rasterUCHECacheHits;
         for(unsigned i=0;i<16;++i)profileShaderObjects[i]=shaderObjects[i];
         profileNextShaderObject=oldNext;
         if(operationCounters)shaderCounters(true);
@@ -682,8 +824,16 @@ public:
         e.rewind(point);ib=oldIB;borderAddress=oldBorder;status=GPU::Result::Success;
         snapshotBytes=oldBytes;snapshotPrimitives=oldPrimitives;snapshot2DBytes=old2D;
         snapshotUncroppedBytes=oldUncropped;inplacePrimitives=oldInplace;flushSequence=oldSequence;
+        shaderMemoryPublished=oldPublished;
+        colorMemoryPublished=oldColorPublished;
+        pendingColorWrites=oldPendingColor;colorTailHeld=oldColorTailHeld;colorTailBase=oldColorTailBase;
+        rasterBaselineValid=oldBaseline;rasterBaselineIB=oldBaselineIB;
+        rasterState=profileRasterState;
+        rasterCache=profileRasterCache;
         shaderObjectHits=oldHits;shaderObjectSavedBytes=oldSaved;
         rasterFullSetups=oldFull;rasterReusedPrimitives=oldReused;rasterDriverUpdates=oldDriver;
+        rasterInputCacheHits=oldInputCache;
+        rasterUCHECacheHits=oldUCHECache;
         for(unsigned i=0;i<16;++i)shaderObjects[i]=profileShaderObjects[i];
         nextShaderObject=profileNextShaderObject;
         return encode(allocator);
@@ -695,8 +845,15 @@ public:
         const auto oldIB=ib,oldBorder=borderAddress,oldBytes=snapshotBytes,oldPrimitives=snapshotPrimitives;
         const auto old2D=snapshot2DBytes,oldUncropped=snapshotUncroppedBytes,oldInplace=inplacePrimitives;
         const auto oldSequence=flushSequence;
+        const bool oldPublished=shaderMemoryPublished;
+        const bool oldColorPublished=colorMemoryPublished;
+        const bool oldPendingColor=pendingColorWrites,oldColorTailHeld=colorTailHeld;const auto oldColorTailBase=colorTailBase;
+        const bool oldBaseline=rasterBaselineValid;const auto oldBaselineIB=rasterBaselineIB;
+        ordinaryRasterState=rasterState;
+        ordinaryRasterCache=rasterCache;
         const auto oldShaderHits=shaderObjectHits,oldShaderBytes=shaderObjectSavedBytes;
         const auto oldRasterFull=rasterFullSetups,oldRasterReused=rasterReusedPrimitives,oldRasterDriver=rasterDriverUpdates;
+        const auto oldInputCache=rasterInputCacheHits,oldUCHECache=rasterUCHECacheHits;
         auto result=encode(nullptr);
         if(result!=GPU::Result::NoResources)return result;
         // No allocator was available during the trial, so the backing cannot
@@ -706,10 +863,18 @@ public:
         // tail. Drop all lookup entries rather than retain an invalid address.
         forgetShaderObjects();shaderObjectHits=oldShaderHits;shaderObjectSavedBytes=oldShaderBytes;
         rasterFullSetups=oldRasterFull;rasterReusedPrimitives=oldRasterReused;rasterDriverUpdates=oldRasterDriver;
+        rasterInputCacheHits=oldInputCache;
+        rasterUCHECacheHits=oldUCHECache;
         snapshotBytes=oldBytes;snapshotPrimitives=oldPrimitives;snapshot2DBytes=old2D;
         snapshotUncroppedBytes=oldUncropped;inplacePrimitives=oldInplace;flushSequence=oldSequence;
+        shaderMemoryPublished=oldPublished;
+        colorMemoryPublished=oldColorPublished;
+        pendingColorWrites=oldPendingColor;colorTailHeld=oldColorTailHeld;colorTailBase=oldColorTailBase;
+        rasterBaselineValid=oldBaseline;rasterBaselineIB=oldBaselineIB;
+        rasterState=ordinaryRasterState;
+        rasterCache=ordinaryRasterCache;
         if(point.count) {
-            result=allocator->next(e,ib);
+            result=nextIndirectBuffer(*allocator);
             if(result!=GPU::Result::Success)return result;
             borderAddress=0;
         }
@@ -717,7 +882,7 @@ public:
     }
     PipelineEncoder(Encoder &encoder,uint64_t address,uint64_t scratch=0,uint32_t bytes=GPU::PageBytes,bool direct=false) :
         e(encoder),ib(address),completionScratch(scratch),scratchBytes(bytes),directShaders(direct) {}
-    void renderInGMEM(const GMEMLayout &layout){gmem=&layout;}
+    void renderInGMEM(const GMEMLayout &layout){drainPendingColor();deferredColorWrites=false;gmem=&layout;rasterBaselineValid=false;rasterState.invalidate();colorMemoryPublished=false;rasterCache.valid=false;}
     GPU::Result clearRows(uint64_t address,uint32_t bytes,const uint32_t (&values)[8],bool pairs) {
         if(!hardwareClearEligible(address,bytes,values,pairs) || scratchBytes<GPU::PageBytes ||
             !deviceRange(completionScratch,GPU::PageBytes))return GPU::Result::Invalid;
@@ -757,7 +922,7 @@ public:
         for(unsigned i=0;i<QGPU_IMAGE_CONSTANT_WORDS;++i)memory[QGPU_IMAGE_CONSTANT_BASE+i]=images[i];
         for(unsigned i=0;i<QGPU_COMPUTE_IMAGE_COUNT;++i)if((program.imageMask|program.sampleMask)&(1u<<i)) {
             GPU::Shader::TextureLayout layout;if(!GPU::Shader::textureStorageLayout(d.images[i],layout,false))return GPU::Result::Invalid;
-            memory[QGPU_ARRAY_CONSTANT_BASE+i*2]=d.images[i].cube?GPU::Shader::textureSlices(d.images[i]):d.images[i].layers;
+            memory[QGPU_ARRAY_CONSTANT_BASE+i*2]=d.images[i].depth?d.images[i].depth|(((d.images[i].minSliceStride?d.images[i].minSliceStride:layout.level[layout.levels-1].sliceStride)>>12)<<16):d.images[i].cube?GPU::Shader::textureSlices(d.images[i]):d.images[i].layers;
             memory[QGPU_ARRAY_CONSTANT_BASE+i*2+1]=layout.layerStride;
         }
         for(unsigned i=0;i<QGPU_COMPUTE_IMAGE_COUNT;++i)if(program.samplerMask&(1u<<i))memory[QGPU_SAMPLER_CONSTANT_BASE+i]=GPU::Shader::samplerInfoFlags(d.samplers[i]);
@@ -814,14 +979,17 @@ public:
         r(REG_A5XX_HLSQ_CS_NDRANGE_5,tile.groups[2]*tile.local[2]); r(REG_A5XX_HLSQ_CS_NDRANGE_6,0);
         r(REG_A5XX_HLSQ_CS_KERNEL_GROUP_X,1); r(REG_A5XX_HLSQ_CS_KERNEL_GROUP_Y,1); r(REG_A5XX_HLSQ_CS_KERNEL_GROUP_Z,1);
         uint32_t exec[] = {0,tile.groups[0],tile.groups[1],tile.groups[2]}; p(0x33,exec,4); idle();
+        if(program.writeMask || program.imageWriteMask)shaderMemoryPublished=false;
         }
         return status;
     }
+    // Only native admission may attest physical input/attachment disjointness.
+    // Resource IDs or IOVAs alone cannot prove it for separately imported pages.
     GPU::Result draw(const GPU::Shader::Draw &d, const GPU::Shader::Program &vs,
         const GPU::Shader::Program &fragment, const ShaderBuffers &bindings, uint64_t target, const GraphicsTextures &sampled,
         uint64_t indices=0,uint64_t depth=0,uint64_t stencil=0,const uint64_t *additionalTargets=nullptr,
         const GPU::Shader::Program *snapshotProgram=nullptr,const void *indexSnapshot=nullptr,bool primitiveSnapshot=false,
-        IndirectBufferAllocator *allocator=nullptr) {
+        IndirectBufferAllocator *allocator=nullptr,bool physicalInputsDisjoint=false) {
         const auto &fs=GPU::Shader::rasterProgram(fragment,d.rasterSamples);
         if(!constantWindowRequirements(fs,bindings,completionScratch,scratchBytes))return GPU::Result::Invalid;
         auto &context=workspace.context;context={};auto &linkage=context.linkage;
@@ -854,6 +1022,17 @@ public:
             if(t.resource ? (!address || !GPU::Shader::textureBytes(t,bytes) || !deviceRange(address,bytes)) : address!=0)return GPU::Result::Invalid;
         }
         if ((completionScratch&127) || !deviceRange(completionScratch,128)) return GPU::Result::Invalid;
+        auto &nextCache=workspace.rasterCache;nextCache={};
+        if((rasterCacheReuse || colorCacheReuse) && physicalInputsDisjoint && !gmem && !fs.framebufferMask && !vs.writeMask && !fs.writeMask) {
+            nextCache.ib=ib;nextCache.valid=true;
+            nextCache.samples=d.rasterSamples;
+            for(unsigned i=0;i<QGPU_COLOR_TARGET_COUNT;++i)nextCache.colors[i]=GPU::Shader::colorTarget(d,i);
+            for(unsigned i=0;i<QGPU_COLOR_TARGET_COUNT+2;++i) {
+                const auto &t=i<QGPU_COLOR_TARGET_COUNT?GPU::Shader::colorTarget(d,i):i==QGPU_COLOR_TARGET_COUNT?d.depth:d.stencil;
+                nextCache.addresses[i]=i<QGPU_COLOR_TARGET_COUNT?targets[i]:i==QGPU_COLOR_TARGET_COUNT?depth:stencil;
+                if(t.resource && !GPU::Shader::textureBytes(t,nextCache.bytes[i]))return GPU::Result::Invalid;
+            }
+        }
         if(gmem) {
             if(!gmemPrograms(vs,fs))return GPU::Result::Invalid;
             context.readOnlyFeedback=fs.framebufferMask!=0;
@@ -871,7 +1050,7 @@ public:
             // Publish preceding color/shader writes, including memoryless
             // attachment producers in this command buffer. raster() keeps
             // its normal texture invalidation and completion flushes.
-            flush(29,0);if(depth || stencil)flush(28,1);flush(4,2);
+            publishColorWrites();if(depth || stencil)flush(28,1);flush(4,2);
             auto result=raster(d,vs,fs,bindings,sampled,indices,depth,stencil,context,false,true);
             if(result==GPU::Result::Success)++inplacePrimitives;
             return result;
@@ -885,7 +1064,7 @@ public:
             // retains the color/UCHE flush timestamps plus matching waits.
             // raster() invalidates UCHE before binding the same-pixel view.
             // It is not permission to issue overlapping primitives together.
-            flush(29,0);if(depth || stencil)flush(28,1);flush(4,2);
+            publishColorWrites();if(depth || stencil)flush(28,1);flush(4,2);
             bool reusable=false;
             for(uint32_t instance=0;instance<d.instances && status==GPU::Result::Success;++instance) {
                 GPU::Shader::PrimitiveIterator iterator(d,indexSnapshot);GPU::Shader::Primitive primitive;
@@ -894,6 +1073,13 @@ public:
                   for(;;) {
                     const auto checkpoint=e.checkpoint();const auto previousBorder=borderAddress;
                     const auto previousShaderHits=shaderObjectHits,previousShaderBytes=shaderObjectSavedBytes;
+                    const bool previousPublished=shaderMemoryPublished;
+                    const bool previousColorPublished=colorMemoryPublished;
+                    const bool previousPendingColor=pendingColorWrites,previousColorTailHeld=colorTailHeld;const auto previousColorTailBase=colorTailBase;
+                    const bool previousBaseline=rasterBaselineValid;const auto previousBaselineIB=rasterBaselineIB;
+                    primitiveRasterState=rasterState;
+                    primitiveRasterCache=rasterCache;
+                    const auto previousUCHECache=rasterUCHECacheHits;
                     const auto previousRasterFull=rasterFullSetups,previousRasterReused=rasterReusedPrimitives,previousRasterDriver=rasterDriverUpdates;
                     const auto previousBytes=snapshotBytes,previousPrimitives=snapshotPrimitives,previous2DBytes=snapshot2DBytes,previousUncropped=snapshotUncroppedBytes,previousInplace=inplacePrimitives;
                     for(unsigned slot=0;slot<QGPU_COLOR_TARGET_COUNT && status==GPU::Result::Success;++slot)if(!context.inplace && (fs.framebufferMask&(1u<<slot))) {
@@ -954,9 +1140,15 @@ public:
                     rasterFullSetups=previousRasterFull;rasterReusedPrimitives=previousRasterReused;rasterDriverUpdates=previousRasterDriver;
                     reusable=false;
                     snapshotBytes=previousBytes;snapshotPrimitives=previousPrimitives;snapshot2DBytes=previous2DBytes;snapshotUncroppedBytes=previousUncropped;
-                    inplacePrimitives=previousInplace;
+                    inplacePrimitives=previousInplace;shaderMemoryPublished=previousPublished;
+                    colorMemoryPublished=previousColorPublished;
+                    pendingColorWrites=previousPendingColor;colorTailHeld=previousColorTailHeld;colorTailBase=previousColorTailBase;
+                    rasterBaselineValid=previousBaseline;rasterBaselineIB=previousBaselineIB;
+                    rasterState=primitiveRasterState;
+                    rasterCache=primitiveRasterCache;
+                    rasterUCHECacheHits=previousUCHECache;
                     if(retried || !checkpoint.count){status=GPU::Result::NoResources;break;}
-                    status=allocator->next(e,ib);if(status!=GPU::Result::Success)break;
+                    status=nextIndirectBuffer(*allocator);if(status!=GPU::Result::Success)break;
                     borderAddress=0;forgetShaderObjects();retried=true; // immutable uploads belong to the old IB
                     // Keep flushSequence: repeated values could satisfy a
                     // wait using an earlier buffer's flush timestamp.
@@ -977,12 +1169,42 @@ private:
         const auto &linkage=context.linkage;const auto &snapshots=context.snapshots;const auto *targets=context.targets;
         uint32_t width=context.width,height=context.height,targetMask=context.targetMask,targetCount=context.targetCount;
         uint32_t components=context.components,blendMask=context.blendMask;
+        const bool deferThisDraw=deferredColorWrites && !reuse && workspace.rasterCache.valid &&
+            !gmem && !depth && !stencil && !d.rasterSamples && targetMask;
         auto &vertexParams=workspace.vertexParams;
         __builtin_memset(vertexParams,0,sizeof(vertexParams));
         vertexParams[1] = d.indexSize ? uint32_t(d.baseVertex) : d.start;
         vertexParams[2] = d.baseInstance; vertexParams[4] = d.indexSize ? UINT32_MAX : 0;
         if(!reuse) {
-        restore(); event(25);event(24); // PC_CCU_INVALIDATE_COLOR / DEPTH
+        // Resolve the same plans later used by LOAD_STATE. A staged window
+        // is a CP producer in a reused scratch bank, outside the imported
+        // input/attachment alias proof. Keep its original invalidate path.
+        workspace.constantWindowMask=0;bool stagedConstants=false;
+        for(unsigned i=0;i<fs.constantWindowCount;++i) {
+            if(planConstantWindow(fs,i,bindings,completionScratch,scratchBytes,workspace.constantWindowPlans[i])) {
+                workspace.constantWindowMask|=1u<<i;
+                stagedConstants|=workspace.constantWindowPlans[i].destination!=0;
+            }
+        }
+        workspace.rasterCache.ucheReusable=workspace.rasterCache.valid && !d.rasterSamples && !depth && !stencil && !stagedConstants;
+        const bool preserveUCHE=rasterCacheReuse && rasterCache.ucheReusable && workspace.rasterCache.ucheReusable &&
+            rasterCache.matches(workspace.rasterCache);
+        // Mesa24.3.4 fd5_emit_sysmem_prep invalidates color at batch start,
+        // not between draws. Keep clean CCU data only across consecutive,
+        // physically audited draws with identical single-sample attachments.
+        // All existing color flush timestamps and matching waits remain.
+        const bool sameColor=colorCacheReuse && rasterCache.matchesColor(workspace.rasterCache);
+        const bool preserveDirtyColor=deferredColorWrites && pendingColorWrites && sameColor &&
+            rasterBaselineReuse && rasterBaselineValid && rasterBaselineIB==ib;
+        if(!preserveDirtyColor)drainPendingColor();
+        if(deferThisDraw)armColorTail();
+        const bool preserveColor=sameColor && (colorMemoryPublished || preserveDirtyColor);
+        restore(true,preserveUCHE,preserveDirtyColor);
+        if(preserveUCHE && status==GPU::Result::Success)++rasterUCHECacheHits;
+        if(!preserveColor)event(25); // PC_CCU_INVALIDATE_COLOR
+        event(24); // PC_CCU_INVALIDATE_DEPTH
+        if(preserveColor && status==GPU::Result::Success)++rasterInputCacheHits;
+        rasterRegisterFiltering=rasterStateReuse && !gmem;
         r(REG_A5XX_SP_CS_CONFIG,0); r(REG_A5XX_HLSQ_CS_CONFIG,0);
         r(REG_A5XX_HLSQ_CS_CNTL,0); r(REG_A5XX_HLSQ_CS_CONSTLEN,0); r(REG_A5XX_HLSQ_CS_INSTRLEN,0);
         // Match fd5_program.c:64 cache units shared by VS/FS; prefer FS.
@@ -1020,11 +1242,8 @@ private:
         GPU::Shader::graphicsConstants(fs,d.textures,d.samplers,fragmentMemory,&d);
         for(unsigned i=0;i<QGPU_BUFFER_SIZE_CONSTANT_WORDS;++i)
             vertexMemory[QGPU_BUFFER_SIZE_CONSTANT_BASE+i]=fragmentMemory[QGPU_BUFFER_SIZE_CONSTANT_BASE+i]=bindings.bytes[i];
-        workspace.constantWindowMask=0;
         for(unsigned i=0;i<fs.constantWindowCount;++i) {
-            const bool valid=planConstantWindow(fs,i,bindings,completionScratch,scratchBytes,workspace.constantWindowPlans[i]);
-            fragmentMemory[qgpu_constant_window_flag(fs.constantWindowCount,i)]=valid?1:0;
-            if(valid)workspace.constantWindowMask|=1u<<i;
+            fragmentMemory[qgpu_constant_window_flag(fs.constantWindowCount,i)]=(workspace.constantWindowMask&(1u<<i))?1:0;
         }
         operationWindowState=(fs.constantWindowCount<<8)|workspace.constantWindowMask;
         uint32_t vertexOutputs[16],varyingDestinations[8],varyingDisable[4];
@@ -1075,7 +1294,9 @@ private:
             // through LOAD_STATE. This is a real CACHE_FLUSH_TS + observed
             // timestamp wait, not an early software completion. Also retire
             // preceding CP writes. Do this before the new HLSQ allocation.
-            if(!shaderWritesPublished)flush(4,2);
+            // Reuse an already encoded flush/wait in this job's GPU order,
+            // until a dispatch/draw writes that memory domain.
+            if(!shaderWritesPublished && !shaderMemoryPublished)flush(4,2);
             p(0x12,nullptr,0);idle();
             bool copied=false;
             for(unsigned i=0;i<fs.constantWindowCount && status==GPU::Result::Success;++i) {
@@ -1195,6 +1416,7 @@ private:
         }
         if(status==GPU::Result::Success)++rasterFullSetups;
         } else {
+            rasterRegisterFiltering=rasterStateReuse && !gmem;
             // Only consecutive expanded primitives of this exact inplace
             // draw, in one IB, can enter here. There was no copy/compute or
             // HLSQ allocation/update between them. Retain immutable shader,
@@ -1216,12 +1438,18 @@ private:
             ((d.indexSize == 2 ? 1u : 2u)<<10)|(d.indexSize ? 0 : (2u<<6)),
             d.instances,d.count,0,uint32_t(indices),uint32_t(indices>>32),d.count};
         p(0x38,draw,d.indexSize ? 7 : 3);
+        colorMemoryPublished=false;
+        rasterRegisterFiltering=false;
+        if(vs.writeMask || fs.writeMask)shaderMemoryPublished=false;
         idle();
         // Flush the color cache, wait for its timestamp, then let the common
         // CACHE_FLUSH_TS fence flush UCHE. Timestamp cells use a separate
         // writable page; shader code, constants and PM4 remain read-only.
-        flush(29,0);if(depth || stencil)flush(28,1);
+        if(deferThisDraw && status==GPU::Result::Success)pendingColorWrites=true;
+        else flush(29,0);
+        if(depth || stencil)flush(28,1);
         if(fs.framebufferMask && !gmem)flush(4,2);
+        if(status==GPU::Result::Success)rasterCache=workspace.rasterCache;
         idle(); return status;
     }
 };

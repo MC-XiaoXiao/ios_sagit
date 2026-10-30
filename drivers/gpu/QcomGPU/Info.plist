@@ -9,9 +9,9 @@
 	<key>CFBundleName</key>
 	<string>QcomGPU</string>
 	<key>CFBundleVersion</key>
-	<string>1.189.0</string>
+	<string>1.200.0</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.189.0</string>
+	<string>1.200.0</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
