@@ -792,7 +792,7 @@ bool QcomGPU::finishJob(Job &job, bool success)
         __asm__ volatile("dmb oshld" ::: "memory");
         for(unsigned i=0;i<operationProfile->getLength()/sizeof(*records);++i) {
             auto &r=records[i];r.sequence=job.sequence;r.stamp=native?native->stamp:0;r.retired=mach_absolute_time();
-            if(r.flags&GPU::OperationActivity::Timed) {
+            if((r.flags&GPU::OperationActivity::Timed) && i<GPU::OperationActivity::CommandCapacity) {
                 r.begin=cells[4*i]|(UInt64(cells[4*i+1])<<32);r.end=cells[4*i+2]|(UInt64(cells[4*i+3])<<32);
                 if((r.flags&GPU::ShaderCounters::RecordFlag) && r.begin>=operationJobBegin && r.end>=r.begin && r.end<=operationJobEnd) {
                     using namespace GPU::ShaderCounters;

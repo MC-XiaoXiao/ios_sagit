@@ -23,7 +23,8 @@
 #include <kern/clock.h>
 #include <kern/task.h>
 
-static_assert(GPU::MaxCommands==GPU::OperationActivity::CommandCapacity,"private operation timing cell budget");
+// Shader batch admission is byte-bounded. Operation timestamps use a separate
+// fixed private bank; commands beyond it still execute without GPU sampling.
 static_assert(Adreno::IBDwords == GPU::Blit::IBDwords, "Metal blit PM4 budget must match the native backend");
 static_assert(uint64_t(Adreno::MaxIndirectBuffers)*Adreno::IBDwords*4<=GPU::Native::FramebufferIndirectLimit,
     "a complete maximum-size IB chain must fit the pre-Family admission budget");
@@ -959,13 +960,13 @@ public:
                 if(copy) {
                     const auto *h=static_cast<const GPU::Native::CommandHeader *>(copy->getBytesNoCopy());
                     const UInt32 commandsOffset=GPU::Native::commandOffset(h->responsibleTaskCount,h->version);
-                    const auto *commands=commandsOffset && h->count && h->count<=GPU::MaxCommands?
+                    const auto *commands=commandsOffset && h->count && h->count<=GPU::Native::commandLimit(h->version)?
                         static_cast<const GPU::Command *>(copy->getBytesNoCopy(commandsOffset,h->count*sizeof(GPU::Command))):nullptr;
                     UInt32 end=0;
                     const bool batch=commands && h->magic==GPU::Native::CommandMagic &&
-                        (h->version==GPU::Native::BatchCommandVersion || h->version==GPU::Native::RenderPassCommandVersion || (h->version==GPU::Native::CommandVersion && h->count==1)) &&
+                        (GPU::Native::shaderBatchVersion(h->version) || h->version==GPU::Native::RenderPassCommandVersion || (h->version==GPU::Native::CommandVersion && h->count==1)) &&
                         GPU::Native::shaderBatchLayout(commands,h->count,commandsOffset,copied,
-                            sizeof(GPU::Shader::Dispatch),sizeof(GPU::Shader::Draw),end);
+                            sizeof(GPU::Shader::Dispatch),sizeof(GPU::Shader::Draw),end,h->version);
                     const auto *pass=batch && h->version==GPU::Native::RenderPassCommandVersion?
                         static_cast<const GPU::RenderPass::Description *>(copy->getBytesNoCopy(
                             GPU::Native::commandOffset(h->responsibleTaskCount),sizeof(GPU::RenderPass::Description))):nullptr;
@@ -1004,7 +1005,7 @@ public:
                     if(batch && pipelined) {
                         request.indexBytes=GPU::Native::indexSnapshotAllocation(request.indexBytes);
                         if(!framebuffer && !pass)request.snapshotBytes=0; // Ordinary 4KiB completion scratch is not in the framebuffer pool.
-                        if(framebuffer || pass || (h->version==GPU::Native::BatchCommandVersion && h->count>1))
+                        if(framebuffer || pass || (GPU::Native::shaderBatchVersion(h->version) && h->count>1))
                             request.indirectBytes=uint64_t(Adreno::MaxIndirectBuffers)*Adreno::IBDwords*4;
                     }
                     copy->release();
@@ -1518,24 +1519,24 @@ IOReturn QcomGPU::submitNative(QcomGPUCommandQueue *queue, IOGPUDevice *device,
         const auto taskEnd=GPU::Native::commandOffset(header.responsibleTaskCount);
         const auto commandsOffset=GPU::Native::commandOffset(header.responsibleTaskCount,header.version);
         valid = header.magic == GPU::Native::CommandMagic &&
-            (header.version == GPU::Native::CommandVersion || header.version == GPU::Native::BatchCommandVersion || header.version == GPU::Native::RenderPassCommandVersion) &&
-            commandsOffset && header.count && header.count <= GPU::MaxCommands &&
+            GPU::Native::commandLimit(header.version) &&
+            commandsOffset && header.count && header.count <= GPU::Native::commandLimit(header.version) &&
             length >= commandsOffset + sizeof(GPU::Command) * header.count;
         if(valid) {
             for(UInt32 i=sizeof(header)+header.responsibleTaskCount*4;i<taskEnd;++i)
                 if(bytes[i]){valid=false;break;}
             commands=reinterpret_cast<const GPU::Command *>(bytes+commandsOffset);
         }
-        if(valid && (header.version==GPU::Native::BatchCommandVersion || header.version==GPU::Native::RenderPassCommandVersion)) {
+        if(valid && (GPU::Native::shaderBatchVersion(header.version) || header.version==GPU::Native::RenderPassCommandVersion)) {
             UInt32 end=0;
             valid=GPU::Native::shaderBatchLayout(commands,header.count,commandsOffset,length,
-                sizeof(GPU::Shader::Dispatch),sizeof(GPU::Shader::Draw),end);
+                sizeof(GPU::Shader::Dispatch),sizeof(GPU::Shader::Draw),end,header.version);
         } else if(valid) for(UInt32 i=0;i<header.count;++i) {
             const auto &c=commands[i];
             if(c.opcode!=GPU::ShaderDispatch && c.opcode!=GPU::ShaderDraw)continue;
             UInt32 end=0;
             valid=header.count==1 && GPU::Native::shaderBatchLayout(commands,1,commandsOffset,length,
-                sizeof(GPU::Shader::Dispatch),sizeof(GPU::Shader::Draw),end);break;
+                sizeof(GPU::Shader::Dispatch),sizeof(GPU::Shader::Draw),end,header.version);break;
         }
     }
     if(valid && header.version==GPU::Native::RenderPassCommandVersion) {
@@ -1565,7 +1566,7 @@ IOReturn QcomGPU::submitNative(QcomGPUCommandQueue *queue, IOGPUDevice *device,
         UInt64 renderTargets[QGPU_COLOR_TARGET_COUNT];
         GPU::Shader::Texture planes[QGPU_COLOR_TARGET_COUNT+2+2*QGPU_STAGE_TEXTURE_COUNT];
         GPU::MappingBounds::Plan mappingPlan;
-        UInt32 resourceIDs[GPU::Native::Memory::ResourcesPerJob];
+        UInt32 resourceIDs[GPU::Native::Memory::ResourcesPerJob],indexOffsets[GPU::Native::MaxBatchCommands];
         GPU::OperationActivity::ProgramDescriptions programDescriptions;
     };
     static_assert(sizeof(Adreno::PipelineEncoder)%alignof(EncodingBindings)==0,"aligned native encoding workspace");
@@ -1705,7 +1706,8 @@ IOReturn QcomGPU::submitNative(QcomGPUCommandQueue *queue, IOGPUDevice *device,
         return nullptr;
     };
     // Compute-only batches need private flush timestamps and GPU progress too.
-    UInt32 scratchBytes=renderPass || header.count>1 || fOperationActivity?GPU::PageBytes:0,indexOffsets[GPU::MaxCommands]={};UInt64 indexBytes=0;
+    UInt32 scratchBytes=renderPass || header.count>1 || fOperationActivity?GPU::PageBytes:0;
+    auto &indexOffsets=encodingBindings.indexOffsets;memset(indexOffsets,0,sizeof(indexOffsets));UInt64 indexBytes=0;
     // A standalone builtin clear also needs a private color-flush cell.
     for(UInt32 i=0;!scratchBytes && i<header.count;++i)if(commands[i].opcode==GPU::ShaderDispatch) {
         const auto &d=*reinterpret_cast<const GPU::Shader::Dispatch *>(bytes+commands[i].offset);
@@ -1760,7 +1762,7 @@ IOReturn QcomGPU::submitNative(QcomGPUCommandQueue *queue, IOGPUDevice *device,
             if(!job.scratch->synchronize())result=kIOReturnIOError;
         }
     }
-    if(result==kIOReturnSuccess && (framebuffer || (header.version==GPU::Native::BatchCommandVersion && header.count>1))) {
+    if(result==kIOReturnSuccess && (framebuffer || (GPU::Native::shaderBatchVersion(header.version) && header.count>1))) {
         if(!GPU::Native::admissionFits(fFramebufferIBBytes,job.ib->length,GPU::Native::FramebufferIndirectLimit))result=kIOReturnNoResources;
         else {
             job.commandBuffers=OSArray::withCapacity(header.count);job.commandList=OSData::withCapacity(header.count*sizeof(Adreno::IndirectBuffer));

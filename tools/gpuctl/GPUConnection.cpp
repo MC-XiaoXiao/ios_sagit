@@ -5,6 +5,7 @@
 #include <IOKit/IOReturn.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
 
@@ -307,14 +308,17 @@ kern_return_t NativeConnection::writeShaderCommand(const Native::ShmemData &shme
 }
 kern_return_t NativeConnection::writeShaderBatch(const Native::ShmemData &shmem,const uint32_t *opcodes,
     const void *const *payloads,const size_t *sizes,uint32_t count,const uint32_t *tasks,uint32_t taskCount,
-    const RenderPass::Description *pass)
+    const RenderPass::Description *pass,uint32_t batchVersion)
 {
     if(!port)return NotOpen;
-    const uint32_t version=pass?Native::RenderPassCommandVersion:Native::BatchCommandVersion;
+    const uint32_t version=pass?Native::RenderPassCommandVersion:batchVersion;
     const uint32_t offset=Native::commandOffset(taskCount,version);
-    if(!offset || !count || count>Native::MaxBatchCommands || !opcodes || !payloads || !sizes ||
+    if(!offset || !count || count>Native::commandLimit(version) || (!pass && !Native::shaderBatchVersion(version)) || !opcodes || !payloads || !sizes ||
         !shmem.address || (taskCount && !tasks) || (pass && !RenderPass::valid(*pass)))return BadArgument;
-    Command commands[Native::MaxBatchCommands]{};size_t cursor=offset+count*sizeof(Command);
+    struct CommandStorage {Command *data;~CommandStorage(){free(data);}} storage{
+        static_cast<Command *>(calloc(count,sizeof(Command)))};
+    if(!storage.data)return kIOReturnNoMemory;
+    auto *commands=storage.data;size_t cursor=offset+count*sizeof(Command);
     for(uint32_t i=0;i<count;++i) {
         const size_t expected=opcodes[i]==ShaderDraw?sizeof(Shader::Draw):opcodes[i]==ShaderDispatch?sizeof(Shader::Dispatch):0;
         if(!expected || sizes[i]!=expected || !payloads[i] || cursor>shmem.bytes || expected>shmem.bytes-cursor)return BadArgument;

@@ -50,7 +50,7 @@ public:
     kern_return_t writeShaderCommand(const Native::ShmemData &, uint32_t, const void *, size_t,
         const uint32_t *responsibleTasks=nullptr, uint32_t taskCount=0);
     kern_return_t writeShaderBatch(const Native::ShmemData &,const uint32_t *,const void *const *,const size_t *,uint32_t,
-        const uint32_t *responsibleTasks=nullptr,uint32_t taskCount=0,const RenderPass::Description *pass=nullptr);
+        const uint32_t *responsibleTasks=nullptr,uint32_t taskCount=0,const RenderPass::Description *pass=nullptr,uint32_t batchVersion=Native::BatchCommandVersion);
     kern_return_t submit(uint32_t queue, uint32_t shmem, uint64_t startToken, uint64_t endToken);
     kern_return_t registerProgram(const QGPUProgramImage &, JIT::ProgramData &);
     kern_return_t deleteProgram(uint32_t);

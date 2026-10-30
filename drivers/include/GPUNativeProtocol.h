@@ -12,7 +12,7 @@ enum Selector : uint32_t {
 };
 enum ResourceType : uint32_t { Buffer = 0, ClientBuffer = 0x80, IOSurface = 0x82 };
 // Bounded shared uploads also carry a complete pointer-free JIT program.
-constexpr uint32_t MaxShmemBytes = 256 * 1024;
+constexpr uint32_t MaxShmemBytes = 512 * 1024;
 struct QueueArgs { char name[1024]; uint32_t priority; uint8_t flags, reserved[3]; };
 struct QueueData { uint64_t id, uniqueID; };
 // Original IOGPUCommandQueueSetPriorityAndBackground: one queue scalar,
@@ -66,11 +66,23 @@ struct SubmitArgs {
     uint32_t resources, reserved;
 };
 constexpr uint32_t CommandMagic = 0x47505543, CommandVersion = 4;
-// The upload accommodates all 64 Draw payloads, including task metadata.
-constexpr uint32_t BatchCommandVersion = 7, MaxBatchCommands = MaxCommands;
+// New batches consume a byte budget, not a fixed number of draws. The
+// maximum count below is only the mathematical bound for the smallest legal
+// shader payload; mixed draw/dispatch batches still check their actual bytes.
+// Preserve the original64-op version7 and128-op version9 wire contracts.
+constexpr uint32_t LegacyBatchCommandVersion = 7, ExtendedBatchCommandVersion = 9, BatchCommandVersion = 10;
 constexpr uint32_t RenderPassCommandVersion = 8;
-constexpr uint32_t MaxResponsibleTaskIDs = 64, ResponsibleTaskVersion = 1;
 struct CommandHeader { uint32_t magic, version, count, responsibleTaskCount; };
+constexpr uint32_t MinShaderPayloadBytes = sizeof(Shader::Dispatch)<sizeof(Shader::Draw)?sizeof(Shader::Dispatch):sizeof(Shader::Draw);
+constexpr uint32_t MaxBatchCommands = (MaxShmemBytes-sizeof(CommandHeader))/(sizeof(Command)+MinShaderPayloadBytes);
+inline constexpr bool shaderBatchVersion(uint32_t version) {
+    return version==LegacyBatchCommandVersion || version==ExtendedBatchCommandVersion || version==BatchCommandVersion;
+}
+inline constexpr uint32_t commandLimit(uint32_t version) {
+    return version==BatchCommandVersion?MaxBatchCommands:version==ExtendedBatchCommandVersion?128:
+        version==CommandVersion || version==LegacyBatchCommandVersion || version==RenderPassCommandVersion?MaxCommands:0;
+}
+constexpr uint32_t MaxResponsibleTaskIDs = 64, ResponsibleTaskVersion = 1;
 // Apple's Metal attribution hint contains DWORD task IDs, not task pointers.
 // These hints never change the device's task or resource access rights.
 // The bounded ID array follows this header, padded to 16 bytes, then commands.
@@ -80,14 +92,14 @@ constexpr uint32_t commandOffset(uint32_t tasks) {
 // A pass keeps the normal Draw array, resource IDs and original IOGPU queue.
 // Its attachment descriptor follows the padded task attribution metadata.
 constexpr uint32_t commandOffset(uint32_t tasks,uint32_t version) {
-    return !commandOffset(tasks)?0:commandOffset(tasks)+
+    return !commandLimit(version) || !commandOffset(tasks)?0:commandOffset(tasks)+
         (version==RenderPassCommandVersion?sizeof(RenderPass::Description):0);
 }
 // Canonical packed shader payloads follow the entire command array. Every
 // offset and extent is validated against one immutable kernel snapshot.
 inline bool shaderBatchLayout(const Command *commands,uint32_t count,uint32_t offset,
-    uint64_t length,uint32_t dispatchBytes,uint32_t drawBytes,uint32_t &end) {
-    if(!commands || !count || count>MaxBatchCommands || !offset ||
+    uint64_t length,uint32_t dispatchBytes,uint32_t drawBytes,uint32_t &end,uint32_t version=BatchCommandVersion) {
+    if(!commands || !count || count>commandLimit(version) || !offset ||
         uint64_t(offset)+uint64_t(count)*sizeof(Command)>length)return false;
     uint64_t cursor=uint64_t(offset)+uint64_t(count)*sizeof(Command);
     for(uint32_t i=0;i<count;++i) {

@@ -3,7 +3,7 @@
 #include <stdint.h>
 
 namespace GPU { namespace OperationActivity {
-constexpr uint32_t Version=4, BucketCapacity=128, SlowCapacity=1024, TopCapacity=64, ScratchOffset=128, CommandCapacity=64;
+constexpr uint32_t Version=4, BucketCapacity=128, SlowCapacity=1024, TopCapacity=64, ScratchOffset=128, CommandCapacity=128;
 constexpr char Property[]="GPUOperationActivity";
 constexpr uint64_t SlowTicks=19200; // One millisecond on the GPU's 19.2 MHz reference clock.
 struct Program {

@@ -8,7 +8,7 @@
 namespace Adreno {
 constexpr uint32_t GMEMTextureBase=0x100000;
 // Replay waits must never reuse the watchdog's monotonic cell at offset16.
-constexpr uint32_t GMEMReplayCells=64,GMEMOrigin=2048;
+constexpr uint32_t GMEMReplayCells=64,GMEMOrigin=3072;
 using GMEMLayout=GPU::RenderPass::TileLayout;
 inline bool gmemLayout(const GPU::RenderPass::Description &pass,GMEMLayout &out) {
     return GPU::RenderPass::tileLayout(pass,out);

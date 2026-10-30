@@ -4,7 +4,7 @@
 #include <GPUShaderProtocol.h>
 namespace Adreno {
 // Progress-page space after timestamp/counter records and before GMEM origin.
-constexpr uint32_t ConstantWindowScratch=1536;
+constexpr uint32_t ConstantWindowScratch=2560;
 struct ConstantWindowPlan {
     uint32_t packet[3]{};
     uint64_t source=0,destination=0;

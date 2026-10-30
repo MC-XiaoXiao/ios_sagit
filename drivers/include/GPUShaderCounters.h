@@ -5,7 +5,7 @@
 namespace GPU { namespace ShaderCounters {
 // Opt-in A540 diagnostics: one selected draw per batch, no logging while drawing.
 // Selector definitions come from pinned Mesa registers/adreno/a5xx.xml.
-constexpr unsigned Count=16, Capacity=64, ScratchOffset=1152, RecordFlag=4;
+constexpr unsigned Count=16, Capacity=64, ScratchOffset=2176, RecordFlag=4;
 constexpr uint32_t SP[]={0,1,2,4,5,6,24,25}, TP[]={0,1,6,7}, UCHE[]={0,1,4,8};
 struct Record {
     uint64_t retired=0,hash=0,ticks=0,values[Count]{};

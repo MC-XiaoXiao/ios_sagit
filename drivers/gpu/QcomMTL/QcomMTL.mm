@@ -226,6 +226,7 @@ __attribute__((visibility("default")))
     GPU::MetalUpload::Pool<> _inlinePool;
     NSLock *_compilerLock;
     NSMapTable<NSString *, id> *_libraryCache;
+    uint32_t _batchVersion,_batchCommandLimit,_commandShmemBytes;
     BOOL _jit,_batchShaders,_mixedBatchShaders,_pipelinedAdmission,_completionNotifications,_surfaceFences,_gmem,_gmemSupported;
     uint64_t _gmemPasses;
     uint32_t _acceleratorService;
@@ -1503,7 +1504,9 @@ QcomMTLLibrary *compileLibrary(QcomMTLDevice *device, NSData *data, BOOL msl, NS
     }
     _memoryLimits=caps.memory;
     _jit=caps.jit==GPU::JIT::Version && caps.maxShmem>=GPU::JIT::UploadChunkBytes;
-    _batchShaders=caps.batch==GPU::Native::BatchCommandVersion;
+    _batchShaders=GPU::Native::shaderBatchVersion(caps.batch);
+    _batchVersion=caps.batch;_batchCommandLimit=_batchShaders?GPU::Native::commandLimit(caps.batch):1;
+    _commandShmemBytes=MIN(caps.maxShmem,GPU::Native::MaxShmemBytes);
     _mixedBatchShaders=_batchShaders && (caps.flags&GPU::MetalCapabilities::MixedBatch);
     _gmemSupported=caps.flags&GPU::MetalCapabilities::GMEM;
     // Tiled replay is correct, but without VSC binning the measured Hello
@@ -3582,7 +3585,7 @@ static bool makeBlitDispatch(const GPU::Blit::ComputePlan &plan,GPU::Shader::Dis
         status=device->_connection.setQueuePriority(uint32_t(_queue.id),priority,applied);
         if(!status)_priority=applied;
     }
-    if (!status) {stage="newShmem";status = device->_connection.newShmem(GPU::Native::MaxShmemBytes, _shmem);}
+    if (!status) {stage="newShmem";status = device->_connection.newShmem(device->_commandShmemBytes, _shmem);}
     if (!status) {stage="newNotificationQueue";status = device->_connection.newNotificationQueue(64, _notifications);}
     if (!status) {stage="setNotificationQueue";status = device->_connection.setNotificationQueue((uint32_t)_queue.id, _notifications.id);}
     if (!status && device->_completionNotifications) {
@@ -4073,9 +4076,16 @@ static bool makeBlitDispatch(const GPU::Blit::ComputePlan &plan,GPU::Shader::Dis
     if(passData && (passData.length!=sizeof(GPU::RenderPass::Description) || operations.firstObject.renderPassDraws!=operations.count))return kIOReturnBadArgument;
     const auto *pass=static_cast<const GPU::RenderPass::Description *>(passData.bytes);
     auto available=[self admitNative];if(available)return available;
-    if(!operations.count || operations.count>GPU::Native::MaxBatchCommands)return kIOReturnBadArgument;
-    uint32_t opcodes[GPU::Native::MaxBatchCommands]{};const void *payloads[GPU::Native::MaxBatchCommands]{};
-    size_t sizes[GPU::Native::MaxBatchCommands]{};
+    if(!operations.count || operations.count>(passData?GPU::Native::commandLimit(GPU::Native::RenderPassCommandVersion):_owner->_batchCommandLimit))return kIOReturnBadArgument;
+    // Size CPU metadata to the admitted batch, independently of the wire's
+    // maximum possible dispatch count and the kernel's diagnostic bank.
+    NSMutableData *opcodeData=[NSMutableData dataWithLength:operations.count*sizeof(uint32_t)];
+    NSMutableData *payloadData=[NSMutableData dataWithLength:operations.count*sizeof(void *)];
+    NSMutableData *sizeData=[NSMutableData dataWithLength:operations.count*sizeof(size_t)];
+    if(!opcodeData || !payloadData || !sizeData)return kIOReturnNoMemory;
+    auto *opcodes=static_cast<uint32_t *>(opcodeData.mutableBytes);
+    auto *payloads=static_cast<const void **>(payloadData.mutableBytes);
+    auto *sizes=static_cast<size_t *>(sizeData.mutableBytes);
     for(NSUInteger i=0;i<operations.count;++i) {
         auto operation=operations[i];opcodes[i]=operation.shaderOpcode;payloads[i]=operation.shaderPayload.bytes;sizes[i]=operation.shaderPayload.length;
         if(!_owner->_pipelinedAdmission && opcodes[i]==GPU::ShaderDraw && sizes[i]==sizeof(GPU::Shader::Draw) &&
@@ -4083,7 +4093,7 @@ static bool makeBlitDispatch(const GPU::Blit::ComputePlan &plan,GPU::Shader::Dis
     }
     NSData *tasks=_executing?_executing->_executionResponsibleTasks:nil;
     auto status=_owner->_connection.writeShaderBatch(_shmem,opcodes,payloads,sizes,uint32_t(operations.count),
-        static_cast<const uint32_t *>(tasks.bytes),uint32_t(tasks.length/4),pass);
+        static_cast<const uint32_t *>(tasks.bytes),uint32_t(tasks.length/4),pass,_owner->_batchVersion);
     if(status)return status;
     publishCPU();uint64_t endToken=_token+1;
     status=_owner->_connection.submit(uint32_t(_queue.id),_shmem.id,_token,endToken);
@@ -4563,7 +4573,7 @@ static bool makeBlitDispatch(const GPU::Blit::ComputePlan &plan,GPU::Shader::Dis
                     // Keep fence/event/barrier and attribution boundaries.
                     // Borrowed references survive the whole native admission.
                     NSMutableArray<QcomMTLOperation *> *batch=[NSMutableArray arrayWithObject:operation];
-                    GPU::MetalBatch::Plan plan(_queue->_shmem.bytes,uint32_t(_executionResponsibleTasks.length/4));
+                    GPU::MetalBatch::Plan plan(_queue->_shmem.bytes,uint32_t(_executionResponsibleTasks.length/4),_queue->_owner->_batchVersion);
                     const bool planned=plan.append(operation.shaderOpcode,operation.shaderPayload.bytes,operation.shaderPayload.length);
                     auto batchableShader=[](QcomMTLOperation *op)->bool {
                         if(op.shaderOpcode==GPU::ShaderDraw)return op.shaderPayload.length==sizeof(GPU::Shader::Draw);
@@ -4578,7 +4588,7 @@ static bool makeBlitDispatch(const GPU::Blit::ComputePlan &plan,GPU::Shader::Dis
                             strcmp(p->name,"blit_fill_rows_2d_tail") && strcmp(p->name,"blit_fill_pairs_2d_tail"));
                     };
                     const bool mixed=_queue->_owner->_mixedBatchShaders && batchableShader(operation);
-                    for(NSUInteger next=_nextOperation+1;planned && (mixed || operation.shaderOpcode==GPU::ShaderDraw) && _queue->_owner->_batchShaders && next<_operations.count && batch.count<GPU::Native::MaxBatchCommands;++next) {
+                    for(NSUInteger next=_nextOperation+1;planned && (mixed || operation.shaderOpcode==GPU::ShaderDraw) && _queue->_owner->_batchShaders && next<_operations.count && batch.count<_queue->_owner->_batchCommandLimit;++next) {
                         auto candidate=_operations[next];
                         if(candidate.renderPass || candidate.event || candidate.fence || candidate.barrier || candidate.responsibleTaskIDs) {timing.record.detail+=uint64_t(1)<<32;break;}
                         if(mixed?!batchableShader(candidate):candidate.shaderOpcode!=operation.shaderOpcode) {timing.record.detail+=uint64_t(1)<<32;break;}
@@ -4623,7 +4633,7 @@ static bool makeBlitDispatch(const GPU::Blit::ComputePlan &plan,GPU::Shader::Dis
                         [batch addObject:candidate];
                     }
                     ++timing.record.detail;
-                    if(batch.count==GPU::Native::MaxBatchCommands)++timing.record.argument;
+                    if(batch.count==_queue->_owner->_batchCommandLimit)++timing.record.argument;
                     if(plan.resources()>(timing.record.argument>>32))
                         timing.record.argument=(timing.record.argument&UINT32_MAX)|(uint64_t(plan.resources())<<32);
                     if(!status)status=[_queue submitShaderBatch:batch];

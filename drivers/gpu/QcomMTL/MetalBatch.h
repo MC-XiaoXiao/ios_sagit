@@ -11,7 +11,7 @@ namespace GPU { namespace MetalBatch {
 // resource slot, just as submitNative's retainBuffer does.
 class Plan {
     uint32_t ids_[Native::Memory::ResourcesPerJob]{};
-    uint32_t resources_=0,commands_=0,offset_=0,capacity_=0,payloadBytes_=0;
+    uint32_t resources_=0,commands_=0,offset_=0,capacity_=0,payloadBytes_=0,commandLimit_=0;
     uint64_t indexBytes_=0;
     bool resource(uint32_t id) {
         if(!id)return true;
@@ -21,14 +21,14 @@ class Plan {
     }
 public:
     explicit Plan(uint32_t capacity,uint32_t tasks=0,uint32_t version=Native::BatchCommandVersion):offset_(Native::commandOffset(tasks,version)),
-        capacity_(capacity<Native::MaxShmemBytes?capacity:Native::MaxShmemBytes){}
+        capacity_(capacity<Native::MaxShmemBytes?capacity:Native::MaxShmemBytes),commandLimit_(Native::commandLimit(version)){}
     uint32_t resources() const{return resources_;}
     uint32_t commands() const{return commands_;}
     uint32_t bytes() const{return offset_+commands_*sizeof(Command)+payloadBytes_;}
     uint64_t indexBytes() const{return Native::indexSnapshotAllocation(indexBytes_);}
     bool append(uint32_t opcode,const void *payload,size_t size) {
         const auto expected=opcode==ShaderDraw?sizeof(Shader::Draw):opcode==ShaderDispatch?sizeof(Shader::Dispatch):0;
-        if(!offset_ || !payload || !expected || size!=expected || commands_==Native::MaxBatchCommands ||
+        if(!offset_ || !payload || !expected || size!=expected || commands_>=commandLimit_ ||
             uint64_t(bytes())+sizeof(Command)+size>capacity_)return false;
         const auto saved=resources_;uint64_t indices=indexBytes_;bool fits=true;
         if(opcode==ShaderDraw) {
