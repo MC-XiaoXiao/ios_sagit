@@ -1733,6 +1733,13 @@
         "battery-runtime"
       ]
     },
+    "ios-runtime": {
+      "inherits": [
+        "battery-runtime",
+        "usb"
+      ],
+      "output": "../build/output/kernelcache.ios-runtime"
+    },
     "battery-runtime": {
       "inherits": [
         "graphics-runtime",
