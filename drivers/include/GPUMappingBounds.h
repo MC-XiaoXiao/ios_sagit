@@ -9,10 +9,10 @@ struct PageSpan {uint64_t first=0,end=0;};
 // stack or an in-flight GPU descriptor. Overflow retains the prior whole-root
 // mapping for affected resources; it never rejects otherwise valid work.
 template<unsigned Capacity> struct Ranges {
-    uint64_t knownMask=0,overflowMask=0;
+    uint64_t knownMask=0,overflowMask=0,fullMask=0;
     unsigned count=0;
     PageSpan spans[Capacity]{};
-    template<class Buffer> bool recordAddress(Buffer *const *buffers,unsigned bufferCount,uint64_t address,uint64_t bytes) {
+    template<class Buffer> bool recordAddress(Buffer *const *buffers,unsigned bufferCount,uint64_t address,uint64_t bytes,bool fullRoot=false) {
         if(!buffers || !bytes || bufferCount>64 || bytes>UINT64_MAX-address)return false;
         uint64_t matched=0;
         for(unsigned i=0;i<bufferCount;++i) {
@@ -21,6 +21,7 @@ template<unsigned Capacity> struct Ranges {
         }
         if(!matched || address+bytes>UINT64_MAX-4095)return false;
         knownMask|=matched;
+        if(fullRoot)fullMask|=matched;
         PageSpan next{address&~uint64_t(4095),(address+bytes+4095)&~uint64_t(4095)};
         unsigned first=0;
         while(first<count && spans[first].end<next.first)++first;
@@ -43,8 +44,9 @@ template<unsigned Capacity> struct Ranges {
     }
     bool known(unsigned i) const {return i<64 && (knownMask&(uint64_t(1)<<i));}
     bool overflow(unsigned i) const {return i<64 && (overflowMask&(uint64_t(1)<<i));}
+    bool full(unsigned i) const {return i<64 && (fullMask&(uint64_t(1)<<i));}
     bool valid(unsigned bufferCount) const {
-        if(bufferCount>64 || count>Capacity || (overflowMask&~knownMask))return false;
+        if(bufferCount>64 || count>Capacity || ((overflowMask|fullMask)&~knownMask))return false;
         const uint64_t mask=bufferCount==64?UINT64_MAX:(uint64_t(1)<<bufferCount)-1;
         if(knownMask&~mask)return false;
         for(unsigned i=0;i<count;++i)
@@ -71,7 +73,9 @@ struct RootSelection {
     bool fallback=false,overflow=false;
 };
 // Callers validate the complete immutable plan once before selecting roots.
-// ANY unknown/overflowed view of a shared root preserves its old full mapping.
+// Unknown, overflowed or explicitly full views preserve the whole shared root.
+// A5xx texture/cache accesses can include padded rows beyond logical texels.
+// Keep logical authorization separate from the retained backing's PTE coverage.
 template<unsigned Capacity,class Buffer> bool selectRoot(const Ranges<Capacity> *plan,Buffer *const *buffers,
     unsigned count,unsigned index,RootSelection &out) {
     out={};if(!buffers || count>64 || index>=count || !buffers[index])return false;
@@ -81,7 +85,7 @@ template<unsigned Capacity,class Buffer> bool selectRoot(const Ranges<Capacity> 
         if(!buffers[i])return false;
         if(buffers[i]->backing()!=root)continue;
         if(!validView(out.address,out.bytes,buffers[i]->address,buffers[i]->length))return false;
-        if(plan){out.fallback|=!plan->known(i);out.overflow|=plan->overflow(i);}
+        if(plan){out.fallback|=!plan->known(i) || plan->full(i);out.overflow|=plan->overflow(i);}
     }
     out.fallback|=out.overflow;return true;
 }

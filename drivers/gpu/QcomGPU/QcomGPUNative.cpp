@@ -1636,8 +1636,8 @@ IOReturn QcomGPU::submitNative(QcomGPUCommandQueue *queue, IOGPUDevice *device,
         }
         return false;
     };
-    auto recordAddress=[&](UInt64 address,UInt64 bytes) -> bool {
-        return encodingBindings.mappingPlan.recordAddress(job.buffers,job.bufferCount,address,bytes);
+    auto recordAddress=[&](UInt64 address,UInt64 bytes,bool fullRoot=false) -> bool {
+        return encodingBindings.mappingPlan.recordAddress(job.buffers,job.bufferCount,address,bytes,fullRoot);
     };
     auto recordBindings=[&](const GPU::Shader::Program &program,const Adreno::ShaderBuffers &resolved,
         UInt32 extra=0,UInt32 base=0,UInt32 skip=0) -> bool {
@@ -1682,7 +1682,7 @@ IOReturn QcomGPU::submitNative(QcomGPUCommandQueue *queue, IOGPUDevice *device,
                 texture.pitch!=s->rowBytes || texture.samples || GPU::Shader::formatBytes(texture.format)!=s->bytesPerElement) return 0;
         }
         return buffer && GPU::range(buffer->length,texture.offset,bytes) &&
-            recordAddress(buffer->address+texture.offset,bytes) ? buffer->address+texture.offset : 0;
+            recordAddress(buffer->address+texture.offset,bytes,true) ? buffer->address+texture.offset : 0;
     };
     auto textureRanges = [](const GPU::Shader::Texture &texture,GPU::StridedRange &range) -> bool {
         UInt64 bytes=0;if(!GPU::Shader::textureBytes(texture,bytes))return false;
@@ -2036,7 +2036,7 @@ IOReturn QcomGPU::submitNative(QcomGPUCommandQueue *queue, IOGPUDevice *device,
                 auto *buffer=retainBuffer(plane.resource,&resource,true);
                 if (resource && resource->surfaceInfo()) return 0;
                 return buffer && GPU::range(buffer->length,plane.offset,bytes) &&
-                    recordAddress(buffer->address+plane.offset,bytes) ? buffer->address+plane.offset : 0;
+                    recordAddress(buffer->address+plane.offset,bytes,true) ? buffer->address+plane.offset : 0;
             };
             UInt64 target = d.target.resource?resolveTexture(d.target,true):0, elements = UInt64(d.start)+d.count;
             UInt64 additionalTargets[QGPU_COLOR_TARGET_COUNT-1]={};bool colorTargetsValid=true;
