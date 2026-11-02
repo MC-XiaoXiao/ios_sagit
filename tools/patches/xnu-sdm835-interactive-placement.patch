@@ -1,0 +1,47 @@
+diff --git a/osfmk/kern/sched_clutch.c b/osfmk/kern/sched_clutch.c
+index 3ea3171..0e22e5c 100644
+--- a/osfmk/kern/sched_clutch.c
++++ b/osfmk/kern/sched_clutch.c
+@@ -1361,6 +1361,33 @@ sched_clutch_bucket_init(
+  *
+  * Initializer for clutch bucket groups.
+  */
++static uint32_t
++sched_clutch_initial_preferred_cluster(sched_bucket_t bucket)
++{
++#if CONFIG_SCHED_EDGE && defined(ARM64_BOARD_CONFIG_SDM835)
++	/* The SDM835 frequency controller does not supply CLPC placement policy.
++	 * Start latency-sensitive QoS buckets on an enumerated performance cluster.
++	 * This is an initial preference, not a binding: Edge availability checks and
++	 * subsequent perfcontrol recommendations still own placement and migration.
++	 * A cpus=1..4 boot has no performance cluster and keeps the boot preference.
++	 */
++	if (bucket == TH_BUCKET_FIXPRI || bucket == TH_BUCKET_SHARE_FG || bucket == TH_BUCKET_SHARE_IN) {
++		const ml_topology_info_t *topology = ml_get_topology_info();
++		for (unsigned int i = 0; i < topology->num_clusters; i++) {
++			const ml_topology_cluster_t *cluster = &topology->clusters[i];
++			/* Early kernel groups can precede secondary pset creation. */
++			if (cluster->num_cpus && cluster->cluster_type == CLUSTER_TYPE_P &&
++			    pset_array[cluster->cluster_id] != NULL) {
++				return cluster->cluster_id;
++			}
++		}
++	}
++#else
++	(void)bucket;
++#endif
++	return pset0.pset_cluster_id;
++}
++
+ static void
+ sched_clutch_bucket_group_init(
+ 	sched_clutch_bucket_group_t clutch_bucket_group,
+@@ -1379,7 +1406,7 @@ sched_clutch_bucket_group_init(
+ 
+ 	os_atomic_store(&clutch_bucket_group->scbg_timeshare_tick, 0, relaxed);
+ 	os_atomic_store(&clutch_bucket_group->scbg_pri_shift, INT8_MAX, relaxed);
+-	os_atomic_store(&clutch_bucket_group->scbg_preferred_cluster, pset0.pset_cluster_id, relaxed);
++	os_atomic_store(&clutch_bucket_group->scbg_preferred_cluster, sched_clutch_initial_preferred_cluster(bucket), relaxed);
+ 	/*
+ 	 * All thread groups should be initialized to be interactive; this allows the newly launched
+ 	 * thread groups to fairly compete with already running thread groups.
