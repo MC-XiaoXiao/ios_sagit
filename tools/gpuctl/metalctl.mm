@@ -30,6 +30,9 @@
 - (NSDictionary *)qcomRetiredCleanupStatistics;
 - (void)qcomWaitForRetiredCleanup;
 @end
+@protocol QcomCommandAttribution
+- (void)setResponsibleTaskIDs:(const uint32_t *)ids count:(uint32_t)count;
+@end
 @protocol QcomMetalDiagnosticConfiguration
 - (BOOL)qcomMetalDiagnosticsEnabled;
 @end
@@ -244,43 +247,44 @@ static bool nativeRenderCounts(id<MTLDevice> device,RenderCounts &counts,
     while((service=IOIteratorNext(iterator))) {
         uint64_t registry=0;
         if(!IORegistryEntryGetRegistryEntryID(service,&registry) && registry==device.registryID) {
-            if(includeCompute) {
-                mach_port_t connection=MACH_PORT_NULL;GPU::Diagnostics::LiveSnapshot live{};
-                uint64_t scope=0;uint32_t scalarCount=0;size_t size=sizeof(live);
-                auto status=IOServiceOpen(service,mach_task_self(),1,&connection);
-                if(!status)status=IOConnectCallMethod(connection,GPU::Diagnostics::LiveSelector,&scope,1,nullptr,0,
+            mach_port_t connection=MACH_PORT_NULL;
+            auto status=IOServiceOpen(service,mach_task_self(),1,&connection);
+            auto read=[&](uint64_t scope,GPU::Diagnostics::LiveSnapshot &live) {
+                uint32_t scalarCount=0;size_t size=sizeof(live);
+                auto result=status?status:IOConnectCallMethod(connection,GPU::Diagnostics::LiveSelector,&scope,1,nullptr,0,
                     nullptr,&scalarCount,&live,&size);
-                if(connection)IOServiceClose(connection);
-                found=!status && !scalarCount && size==sizeof(live) && live.version==GPU::Diagnostics::LiveVersion &&
-                    live.bytes==sizeof(live) && !live.scope && !live.reserved;
-                if(found) {
-                    const auto &k=live.metrics.kinds;
-                    counts={k.submitted[3]+k.submitted[2],k.completed[3]+k.completed[2],k.failed[3]+k.failed[2]};
+                return !result && !scalarCount && size==sizeof(live) && live.version==GPU::Diagnostics::LiveVersion &&
+                    live.bytes==sizeof(live) && live.scope==scope && !live.reserved && !live.metrics.reserved;
+            };
+            GPU::Diagnostics::LiveSnapshot native{},compositorBefore{},compositorAfter{};
+            if(diagnostic) {
+                // Native GPUStatistics is a periodically published property.
+                // Read live metrics instead. Bracket the native sample with
+                // compositor reads: unchanged monotonic counters make the
+                // subtraction an actual consistent observation, even while
+                // SpringBoard continues to submit work on another thread.
+                for(unsigned attempt=0;attempt<8;++attempt) {
+                    if(!read(1,compositorBefore) || !read(0,native) || !read(1,compositorAfter))break;
+                    if(compositorBefore.metrics.accepted!=compositorAfter.metrics.accepted ||
+                        memcmp(&compositorBefore.metrics.kinds,&compositorAfter.metrics.kinds,sizeof(compositorAfter.metrics.kinds)))continue;
+                    *diagnostic={};diagnostic->native=native.metrics;diagnostic->compositor=compositorAfter.metrics;
+                    found=true;break;
                 }
-                IOObjectRelease(service);break;
-            }
-            CFTypeRef value=IORegistryEntryCreateCFProperty(service,CFSTR("GPUStatistics"),nullptr,0);
-            GPU::Diagnostics::Snapshot snapshot{};
-            if(value && CFGetTypeID(value)==CFDataGetTypeID() &&
-                    CFDataGetLength(static_cast<CFDataRef>(value))==CFIndex(sizeof(snapshot))) {
-                memcpy(&snapshot,CFDataGetBytePtr(static_cast<CFDataRef>(value)),sizeof(snapshot));
-                found=snapshot.version==GPU::Diagnostics::Version && snapshot.bytes==sizeof(snapshot) &&
-                    snapshot.kindCount==GPU::Diagnostics::KindCount && snapshot.stageCount==GPU::Diagnostics::StageCount &&
-                    !snapshot.native.reserved && !snapshot.compositor.reserved;
-                if(found) {
-                    counts={snapshot.native.kinds.submitted[3],snapshot.native.kinds.completed[3],snapshot.native.kinds.failed[3]};
-                    if(includeCompute){counts.submitted+=snapshot.native.kinds.submitted[2];counts.completed+=snapshot.native.kinds.completed[2];counts.failed+=snapshot.native.kinds.failed[2];}
-                    if(diagnostic)*diagnostic=snapshot;
-                    if(mixed) {
-                        auto v=IORegistryEntryCreateCFProperty(service,CFSTR("IOGPUNativeMixedShaderBatchVersion"),nullptr,0);int32_t version=0;
-                        *mixed=v && CFGetTypeID(v)==CFNumberGetTypeID() && CFNumberGetValue((CFNumberRef)v,kCFNumberSInt32Type,&version) && version==1;
-                        if(v)CFRelease(v);
-                    }
+            } else found=read(0,native);
+            if(connection)IOServiceClose(connection);
+            if(found) {
+                const auto &k=native.metrics.kinds;
+                counts={k.submitted[3],k.completed[3],k.failed[3]};
+                if(includeCompute){counts.submitted+=k.submitted[2];counts.completed+=k.completed[2];counts.failed+=k.failed[2];}
+                if(mixed) {
+                    auto value=IORegistryEntryCreateCFProperty(service,CFSTR("IOGPUNativeMixedShaderBatchVersion"),nullptr,0);int32_t version=0;
+                    *mixed=value && CFGetTypeID(value)==CFNumberGetTypeID() && CFNumberGetValue((CFNumberRef)value,kCFNumberSInt32Type,&version) && version==1;
+                    if(value)CFRelease(value);
                 }
             }
-            if(value)CFRelease(value);
+            IOObjectRelease(service);break;
         }
-        IOObjectRelease(service);if(found)break;
+        IOObjectRelease(service);
     }
     IOObjectRelease(iterator);return found;
 }
@@ -314,10 +318,11 @@ static int mixedBatch(id<MTLDevice> device) {
     if(!input || !intermediate || !output || !readback || !texture || !vertices)return 1;
     for(NSUInteger i=0;i<count;++i)static_cast<uint32_t *>(input.contents)[i]=uint32_t((i*13+i/17)%241);
     memset(backing.contents,0xa5,backing.length);
-    auto recordCompute=[&](id<MTLCommandBuffer> cb,id<MTLBuffer> from,id<MTLBuffer> to,NSUInteger elements) {
+    auto recordCompute=[&](id<MTLCommandBuffer> cb,id<MTLBuffer> from,id<MTLBuffer> to,NSUInteger elements,id<MTLFence> fence=nil) {
         auto encoder=[cb computeCommandEncoder];[encoder setComputePipelineState:kernel];
         [encoder setBuffer:from offset:0 atIndex:0];[encoder setBuffer:to offset:0 atIndex:1];
         [encoder dispatchThreadgroups:MTLSizeMake(elements/64,1,1) threadsPerThreadgroup:MTLSizeMake(64,1,1)];
+        if(fence)[encoder updateFence:fence];
         [encoder endEncoding];
     };
     auto recordDraw=[&](id<MTLCommandBuffer> cb,id<MTLBuffer> indices,bool clear=false) {
@@ -345,13 +350,19 @@ static int mixedBatch(id<MTLDevice> device) {
         // already established; let that registry view catch up as in the
         // existing CARenderer probe, without submitting extra GPU work.
         for(unsigned attempt=0;attempt<=120;++attempt) {
-            if(!counts(after,mixed))return false;
+            if(!counts(after,mixed)) {
+                fputs("GPU_MIXED_BATCH stage=statistics-sample valid=0\n",stderr);return false;
+            }
             const auto admitted=difference(after.native.accepted,after.compositor.accepted)-difference(before.native.accepted,before.compositor.accepted);
             const auto cs=difference(after.native.kinds.completed[2],after.compositor.kinds.completed[2])-difference(before.native.kinds.completed[2],before.compositor.kinds.completed[2]);
             const auto fs=difference(after.native.kinds.completed[3],after.compositor.kinds.completed[3])-difference(before.native.kinds.completed[3],before.compositor.kinds.completed[3]);
             if(admitted>=jobs && cs>=computes && fs>=renders)return true;
             if(attempt!=120)[NSThread sleepForTimeInterval:0.05];
         }
+        fprintf(stderr,"GPU_MIXED_BATCH stage=statistics-timeout expected_jobs=%llu expected_compute=%llu expected_render=%llu before_accepted=%llu/%llu after_accepted=%llu/%llu before_compute=%llu/%llu after_compute=%llu/%llu before_render=%llu/%llu after_render=%llu/%llu\n",
+            jobs,computes,renders,before.native.accepted,before.compositor.accepted,after.native.accepted,after.compositor.accepted,
+            before.native.kinds.completed[2],before.compositor.kinds.completed[2],after.native.kinds.completed[2],after.compositor.kinds.completed[2],
+            before.native.kinds.completed[3],before.compositor.kinds.completed[3],after.native.kinds.completed[3],after.compositor.kinds.completed[3]);
         return false;
     };
     auto verifyCounts=[&](const GPU::Diagnostics::Snapshot &before,const GPU::Diagnostics::Snapshot &after,
@@ -364,21 +375,40 @@ static int mixedBatch(id<MTLDevice> device) {
         return jobs==expectedJobs && cs==computes && fs==renders;
     };
     GPU::Diagnostics::Snapshot before{},after{};bool mixed=false,afterMixed=false;
-    if(!counts(before,mixed))return 1;
+    if(!counts(before,mixed)){fputs("GPU_MIXED_BATCH stage=initial-statistics valid=0\n",stderr);return 1;}
+    printf("GPU_MIXED_BATCH stage=compute-compute-render begin=1 mixed=%u baseline_accepted=%llu/%llu\n",
+        mixed,before.native.accepted,before.compositor.accepted);
     auto cb=[queue commandBuffer];recordCompute(cb,input,intermediate,count);recordCompute(cb,intermediate,output,count);recordDraw(cb,nil);
     if(!completed(cb) || !pixelsCorrect() || !sampledAfter(before,after,afterMixed,mixed?1:3,mixed?1:2,1) || mixed!=afterMixed ||
-        !verifyCounts(before,after,mixed?1:3,mixed?1:2,1,"compute-compute-render",mixed))return 1;
+        !verifyCounts(before,after,mixed?1:3,mixed?1:2,1,"compute-compute-render",mixed)) {
+        fprintf(stderr,"GPU_MIXED_BATCH stage=compute-compute-render failed=1 mixed_before=%u mixed_after=%u\n",mixed,afterMixed);return 1;
+    }
     before=after;cb=[queue commandBuffer];recordCompute(cb,input,intermediate,count);recordCompute(cb,intermediate,readback,count);
     if(!completed(cb) || !sampledAfter(before,after,afterMixed,mixed?1:2,mixed?1:2,0) || !verifyCounts(before,after,mixed?1:2,mixed?1:2,0,"compute-only",mixed))return 1;
     for(NSUInteger i=0;i<count;++i)if(static_cast<const uint32_t *>(readback.contents)[i]!=static_cast<const uint32_t *>(input.contents)[i]+14)return 1;
     // Repeated resources must not split a full dispatch batch. Verify the
     // actual native job count and all values after dependent GPU ping-pong.
     before=after;cb=[queue commandBuffer];
-    constexpr unsigned dispatchCount=GPU::Native::MaxBatchCommands;
-    for(unsigned i=0;i<dispatchCount;++i)recordCompute(cb,i?((i&1)?intermediate:readback):input,(i&1)?readback:intermediate,count);
-    if(!completed(cb) || !sampledAfter(before,after,afterMixed,mixed?1:dispatchCount,mixed?1:dispatchCount,0) ||
+    constexpr unsigned dispatchCount=GPU::Native::MaxBatchCommands&~1u; // final ping-pong result remains in readback
+    static_assert(dispatchCount>256,"exercise the former CPU command cap");
+    auto tailFence=[device newFence];auto tailEvent=[device newSharedEvent];
+    if(!tailFence || !tailEvent || ![(id)cb respondsToSelector:@selector(setResponsibleTaskIDs:count:)])return 1;
+    for(unsigned i=0;i<dispatchCount;++i)
+        recordCompute(cb,i?((i&1)?intermediate:readback):input,(i&1)?readback:intermediate,count,i+1==dispatchCount?tailFence:nil);
+    [(id<QcomCommandAttribution>)cb setResponsibleTaskIDs:nullptr count:0];
+    [cb encodeSignalEvent:tailEvent value:1];
+    if(!completed(cb) || tailEvent.signaledValue!=1 || !sampledAfter(before,after,afterMixed,mixed?1:dispatchCount,mixed?1:dispatchCount,0) ||
         !verifyCounts(before,after,mixed?1:dispatchCount,mixed?1:dispatchCount,0,"maximum-dispatch-resource-reuse",mixed))return 1;
     for(NSUInteger i=0;i<count;++i)if(static_cast<const uint32_t *>(readback.contents)[i]!=static_cast<const uint32_t *>(input.contents)[i]+7*dispatchCount)return 1;
+    printf("GPU_COMMAND_GROWTH dispatches=%u tail_fence=1 tail_attribution=1 tail_event=1 verified=1\n",dispatchCount);
+    // One CPU stream must cross the native upload boundary without dropping
+    // work or losing the producer/consumer order between the two GPU jobs.
+    before=after;cb=[queue commandBuffer];constexpr unsigned splitDispatches=dispatchCount+2;
+    for(unsigned i=0;i<splitDispatches;++i)
+        recordCompute(cb,i?((i&1)?intermediate:readback):input,(i&1)?readback:intermediate,64);
+    if(!completed(cb) || !sampledAfter(before,after,afterMixed,mixed?2:splitDispatches,mixed?2:splitDispatches,0) ||
+        !verifyCounts(before,after,mixed?2:splitDispatches,mixed?2:splitDispatches,0,"CPU-stream-crosses-native-upload",mixed))return 1;
+    for(NSUInteger i=0;i<64;++i)if(static_cast<const uint32_t *>(readback.contents)[i]!=static_cast<const uint32_t *>(input.contents)[i]+7*splitDispatches)return 1;
     auto indexInput=[device newBufferWithLength:256 options:MTLResourceStorageModeShared];
     auto indexOutput=[device newBufferWithLength:256 options:MTLResourceStorageModePrivate];if(!indexInput || !indexOutput)return 1;
     for(unsigned i=0;i<64;++i)static_cast<uint32_t *>(indexInput.contents)[i]=uint32_t(i)-7u;
@@ -408,6 +438,151 @@ static int mixedBatch(id<MTLDevice> device) {
 // Exercise Apple's own Metal renderer and its native shader library. The
 // supplied queue orders the GPU readback after CARenderer's committed work.
 // This is offscreen evidence; it never substitutes for a system UI frame.
+@protocol QcomCornerFilterFactory
++ (id)filterWithType:(NSString *)type;
+@end
+
+static int nativeCornerProbe(id<MTLDevice> device,const char *layout=nullptr) {
+    @try {
+        constexpr NSUInteger width=1080,height=1920,pitch=width*4,bytes=pitch*height;
+        double values[]={88,744,904,432,64,1,0,0};
+        if(layout) {
+            const char *cursor=layout;unsigned count=0;
+            while(*cursor && count<8) {
+                char *end=nullptr;const double value=strtod(cursor,&end);
+                if(end==cursor || !std::isfinite(value) || (*end && *end!=','))break;
+                values[count++]=value;cursor=end;if(!*cursor)break;++cursor;if(!*cursor){count=0;break;}
+            }
+            if(*cursor || count<5 || count>8) {
+                fputs("GPU_CA_CORNER invalid x,y,width,height,radius[,scale[,clipRadius[,borderWidth]]]\n",stderr);return 64;
+            }
+        }
+        const double left=values[0],top=values[1],rectWidth=values[2],rectHeight=values[3],radius=values[4],scale=values[5],clipRadius=values[6],borderWidth=values[7];
+        if(left<32 || top<32 || rectWidth<64 || rectHeight<64 || left+rectWidth>width-32 || top+rectHeight>height-32 ||
+            radius<4 || radius>std::min(rectWidth,rectHeight)/2 || scale<1 || scale>4 || clipRadius<0 || clipRadius>std::min(rectWidth,rectHeight)/2 ||
+            borderWidth<0 || borderWidth>16 || borderWidth>=radius ||
+            std::abs(2*left+rectWidth-std::round(2*left+rectWidth))>0.00001 ||
+            std::abs(2*top+rectHeight-std::round(2*top+rectHeight))>0.00001) {
+            fputs("GPU_CA_CORNER invalid geometry (center must lie on the half-pixel grid)\n",stderr);return 64;
+        }
+        printf("GPU_CA_CORNER_LAYOUT rect=%.6f,%.6f,%.6f,%.6f radius=%.6f scale=%.6f clip_radius=%.6f border_width=%.6f\n",left,top,rectWidth,rectHeight,radius,scale,clipRadius,borderWidth);
+        auto td=[MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatBGRA8Unorm width:width height:height mipmapped:NO];
+        td.storageMode=MTLStorageModeShared;td.usage=MTLTextureUsageRenderTarget|MTLTextureUsageShaderRead;
+        auto target=[device newTextureWithDescriptor:td];auto queue=[device newCommandQueue];
+        auto readback=[device newBufferWithLength:bytes options:MTLResourceStorageModeShared];
+        if(!target || !queue || !readback || !readback.contents)return 1;
+        auto renderer=[CARenderer rendererWithMTLTexture:target options:@{kCARendererMetalCommandQueue:queue}];
+        if(!renderer)return 1;
+        auto space=CGColorSpaceCreateDeviceRGB();if(!space)return 1;
+        const CGFloat bg[]={0.25,0.5,0.75,1},fg[]={0.75,0.5,0.25,1},tint[]={0.75,0.5,0.25,0.5},black[]={0,0,0,1};
+        auto background=CGColorCreate(space,bg),foreground=CGColorCreate(space,fg),shadow=CGColorCreate(space,black);
+        auto backdropTint=CGColorCreate(space,tint);
+        CGColorSpaceRelease(space);
+        if(!background || !foreground || !shadow || !backdropTint) {
+            if(background)CGColorRelease(background);if(foreground)CGColorRelease(foreground);if(shadow)CGColorRelease(shadow);
+            if(backdropTint)CGColorRelease(backdropTint);return 1;
+        }
+        auto root=[CALayer layer],solid=[CALayer layer],geometry=[CALayer layer],clip=[CALayer layer];
+        Class backdropClass=NSClassFromString(@"CABackdropLayer");
+        Class<QcomCornerFilterFactory> filterClass=(Class<QcomCornerFilterFactory>)NSClassFromString(@"CAFilter");
+        CALayer *backdrop=backdropClass?[backdropClass layer]:nil;
+        id blur=[filterClass filterWithType:@"gaussianBlur"];
+        if(!backdrop || !blur) {
+            CGColorRelease(background);CGColorRelease(foreground);CGColorRelease(shadow);CGColorRelease(backdropTint);
+            fputs("GPU_CA_CORNER backdrop/filter unavailable\n",stderr);return 1;
+        }
+        [blur setValue:@(20/scale) forKey:@"inputRadius"];
+        [CATransaction begin];[CATransaction setDisableActions:YES];
+        root.frame=CGRectMake(0,0,width,height);root.opaque=YES;root.backgroundColor=background;
+        geometry.bounds=CGRectMake(0,0,width/scale,height/scale);geometry.position=CGPointMake(width/2,height/2);
+        geometry.transform=CATransform3DMakeScale(scale,scale,1);[root addSublayer:geometry];
+        if(clipRadius) {
+            clip.frame=CGRectMake(left/scale,top/scale,rectWidth/scale,rectHeight/scale);
+            clip.cornerRadius=clipRadius/scale;clip.masksToBounds=YES;[geometry addSublayer:clip];
+        }
+        for(CALayer *child in @[solid,backdrop]) {
+            child.frame=CGRectMake(clipRadius?0:left/scale,clipRadius?0:top/scale,rectWidth/scale,rectHeight/scale);child.cornerRadius=radius/scale;
+            child.backgroundColor=child==backdrop?backdropTint:foreground;
+            child.borderColor=shadow;child.borderWidth=borderWidth/scale;
+            child.shadowColor=shadow;child.shadowOffset=CGSizeZero;child.shadowRadius=16/scale;
+            child.masksToBounds=child==backdrop;[(clipRadius?clip:geometry) addSublayer:child];
+        }
+        backdrop.filters=@[blur];renderer.layer=root;renderer.bounds=root.bounds;
+        [CATransaction commit];CGColorRelease(background);CGColorRelease(foreground);CGColorRelease(shadow);CGColorRelease(backdropTint);
+        NSUInteger total=0;
+        for(unsigned frame=0;frame<32;++frame) {
+            const bool continuous=frame&1,shadowed=frame&2,translucent=frame&4,backdropEnabled=frame&8,fractional=frame&16;
+            CALayer *child=backdropEnabled?backdrop:solid;
+            [CATransaction begin];[CATransaction setDisableActions:YES];
+            solid.hidden=backdropEnabled;backdrop.hidden=!backdropEnabled;
+            const double inset=fractional?0.25:0,currentRadius=radius-(fractional?3.666667:0);
+            child.frame=CGRectMake(((clipRadius?0:left)+inset)/scale,((clipRadius?0:top)+inset)/scale,(rectWidth-2*inset)/scale,(rectHeight-2*inset)/scale);
+            child.cornerRadius=currentRadius/scale;
+            child.cornerCurve=continuous?kCACornerCurveContinuous:kCACornerCurveCircular;
+            clip.cornerCurve=child.cornerCurve;
+            child.shadowOpacity=shadowed?0.5f:0;child.opacity=translucent?0.5f:1;
+            child.opaque=NO;
+            [CATransaction commit];[CATransaction flush];
+            [renderer beginFrameAtTime:CACurrentMediaTime() timeStamp:nullptr];
+            [renderer addUpdateRect:renderer.bounds];[renderer render];[renderer endFrame];
+            auto commands=[queue commandBuffer];auto blit=[commands blitCommandEncoder];if(!blit)return 1;
+            [blit copyFromTexture:target sourceSlice:0 sourceLevel:0 sourceOrigin:MTLOriginMake(0,0,0) sourceSize:MTLSizeMake(width,height,1)
+                toBuffer:readback destinationOffset:0 destinationBytesPerRow:pitch destinationBytesPerImage:bytes];
+            [blit endEncoding];if(!completed(commands))return 1;
+            const auto *pixels=static_cast<const uint8_t *>(readback.contents);
+            const double cx=left+rectWidth/2;double cy=top+rectHeight/2;
+            const auto *outside=pixels;
+            auto centerAt=[&](double y){return pixels+NSUInteger(y)*pitch+NSUInteger(cx)*4;};
+            // CARenderer's target orientation can differ from layer geometry.
+            if(centerAt(cy)[2]<=outside[2]+8)cy=height-cy;
+            const auto *center=centerAt(cy);
+            const long mirrorBaseX=std::lround(2*cx)-1,mirrorBaseY=std::lround(2*cy)-1;
+            // A uniform/unrendered readback must not pass the symmetry test.
+            const bool controls=center[2]>outside[2]+8 && outside[0]>center[0]+8 && center[3]>=254 && outside[3]>=254;
+            NSUInteger asymmetric=0,interiorBad=0;unsigned maximum=0,reported=0;
+            // The scene and zero-offset shadow are symmetric about both axes.
+            // A generous eight-level tolerance excludes normal edge rounding.
+            for(NSUInteger y=0;y<height;++y)for(NSUInteger x=0;x<width;++x) {
+                const auto *p=pixels+y*pitch+x*4;
+                const long mirrorX=mirrorBaseX-long(x),mirrorY=mirrorBaseY-long(y);
+                const auto *h=mirrorX>=0 && mirrorX<long(width)?pixels+y*pitch+mirrorX*4:outside;
+                const auto *v=mirrorY>=0 && mirrorY<long(height)?pixels+mirrorY*pitch+x*4:outside;
+                unsigned delta=0;
+                for(unsigned c=0;c<4;++c) {
+                    const unsigned horizontal=std::abs(int(p[c])-int(h[c])),vertical=std::abs(int(p[c])-int(v[c]));
+                    delta=std::max(delta,std::max(horizontal,vertical));
+                }
+                maximum=std::max(maximum,delta);if(delta>8)++asymmetric;
+                // Without a shadow, pixels well inside the circular corner
+                // must retain the same solid blend, for either corner curve.
+                const double ax=std::abs(double(x)+0.5-cx),ay=std::abs(double(y)+0.5-cy);
+                const double effectiveRadius=std::max(currentRadius,clipRadius);
+                const double dx=std::max(ax-(rectWidth/2-inset-effectiveRadius),0.0);
+                const double dy=std::max(ay-(rectHeight/2-inset-effectiveRadius),0.0);
+                const double coreRadius=std::max(effectiveRadius-24-borderWidth,0.0);
+                // Backdrop filters can soften their captured edge; only the
+                // unfiltered solid layer has a uniform interior oracle.
+                const bool interior=!shadowed && !backdropEnabled && ax<rectWidth/2-inset-2-borderWidth && ay<rectHeight/2-inset-2-borderWidth && dx*dx+dy*dy<coreRadius*coreRadius;
+                bool bad=false;
+                if(interior)for(unsigned c=0;c<4;++c) {
+                    bad|=std::abs(int(p[c])-int(center[c]))>3;
+                }
+                if(bad)++interiorBad;
+                if((bad || delta>8) && reported++<12)
+                    printf("GPU_CA_CORNER_PIXEL frame=%u xy=%lu,%lu bgra=%u,%u,%u,%u mirror_delta=%u interior=%u\n",
+                        frame,(unsigned long)x,(unsigned long)y,p[0],p[1],p[2],p[3],delta,unsigned(bad));
+            }
+            printf("GPU_CA_CORNER frame=%u continuous=%u shadow=%u translucent=%u backdrop=%u fractional=%u asymmetric=%lu max_delta=%u interior_bad=%lu controls=%u center=%u,%u,%u,%u outside=%u,%u,%u,%u pixels=%lu offscreen=1\n",
+                frame,unsigned(continuous),unsigned(shadowed),unsigned(translucent),unsigned(backdropEnabled),unsigned(fractional),(unsigned long)asymmetric,maximum,
+                (unsigned long)interiorBad,unsigned(controls),center[0],center[1],center[2],center[3],outside[0],outside[1],outside[2],outside[3],(unsigned long)(width*height));fflush(stdout);
+            total+=asymmetric+interiorBad+!controls;
+        }
+        printf("GPU_CA_CORNER completed=32 anomalies=%lu\n",(unsigned long)total);return total?1:0;
+    } @catch(NSException *exception) {
+        fprintf(stderr,"GPU_CA_CORNER exception=%s reason=%s\n",exception.name.UTF8String,exception.reason.UTF8String);return 1;
+    }
+}
+
 static int nativeRendererProbe(id<MTLDevice> device,NSUInteger width=64,NSUInteger height=64,bool surfaceBacked=false) {
     const char *phase="allocation";
     @try {
@@ -2242,6 +2417,7 @@ fragment float4 rg32_fetch(float2 previous [[color(1)]]) {
 int main(int argc, char **argv) {
     bool system = argc >= 3 && !strcmp(argv[1], "--system");
     if (system) { --argc; ++argv; }
+    bool cornerLayout=argc==3 && !strcmp(argv[1],"ca-corner-probe");
     bool patternSized=argc==4 && !strcmp(argv[1],"render-state-test");
     bool sized=patternSized || ((argc==4 || argc==5) && !strcmp(argv[1],"ca-render-probe"));NSUInteger width=64,height=64;
     if(sized) {
@@ -2252,8 +2428,8 @@ int main(int argc, char **argv) {
         }
         if(argc==5 && strcmp(argv[4],"iosurface"))return 64;
     }
-    if ((argc != 2 && !sized) || (strcmp(argv[1], "gmem-test") && strcmp(argv[1], "clear-target-test") && strcmp(argv[1], "clear-tail-target-test") && strcmp(argv[1], "clear-test") && strcmp(argv[1], "word-window-test") && strcmp(argv[1], "readonly-feedback-test") && strcmp(argv[1], "astc-test") && strcmp(argv[1], "fluidity-assets") && strcmp(argv[1], "fluidity-test") && strcmp(argv[1], "rg32-test") && strcmp(argv[1], "uint-texture-test") && strcmp(argv[1], "air-nir-output-test") && strcmp(argv[1], "render-clear-test") && strcmp(argv[1], "info") && strcmp(argv[1], "cleanup-test") && strcmp(argv[1], "mixed-test") && strcmp(argv[1], "constant-window-test") && strcmp(argv[1], "shader-probe") && strcmp(argv[1], "shader-empty-probe") && strcmp(argv[1], "shader-store-probe") && strcmp(argv[1], "render-probe") && strcmp(argv[1], "ca-render-probe") && strcmp(argv[1], "blit-test") && strcmp(argv[1], "fence-test") && strcmp(argv[1], "pipeline-test") && strcmp(argv[1], "air-test") && strcmp(argv[1], "jit-test") && strcmp(argv[1], "render-state-test") && strcmp(argv[1], "indexed-test") && strcmp(argv[1], "varying-test") && strcmp(argv[1], "depth-stencil-test") && strcmp(argv[1], "vertex-test") && strcmp(argv[1], "vertex-air-test") && strcmp(argv[1], "surface-test") && strcmp(argv[1], "direct-drawable-test") && strcmp(argv[1], "presentation-test") && strcmp(argv[1], "inline-test"))) {
-        fprintf(stderr, "usage: metalctl [--system] info|gmem-test|clear-test|clear-target-test|clear-tail-target-test|word-window-test|readonly-feedback-test|astc-test|fluidity-assets|fluidity-test|rg32-test|uint-texture-test|air-nir-output-test|render-clear-test|cleanup-test|mixed-test|constant-window-test|shader-probe|shader-empty-probe|shader-store-probe|render-probe|ca-render-probe|blit-test|fence-test|pipeline-test|air-test|jit-test|render-state-test|indexed-test|varying-test|depth-stencil-test|vertex-test|vertex-air-test|surface-test|direct-drawable-test|presentation-test|inline-test\n       metalctl [--system] ca-render-probe [width height [iosurface]]\n       metalctl [--system] render-state-test [width height]\n"); return 64;
+    if ((argc != 2 && !sized && !cornerLayout) || (strcmp(argv[1], "gmem-test") && strcmp(argv[1], "clear-target-test") && strcmp(argv[1], "clear-tail-target-test") && strcmp(argv[1], "clear-test") && strcmp(argv[1], "word-window-test") && strcmp(argv[1], "readonly-feedback-test") && strcmp(argv[1], "astc-test") && strcmp(argv[1], "fluidity-assets") && strcmp(argv[1], "fluidity-test") && strcmp(argv[1], "rg32-test") && strcmp(argv[1], "uint-texture-test") && strcmp(argv[1], "air-nir-output-test") && strcmp(argv[1], "render-clear-test") && strcmp(argv[1], "info") && strcmp(argv[1], "cleanup-test") && strcmp(argv[1], "mixed-test") && strcmp(argv[1], "constant-window-test") && strcmp(argv[1], "shader-probe") && strcmp(argv[1], "shader-empty-probe") && strcmp(argv[1], "shader-store-probe") && strcmp(argv[1], "render-probe") && strcmp(argv[1], "ca-render-probe") && strcmp(argv[1], "ca-corner-probe") && strcmp(argv[1], "blit-test") && strcmp(argv[1], "fence-test") && strcmp(argv[1], "pipeline-test") && strcmp(argv[1], "air-test") && strcmp(argv[1], "jit-test") && strcmp(argv[1], "render-state-test") && strcmp(argv[1], "indexed-test") && strcmp(argv[1], "varying-test") && strcmp(argv[1], "depth-stencil-test") && strcmp(argv[1], "vertex-test") && strcmp(argv[1], "vertex-air-test") && strcmp(argv[1], "surface-test") && strcmp(argv[1], "direct-drawable-test") && strcmp(argv[1], "presentation-test") && strcmp(argv[1], "inline-test"))) {
+        fprintf(stderr, "usage: metalctl [--system] info|gmem-test|clear-test|clear-target-test|clear-tail-target-test|word-window-test|readonly-feedback-test|astc-test|fluidity-assets|fluidity-test|rg32-test|uint-texture-test|air-nir-output-test|render-clear-test|cleanup-test|mixed-test|constant-window-test|shader-probe|shader-empty-probe|shader-store-probe|render-probe|ca-render-probe|ca-corner-probe|blit-test|fence-test|pipeline-test|air-test|jit-test|render-state-test|indexed-test|varying-test|depth-stencil-test|vertex-test|vertex-air-test|surface-test|direct-drawable-test|presentation-test|inline-test\n       metalctl [--system] ca-corner-probe [x,y,width,height,radius[,scale[,clipRadius[,borderWidth]]]]\n       metalctl [--system] ca-render-probe [width height [iosurface]]\n       metalctl [--system] render-state-test [width height]\n"); return 64;
     }
     @autoreleasepool {
         NSError *error = nil;
@@ -2296,6 +2472,7 @@ int main(int argc, char **argv) {
         if (!strcmp(argv[1], "shader-empty-probe")) return shaderProbe(device,0,1);
         if (!strcmp(argv[1], "shader-store-probe")) return shaderProbe(device,1,2);
         if (!strcmp(argv[1], "render-probe")) return renderProbe(device);
+        if (!strcmp(argv[1], "ca-corner-probe")) return nativeCornerProbe(device,cornerLayout?argv[2]:nullptr);
         if (!strcmp(argv[1], "ca-render-probe")) return nativeRendererProbe(device,width,height,argc==5);
         if (!strcmp(argv[1], "fence-test")) return fences(device);
         if (!strcmp(argv[1], "astc-test")) return astcTextures(device);
