@@ -2,9 +2,23 @@
 /* Linked into LinuxSimpleMassStorage's PID 1 after the USB gadget starts. */
 #include "init.h"
 #include "serial-command.h"
+#include "export-config.h"
 #include <poll.h>
 #include <sys/reboot.h>
 #include <termios.h>
+
+void storage_configure_export(void)
+{
+    gadget_mode = PROJECT_STORAGE_MODE;
+    const char *selected = PROJECT_STORAGE_BLOCK;
+    if (!selected[0]) return;
+    for (list *item = list_first(gadget_blocks), *next; item; item = next) {
+        next = item->next;
+        struct use_block *block = LIST_DATA(item, struct use_block *);
+        if (strcmp(block->name, selected)) gadget_block_delete_name(block->name);
+    }
+    if (!gadget_blocks) FAILURE(1, "selected export block not found");
+}
 
 static int open_console(void)
 {
