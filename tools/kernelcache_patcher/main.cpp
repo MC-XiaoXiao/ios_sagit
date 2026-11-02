@@ -35,7 +35,7 @@ static std::filesystem::path find_offline_verifier()
         roots.push_back(executable.parent_path());
     for (auto current : roots) {
         for (unsigned depth = 0; depth < 8; ++depth) {
-            auto candidate = current / "scripts" / "verify-kernelcache.py";
+            auto candidate = current / "tools" / "project" / "analysis" / "verify_kernelcache.py";
             if (std::filesystem::is_regular_file(candidate))
                 return candidate;
             if (current == current.parent_path())
@@ -50,7 +50,7 @@ static bool verify_and_publish(const char* output, const char* source, const cha
 {
     auto verifier = find_offline_verifier();
     if (verifier.empty()) {
-        fprintf(stderr, "Required scripts/verify-kernelcache.py is missing; no output published.\n");
+        fprintf(stderr, "Required tools/project/analysis/verify_kernelcache.py is missing; no output published.\n");
         return false;
     }
     std::string pattern = std::string(output) + ".pending.XXXXXX";
@@ -72,7 +72,7 @@ static bool verify_and_publish(const char* output, const char* source, const cha
     }
     // Lower Apple Kext ISA extensions into mapped ARMv8.0 kernel helpers
     // before the mandatory independent structural/ISA gate and atomic publish.
-    auto lowerer = verifier.parent_path() / "armv8_compat.py";
+    auto lowerer = verifier.parent_path() / "armv8.py";
     fflush(nullptr);
     pid_t lowering_child = fork();
     if (lowering_child == 0) {
@@ -93,7 +93,7 @@ static bool verify_and_publish(const char* output, const char* source, const cha
     }
     // Finalize the module digest after every relocation and ISA replacement;
     // the original corecrypto POST code and algorithm tests remain enabled.
-    auto integrity = verifier.parent_path() / "kernelcache_integrity.py";
+    auto integrity = verifier.parent_path() / "integrity.py";
     pid_t integrity_child = fork();
     if (integrity_child == 0) {
         execlp("python3", "python3", integrity.c_str(), temporary.data(),

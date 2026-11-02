@@ -14,7 +14,7 @@
   },
   "external_sources": [
     "tools/dependencies.json",
-    "tools/edk2-sagit.json",
+    "boards/xiaomi/sagit/edk2.json",
     "tools/apfs-tools.json",
     "tools/usb-storage.json"
   ]

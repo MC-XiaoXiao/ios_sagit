@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "XNUProject"
+version = "0.1.0"
+description = "Host build, firmware and device tools for XNU platform ports"
+requires-python = ">=3.11"
+
+[tool.setuptools.packages.find]
+where = ["tools"]
+include = ["project*"]

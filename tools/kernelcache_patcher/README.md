@@ -14,8 +14,8 @@
 不表示全部 ABI 兼容。当前固件结论和驱动顺序见
 [SDM835 分析](../../docs/sdm835/ios18-kext-analysis.md)。
 
-生成缓存时强制调用本项目 `scripts/verify-kernelcache.py`，需要 Python 3 和同目录的
-`scripts/analyze-kernelcache.py`，以及用于常量核对的 XNU 源码。
+生成缓存时强制调用本项目 `tools/project/analysis/verify_kernelcache.py`，需要 Python 3 和同目录的
+`tools/project/analysis/kernelcache.py`，以及用于常量核对的 XNU 源码。
 先写入目标目录的 `.pending.*`，通过结构、依赖、导入跳板、原内核字节和源常量校验后
 才原子发布。校验器缺失、未知 ADRP 消费者、冲突页面或校验失败均返回非零，删除临时文件，
 保留此前已验证的输出。报告写为 `<输出文件>.verification.json`。
@@ -153,7 +153,7 @@ KERNELCACHE_PATCHER_REFERENCE_DIR=/path/to/reference-kexts \
 
 ## MI6：Kext 静态 ARMv8.0 降级
 
-MI6 分支默认在打包后、原子发布前执行 `scripts/armv8_compat.py`，目标是
+MI6 分支默认在打包后、原子发布前执行 `tools/project/analysis/armv8.py`，目标是
 SDM835 的 ARMv8-A + CRC + AES/SHA1/SHA256。需要主机 `libLLVM` AArch64
 反汇编器及 `libkeystone`；可用 `KERNELCACHE_PATCHER_LLVM_LIBRARY` 指定 LLVM 动态库。
 首次使用先 `make build TARGET=SDM835`，确保内核含有 `__ARMV8_EXEC` 映射支持。

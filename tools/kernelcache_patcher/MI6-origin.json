@@ -75,14 +75,10 @@
     "tests/ResolverTests.cpp": "a259b9e046728eb9f78d02a2021dcdd6b3d7d53e1fa5bca25059f2ebac4a78a6"
   },
   "armv8_integration_sha256": {
-    "scripts/armv8_compat.py": "6402defbf6c48ac0d9e217b7381071d8d0063e6bd2cd84fb0a3b041653015cdb",
-    "scripts/test-armv8-compat.py": "d788a7bddf9ed4aa1f2db7f86bb5b1466e9fb6c0adc45e49d60b6e34200eafac",
-    "scripts/verify-kernelcache.py": "319189dc94f656904ebaf34936a72959c20d6534a2937d47effd5110a9637872",
-    "tests/test_kernelcache_armv8.py": "5605de1fc6c266a780eddb85dac7ccf277c58ff12a55f7202b030440fb3f5b03",
+    "tools/project/analysis/armv8.py": "6402defbf6c48ac0d9e217b7381071d8d0063e6bd2cd84fb0a3b041653015cdb",
+    "tools/project/analysis/verify_kernelcache.py": "319189dc94f656904ebaf34936a72959c20d6534a2937d47effd5110a9637872",
     "tools/patches/zzzzzz-sdm835-armv8-aot.patch": "e6bc60501fe380bbcb127a7f713a86aa9bfee889b116e33d9e815cc23ab0ed8b",
-    "tools/patches/zzzzzzz-sdm835-iokit-trace.patch": "14396bd4d9dd1e4ad43fd37994aee607c174b4feea6d911d4557c65a78453bfa",
-    "Makefile": "f613f0776b4d9e29e4f742331ccbb877cf43c68683e151545cefdafe62284ff1",
-    "tests/test_kernelcache_verifier.py": "7273c44a1e85c109bbce96923c6e4471c38b5213028bab29ad8a813cfba85be1"
+    "tools/patches/zzzzzzz-sdm835-iokit-trace.patch": "14396bd4d9dd1e4ad43fd37994aee607c174b4feea6d911d4557c65a78453bfa"
   },
   "reference_repository": {
     "repository": "https://github.com/MC-XiaoXiao/kernelcache_patcher.git",
