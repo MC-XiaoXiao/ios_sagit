@@ -1,2 +1,0 @@
-com.apple.driver.watchdog
-com.apple.iokit.IOACPIFamily

@@ -1,6 +1,7 @@
-# MI6 iOS
+# XNUProject
 
-An XNU and iOS port for the Xiaomi Mi 6 (`sagit`, Snapdragon 835 / MSM8998).
+An XNU and iOS platform port, currently targeting the Xiaomi Mi 6
+(`sagit`, Snapdragon 835 / MSM8998).
 The project includes a Linux cross-compilation toolchain, platform support,
 Qualcomm IOKit drivers, an EFI boot bridge, and APFS image and installation tools.
 
@@ -42,18 +43,13 @@ Android dual boot, normal activation, App Store, DRM, and general application
 compatibility are not validated. The current system uses development policies
 for operation without an Apple SEP.
 
-Validation details: [home screen and touch](docs/apfs/setup-skip-hardware-20261022.md),
-[SMP](docs/smp/README.md), [display](docs/display/README.md),
-[GPU](docs/gpu/README.md), [USB](docs/usb/README.md),
-[battery](docs/battery/README.md), and
-[CPU DVFS](docs/power/cpu-dvfs-hardware-20261023.md).
-
 ## Repository layout
 
 ```text
-kernel/          XNU and platform code
+project.sh       Unified host command entry point
+pyproject.toml   Python host package definition (Python 3.11+)
+kernel/          XNU source and machine support
 drivers/         Drivers grouped by function
-  abi-22H374/    Firmware-specific ABI contracts (*abi.json)
   platform/     Platform, interrupts, SMEM, and watchdog
   clock/        GCC, GPUCC, MMCC, and OSM
   bus/          GPIO, I2C, SPI, SPMI, SMMU, and interconnect
@@ -70,56 +66,56 @@ drivers/         Drivers grouped by function
   baseband/     Modem components
   include/      Public interfaces
   shared/       Shared kernel and driver code
-boot/            EFI bridge, UFS exporter, and EDK2 sources
-device_trees/    Board device trees
-scripts/         Build, packaging, analysis, and flashing tools
-tests/           Host tests and cross-compilation checks
-tools/           Toolchain, SDK, patches, and diagnostic clients
-docs/            Technical documentation and validation records
-firmware/        Local firmware inputs
-build/           Build outputs, images, caches, and reports
+boot/            EFI bridge and UFS storage exporter
+platforms/       SoC descriptions, shared device trees, and handoff code
+boards/          Board descriptions, device trees, EDK2 recipes, and handoff profiles
+firmware/ios/    Apple firmware descriptions, ABI contracts, headers, and filesystem policy
+tools/project/   Build, firmware, device, and analysis modules
+tools/           Native tools, diagnostic clients, dependency manifests, and patches
 ```
 
-See the [driver inventory](drivers/README.md). Paths in `drivers/Build.json`
-are relative to `drivers/`. Modules can be selected by name, such as
-`--driver QcomUSB`.
+Use `./project.sh` to build, prepare firmware, and flash the device.
+Board settings live in `boards/xiaomi/sagit/board.toml`;
+SoC settings live in `platforms/qcom/msm8998/platform.toml`. Apple-specific
+ABI and filesystem settings live in `firmware/ios/22H374-j171ap/`.
 
 ## Flashing with Fastboot
 
 Requirements: an unlocked Mi 6 bootloader, a USB data cable, and `fastboot`
-from Android platform-tools. No serial console is required.
+from Android platform-tools. Installation and boot instructions use USB;
+a direct UART connection is optional for low-level debugging.
 
 The boot image and APFS system image are separate. Flashing `boot` does not
-install the iOS filesystem. The APFS installation must match the root volume
-UUID, drivers, and firmware configuration embedded in the bridge.
+install the iOS filesystem. Use the APFS and boot images from the same release;
+the bridge embeds the matching root volume UUID, kernelcache, and trust caches.
+See [Installing APFS](#installing-apfs) for the filesystem installation.
 
-Enter stock Fastboot mode and run from the project directory:
+Commands below assume the `desktop` selection described under
+[Building the kernel](#building-the-kernel). From the project directory:
 
 ```sh
-python3 scripts/flash.py --image build/boot/boot-sagit.img --boot
+WORK=build/xiaomi/sagit/22H374-j171ap/desktop
+./project.sh device flash --image "$WORK/output/boot.img" --boot
 ```
 
 The tool selects the connected device and checks `product=sagit`, boot
-partition capacity, and the download limit before flashing. Use `--serial SERIAL`
-when multiple devices are connected. Omit `--boot` to remain in Fastboot after
-flashing.
+partition capacity, and the download limit before flashing. With multiple
+devices connected, use `--serial SERIAL` with the USB device identifier from
+`fastboot devices`. Omit `--boot` to remain in Fastboot after flashing.
 
 A packaged image can also be flashed with standard Fastboot alone:
 
 ```sh
 fastboot getvar product
-fastboot -S 0 flash boot boot-sagit.img
+fastboot -S 0 flash boot "$WORK/output/boot.img"
 fastboot reboot
 ```
 
-Packaged images start EDK2, the bridge, and the kernel on each power-on by
-default, without a countdown. Hold a volume key as EDK2 starts to enter USB
-Fastboot. `--boot-delay 5` adds a five-second recovery countdown. Missing or
-rejected payloads and EFI startup errors also return to Fastboot.
-
-The combined image loader has passed EDK2 compilation and host tests.
-Temporary boot from stock Fastboot has been verified through APFS root mounting,
-launchd, and interactive root Bash. Persistent boot after flashing remains untested.
+Packaged images start EDK2 and the bundled bridge immediately by default.
+Hold a volume key as EDK2 starts to enter USB Fastboot. The packer's
+`--boot-delay 5` adds a five-second recovery countdown. Missing or rejected
+payloads and EFI startup errors also return to Fastboot. The bridge has its
+own boot menu and USB development service; see [XnuBridge](boot/bridge/README.md).
 
 For recovery, hold Volume Down + Power to enter stock Fastboot, then flash a
 plain EDK2 image or the original system's `boot.img`.
@@ -141,34 +137,50 @@ Install the following host dependencies:
   versions of Go and `ipsw`.
 - GCC, an AArch64 GNU cross-compiler, `iasl`, NASM, and `uv` for EDK2.
   The compiler wrappers use `/usr/bin/gcc` and
-  `/usr/bin/aarch64-none-linux-gnu-gcc`; adjust `scripts/edk2-*-gcc.sh` for
-  different installation paths.
-- zlib and libfdt development files for the EDK2 payload loader host tests.
+  `/usr/bin/aarch64-none-linux-gnu-gcc`; adjust the wrappers in
+  `tools/project/build/edk2/` for different installation paths.
+- zlib and libfdt development files for native tools and payload loader checks.
 
 ## Building the kernel
 
+Select the board, Apple firmware, and build profile before building:
+
 ```sh
-make doctor
-make bootstrap JOBS=3
-make collect-sdm835
-make build TARGET=SDM835 JOBS=3
-make verify TARGET=SDM835
+./project.sh config --list
+./project.sh configure --board xiaomi/sagit --firmware ios/22H374-j171ap --profile desktop
+./project.sh config
+```
+
+The selection is saved in `.project.json`. Use `desktop` for complete system
+images, or `platform` for early platform bring-up.
+
+With the board firmware inputs described below in place:
+
+```sh
+./project.sh bootstrap -j 3
+./project.sh doctor
+./project.sh build kernel -j 3
+./project.sh verify kernel
 ```
 
 Bootstrap downloads the SDK, tools, and pinned sources listed in
-`tools/dependencies.json`. An internet connection is required on the first run.
+`tools/dependencies.json`, plus platform reference inputs pinned under
+`platforms/`. Reference inputs are restored into `build/cache/references/`;
+the build does not require a populated `local/` directory.
+An internet connection is required on the first run.
+`doctor` also checks the selected board's local firmware files and hashes.
 
-The repository includes the build scripts, kernelcache patcher, GPU compiler,
-IIG sources, compatibility headers, and dependency patches. Downloaded SDKs,
-tool binaries, caches, and build outputs are regenerated by bootstrap.
-
-Outputs:
+Kernel outputs for this selection:
 
 ```text
-build/output/mach.development.sdm835
-build/output/mach.development.sdm835.unstripped
-build/output/verification-sdm835.json
+build/xiaomi/sagit/22H374-j171ap/desktop/output/
+  mach.development.sdm835
+  mach.development.sdm835.unstripped
+  verification-sdm835.json
 ```
+
+Use `--workspace PATH` to select another output workspace. Build logs are saved
+in its `logs/` directory.
 
 ## Firmware and drivers
 
@@ -176,189 +188,240 @@ The native Apple Kexts and userspace are based on:
 
 | Input | Value |
 | --- | --- |
-| IPSW | `firmware/iPad_10.2_18.7.10_22H374_Restore.ipsw` |
+| IPSW | `firmware/inputs/iPad_10.2_18.7.10_22H374_Restore.ipsw` |
 | System version | iPadOS 18.7.10 |
 | Build | `22H374` |
 | Board | `j171ap` |
 | Native kernelcache | `kernelcache.release.ipad7c` |
 | Port device identifier | `iPhoneMi6,1` |
 
-ABI contracts are stored in `drivers/abi-22H374/`. A different native provider
+Firmware identity and original component hashes are pinned in
+`firmware/ios/22H374-j171ap/firmware.toml`. ABI contracts and private headers
+are stored in its `abi/` and `include/` directories. A different native provider
 requires corresponding ABI analysis and contracts.
 
-Prepare the firmware and decompress the native kernelcache:
+Place the original IPSW under `firmware/inputs/`. The Mi 6 board also requires:
+
+- `firmware/inputs/sagit-stock/fw_sagit_miui_MI6Global_V11.0.6.0.PCAMIXM_47fd8ee4ef_9.0.zip`,
+  the original archive used to extract input firmware.
+- `firmware/inputs/sagit-gpu/` containing `a530_pfp.fw`, `a530_pm4.fw`,
+  `a540_gpmu.fw2`, and `a540_zap.mbn`, matching
+  `boards/xiaomi/sagit/gpu-firmware.json`.
+
+Supply these files before running `doctor` or the complete build. Firmware
+inputs are not included in the repository.
+
+Inspect an IPSW without building:
 
 ```sh
-python3 scripts/build-apfs.py bootstrap
-python3 scripts/build-apfs.py firmware firmware/iPad_10.2_18.7.10_22H374_Restore.ipsw
-python3 - <<'PY'
-from pathlib import Path
-from zipfile import ZipFile
-import shutil
-out = Path('build/ios18-kext-analysis')
-out.mkdir(parents=True, exist_ok=True)
-with ZipFile('firmware/iPad_10.2_18.7.10_22H374_Restore.ipsw') as archive:
-    with archive.open('kernelcache.release.ipad7c') as source, (out / 'kernelcache.release.ipad7c').open('wb') as target:
-        shutil.copyfileobj(source, target)
-PY
-tools/prefix/libexec/ipsw/ipsw kernel dec \
-  build/ios18-kext-analysis/kernelcache.release.ipad7c \
-  -o build/ios18-kext-analysis/kernelcache.release.ipad7c.macho
+./project.sh firmware inspect firmware/inputs/iPad_10.2_18.7.10_22H374_Restore.ipsw
 ```
 
-Build the drivers and APFS kernel collection:
+After the complete build has prepared the provider, rebuild drivers or the
+selected kernel collection separately:
 
 ```sh
-make drivers JOBS=3
-make verify-drivers
-make apfs-kernelcache JOBS=3
+./project.sh build drivers -j 3
+./project.sh verify drivers
+./project.sh build kernelcache -j 3
+./project.sh verify kernelcache
 ```
 
-Outputs are `build/output/Extensions/` and
-`build/output/kernelcache.sdm835.apfs`. To build an individual module, use
-`make drivers DRIVER_FLAGS='--driver QcomUSB'`.
+Outputs are `$WORK/output/Extensions/` and
+`$WORK/output/kernelcache.sdm835.ios-runtime`. To build an individual module,
+use `./project.sh build drivers --driver QcomUSB`. Firmware-specific collection
+roots and build settings are in `firmware/ios/22H374-j171ap/drivers.json`.
 
-The graphics collection is built with
-`make kernelcache COLLECTION=graphics-runtime`. Metal userspace components
-also require `make gpu-shaders gpu-metal gpu-client`.
-See [Kext and ABI analysis](docs/sdm835/ios18-kext-analysis.md) and
-[Metal support](docs/gpu/metal.md).
+Metal userspace components have separate build commands:
+
+```sh
+./project.sh build gpu-shaders
+./project.sh build gpu-metal
+./project.sh build gpu-client
+```
 
 ## Building APFS and the boot image
 
-Create the System and Data image with at least 2048 MiB of shared APFS free space:
+From the configured `desktop` selection, build the complete matched system:
 
 ```sh
-python3 scripts/build-apfs.py image --initialize-persona
+./project.sh build complete -j 3 \
+  --ipsw firmware/inputs/iPad_10.2_18.7.10_22H374_Restore.ipsw
 ```
 
-Add `--development-setup-complete` to seed development Setup completion
-preferences. A working desktop also requires matching GPU / Metal components,
-the Drivers volume, trust caches, Cryptex configuration, and userspace changes.
-See [APFS boot configuration](docs/apfs/README.md).
+This builds XNU, drivers, Metal components, APFS, the boot bridge, and EDK2.
+The resulting images are ready for installation.
 
-Build a UFS/APFS bridge with development policies for operation without SEP:
+The image reserves at least 2048 MiB of shared APFS free space and includes
+development Setup completion and the policies required to operate without an
+Apple SEP. Filesystem settings are in
+`firmware/ios/22H374-j171ap/filesystem.json` and the selected board profile.
+
+Published files are:
+
+```text
+build/xiaomi/sagit/22H374-j171ap/desktop/output/
+  ios.apfs
+  ios.apfs.json
+  XnuBridge.efi
+  boot.img
+  release.json
+```
+
+Use the images listed together in `release.json`. The plain EDK2 image used
+for installation and recovery is `$WORK/obj/edk2/boot-sagit.img`.
+
+For component work with the required kernel, drivers, GPU, and board firmware
+already prepared, the image and packaging stages can be invoked separately:
 
 ```sh
-python3 scripts/build-bridge.py \
-  --kernel build/output/kernelcache.sdm835.apfs \
-  --apfs-report build/apfs/ios.apfs.json \
-  --firmware-report build/apfs/prepared-firmware.json \
-  --ufs-handoff --full-memory --cpus 4 \
-  --development-unsealed-root --development-no-sep \
-  --development-legacy-data --development-hactivation \
-  --development-no-apple-pmgr --development-watchdog-policy \
-  --development-unthrottled-io --disable-system-sleep \
-  --output build/apfs/bridge
+WORK=build/xiaomi/sagit/22H374-j171ap/desktop
+./project.sh firmware build \
+  --ipsw firmware/inputs/iPad_10.2_18.7.10_22H374_Restore.ipsw
+./project.sh firmware bridge \
+  --kernel "$WORK/output/kernelcache.sdm835.ios-runtime" \
+  -- --dts boards/xiaomi/sagit/board.dts --cpus 4
+./project.sh build edk2
+./project.sh firmware package \
+  --runtime "$WORK/obj/filesystem/bridge" \
+  --edk2 "$WORK/obj/edk2/boot-sagit.img"
 ```
 
-The output is `build/apfs/bridge/XnuBridge.efi`, with the kernel and device tree
-embedded. `make bridge` uses a bare kernel by default for early bring-up.
+Use a new workspace when changing the filesystem recipe or its inputs.
+Existing images and releases are verified before reuse.
 
-Build EDK2 and package an automatic boot image:
-
-`make edk2-sagit` prepares the exact dependency revisions in
-`tools/edk2-sagit.json` and applies the complete local source snapshots under
-`tools/patches/edk2-sagit/`. The EDK2 checkouts are downloaded on the first run.
+To add a five-second recovery countdown to the boot image:
 
 ```sh
-make edk2-sagit
-make boot-image BRIDGE_EFI=build/apfs/bridge/XnuBridge.efi
+./project.sh build boot \
+  --edk2 "$WORK/obj/edk2/boot-sagit.img" \
+  --bridge "$WORK/output/XnuBridge.efi" \
+  --boot-delay 5 --output "$WORK/output/boot-delay5.img"
 ```
 
-Or invoke the packer directly:
+Use `--no-autoboot` to stay in EDK2 USB Fastboot. The boot image must fit the
+64 MiB boot partition.
+
+To start the combined image once from stock Fastboot without flashing:
 
 ```sh
-python3 scripts/build-boot.py \
-  --edk2 build/edk2-sagit/boot-sagit.img \
-  --bridge build/apfs/bridge/XnuBridge.efi \
-  --output build/boot/boot-sagit.img
+fastboot boot "$WORK/output/boot.img"
 ```
-
-Use `--no-autoboot`, or set `AUTOBOOT=0`, to stay in USB Fastboot by default.
-Without `--bridge`, the packer uses `build/bridge/XnuBridge.efi` for automatic
-boot; `--no-autoboot` without `--bridge` produces a plain recovery image.
-Temporary image boot requires rebuilt EDK2 with the `sagit-mi6boot3` marker.
-Revision 2 continues to support zero-delay boot from the boot partition.
-The packer requires EDK2 with the payload loader, preserves its firmware and
-Android DTB, compresses the bridge, verifies the packed contents, and enforces
-a 64 MiB image limit. The build report is saved alongside the image as `.json`.
-
-Local debugging still uses the existing `XnuBridge.efi` build and temporary
-`fastboot stage` / `oem run-efi` path. Building the bridge does not install an
-automatic boot image or change the device's boot partition.
-
-To start the combined image once from the original bootloader's Fastboot,
-without flashing a partition:
-
-```sh
-fastboot boot build/boot/boot-sagit.img
-```
-
-EDK2 preserves the incoming ramdisk from the Android device tree before DXE
-allocations can reuse its memory. This payload takes precedence over the boot
-partition. A rejected or disabled incoming payload returns to EDK2 Fastboot;
-it cannot trigger a different payload from disk. When no incoming ramdisk is
-provided, EDK2 retains the existing boot-partition path.
 
 To start an EFI once from an existing EDK2 USB Fastboot session:
 
 ```sh
-python3 scripts/flash.py --payload build/apfs/bridge/XnuBridge.efi --boot
+./project.sh device flash --payload "$WORK/output/XnuBridge.efi" --boot
 ```
-
-This uses `stage`, device-side CRC32 verification, and `oem run-efi`.
-See [Fastboot boot configuration](docs/sdm835/fastboot-boot.md).
 
 ## Installing APFS
 
-Flash plain EDK2 and start the USB storage exporter:
+Flash plain EDK2 from stock Fastboot, then build and start the USB storage exporter:
 
 ```sh
-python3 scripts/flash.py --image build/edk2-sagit/boot-sagit.img --boot
-make usb-storage
-python3 scripts/usb-storage.py start --no-uart
+WORK=build/xiaomi/sagit/22H374-j171ap/desktop
+./project.sh device flash --image "$WORK/obj/edk2/boot-sagit.img" --boot
+./project.sh build usb-storage
+./project.sh device flash --payload build/usb-storage/LinuxSimpleMassStorage.efi --boot
 lsblk -o NAME,SIZE,MODEL,PARTLABEL,PARTUUID
 ```
 
-Identify the entire UFS LUN containing `userdata`. Replace `DEVICE` below with
-its stable device path. Block device operations require appropriate permissions.
+Identify the entire exported UFS LUN containing `userdata`. Set `DEVICE` to its
+stable device path, such as the appropriate `/dev/disk/by-id/...` entry.
+Do not select a partition or infer the phone from a host disk letter. Block
+device operations require appropriate permissions and unmounted partitions.
 
-**Installation erases Android userdata and modifies GPT. A GPT backup does not
-restore user files.** Review the generated plan before running `install`.
+**First installation erases Android userdata and modifies GPT. A GPT backup
+does not restore user files. Replacing an existing APFS image also erases its
+iOS System and Data contents.** Review the generated plan before installing.
+
+For the first installation:
 
 ```sh
-python3 scripts/apfs-storage.py plan \
-  --device DEVICE --image-report build/apfs/ios.apfs.json \
-  --output build/apfs/device-plan.json
+DEVICE=/dev/disk/by-id/REPLACE_WITH_EXPORTED_UFS_LUN
+PLAN="$WORK/device-plan.json"
+./project.sh device disk plan \
+  --device "$DEVICE" --image-report "$WORK/output/ios.apfs.json" \
+  --output "$PLAN"
+cat "$PLAN"
 
-python3 scripts/apfs-storage.py install \
-  --device DEVICE --plan build/apfs/device-plan.json \
-  --image build/apfs/ios.apfs --backup build/apfs/device-gpt-backup \
+./project.sh device install \
+  --device "$DEVICE" --plan "$PLAN" \
+  --image "$WORK/output/ios.apfs" --backup "$WORK/device-gpt-backup" \
   --erase-userdata
-
-python3 scripts/apfs-storage.py verify-device-hash \
-  --device DEVICE --plan build/apfs/device-plan.json \
-  --output build/apfs/device-hash.json
-
-python3 scripts/usb-storage.py flush --no-uart --device DEVICE
 ```
 
-After installation and flushing, restart using the power button, enter stock
-Fastboot, and flash the combined boot image. The exporter has no USB reboot
-command, so a physical restart is required without a serial console.
+For replacement of an existing `ios-apfs` partition, use this pair instead:
+
+```sh
+PLAN="$WORK/device-replace-plan.json"
+./project.sh device disk plan --replace-existing \
+  --device "$DEVICE" --image-report "$WORK/output/ios.apfs.json" \
+  --output "$PLAN"
+cat "$PLAN"
+
+./project.sh device install --replace-existing \
+  --device "$DEVICE" --plan "$PLAN" \
+  --image "$WORK/output/ios.apfs" --backup "$WORK/device-replace-backup"
+```
+
+The image must fit the existing partition. Add `--resumable` to the installation
+command to allow USB reconnects during replacement without resizing.
+
+After either installation path:
+
+```sh
+./project.sh device disk verify-device-hash \
+  --device "$DEVICE" --plan "$PLAN" \
+  --output "$WORK/device-hash.json"
+./project.sh device storage flush --no-uart --device "$DEVICE"
+```
+
+The exporter has no USB reboot command. After flushing, restart using the
+power button, enter stock Fastboot, and flash the matching combined image:
+
+```sh
+./project.sh device flash --image "$WORK/output/boot.img" --boot
+```
 
 ## Validation
 
+The default console transport is USB CDC, alongside the native Apple DeviceMux
+interface. No direct UART connection is needed for logs or a running shell.
+Start capture before boot to receive the buffered bridge and early kernel logs:
+
 ```sh
-make test-fastboot
-make verify TARGET=SDM835
-make verify-drivers
+./project.sh device console --output build/usb-console.log
+./project.sh device console --output build/usb-commands.log --seconds 120 \
+  --require-bash 'printf "uid=%s bash=%s\n" "$EUID" "$BASH_VERSION"' 'mount'
+./project.sh device console --output build/usb-interactive.log --interactive
 ```
 
-Fastboot tests cover image packing, device and capacity checks, download
-verification, and the EDK2 payload loader and LZMA decoder. Individual driver
-host tests can be selected with `make test-drivers TEST_FLAGS='--test NAME'`.
+The console discovers the device automatically; use `--serial` when several
+devices are connected. Command batches wait for a unique completion marker and
+stop on a nonzero result. A disconnected or timed-out command is not retried,
+because its execution state may be unknown. `--wait` sets each command's timeout;
+`--seconds` bounds enumeration and the entire batch (120 seconds by default
+for commands). `--report PATH` saves machine-readable results. Use Ctrl-] to
+leave an interactive session.
+
+USB becomes available after the kernel USB stack starts. Earlier output is
+replayed from bounded RAM. Boot failures before USB initialization, logs before
+bridge entry, and panic-stop/KDP debugging are outside this transport's coverage.
+Optional direct UART access requires `device console --uart --port PATH`.
+
+Driver build and verification commands use the selected profile's collection
+dependency closure. Use `--driver NAME` for an explicit component selection.
+
+```sh
+./project.sh verify kernel
+./project.sh verify drivers
+./project.sh verify kernelcache
+./project.sh verify firmware
+```
+
+These checks validate build outputs and filesystem contents. Hardware support
+is listed separately in [Device support](#device-support).
 
 ## References and licenses
 

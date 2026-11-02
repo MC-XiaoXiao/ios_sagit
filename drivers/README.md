@@ -98,7 +98,7 @@ machine 层实现和设备树；仅更换 compatible 不能补齐一个新的 So
 
 蓝牙使用 `qcom,wcn3990-bt` 匹配与独立 `bluetooth` collection；构建、协议测试、
 iOS 18 内核/用户态依据和实现边界见 [蓝牙驱动文档](../docs/bluetooth/README.md)。
-运行 `make bluetooth-driver`、`make bluetooth-client`、`make test-bluetooth`、
+运行 `make bluetooth-driver`、`make bluetooth-client`、
 `make bluetooth`、`make verify-bluetooth`，继续使用统一工具链。
 
 `QcomWatchdog` 匹配 `qcom,msm-watchdog`，只接受已验证的 MSM8998
@@ -126,7 +126,7 @@ RTC peripheral。QcomSPMI 在公开控制器之前只读 enable 和 seconds 寄�
 
 当前不修改 PMIC 时间/闹钟，设时修正只保存在 RAM。PMIC 原始秒数并不等于
 经过校准的 UTC；厂商 Android/UEFI 偏移尚未导入，不能把本次等待修复当成
-日历时间校准。运行 `make test-drivers TEST_FLAGS="--test rtc"`，真机结果见
+日历时间校准。真机结果见
 [RTC 验证记录](../docs/sdm835/ios18/rtc-validation.json)。
 
 所有 personality 使用 `IOProviderClass`、`IONameMatch`、`IOPropertyMatch` 和
@@ -177,10 +177,10 @@ Apple gate/pin 数组仍被拒绝，不将 Apple gate ID 当作 Qualcomm 寄存�
 
 USB NoC 通过同一串行 RPM 服务提交 64 位平均带宽和根时钟请求；开启全局时钟缩放前，
 必须逐项确认完整 MSM8998 时钟交接基线。未提供真实配置时不发布 NoC 资源。
-USB 构建和验证仍共用 `scripts/toolchain.py`；实现边界见 [USB/OTG 文档](../docs/usb/README.md)。
+USB 构建和验证仍共用 `tools/project/build/toolchain.py`；实现边界见 [USB/OTG 文档](../docs/usb/README.md)。
 
 Wi-Fi 使用独立 `wifi` collection 和既有构建入口。`make wifi-driver`、
-`make wifi-client`、`make wifi-driverkit`、`make test-wifi`、`make wifi`、`make verify-wifi` 用于
+`make wifi-client`、`make wifi-driverkit`、`make wifi`、`make verify-wifi` 用于
 Kext、DriverKit DEXT、iOS 诊断客户端的构建、离线测试及集合校验。iOS 18 模型、
 已编译的固件/DMA/CE/DriverKit 组件、原生 WLAN 桥接及剩余平台绑定见 [Wi-Fi 文档](../docs/wifi/README.md)。
 
@@ -188,18 +188,17 @@ Kext、DriverKit DEXT、iOS 诊断客户端的构建、离线测试及集合校�
 
 ```sh
 make drivers
-make test-drivers
 make verify-drivers
 make kernelcache
 make verify-kernelcache
 ```
 
-入口为 `scripts/toolchain.py`。工具自动发现子目录的 `Info.plist`，读取实际的
+入口为 `tools/project/build/toolchain.py`。工具自动发现子目录的 `Info.plist`，读取实际的
 CFBundleIdentifier/Executable；支持 C 和 C++ Kext。使用 XNU 的 kmod stubs、
 元类初始化段以及 ld64 `-kext`，生成 `MH_KEXT_BUNDLE`。
 C++ Kext 当前要求常驻，避免宣称尚未实现的元类卸载生命周期；C-only Kext 可按配置卸载。
 
-具体公共 include 路径、宿主测试、外部 ABI 契约和 collection roots 放在
+具体公共 include 路径、必要 ABI 编译检查、外部 ABI 契约和 collection roots 放在
 `Build.json`。分析阶段根清单放在 `tools/kext-collections.json`。
 工具代码不按 Kext 名称或具体类名分支。`inspect-abi` 输出通用类/符号/槽清单，
 Python 校验器按契约筛选；KPI 检查遵循各 bundle 声明的库，且仅允许从声明的
@@ -212,11 +211,11 @@ Python 校验器按契约筛选；KPI 检查遵循各 bundle 声明的库，且�
 
 可以用 `--drivers-root`、`--driver`、`--driver-output`、`--provider-image` 和
 `--collection` 选择其他驱动集合。添加任意 Kext 目录无需修改工具。
-`tests/test_driver_toolchain.py` 实际构建了无平台依赖、名称不同的 C-only Kext 和
-C++ IOService Kext，并验证自动发现、筛选、重复标识与非法路径拒绝。
+驱动构建按实际依赖自动编译 `tools/abi-probes/` 中的私有 ABI 探针，
+检查类型、虚表布局和 provider 导入符号。主机模拟与历史集成测试已移入 `local/cleanup/test-workflows-*`。
 
 GPU 使用独立 `gpu` collection，产物为 `build/output/kernelcache.gpu`。
-运行 `make gpu-client`、`make test-gpu`、`make gpu`、`make verify-gpu`；
+运行 `make gpu-client`、`make gpu`、`make verify-gpu`；
 Apple 原生 GPU Family 的分析证据与当前不支持的功能见
 [GPU 文档](../docs/gpu/README.md)。
 
@@ -225,11 +224,11 @@ GPIO 与平台按键使用独立 `input` collection，产物为 `build/output/ke
 `QcomButtons` 使用原生 IOHIDDevice 和 IOHIDEventDriver。前置 Home 的芯片驱动为
 `GoodixFingerprint` / `FPCFingerprint`，共享 `FingerprintHID`，固件准备为 `make prepare-input`。
 运行 `make input-drivers`、
-`make test-input`、`make input`、`make verify-input`；接口、接线、原生 ABI 证据及
+`make input`、`make verify-input`；接口、接线、原生 ABI 证据及
 当前支持范围见 [GPIO/按键文档](../docs/gpio/README.md)。
 
 统一 I²C 与 Synaptics 触摸屏已加入 `input`，也可以使用 `make touch-drivers`、
-`make test-touch`、`make test-touch-sanitized`、`make touch` 和
+`make touch` 和
 `make verify-touch`。设备节点默认禁用，要求显式的共享电源/时钟/引脚交接；
 Apple 框架参考、接口、离线验证与尚待真机验证的边界见
 [触摸屏文档](../docs/touch/README.md)。
@@ -237,10 +236,10 @@ Apple 框架参考、接口、离线验证与尚待真机验证的边界见
 platform collection 当前包含 corecrypto、Image4、AMFI、Sandbox、pthread 等
 21 个原厂组件，以及 GenericARMPlatform、SDM835、AppleARMGIC、
 GenericClockController、QcomGCC、QcomPowerController 和 QcomSPMI 共 7 个
-本地驱动，形成 28 项闭包。其主机测试明确选择平台配置、GIC、GCC 和 RTC。
+本地驱动，形成 28 项闭包。
 `power` 包含电压、MMCC/GPUCC、OSM 后端并保留原生 ApplePMGR 软件库（23 项）；
 `power-security` 加入 AMFI 的完整依赖闭包（29 项）。
-`make test-perfcontrol` 检查调度回调、QoS 策略及 OSM 联动；需要更新后的本地 XNU
+调度回调、QoS 策略及 OSM 联动需要更新后的本地 XNU
 私有所有权扩展。`make power-client` 构建内部 arm64 iOS 诊断客户端；用户态兼容边界见电源文档。
 可选 UFS 等驱动由各自 collection roots 决定。
 构建自动解析依赖，保留原生 AppleARMPlatform 和需要的 KPI/Family。
