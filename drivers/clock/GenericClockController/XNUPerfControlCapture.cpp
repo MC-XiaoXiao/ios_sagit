@@ -16,13 +16,13 @@ extern "C" void cpu_performance_csw(perfcontrol_event event,uint32_t cpu,uint64_
 {
     if (event!=CONTEXT_SWITCH && event!=IDLE) return;
     if (!on) return;
-    capture.record(cpu,stamp,event==IDLE ? CPUPerformance::Idle : static_cast<uint32_t>(on->perfctl_class));
+    capture.record(cpu,stamp,event==IDLE ? CPUPerformance::Idle : static_cast<uint32_t>(on->perfctl_class),on->thread_id);
 }
 extern "C" void cpu_performance_state_update(perfcontrol_event event,uint32_t cpu,uint64_t stamp,
     uint32_t,perfcontrol_thread_data *thread,void *)
 {
     if (event!=QUANTUM_EXPIRY && event!=PERFCONTROL_ATTR_UPDATE && event!=THREAD_GROUP_UPDATE) return;
-    if (thread) capture.record(cpu,stamp,static_cast<uint32_t>(thread->perfctl_class));
+    if (thread) capture.record(cpu,stamp,static_cast<uint32_t>(thread->perfctl_class),thread->thread_id);
 }
 namespace CPUPerformance {
 Capture &kernelCapture() {return capture;}

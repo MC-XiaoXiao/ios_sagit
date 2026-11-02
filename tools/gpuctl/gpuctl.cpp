@@ -766,10 +766,16 @@ static kern_return_t resources(GPU::Connection &gpu)
 int main(int argc, char **argv)
 {
     if(argc==2 && !strcmp(argv[1],"cpu-status"))return CPUStatus::run(0);
-    if(argc==3 && !strcmp(argv[1],"cpu-sample")) {
+    if((argc==3 || argc==4) && !strcmp(argv[1],"cpu-sample")) {
         char *end=nullptr;errno=0;const auto seconds=strtoul(argv[2],&end,10);
         if(errno || !argv[2][0] || argv[2][0]=='-' || !end || *end || !seconds || seconds>60)return 2;
-        return CPUStatus::run(unsigned(seconds));
+        unsigned periodMS=500;
+        if(argc==4) {
+            errno=0;const auto period=strtoul(argv[3],&end,10);
+            if(errno || !argv[3][0] || argv[3][0]=='-' || !end || *end || period<50 || period>1000 || 1000%period)return 2;
+            periodMS=unsigned(period);
+        }
+        return CPUStatus::run(unsigned(seconds),periodMS);
     }
     if(argc==4 && !strcmp(argv[2],"--after-ticks")) {
         char *end=nullptr;errno=0;const auto after=strtoull(argv[3],&end,10);
@@ -819,7 +825,7 @@ int main(int argc, char **argv)
         return 0;
     }
     if (argc != 2 || (strcmp(argv[1], "info") && strcmp(argv[1], "resources") && strcmp(argv[1], "fill-test"))) {
-        fputs("usage: gpuctl --schema | registry | stats | stats-live | metal-timing | job-history | operation-profile | diagnose | shell-info | cpu-status | cpu-sample SECONDS | kernel-log [display] | restore-bootstrap | native-info | native-fill-test | native-async-test | native-notify-test | info | resources | fill-test | reboot\n", stderr); return 2;
+        fputs("usage: gpuctl --schema | registry | stats | stats-live | metal-timing | job-history | operation-profile | diagnose | shell-info | cpu-status | cpu-sample SECONDS [PERIOD_MS] | kernel-log [display] | restore-bootstrap | native-info | native-fill-test | native-async-test | native-notify-test | info | resources | fill-test | reboot\n", stderr); return 2;
     }
     GPU::Connection gpu; auto r = gpu.open();
     if (!r && !strcmp(argv[1], "fill-test")) r = fillTest(gpu);

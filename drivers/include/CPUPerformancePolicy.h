@@ -29,7 +29,7 @@ inline uint32_t floor(uint32_t qos) {
     }
 }
 struct Snapshot {
-    uint64_t stamp=0, busy=0, demand=0, boostStamp=0;
+    uint64_t stamp=0, busy=0, demand=0, boostStamp=0, threadId=0;
     uint32_t epoch=0, qos=Idle, boostFloor=0;
 };
 enum ReadResult { Empty, Consistent, Contended };
@@ -41,7 +41,7 @@ enum ReadResult { Empty, Consistent, Contended };
 class Capture {
     struct alignas(64) Slot {
         uint32_t writer=0, sequence=0;
-        uint64_t stamp=0, busy=0, demand=0, boostStamp=0, lossStamp=0;
+        uint64_t stamp=0, busy=0, demand=0, boostStamp=0, lossStamp=0, threadId=0;
         uint32_t epoch=0, qos=Idle, boostFloor=0;
     } slots[MaxCPUs];
     uint32_t activeEpoch=0;
@@ -53,7 +53,7 @@ public:
     void configure(uint64_t hold) { __atomic_store_n(&boostTicks,hold,__ATOMIC_RELEASE); }
     void activate(uint32_t epoch) { __atomic_store_n(&activeEpoch,epoch,__ATOMIC_RELEASE); }
     void deactivate() { __atomic_store_n(&activeEpoch,0,__ATOMIC_RELEASE); }
-    void record(unsigned cpu, uint64_t stamp, uint32_t qos) {
+    void record(unsigned cpu, uint64_t stamp, uint32_t qos, uint64_t threadId=0) {
         uint32_t epoch=__atomic_load_n(&activeEpoch,__ATOMIC_ACQUIRE);
         if (!epoch || cpu>=MaxCPUs || !stamp) return;
         Slot &s=slots[cpu]; uint32_t unlocked=0;
@@ -90,6 +90,7 @@ public:
         __atomic_store_n(&s.boostStamp,boostStamp,__ATOMIC_RELAXED);
         __atomic_store_n(&s.boostFloor,boost,__ATOMIC_RELAXED);
         __atomic_store_n(&s.qos,qos,__ATOMIC_RELAXED);
+        __atomic_store_n(&s.threadId,qos==Idle ? 0 : threadId,__ATOMIC_RELAXED);
         __atomic_store_n(&s.epoch,epoch,__ATOMIC_RELAXED);
         __atomic_store_n(&s.sequence,seq+2,__ATOMIC_RELEASE);
         __atomic_store_n(&s.writer,0,__ATOMIC_RELEASE);
@@ -106,11 +107,21 @@ public:
         v.boostStamp=__atomic_load_n(&s.boostStamp,__ATOMIC_RELAXED);
         v.boostFloor=__atomic_load_n(&s.boostFloor,__ATOMIC_RELAXED);
         v.qos=__atomic_load_n(&s.qos,__ATOMIC_RELAXED);
+        v.threadId=__atomic_load_n(&s.threadId,__ATOMIC_RELAXED);
         v.epoch=__atomic_load_n(&s.epoch,__ATOMIC_RELAXED);
         __atomic_thread_fence(__ATOMIC_ACQUIRE);
         if (__atomic_load_n(&s.sequence,__ATOMIC_ACQUIRE)!=before) return Contended;
         if (v.epoch!=epoch) return Empty;
         out=v; return Consistent;
+    }
+    // Diagnostic identity is paired with the same class/timestamp sequence.
+    // It describes the last scheduler callback, not continuous residency.
+    ReadResult readCurrent(unsigned cpu,Snapshot &out) const {
+        const uint32_t epoch=__atomic_load_n(&activeEpoch,__ATOMIC_ACQUIRE);
+        const auto result=read(cpu,epoch,out);
+        if (__atomic_load_n(&activeEpoch,__ATOMIC_ACQUIRE)!=epoch) return Contended;
+        if (result==Consistent && lossStamp(cpu)>=out.stamp) return Contended;
+        return result;
     }
     // A loss marker coalesces nested writers. Store-only publication avoids
     // even the compiler-generated retry loop of an atomic counter increment.

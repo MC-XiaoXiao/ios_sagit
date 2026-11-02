@@ -67,7 +67,7 @@ static void snapshot() {
     for(mach_port_t service;(service=IOIteratorNext(iterator));) {
         auto value=IORegistryEntryCreateCFProperty(service,CFSTR("CPUPerformanceSnapshot"),nullptr,0);
         IOObjectRelease(service);
-        char text[2048];
+        char text[4096];
         if(value && CFGetTypeID(value)==CFStringGetTypeID() &&
             CFStringGetCString(static_cast<CFStringRef>(value),text,sizeof(text),kCFStringEncodingUTF8))
             fputs(text,stdout);
@@ -92,16 +92,17 @@ static bool load(host_t host,Load &out) {
     if(!valid)printf("CPU_LOAD_ERROR status=0x%x cpus=%u words=%u\n",status,out.count,words);
     return valid;
 }
-static int run(unsigned seconds) {
+static int run(unsigned seconds,unsigned periodMS=500) {
+    if(seconds>60 || periodMS<50 || periodMS>1000 || 1000%periodMS)return 2;
     setbuf(stdout,nullptr);const bool present=topology();osm();snapshot();
     if(!seconds)return present?0:1;
     const host_t host=mach_host_self();Load before{};
     if(!load(host,before)){mach_port_deallocate(mach_task_self(),host);return 1;}
     mach_timebase_info_data_t timebase{};mach_timebase_info(&timebase);
-    printf("CPU_LOAD_BEGIN seconds=%u period_ms=500 timebase=%u/%u clock_frequency_measurement=0\n",seconds,timebase.numer,timebase.denom);
+    printf("CPU_LOAD_BEGIN seconds=%u period_ms=%u timebase=%u/%u clock_frequency_measurement=0\n",seconds,periodMS,timebase.numer,timebase.denom);
     int result=0;
-    for(unsigned sample=0;sample<seconds*2;++sample) {
-        usleep(500000);Load after{};
+    for(unsigned sample=0;sample<seconds*(1000/periodMS);++sample) {
+        usleep(periodMS*1000);Load after{};
         if(!load(host,after)){result=1;break;}
         if(after.count!=before.count || after.time<=before.time) {
             puts("CPU_LOAD_RESET topology_or_clock_changed=1");before=after;continue;

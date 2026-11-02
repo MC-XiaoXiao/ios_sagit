@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-only
 #include "QcomOSM.h"
 #include "OSMHandoff.h"
+#include <XNUPerfControlCapture.h>
 #include <IOKit/pwr_mgt/RootDomain.h>
 #include <machine/machine_routines.h>
 #include <libkern/c++/OSData.h>
@@ -160,7 +161,7 @@ IOReturn QcomOSM::snapshot(OSObject *owner,void *output,void *,void *,void *)
 {
     auto *self=static_cast<QcomOSM *>(owner);
     if (!self->controllerOnline()) return kIOReturnNotReady;
-    char text[2048]={};unsigned used=0;
+    char text[4096]={};unsigned used=0;
     const auto io=self->hardwareIO();
     for (unsigned c=0;c<2;++c) {
         const uint64_t begin=mach_absolute_time();
@@ -194,6 +195,23 @@ IOReturn QcomOSM::snapshot(OSObject *owner,void *output,void *,void *,void *)
             map && map->getLength()==0x8000,clock.stable,clocks[0],clocks[1],clocks[2],clocks[3],clocks[4],clocks[5],clocks[6],clock.localPLLHz());
         if (n<0 || static_cast<unsigned>(n)>=sizeof(text)-used) return kIOReturnNoSpace;
         used+=static_cast<unsigned>(n);
+    }
+    const auto *topology=ml_get_topology_info();
+    if (topology && topology->version==CPU_TOPOLOGY_VERSION && topology->num_cpus<=8) {
+        for (unsigned i=0;i<topology->num_cpus;++i) {
+            const auto &cpu=topology->cpus[i];
+            if (cpu.cpu_id>=CPUPerformance::MaxCPUs || cpu.cluster_id>=topology->num_clusters) return kIOReturnBadArgument;
+            CPUPerformance::Snapshot sample{};
+            const auto result=CPUPerformance::kernelCapture().readCurrent(cpu.cpu_id,sample);
+            const uint64_t observed=mach_absolute_time();
+            const bool valid=result==CPUPerformance::Consistent && sample.stamp<=observed;
+            const int n=snprintf(text+used,sizeof(text)-used,
+                "CPU_THREAD_SAMPLE version=1 cpu=%u cluster=%u type=%u observed=%llu valid=%u epoch=%u stamp=%llu tid=%llu class=%u observation=last-scheduler-callback\n",
+                cpu.cpu_id,cpu.cluster_id,static_cast<unsigned>(topology->clusters[cpu.cluster_id].cluster_type),
+                observed,valid,valid?sample.epoch:0,valid?sample.stamp:0,valid?sample.threadId:0,valid?sample.qos:0);
+            if (n<0 || static_cast<unsigned>(n)>=sizeof(text)-used) return kIOReturnNoSpace;
+            used+=static_cast<unsigned>(n);
+        }
     }
     auto *value=OSString::withCString(text);
     *static_cast<OSObject **>(output)=value;
