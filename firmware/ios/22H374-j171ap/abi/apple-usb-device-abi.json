@@ -23,6 +23,11 @@
       "super": "OSObject",
       "instance_size": 120,
       "vtable_slots": 29
+    },
+    "IOUSBDeviceConfigurator": {
+      "super": "IOService",
+      "instance_size": 136,
+      "vtable_slots": 168
     }
   },
   "required_symbols": [
@@ -104,7 +109,17 @@
     "__ZNK20IOUSBDeviceInterface24getAlternateSettingCountEv",
     "__ZNK21IOUSBDeviceController10getAddressEv",
     "__ZTV21IOUSBDeviceController",
-    "__ZN21IOUSBDeviceController12readyForHostEv"
+    "__ZN21IOUSBDeviceController12readyForHostEv",
+    "__ZN15IOUSBDevicePipe8nativeIOEP18IOMemoryDescriptoryP21IOUSBDeviceCompletionPyj",
+    "__ZN15IOUSBDevicePipe16nativeAbortGatedEv",
+    "__ZN20IOUSBDeviceInterface25nativeAddAlternateSettingEiii",
+    "__ZN20IOUSBDeviceInterface16nativeCreatePipeEiiiiii",
+    "__ZN20IOUSBDeviceInterface20nativeSetDescriptionEPKc",
+    "__ZN20IOUSBDeviceInterface14nativeFinalizeEv",
+    "__ZN20IOUSBDeviceInterface26nativeSetDescriptorHandlerEPFjPvPhjjjjjS0_ES0_",
+    "__ZN20IOUSBDeviceInterface23nativeSetControlHandlerEP8OSObjectPFbS1_PK24IOUSBDeviceFunctionSetupPiPP18IOMemoryDescriptorPyP28IOUSBDeviceControlCompletionE",
+    "__ZN20IOUSBDeviceInterface25nativeClearControlHandlerEP8OSObject",
+    "__ZN23IOUSBDeviceConfigurator10gMetaClassE"
   ],
   "virtual_symbols": {
     "__ZN21IOUSBDeviceController10createPipeER21tCreatePipeParameters": {
@@ -342,6 +357,10 @@
     "__ZNK21IOUSBDeviceController10getAddressEv": {
       "class": "IOUSBDeviceController",
       "slot": 171
+    },
+    "__ZN15IOUSBDevicePipe16nativeAbortGatedEv": {
+      "class": "IOUSBDevicePipe",
+      "slot": 25
     }
   },
   "function_bindings": {
@@ -392,6 +411,42 @@
     "__ZN21IOUSBDeviceController12readyForHostEv": {
       "address": "0xfffffff0061820bc",
       "bytes": "f44fbea9fd7b01a9fd430091f30300aa080040f9088d40f90190fff02188229100013fd6286800f008e946f9010140f9"
+    },
+    "__ZN15IOUSBDevicePipe8nativeIOEP18IOMemoryDescriptoryP21IOUSBDeviceCompletionPyj": {
+      "address": "0xfffffff0061792bc",
+      "bytes": "080040f9064140f9c0001fd6080040f9064140f9c0001fd6080040f9064540f9"
+    },
+    "__ZN20IOUSBDeviceInterface25nativeAddAlternateSettingEiii": {
+      "address": "0xfffffff006174d60",
+      "bytes": "ff8300d1fd7b01a9fd43009108008012a8c31fb8088c40f9090040f929c142f9"
+    },
+    "__ZN20IOUSBDeviceInterface16nativeCreatePipeEiiiiii": {
+      "address": "0xfffffff00617603c",
+      "bytes": "ffc300d1fd7b02a9fd830091bf831ff8e18b0029e3930129e51700b9088c40f9"
+    },
+    "__ZN20IOUSBDeviceInterface20nativeSetDescriptionEPKc": {
+      "address": "0xfffffff006174c7c",
+      "bytes": "e20301aa088c40f9090040f921c542f9090140f9267540f9e00308aa030080d2"
+    },
+    "__ZN20IOUSBDeviceInterface14nativeFinalizeEv": {
+      "address": "0xfffffff006174edc",
+      "bytes": "088c40f9090040f921cd42f9090140f9267540f9e00308aa020080d2030080d2"
+    },
+    "__ZN20IOUSBDeviceInterface26nativeSetDescriptorHandlerEPFjPvPhjjjjjS0_ES0_": {
+      "address": "0xfffffff006176c8c",
+      "bytes": "e30302aae20301aa088c40f9090040f9211543f9090140f9267540f9e00308aa"
+    },
+    "__ZN20IOUSBDeviceInterface23nativeSetControlHandlerEP8OSObjectPFbS1_PK24IOUSBDeviceFunctionSetupPiPP18IOMemoryDescriptorPyP28IOUSBDeviceControlCompletionE": {
+      "address": "0xfffffff0061751d0",
+      "bytes": "e30302aae20301aa088c40f9090040f921dd42f9090140f9267540f9e00308aa"
+    },
+    "__ZN20IOUSBDeviceInterface25nativeClearControlHandlerEP8OSObject": {
+      "address": "0xfffffff0061752d8",
+      "bytes": "e20301aa088c40f9090040f921e542f9090140f9267540f9e00308aa030080d2"
+    },
+    "__ZN15IOUSBDevicePipe16nativeAbortGatedEv": {
+      "address": "0xfffffff006179364",
+      "bytes": "083840b9080500511f05007168010054080840f9880100b4fd7bbfa9fd030091"
     }
   }
 }

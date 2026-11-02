@@ -4,7 +4,7 @@ QcomSCM.cpp, SCMPAS.h and SMCCC.h are GPL-2.0-only. The Qualcomm SIP/PAS ABI and
 A6 continuation behavior are derived from Linux v6.12 qcom_scm.c, qcom_scm.h,
 qcom_scm-smc.c and arch/arm64/kernel/smccc-call.S (The Linux Foundation,
 Linaro Limited and other original contributors). Pinned unmodified references
-and hashes are in docs/gpu/reference/sources.json. Full corresponding source
+and hashes are in local/reference/qcom/msm8998/gpu/sources.json. Full corresponding source
 is in drivers/security/QcomSCM. No Qualcomm firmware is included.
 
 GNU GENERAL PUBLIC LICENSE

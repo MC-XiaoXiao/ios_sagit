@@ -2,7 +2,7 @@
 #pragma once
 #include <stdint.h>
 
-// Register evidence: docs/battery/reference (Xiaomi sagit-n-oss).
+// Register evidence: local/reference/qcom/msm8998/battery (Xiaomi sagit-n-oss).
 // This observer never programs the charger, FG SRAM, IRQs or battery profile.
 namespace PMICBattery {
 enum class Result : uint32_t { Success, InvalidConfig, IOFailure, Unsupported,

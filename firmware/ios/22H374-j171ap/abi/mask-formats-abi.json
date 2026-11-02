@@ -101,5 +101,5 @@
     "https://gitlab.freedesktop.org/mesa/mesa/-/blob/mesa-24.3.4/src/gallium/drivers/freedreno/a5xx/fd5_format.c",
     "https://gitlab.freedesktop.org/mesa/mesa/-/blob/mesa-24.3.4/src/freedreno/fdl/fd5_layout.c"
   ],
-  "draw_batches_abi": "drivers/abi-22H374/draw-batches-abi.json"
+  "draw_batches_abi": "firmware/ios/22H374-j171ap/abi/draw-batches-abi.json"
 }

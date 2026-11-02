@@ -1,0 +1,28 @@
+name = "Xiaomi Mi 6"
+platform = "qcom/msm8998"
+device_tree = "board.dts"
+product = "iPhoneMi6,1"
+logical_screen_class = "360w-640h@3x~iphone"
+fastboot_product = "sagit"
+device_firmware = "../../../firmware/inputs/sagit-stock"
+gpu_firmware = "../../../firmware/inputs/sagit-gpu"
+gpu_firmware_manifest = "gpu-firmware.json"
+edk2_manifest = "edk2.json"
+edk2_builder = "../../../tools/project/build/edk2/sagit.sh"
+edk2_boot_image = "boot-sagit.img"
+
+[profiles.desktop]
+firmware_files = "firmware-files.json"
+filesystem_patches = ["linear-surfaces"]
+collection = "ios-runtime"
+cpus = 4
+features = ["storage", "display", "gpu", "input", "usb-device", "battery"]
+bridge_flags = ["--ufs-handoff", "--full-memory", "--disable-system-sleep", "--os-environment", "darwinos", "--watchdog-seconds", "31"]
+boot_args = ["display-direct-scanout=1", "gpu-shader-direct=1", "gpu-fb2d=2", "gpu-fbf=2", "gpu-pipe=6", "ml-timeout-interrupt-masked-scale=8", "ml-timeout-interrupt-masked-b-scale=8"]
+bridge_options = ["--display-handoff-profile", "{board}/handoff/display.json", "--display-smmu-handoff", "--disable-display-backlight", "--gpu-handoff-profile", "{board}/handoff/gpu.json", "--gpu-zap-firmware", "{workspace}/obj/device-firmware/gpu/a540_zap.mbn", "--gpu-firmware", "{workspace}/obj/device-firmware/gpu", "--gpu-smmu-init", "--gpu-cold-start", "--cpu-osm-handoff", "--touch-prepare", "--touch-handoff-profile", "{board}/handoff/touch.json", "--input-firmware", "{workspace}/obj/device-firmware/input", "--usb-resource-profile", "{board}/handoff/usb.json", "--usb-composite-console"]
+
+[profiles.platform]
+collection = "platform"
+cpus = 4
+features = ["platform"]
+bridge_flags = []

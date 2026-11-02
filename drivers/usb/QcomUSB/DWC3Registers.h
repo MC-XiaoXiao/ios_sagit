@@ -3,7 +3,7 @@
 #include <stdint.h>
 
 // Offsets relative to the complete DWC3 aperture (not globals + 0xc100).
-// Register facts cross-checked against Linux v6.12; see docs/usb/reference.
+// Register facts cross-checked against Linux v6.12; see local/reference/qcom/msm8998/usb.
 namespace DWC3 {
 constexpr uint32_t Aperture = 0xcd00;
 constexpr uint32_t GSBUSCFG0 = 0xc100, GCTL = 0xc110, GUCTL1 = 0xc11c;

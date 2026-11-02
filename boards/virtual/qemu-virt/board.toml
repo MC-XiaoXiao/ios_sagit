@@ -1,0 +1,10 @@
+name = "QEMU ARM64 loader test board"
+platform = "virtual/arm64"
+device_tree = "board.dts"
+product = "QEMU"
+loader_test_only = true
+
+[profiles.platform]
+cpus = 1
+features = ["loader"]
+bridge_flags = []

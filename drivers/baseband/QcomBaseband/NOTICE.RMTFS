@@ -1,4 +1,4 @@
-BasebandRMTFS.h and the related service/storage implementation use the RMTFS protocol and command behavior documented by linux-msm/rmtfs. Complete unmodified references and hashes are in docs/baseband/reference/sources.json. Driver changes are licensed GPL-2.0-only; retain the upstream notice below.
+BasebandRMTFS.h and the related service/storage implementation use the RMTFS protocol and command behavior documented by linux-msm/rmtfs. Complete unmodified references and hashes are in local/reference/qcom/msm8998/baseband/sources.json. Driver changes are licensed GPL-2.0-only; retain the upstream notice below.
 
 Copyright (c) 2016, Linaro Ltd
 All rights reserved.

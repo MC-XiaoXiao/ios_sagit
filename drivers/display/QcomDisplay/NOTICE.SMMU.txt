@@ -8,8 +8,8 @@ dpu_hw_ctl.c, dpu_hw_vbif.c and msm8998.dtsi. Copyright (c) 2015-2018,
 2020 The Linux Foundation; Copyright (c) 2022 Qualcomm Innovation Center.
 RetainedPageTables.h, MappingLedger.h, PhysicalPages.h and the display
 handoff ABI are BSD-2-Clause. Hardware register and clock definitions
-follow the pinned Qualcomm/Linux references recorded in docs/power/reference
-and docs/gpu/reference. Original source notices remain in force.
+follow the pinned Qualcomm/Linux references recorded in local/reference/qcom/msm8998/power
+and local/reference/qcom/msm8998/gpu. Original source notices remain in force.
 Complete corresponding sources are in this repository; no firmware is included.
 
 GNU GENERAL PUBLIC LICENSE

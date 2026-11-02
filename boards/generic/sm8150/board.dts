@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: BSD-2-Clause
 /dts-v1/;
-/include/ "sm8150.dtsi"
+/include/ "../../../platforms/qcom/sm8150/soc.dtsi"
 / {
     model = "SM8150 Bring-up";
     compatible = "qcom,sm8150";

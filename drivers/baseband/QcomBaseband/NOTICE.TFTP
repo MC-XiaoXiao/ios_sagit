@@ -1,4 +1,4 @@
-BasebandTFTP.h uses the QRTR TFTP protocol and option behavior documented by linux-msm/tqftpserv. Complete unmodified references and hashes are in docs/baseband/reference/sources.json. Driver changes are GPL-2.0-only. Retain the upstream BSD notice below.
+BasebandTFTP.h uses the QRTR TFTP protocol and option behavior documented by linux-msm/tqftpserv. Complete unmodified references and hashes are in local/reference/qcom/msm8998/baseband/sources.json. Driver changes are GPL-2.0-only. Retain the upstream BSD notice below.
 
 /*
  * Copyright (c) 2018, Linaro Ltd.

@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "files": [
+    {
+      "source": "output/QcomMTLDriver.bundle",
+      "destination": "System/Library/Extensions/QcomMTLDriver.bundle"
+    }
+  ]
+}

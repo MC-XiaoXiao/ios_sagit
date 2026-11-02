@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-only
 // MSM8998 calibration register/value data from Linux v6.12 phy-qcom-qmp-usbc.c.
-// Reference files and hashes are in docs/usb/reference/sources.json.
+// Reference files and hashes are in local/reference/qcom/msm8998/usb/sources.json.
 #pragma once
 #include <stdint.h>
 

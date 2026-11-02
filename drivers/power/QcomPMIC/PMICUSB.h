@@ -5,7 +5,7 @@
 
 // PMI8998 hardware only. Apple IOKit ownership, matching and notifications live
 // in QcomUSBConnector. Register definitions/ordering are referenced to the
-// pinned smb-reg.h, smb-lib.c and qcom-spmi-rradc.c in docs/usb/reference.
+// pinned smb-reg.h, smb-lib.c and qcom-spmi-rradc.c in local/reference/qcom/msm8998/usb.
 // Bus: Result read/write(uint16_t, uint8_t*, unsigned), delay(ms), nowMS(),
 // edges(), faults(), suppressCC(bool). Caller serializes this object and owns
 // USBIN/OTG/DCIN/RRADC and the two specified charger MISC register fields.

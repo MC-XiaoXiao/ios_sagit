@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: GPL-2.0-only */
 /* Calibration tables adapted from Linux v6.12 phy-qcom-qmp-ufs.c.
  * Copyright (c) 2017, The Linux Foundation. All rights reserved.
- * msm8998 uses the QMP v3 configuration; see docs/ufs/reference/sources.json. */
+ * msm8998 uses the QMP v3 configuration; see local/reference/qcom/msm8998/ufs/sources.json. */
 #ifndef _QCOM_UFS_PHY_H
 #define _QCOM_UFS_PHY_H
 #include <stdint.h>

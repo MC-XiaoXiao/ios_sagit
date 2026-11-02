@@ -1,0 +1,3 @@
+name = "Qualcomm Snapdragon 855 / SM8150"
+kernel_target = "SM8150"
+soc_tree = "soc.dtsi"

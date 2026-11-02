@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 // iOS 18 Metal.framework projection, audited against 22H374 arm64.
-// See drivers/abi-22H374/metal-plugin-abi.json. No Apple instance variables are declared:
+// See firmware/ios/22H374-j171ap/abi/metal-plugin-abi.json. No Apple instance variables are declared:
 // the non-fragile ObjC ABI places our storage after the real superclass.
 struct QcomMTLDeviceLimits {
     uint32_t maxFramebufferStorageBits;

@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "data_free_mib": 2048,
+  "patches": [
+    "serial-console",
+    "watchdog-no-pmu",
+    "migration-services",
+    "fairplay-readiness",
+    "dyld-paths",
+    "keybag-no-sep",
+    "poster-store",
+    "onboarding-template",
+    "wallpaper",
+    "event-timing",
+    "initial-persona",
+    "setup-complete"
+  ],
+  "volumes": [
+    {
+      "name": "Preboot",
+      "role": "preboot"
+    },
+    {
+      "name": "xART",
+      "role": "xart"
+    },
+    {
+      "name": "Update",
+      "role": "update"
+    },
+    {
+      "name": "Hardware",
+      "role": "hardware"
+    }
+  ]
+}

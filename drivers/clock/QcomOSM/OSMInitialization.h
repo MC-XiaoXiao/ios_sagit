@@ -5,7 +5,7 @@
 #include "OSMTZContract.h"
 
 // MSM8998 v2/v2.1 HLOS half of OSM initialization. Register sequences and
-// policies follow the pinned Xiaomi sagit sources in docs/power/reference.
+// policies follow the pinned Xiaomi sagit sources in local/reference/qcom/msm8998/power.
 // The original TZ boot chain still owns sequencer microcode, PLL analog setup,
 // and secure PMIC access. Accessible v2 boot sequencer parameters are checked;
 // their presence is not cryptographic attestation of that firmware.

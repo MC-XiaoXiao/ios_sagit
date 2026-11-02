@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-2.0-only
 // Copyright (c) 2016-2017 The Linux Foundation. All rights reserved.
 // A540-only adaptation of Linux v6.12 a5xx_gpu.c/a5xx_power.c, 2026-10-15.
-// Register definitions and original sources: docs/gpu/reference/sources.json.
+// Register definitions and original sources: local/reference/qcom/msm8998/gpu/sources.json.
 #pragma once
 #include "AdrenoSubmit.h"
 

@@ -5,7 +5,7 @@
 // These are narrow, nonvirtual calls audited against NetworkingDriverKit
 // 521.140.3.700.1 in the project's DriverKit 24.6 cache. The asm names are the
 // actual Apple exports. All three opaque object pointers are framework-owned.
-// See drivers/abi-22H374/driverkit-abi.json for binary hashes and function evidence.
+// See firmware/ios/22H374-j171ap/abi/driverkit-abi.json for binary hashes and function evidence.
 extern OSMetaClass *gIOUserNetworkWLANMetaClass;
 extern OSMetaClass *gIOUserNetworkLogicalLinkMetaClass;
 struct ether_addr { uint8_t octet[6]; };

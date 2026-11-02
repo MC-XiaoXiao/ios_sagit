@@ -1,0 +1,20 @@
+name = "iPadOS 18.7.10 / j171ap"
+architecture = "arm64"
+kernelcache = "kernelcache.release.ipad7c"
+abi = "abi"
+include = "include"
+driver_config = "drivers.json"
+filesystem = "filesystem.json"
+
+bridge_flags = ["--development-unsealed-root", "--development-no-sep", "--development-legacy-data", "--development-hactivation", "--development-no-apple-pmgr", "--development-watchdog-policy", "--development-unthrottled-io"]
+
+[identity]
+board = "j171ap"
+version = "18.7.10"
+build = "22H374"
+ipsw_sha256 = "c4996684f17db347040429b8e42fd81aaf5ed1293d98ac3a69af0a55b76f0a02"
+
+[identity.components]
+"OS" = "be43bec0cdde80a0153c2f80b26b7a4c429ef3eace828f318f81d051b813820c"
+"Cryptex1,SystemOS" = "617c55c3c1b27944a976ae1be22a88068a1e62a157610ddc13d8c8a849e16192"
+"Cryptex1,AppOS" = "41172b47944cfa57a7d0545a719799ae6c1a7a87ec2583f2f9e49fad4ea03c78"

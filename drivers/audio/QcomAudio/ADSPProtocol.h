@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-only
-// APR v2 wire protocol; see docs/audio/reference/sources.json.
+// APR v2 wire protocol; see local/reference/qcom/msm8998/audio/sources.json.
 #pragma once
 #include <BasebandProtocol.h>
 

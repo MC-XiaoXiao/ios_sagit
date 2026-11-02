@@ -1,0 +1,10 @@
+name = "SM8150 bring-up board"
+platform = "qcom/sm8150"
+device_tree = "board.dts"
+product = "SM8150"
+
+[profiles.platform]
+collection = "platform"
+cpus = 1
+features = ["platform"]
+bridge_flags = ["--watchdog-seconds", "0"]

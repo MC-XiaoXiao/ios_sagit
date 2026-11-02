@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-only
-// QUP v2 register/tag definitions from Linux i2c-qup.c; see docs/touch/reference.
+// QUP v2 register/tag definitions from Linux i2c-qup.c; see local/reference/qcom/msm8998/touch.
 #pragma once
 #include <I2CProtocol.h>
 

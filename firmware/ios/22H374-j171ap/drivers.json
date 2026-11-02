@@ -1,0 +1,792 @@
+{
+  "abi_contracts": [
+    "abi/apple-arm-platform-abi.json",
+    "abi/apple-storage-abi.json",
+    "abi/apple-mobile-graphics-abi.json",
+    "abi/apple-surface-abi.json",
+    "abi/apple-gpu-abi.json",
+    "abi/apple-crypto-abi.json",
+    "abi/apple-hid-abi.json",
+    "abi/apple-usb-device-abi.json",
+    "abi/apple-usb-host-abi.json",
+    "abi/apple-usb-common-abi.json",
+    "abi/apple-watchdog-abi.json",
+    "abi/apple-serial-abi.json",
+    "abi/apple-audio2-abi.json"
+  ],
+  "vtable_contracts": {
+    "PMI8998WLED": {
+      "unit": "PMI8998WLED.cpp",
+      "slots": 168,
+      "bindings": {
+        "44": "PMI8998WLED::setProperties",
+        "86": "PMI8998WLED::start",
+        "111": "PMI8998WLED::getWorkLoop",
+        "117": "PMI8998WLED::callPlatformFunction"
+      }
+    },
+    "QcomWatchdog": {
+      "class": "QualcommWatchdogTimer",
+      "unit": "QualcommWatchdogTimer.cpp",
+      "slots": 172,
+      "bindings": {
+        "86": "QualcommWatchdogTimer::start",
+        "111": "QualcommWatchdogTimer::getWorkLoop",
+        "140": "QualcommWatchdogTimer::newUserClient",
+        "168": "QualcommWatchdogTimer::enableWatchdog",
+        "169": "QualcommWatchdogTimer::disableWatchdog",
+        "170": "QualcommWatchdogTimer::resetWatchdog",
+        "171": "IOWatchdog::publishWatchdogProperties"
+      }
+    },
+    "QcomMIPIDSI": {
+      "unit": "QcomMIPIDSI.cpp",
+      "slots": 181,
+      "bindings": {
+        "44": "AppleARMMIPIDSIController::setProperties",
+        "168": "QcomMIPIDSI::enableInterface",
+        "169": "QcomMIPIDSI::enableHighSpeedMode",
+        "170": "QcomMIPIDSI::enableVideo",
+        "171": "QcomMIPIDSI::sendShortCommand",
+        "172": "QcomMIPIDSI::sendLongCommand",
+        "178": "AppleARMMIPIDSIController::newDeviceWithRegistryEntry",
+        "179": "AppleARMMIPIDSIController::publishBelow",
+        "173": "QcomMIPIDSI::receiveShortCommand",
+        "174": "QcomMIPIDSI::receiveLongCommand"
+      }
+    },
+    "QcomDisplay": {
+      "unit": "QcomDisplay.cpp",
+      "slots": 368,
+      "bindings": {
+        "44": "QcomDisplay::setProperties",
+        "21": "IOMobileFramebufferLegacy::init",
+        "86": "QcomDisplay::start",
+        "111": "IOMobileFramebufferLegacy::getWorkLoop",
+        "141": "IOMobileFramebufferLegacy::newUserClient",
+        "155": "QcomDisplay::setPowerState",
+        "174": "IOMobileFramebufferLegacy::default_fb_surface",
+        "184": "QcomDisplay::is_main_display",
+        "212": "QcomDisplay::set_notify_tag_mask_gated",
+        "214": "QcomDisplay::supported_frame_info",
+        "247": "QcomDisplay::factory_portal",
+        "248": "QcomDisplay::executeFactoryConfigurations_gated",
+        "296": "QcomDisplay::start_hardware",
+        "297": "QcomDisplay::stop_hardware_gated",
+        "298": "QcomDisplay::swap_begin_gated",
+        "300": "IOMobileFramebufferLegacy::nativeSlot300",
+        "301": "IOMobileFramebufferLegacy::nativeSlot301",
+        "306": "QcomDisplay::do_power_state_change_gated",
+        "329": "QcomDisplay::prepare_swap",
+        "304": "QcomDisplay::verify_swap",
+        "352": "QcomDisplay::verify_swap_gated",
+        "307": "QcomDisplay::create_default_fb_surface",
+        "309": "QcomDisplay::get_timing_attributes_gated",
+        "343": "QcomDisplay::default_fb_surface_gated",
+        "345": "QcomDisplay::deallocate_default_fb_surface_gated",
+        "347": "QcomDisplay::notify_swap_done_gated",
+        "348": "QcomDisplay::notify_crc_ready_gated",
+        "355": "QcomDisplay::timing_enabled"
+      }
+    },
+    "QcomGPU": {
+      "unit": "QcomGPU.cpp",
+      "slots": 215,
+      "bindings": {
+        "86": "QcomGPU::start",
+        "87": "QcomGPU::stop",
+        "111": "QcomGPU::getWorkLoop",
+        "141": "IOGPU::newUserClient",
+        "168": "IOGPU::nativeSlot168",
+        "170": "QcomGPU::getStampMemory",
+        "174": "QcomGPU::allocEventMachine",
+        "189": "QcomGPU::createGPUTask",
+        "192": "QcomGPU::getGPUConfiguration",
+        "195": "QcomGPU::configureDevice",
+        "197": "QcomGPU::createKernelGPUTask",
+        "199": "QcomGPU::allocDeviceUserClient",
+        "200": "QcomGPU::allocSystemMemory",
+        "202": "QcomGPU::allocResource",
+        "205": "QcomGPU::allocWorkQueue",
+        "187": "QcomGPU::createBufferMemoryDescriptor",
+        "210": "QcomGPU::allocCommandQueue"
+      },
+      "additional_classes": {
+        "QcomGPUResource": {
+          "unit": "QcomGPUNative.cpp",
+          "slots": 33,
+          "bindings": {
+            "2": "IOGPUObject::release",
+            "3": "IOGPUObject::getRetainCount",
+            "4": "IOGPUObject::retain",
+            "5": "IOGPUObject::release",
+            "13": "IOGPUObject::init",
+            "14": "QcomGPUResource::free",
+            "15": "IOGPUObject::nativeSlot15",
+            "16": "QcomGPUResource::initWithGPU",
+            "17": "QcomGPUResource::initialize",
+            "18": "QcomGPUResource::mappingOptions",
+            "24": "QcomGPUResource::map",
+            "25": "QcomGPUResource::mapAtAddressLength",
+            "27": "QcomGPUResource::nativeSlot27",
+            "28": "QcomGPUResource::nativeSlot28"
+          }
+        },
+        "QcomGPUCommandQueue": {
+          "unit": "QcomGPUNative.cpp",
+          "slots": 36,
+          "bindings": {
+            "2": "IOGPUObject::release",
+            "4": "IOGPUObject::retain",
+            "13": "IOGPUObject::init",
+            "14": "QcomGPUCommandQueue::free",
+            "27": "QcomGPUCommandQueue::initWithGPU",
+            "35": "QcomGPUCommandQueue::submitCommandBuffer"
+          }
+        },
+        "QcomGPUMemoryMap": {
+          "unit": "QcomGPUNative.cpp",
+          "slots": 29,
+          "bindings": {
+            "13": "IOGPUObject::init",
+            "14": "QcomGPUMemoryMap::free",
+            "15": "QcomGPUMemoryMap::nativeSlot15",
+            "19": "QcomGPUMemoryMap::address",
+            "20": "QcomGPUMemoryMap::gpuAddress",
+            "21": "QcomGPUMemoryMap::length",
+            "25": "QcomGPUMemoryMap::mappedLength",
+            "26": "QcomGPUMemoryMap::updateGPUPageTable",
+            "27": "QcomGPUMemoryMap::nativeSlot27"
+          }
+        },
+        "QcomGPUSysMemory": {
+          "unit": "QcomGPUNative.cpp",
+          "slots": 29,
+          "bindings": {
+            "13": "IOGPUObject::init",
+            "14": "IOGPUSysMemory::free",
+            "16": "IOGPUSysMemory::nativeSlot16"
+          }
+        },
+        "QcomGPUTask": {
+          "unit": "QcomGPUNative.cpp",
+          "slots": 21,
+          "bindings": {
+            "13": "IOGPUObject::init",
+            "14": "IOGPUTask::free",
+            "16": "IOGPUTask::initWithGPU"
+          }
+        },
+        "QcomGPUDeviceUserClient": {
+          "unit": "QcomGPUNative.cpp",
+          "slots": 189,
+          "bindings": {
+            "14": "QcomGPUDeviceUserClient::free",
+            "86": "QcomGPUDeviceUserClient::start",
+            "168": "QcomGPUDeviceUserClient::externalMethod",
+            "172": "QcomGPUDeviceUserClient::clientClose",
+            "185": "QcomGPUDeviceUserClient::getTargetAndTrapForIndex"
+          }
+        },
+        "QcomGPUMapper": {
+          "unit": "QcomGPUMapper.cpp",
+          "slots": 174,
+          "bindings": {
+            "14": "QcomGPUMapper::free",
+            "86": "QcomGPUMapper::start",
+            "168": "QcomGPUMapper::initHardware",
+            "169": "QcomGPUMapper::getPageSize",
+            "170": "QcomGPUMapper::iovmMapMemory",
+            "171": "QcomGPUMapper::iovmUnmapMemory",
+            "172": "QcomGPUMapper::iovmInsert",
+            "173": "QcomGPUMapper::mapToPhysicalAddress"
+          }
+        }
+      },
+      "native_abi_contracts": [
+        "abi/apple-iomapper-abi.json"
+      ]
+    },
+    "GenericAES": {
+      "unit": "GenericAES.cpp",
+      "slots": 181,
+      "bindings": {
+        "86": "GenericAES::start",
+        "170": "GenericAES::performAES"
+      }
+    },
+    "QcomButtons": {
+      "unit": "QcomButtons.cpp",
+      "slots": 207,
+      "bindings": {
+        "86": "QcomButtons::start",
+        "87": "QcomButtons::stop",
+        "168": "QcomButtons::handleStart",
+        "169": "QcomButtons::handleStop",
+        "171": "QcomButtons::newTransportString",
+        "173": "QcomButtons::newProductString",
+        "178": "QcomButtons::newPrimaryUsageNumber",
+        "179": "QcomButtons::newPrimaryUsagePageNumber",
+        "180": "QcomButtons::newReportDescriptor",
+        "181": "IOHIDDevice::handleReport",
+        "182": "QcomButtons::getReport",
+        "206": "IOHIDDevice::nativeSlot206"
+      }
+    },
+    "QcomUSB": {
+      "unit": "QcomUSB.cpp",
+      "slots": 168,
+      "bindings": {
+        "14": "QcomUSB::free",
+        "86": "QcomUSB::start",
+        "87": "QcomUSB::stop",
+        "111": "QcomUSB::getWorkLoop",
+        "75": "QcomUSB::requestTerminate",
+        "132": "QcomUSB::message"
+      },
+      "additional_classes": {
+        "QcomUSBController": {
+          "unit": "QcomUSB.cpp",
+          "slots": 168,
+          "bindings": {
+            "14": "QcomUSBController::free",
+            "91": "QcomUSBController::handleOpen",
+            "92": "QcomUSBController::handleClose",
+            "93": "QcomUSBController::handleIsOpen",
+            "111": "QcomUSBController::getWorkLoop"
+          }
+        },
+        "QcomUSBDevice": {
+          "slots": 235,
+          "bindings": {
+            "14": "QcomUSBDevice::free",
+            "86": "QcomUSBDevice::start",
+            "87": "QcomUSBDevice::stop",
+            "111": "QcomUSBDevice::getWorkLoop",
+            "175": "QcomUSBDevice::nativeSlot175",
+            "177": "QcomUSBDevice::goOnBus",
+            "185": "QcomUSBDevice::provideEndpointIDsForConfiguration",
+            "186": "QcomUSBDevice::prepareConfiguration",
+            "187": "QcomUSBDevice::activateEndpoint",
+            "189": "QcomUSBDevice::createIOBuffer",
+            "195": "IOUSBDeviceController::handleUSBSuspend",
+            "197": "IOUSBDeviceController::handleUSBConnectionDone",
+            "202": "QcomUSBDevice::doRemoteWakeGated",
+            "203": "QcomUSBDevice::nativeSlot203",
+            "207": "QcomUSBDevice::getMaxSpeedCapability",
+            "208": "QcomUSBDevice::nativeSlot208",
+            "216": "QcomUSBDevice::handleControlRequestStateChange",
+            "224": "QcomUSBDevice::createControlRequestTracker",
+            "228": "QcomUSBDevice::ioGated",
+            "75": "QcomUSBDevice::requestTerminate",
+            "180": "QcomUSBDevice::handleStallEndpoint",
+            "181": "QcomUSBDevice::handleAbortEndpoint",
+            "182": "QcomUSBDevice::handleSetAddressPreStatusPhase",
+            "183": "QcomUSBDevice::handleSetAddressPostStatusPhase",
+            "184": "QcomUSBDevice::getConnectionSpeed",
+            "188": "QcomUSBDevice::deactivateEndpoint",
+            "192": "QcomUSBDevice::isEndpointStalled",
+            "193": "QcomUSBDevice::resetEndpointDataToggle",
+            "199": "QcomUSBDevice::nativeSlot199",
+            "179": "QcomUSBDevice::connectedWithAccessoryCable",
+            "172": "QcomUSBDevice::createPipeGated",
+            "233": "QcomUSBDevice::nativeSlot233"
+          },
+          "unit": "QcomUSBDevice.cpp"
+        },
+        "QcomUSBPHY": {
+          "unit": "QcomUSBPHY.cpp",
+          "slots": 168,
+          "bindings": {
+            "14": "QcomUSBPHY::free",
+            "75": "QcomUSBPHY::requestTerminate",
+            "86": "QcomUSBPHY::start",
+            "87": "QcomUSBPHY::stop",
+            "91": "QcomUSBPHY::handleOpen",
+            "92": "QcomUSBPHY::handleClose",
+            "93": "QcomUSBPHY::handleIsOpen",
+            "117": "QcomUSBPHY::callPlatformFunction"
+          }
+        },
+        "QcomUSBResources": {
+          "unit": "QcomUSBResources.cpp",
+          "slots": 168,
+          "bindings": {
+            "14": "QcomUSBResources::free",
+            "75": "QcomUSBResources::requestTerminate",
+            "86": "QcomUSBResources::start",
+            "87": "QcomUSBResources::stop",
+            "111": "QcomUSBResources::getWorkLoop",
+            "117": "QcomUSBResources::callPlatformFunction",
+            "132": "QcomUSBResources::message"
+          }
+        },
+        "QcomUSBHostDMACommand": {
+          "unit": "QcomUSBHostDMACommand.cpp",
+          "slots": 33,
+          "bindings": {
+            "15": "QcomUSBHostDMACommand::cloneCommand",
+            "16": "QcomUSBHostDMACommand::initWithSpecification",
+            "17": "QcomUSBHostDMACommand::setMemoryDescriptor",
+            "18": "QcomUSBHostDMACommand::clearMemoryDescriptor",
+            "19": "QcomUSBHostDMACommand::getMemoryDescriptor",
+            "20": "QcomUSBHostDMACommand::prepare",
+            "21": "QcomUSBHostDMACommand::complete",
+            "22": "QcomUSBHostDMACommand::synchronize",
+            "25": "QcomUSBHostDMACommand::prepareWithSpecification",
+            "28": "QcomUSBHostDMACommand::initWithSpecification",
+            "29": "QcomUSBHostDMACommand::prepareWithSpecification",
+            "31": "QcomUSBHostDMACommand::nativeSlot31"
+          }
+        },
+        "QcomUSBHostPort": {
+          "slots": 235,
+          "bindings": {
+            "14": "QcomUSBHostPort::free",
+            "86": "QcomUSBHostPort::start",
+            "87": "QcomUSBHostPort::stop",
+            "174": "QcomUSBHostPort::getPortType",
+            "200": "QcomUSBHostPort::powerOff",
+            "201": "QcomUSBHostPort::powerOn",
+            "202": "QcomUSBHostPort::suspend",
+            "203": "QcomUSBHostPort::resume",
+            "204": "QcomUSBHostPort::resetAndCreateDevice",
+            "234": "QcomUSBHostPort::getPortStatusGated",
+            "132": "QcomUSBHostPort::message",
+            "219": "QcomUSBHostPort::getCompanionPortGated",
+            "214": "QcomUSBHostPort::initBusCurrent"
+          },
+          "unit": "QcomUSBHostPort.cpp"
+        },
+        "QcomUSBHost": {
+          "slots": 269,
+          "bindings": {
+            "14": "QcomUSBHost::free",
+            "86": "QcomUSBHost::start",
+            "87": "QcomUSBHost::stop",
+            "111": "AppleUSBHostController::getWorkLoop",
+            "217": "QcomUSBHost::createPipeGated",
+            "224": "QcomUSBHost::closePipeGated",
+            "231": "QcomUSBHost::getDMACommand",
+            "249": "QcomUSBHost::interruptOccurred",
+            "248": "QcomUSBHost::filterOccurred",
+            "247": "QcomUSBHost::createPorts",
+            "192": "QcomUSBHost::createDevice",
+            "193": "QcomUSBHost::nativeSlot193",
+            "223": "QcomUSBHost::adjustPipeGated",
+            "218": "QcomUSBHost::ioGated",
+            "219": "QcomUSBHost::abortPipeGated",
+            "220": "QcomUSBHost::clearPipeStallGated",
+            "266": "QcomUSBHost::getRawMicroFrameCount",
+            "267": "QcomUSBHost::makeFrameNumber",
+            "233": "QcomUSBHost::getFrameNumber",
+            "234": "QcomUSBHost::getFrameRollover",
+            "195": "AppleUSBHostController::registerHub",
+            "196": "AppleUSBHostController::registerHub",
+            "197": "AppleUSBHostController::unregisterHub",
+            "198": "QcomUSBHost::registerHubGated",
+            "199": "QcomUSBHost::registerSuperSpeedHubGated",
+            "200": "QcomUSBHost::unregisterHubGated",
+            "182": "QcomUSBHost::powerDown",
+            "183": "QcomUSBHost::powerUp",
+            "225": "QcomUSBHost::enableStreamsGated",
+            "226": "QcomUSBHost::disableStreamsGated",
+            "227": "QcomUSBHost::createStreamGated",
+            "228": "QcomUSBHost::abortStreamGated",
+            "229": "QcomUSBHost::closeStreamGated",
+            "235": "QcomUSBHost::getCompanionPort"
+          },
+          "unit": "QcomUSBHost.cpp"
+        },
+        "QcomUSBMapper": {
+          "unit": "QcomUSBMapper.cpp",
+          "slots": 174,
+          "bindings": {
+            "14": "QcomUSBMapper::free",
+            "86": "QcomUSBMapper::start",
+            "117": "QcomUSBMapper::callPlatformFunction",
+            "168": "QcomUSBMapper::initHardware",
+            "169": "QcomUSBMapper::getPageSize",
+            "170": "QcomUSBMapper::iovmMapMemory",
+            "171": "QcomUSBMapper::iovmUnmapMemory",
+            "172": "QcomUSBMapper::iovmInsert",
+            "173": "QcomUSBMapper::mapToPhysicalAddress"
+          }
+        }
+      },
+      "native_abi_contracts": [
+        "abi/apple-iomapper-abi.json"
+      ]
+    },
+    "QcomPMIC": {
+      "unit": "QcomPMIC.cpp",
+      "slots": 185,
+      "bindings": {
+        "14": "QcomPMIC::free",
+        "75": "QcomPMIC::requestTerminate",
+        "86": "QcomPMIC::start",
+        "111": "QcomPMIC::getWorkLoop",
+        "117": "QcomPMIC::callPlatformFunction",
+        "155": "QcomPMIC::setPowerState",
+        "168": "QcomPMIC::registerInterrupt",
+        "169": "QcomPMIC::unregisterInterrupt",
+        "170": "QcomPMIC::getInterruptType",
+        "171": "QcomPMIC::enableInterrupt",
+        "172": "QcomPMIC::disableInterrupt",
+        "173": "QcomPMIC::causeInterrupt"
+      },
+      "additional_classes": {
+        "QcomUSBConnector": {
+          "unit": "QcomUSBConnector.cpp",
+          "slots": 168,
+          "bindings": {
+            "14": "QcomUSBConnector::free",
+            "75": "QcomUSBConnector::requestTerminate",
+            "86": "QcomUSBConnector::start",
+            "87": "QcomUSBConnector::stop",
+            "91": "QcomUSBConnector::handleOpen",
+            "92": "QcomUSBConnector::handleClose",
+            "93": "QcomUSBConnector::handleIsOpen",
+            "111": "QcomUSBConnector::getWorkLoop",
+            "117": "QcomUSBConnector::callPlatformFunction",
+            "155": "QcomUSBConnector::setPowerState"
+          }
+        }
+      }
+    },
+    "QcomGCC": {
+      "unit": "QcomGCC.cpp",
+      "slots": 169,
+      "bindings": {
+        "14": "QcomGCC::free",
+        "86": "QcomGCC::start",
+        "168": "QcomGCC::execute"
+      }
+    },
+    "QcomInterconnect": {
+      "unit": "QcomInterconnect.cpp",
+      "slots": 168,
+      "bindings": {
+        "14": "QcomInterconnect::free",
+        "75": "QcomInterconnect::requestTerminate",
+        "86": "QcomInterconnect::start",
+        "87": "QcomInterconnect::stop",
+        "91": "QcomInterconnect::handleOpen",
+        "92": "QcomInterconnect::handleClose",
+        "93": "QcomInterconnect::handleIsOpen",
+        "111": "QcomInterconnect::getWorkLoop",
+        "117": "QcomInterconnect::callPlatformFunction"
+      }
+    },
+    "QcomRPM": {
+      "unit": "QcomRPM.cpp",
+      "slots": 170,
+      "bindings": {
+        "14": "QcomPowerService::free",
+        "86": "QcomRPM::start",
+        "168": "QcomRPM::execute",
+        "169": "QcomRPM::signal"
+      }
+    },
+    "FingerprintHID": {
+      "unit": "FingerprintHID.cpp",
+      "slots": 207,
+      "bindings": {
+        "86": "FingerprintHID::start",
+        "87": "FingerprintHID::stop",
+        "168": "FingerprintHID::handleStart",
+        "169": "FingerprintHID::handleStop",
+        "171": "FingerprintHID::newTransportString",
+        "173": "FingerprintHID::newProductString",
+        "178": "FingerprintHID::newPrimaryUsageNumber",
+        "179": "FingerprintHID::newPrimaryUsagePageNumber",
+        "180": "FingerprintHID::newReportDescriptor",
+        "181": "IOHIDDevice::handleReport",
+        "182": "FingerprintHID::getReport",
+        "206": "IOHIDDevice::nativeSlot206",
+        "111": "FingerprintHID::getWorkLoop"
+      }
+    },
+    "GoodixFingerprint": {
+      "unit": "GoodixFingerprint.cpp",
+      "slots": 207,
+      "bindings": {
+        "86": "FingerprintHID::start",
+        "87": "FingerprintHID::stop",
+        "168": "GoodixFingerprint::handleStart",
+        "169": "FingerprintHID::handleStop",
+        "171": "FingerprintHID::newTransportString",
+        "173": "FingerprintHID::newProductString",
+        "178": "FingerprintHID::newPrimaryUsageNumber",
+        "179": "FingerprintHID::newPrimaryUsagePageNumber",
+        "180": "FingerprintHID::newReportDescriptor",
+        "181": "IOHIDDevice::handleReport",
+        "182": "FingerprintHID::getReport",
+        "206": "IOHIDDevice::nativeSlot206",
+        "111": "FingerprintHID::getWorkLoop"
+      }
+    },
+    "FPCFingerprint": {
+      "unit": "FPCFingerprint.cpp",
+      "slots": 207,
+      "bindings": {
+        "86": "FingerprintHID::start",
+        "87": "FingerprintHID::stop",
+        "168": "FPCFingerprint::handleStart",
+        "169": "FingerprintHID::handleStop",
+        "171": "FingerprintHID::newTransportString",
+        "173": "FingerprintHID::newProductString",
+        "178": "FingerprintHID::newPrimaryUsageNumber",
+        "179": "FingerprintHID::newPrimaryUsagePageNumber",
+        "180": "FingerprintHID::newReportDescriptor",
+        "181": "IOHIDDevice::handleReport",
+        "182": "FingerprintHID::getReport",
+        "206": "IOHIDDevice::nativeSlot206",
+        "111": "FingerprintHID::getWorkLoop"
+      }
+    },
+    "GenericARMPlatform": {
+      "class": "GenericARMCPU",
+      "unit": "GenericARMCPU.cpp",
+      "slots": 184,
+      "bindings": {
+        "14": "GenericARMCPU::free",
+        "75": "GenericARMCPU::requestTerminate",
+        "86": "GenericARMCPU::start",
+        "170": "GenericARMCPU::initCPU",
+        "171": "GenericARMCPU::quiesceCPU",
+        "172": "GenericARMCPU::startCPU",
+        "173": "GenericARMCPU::haltCPU",
+        "174": "GenericARMCPU::signalCPU",
+        "183": "GenericARMCPU::getCPUName"
+      }
+    },
+    "QcomSCM": {
+      "unit": "QcomSCM.cpp",
+      "slots": 168,
+      "bindings": {
+        "14": "QcomSCM::free",
+        "75": "QcomSCM::requestTerminate",
+        "86": "QcomSCM::start",
+        "87": "QcomSCM::stop",
+        "91": "QcomSCM::handleOpen",
+        "92": "QcomSCM::handleClose",
+        "93": "QcomSCM::handleIsOpen",
+        "117": "QcomSCM::callPlatformFunction"
+      }
+    },
+    "QcomBluetooth": {
+      "unit": "QcomBluetooth.cpp",
+      "slots": 168,
+      "bindings": {
+        "86": "QcomBluetooth::start",
+        "87": "QcomBluetooth::stop"
+      },
+      "native_abi_contracts": [
+        "abi/apple-serial-abi.json"
+      ],
+      "additional_classes": {
+        "QcomBluetoothSerial": {
+          "unit": "QcomBluetoothSerial.cpp",
+          "slots": 180,
+          "bindings": {
+            "168": "QcomBluetoothSerial::acquirePort",
+            "179": "QcomBluetoothSerial::dequeueData"
+          }
+        }
+      }
+    },
+    "QcomWLAN": {
+      "unit": "QcomWLAN.cpp",
+      "slots": 168,
+      "bindings": {
+        "14": "QcomWLAN::free",
+        "86": "QcomWLAN::start",
+        "87": "QcomWLAN::stop"
+      },
+      "native_abi_contracts": [
+        "abi/apple-iomapper-abi.json"
+      ]
+    },
+    "SynapticsTouch": {
+      "unit": "SynapticsTouch.cpp",
+      "slots": 207,
+      "bindings": {
+        "86": "SynapticsTouch::start",
+        "87": "SynapticsTouch::stop",
+        "168": "SynapticsTouch::handleStart",
+        "169": "SynapticsTouch::handleStop",
+        "171": "SynapticsTouch::newTransportString",
+        "173": "SynapticsTouch::newProductString",
+        "178": "SynapticsTouch::newPrimaryUsageNumber",
+        "179": "SynapticsTouch::newPrimaryUsagePageNumber",
+        "180": "SynapticsTouch::newReportDescriptor",
+        "181": "IOHIDDevice::handleReport",
+        "182": "SynapticsTouch::getReport",
+        "206": "IOHIDDevice::nativeSlot206",
+        "111": "SynapticsTouch::getWorkLoop"
+      }
+    },
+    "SPIGyro": {
+      "unit": "SPIGyro.cpp",
+      "slots": 207,
+      "bindings": {
+        "86": "SPIGyro::start",
+        "87": "SPIGyro::stop",
+        "168": "SPIGyro::handleStart",
+        "169": "SPIGyro::handleStop",
+        "171": "SPIGyro::newTransportString",
+        "173": "SPIGyro::newProductString",
+        "178": "SPIGyro::newPrimaryUsageNumber",
+        "179": "SPIGyro::newPrimaryUsagePageNumber",
+        "180": "SPIGyro::newReportDescriptor",
+        "181": "IOHIDDevice::handleReport",
+        "182": "SPIGyro::getReport",
+        "206": "IOHIDDevice::nativeSlot206",
+        "111": "SPIGyro::getWorkLoop",
+        "183": "SPIGyro::setReport"
+      }
+    },
+    "QcomAudio": {
+      "unit": "QcomAudio.cpp",
+      "slots": 197,
+      "bindings": {
+        "14": "QcomAudio::free",
+        "21": "IOAudio2Device::init",
+        "44": "IOAudio2Device::setProperties",
+        "81": "IOAudio2Device::configureReport",
+        "82": "IOAudio2Device::updateReport",
+        "86": "QcomAudio::start",
+        "87": "QcomAudio::stop",
+        "140": "IOAudio2Device::newUserClient",
+        "168": "IOAudio2Device::isRunning",
+        "169": "QcomAudio::startIO",
+        "170": "QcomAudio::stopIO",
+        "171": "IOAudio2Device::startIOWithFlags",
+        "172": "IOAudio2Device::stopIOWithFlags",
+        "173": "IOAudio2Device::nativeSlot173",
+        "174": "IOAudio2Device::getStatusBuffer",
+        "175": "IOAudio2Device::nativeSlot175",
+        "176": "IOAudio2Device::nativeSlot176",
+        "177": "IOAudio2Device::nativeSlot177",
+        "178": "IOAudio2Device::clientClosed",
+        "179": "IOAudio2Device::registerNotificationPort",
+        "180": "IOAudio2Device::notify",
+        "181": "IOAudio2Device::nativeSlot181",
+        "182": "IOAudio2Device::clientMemoryForType",
+        "183": "IOAudio2Device::nativeSlot183",
+        "184": "IOAudio2Device::nativeSlot184",
+        "185": "IOAudio2Device::nativeSlot185",
+        "186": "IOAudio2Device::requestConfigChange",
+        "187": "IOAudio2Device::handleConfigChange",
+        "188": "QcomAudio::handleChangeSampleRate",
+        "189": "QcomAudio::handleChangeStreamFormat",
+        "190": "QcomAudio::setStreamActive",
+        "191": "IOAudio2Device::nativeSlot191",
+        "192": "IOAudio2Device::nativeSlot192",
+        "193": "QcomAudio::getStreamBuffer",
+        "194": "IOAudio2Device::nativeSlot194",
+        "195": "IOAudio2Device::nativeSlot195",
+        "196": "QcomAudio::performConfigChange",
+        "84": "QcomAudio::registerService",
+        "111": "QcomAudio::getWorkLoop",
+        "155": "QcomAudio::setPowerState"
+      },
+      "native_abi_contracts": [
+        "abi/apple-audio2-abi.json"
+      ],
+      "additional_classes": {
+        "QcomADSP": {
+          "unit": "QcomADSP.cpp",
+          "slots": 174,
+          "bindings": {
+            "14": "QcomADSP::free",
+            "86": "QcomADSP::start",
+            "87": "QcomADSP::stop",
+            "111": "QcomADSP::getWorkLoop",
+            "155": "QcomADSP::setPowerState",
+            "168": "QcomADSP::outputConfiguration",
+            "169": "QcomADSP::prepareOutput",
+            "170": "QcomADSP::startOutput",
+            "171": "QcomADSP::stopOutput",
+            "172": "QcomADSP::readPosition",
+            "173": "QcomADSP::releaseOutput"
+          }
+        }
+      }
+    },
+    "PMI8998Haptics": {
+      "unit": "PMI8998Haptics.cpp",
+      "slots": 168,
+      "bindings": {
+        "14": "PMI8998Haptics::free",
+        "75": "PMI8998Haptics::requestTerminate",
+        "86": "PMI8998Haptics::start",
+        "87": "PMI8998Haptics::stop",
+        "111": "PMI8998Haptics::getWorkLoop",
+        "140": "PMI8998Haptics::newUserClient",
+        "155": "PMI8998Haptics::setPowerState"
+      },
+      "additional_classes": {
+        "PMI8998HapticsUserClient": {
+          "unit": "PMI8998HapticsUserClient.cpp",
+          "slots": 186,
+          "bindings": {
+            "14": "PMI8998HapticsUserClient::free",
+            "86": "PMI8998HapticsUserClient::start",
+            "87": "PMI8998HapticsUserClient::stop",
+            "168": "PMI8998HapticsUserClient::externalMethod",
+            "170": "PMI8998HapticsUserClient::initWithTask",
+            "172": "PMI8998HapticsUserClient::clientClose"
+          }
+        }
+      }
+    }
+  },
+  "source_manifests": [
+    "include/IOKit/storage/sources.json"
+  ],
+  "probe_contracts": {
+    "usb": {
+      "abi_contracts": [
+        "abi/apple-usb-device-abi.json",
+        "abi/apple-usb-host-abi.json",
+        "abi/apple-usb-common-abi.json"
+      ],
+      "kernel_provider_imports": {
+        "../tools/abi-probes/usb_device_abi_compile.cpp": [
+          "abi/apple-usb-device-abi.json"
+        ],
+        "../tools/abi-probes/usb_host_abi_compile.cpp": [
+          "abi/apple-usb-host-abi.json",
+          "abi/apple-usb-common-abi.json"
+        ]
+      }
+    },
+    "usb-smmu": {
+      "abi_contracts": [
+        "abi/apple-iomapper-abi.json"
+      ],
+      "kernel_provider_imports": {
+        "../tools/abi-probes/smmu_kernel_compile.cpp": [
+          "abi/apple-iomapper-abi.json"
+        ]
+      }
+    },
+    "audio-output": {
+      "abi_contracts": [
+        "abi/apple-audio2-abi.json"
+      ],
+      "kernel_provider_imports": {
+        "../tools/abi-probes/audio_abi_compile.cpp": [
+          "abi/apple-audio2-abi.json"
+        ]
+      }
+    },
+    "baseband-rmtfs-storage": {
+      "abi_contracts": [
+        "abi/apple-storage-abi.json"
+      ]
+    }
+  }
+}

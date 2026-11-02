@@ -1,0 +1,5 @@
+name = "Qualcomm Snapdragon 835 / MSM8998"
+kernel_target = "SDM835"
+soc_tree = "soc.dtsi"
+handoff = "handoff.py"
+reference_manifests = ["osm-sources.json"]

@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-only
 // MSM8998 v2/v2.1 sagit CPRh calibration. Derived from the pinned Xiaomi
-// cprh-kbss-regulator.c and cpr3-util.c in docs/power/reference.
+// cprh-kbss-regulator.c and cpr3-util.c in local/reference/qcom/msm8998/power.
 // No MMIO, allocation, voltage fallback or device-independent voltage table.
 #pragma once
 #include <stdint.h>
