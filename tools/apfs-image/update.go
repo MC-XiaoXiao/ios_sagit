@@ -11,7 +11,6 @@ import (
 	"github.com/deploymenttheory/go-apfs-v2/pkg/apfswrite"
 	"github.com/deploymenttheory/go-apfs-v2/pkg/appledouble"
 	"github.com/deploymenttheory/go-apfs-v2/pkg/osversion"
-	"howett.net/plist"
 	"io"
 	"os"
 	"path/filepath"
@@ -207,14 +206,14 @@ func updatePlan(args []string) {
 	sourceOffset := flags.Int64("source-offset", 0, "container byte offset within a UAS device")
 	sourceSize := flags.Int64("source-size", 0, "container byte length; required for block devices")
 	overlay := flags.String("overlay", "", "System overlay directory")
-	setupComplete := flags.Bool("development-setup-complete", false, "seed Setup Assistant completion preferences in Data for this development port")
+	dataOverlay := flags.String("data-overlay", "", "prepared Data payload manifest")
 	group := flags.String("volume-group", "", "explicit System/Data group UUID; zero UUID removes macOS grouping")
 	addVolumes := flags.String("add-volumes", "", "JSON array of new volume names, roles, UUIDs and optional overlay directories")
 	sourceIdentity := flags.String("source-identity", "", "reuse a prior plan's source hash with identical geometry/superblock; validation and installation still hash the complete source")
 	output := flags.String("output", "", "small block delta, never a new container image")
 	flags.Parse(args)
-	if *source == "" || *output == "" || (*overlay == "" && !*setupComplete) {
-		panic("update-plan requires source, output, and an overlay or --development-setup-complete")
+	if *source == "" || *output == "" || (*overlay == "" && *dataOverlay == "") {
+		panic("update-plan requires source, output, and a System overlay or Data payload manifest")
 	}
 	f := must(os.Open(*source))
 	defer f.Close()
@@ -256,8 +255,8 @@ func updatePlan(args []string) {
 		if role == apfs.VolumeRoleSystem && *overlay != "" {
 			addOverlay(root, *overlay, &stats)
 		}
-		if role == apfs.VolumeRoleData && *setupComplete {
-			seedSetupCompletion(root, &stats)
+		if role == apfs.VolumeRoleData && *dataOverlay != "" {
+			addDataOverlay(root, *dataOverlay, &stats)
 		}
 		groupID := must(v.VolumeGroupIdentifier())
 		if *group != "" && (role == apfs.VolumeRoleSystem || role == apfs.VolumeRoleData) {
@@ -276,20 +275,7 @@ func updatePlan(args []string) {
 		if err := json.Unmarshal(must(os.ReadFile(*addVolumes)), &additions); err != nil {
 			panic(err)
 		}
-		for _, addition := range additions {
-			role := must(apfs.ParseVolumeRole(addition.Role))
-			id := parseUUID(addition.UUID)
-			if role == 0 || roles[role] || id == ([16]byte{}) || identities[id] || addition.Name == "" {
-				panic("new volume must have a unique role and nonzero UUID/name")
-			}
-			root := &apfswrite.Entry{Mode: os.ModeDir | 0755}
-			if addition.Overlay != "" {
-				addOverlay(root, addition.Overlay, &stats)
-			}
-			specs = append(specs, apfswrite.VolumeSpec{Name: addition.Name, UUID: id, Role: role, CaseSensitive: true, Root: root})
-			roles[role] = true
-			identities[id] = true
-		}
+		specs = appendVolumes(specs, additions, &stats)
 	}
 	opts := &apfswrite.CreateOptions{TargetVersion: osversion.Version{Major: 15}, ContainerUUID: c.Superblock.UUID, Volumes: specs, MetadataStartBlock: start, TransactionID: c.Superblock.XID + 1}
 	delta := &blockDelta{base: reader, blocks: map[uint64][]byte{}, size: size}
@@ -360,21 +346,7 @@ func updatePlan(args []string) {
 		must(io.CopyBuffer(h, io.NewSectionReader(reader, 0, size), make([]byte, 4<<20)))
 		sourceHash = hex.EncodeToString(h.Sum(nil))
 	}
-	report := map[string]any{"schema": 1, "source": *source, "source_offset": *sourceOffset, "source_sha256": sourceHash, "delta_sha256": hash(*output), "source_superblock_sha256": hex.EncodeToString(fingerprint[:]), "container_bytes": size, "metadata_start_block": start, "old_free_bytes": oldFree * 4096, "new_free_bytes": newFree * 4096, "changed_blocks": len(delta.blocks), "patch_bytes": 24 + len(delta.blocks)*4104, "transaction_id": c.Superblock.XID + 1, "commit_block": 0, "overlay": *overlay, "overlay_files": files, "development_setup_complete": *setupComplete, "device_written": false}
-	if *setupComplete {
-		data := must(actual.VolumeBySelector("data"))
-		var prefs map[string]any
-		if _, err := plist.Unmarshal(must(data.ReadFile("mobile/Library/Preferences/com.apple.purplebuddy.plist")), &prefs); err != nil {
-			panic(err)
-		}
-		if prefs["SetupDone"] != true || prefs["SetupFinishedAllSteps"] != true {
-			panic("Setup completion preferences missing from planned Data volume")
-		}
-		report["setup_completion_files"] = []string{
-			"mobile/Library/Preferences/com.apple.purplebuddy.plist",
-			"mobile/Library/Preferences/com.apple.purplebuddy.notbackedup.plist",
-		}
-	}
+	report := map[string]any{"schema": 1, "source": *source, "source_offset": *sourceOffset, "source_sha256": sourceHash, "delta_sha256": hash(*output), "source_superblock_sha256": hex.EncodeToString(fingerprint[:]), "container_bytes": size, "metadata_start_block": start, "old_free_bytes": oldFree * 4096, "new_free_bytes": newFree * 4096, "changed_blocks": len(delta.blocks), "patch_bytes": 24 + len(delta.blocks)*4104, "transaction_id": c.Superblock.XID + 1, "commit_block": 0, "overlay": *overlay, "overlay_files": files, "data_overlay": *dataOverlay, "device_written": false}
 	if *sourceIdentity != "" {
 		report["source_hash_reused_from"] = *sourceIdentity
 	}

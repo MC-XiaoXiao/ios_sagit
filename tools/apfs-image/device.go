@@ -1,6 +1,8 @@
 package main
 
 import (
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -22,12 +24,16 @@ func verifyDevice(args []string) {
 		panic("verify-device requires device, offset, report and output")
 	}
 	var report struct {
-		ContainerBytes int64  `json:"container_bytes"`
-		SystemUUID     string `json:"system_uuid"`
-		DataUUID       string `json:"data_uuid"`
-		GroupUUID      string `json:"volume_group_uuid"`
-		Fstab          string `json:"fstab"`
-		DataFreeMiB    uint64 `json:"data_free_mib"`
+		ContainerBytes int64            `json:"container_bytes"`
+		SystemUUID     string           `json:"system_uuid"`
+		DataUUID       string           `json:"data_uuid"`
+		GroupUUID      string           `json:"volume_group_uuid"`
+		Fstab          string           `json:"fstab"`
+		DataFreeMiB    uint64           `json:"data_free_mib"`
+		Volumes        []volumeIdentity `json:"volumes"`
+		CryptexImages  map[string]struct {
+			SHA256 string `json:"sha256"`
+		} `json:"cryptex_images"`
 	}
 	if err := json.Unmarshal(must(os.ReadFile(*expected)), &report); err != nil {
 		panic(err)
@@ -37,8 +43,19 @@ func verifyDevice(args []string) {
 	reader := io.NewSectionReader(f, *offset, report.ContainerBytes)
 	c := must(apfs.Open(reader, nil))
 	defer c.Close()
-	if must(c.NumberOfVolumes()) != 2 {
-		panic("expected exactly two volumes")
+	expectedCount := 2
+	if len(report.Volumes) != 0 {
+		expectedCount = len(report.Volumes)
+	}
+	if must(c.NumberOfVolumes()) != expectedCount {
+		panic("unexpected volume count")
+	}
+	for _, expected := range report.Volumes {
+		volume := must(c.VolumeBySelector(expected.UUID))
+		if uuidString(must(volume.Identifier())) != expected.UUID || uint16(must(volume.Role())) != expected.Role ||
+			uuidString(must(volume.VolumeGroupIdentifier())) != expected.GroupUUID {
+			panic("device role volume identity mismatch")
+		}
 	}
 	system := must(c.VolumeBySelector("system"))
 	data := must(c.VolumeBySelector("data"))
@@ -51,6 +68,17 @@ func verifyDevice(args []string) {
 	if string(must(system.ReadFile("private/etc/fstab"))) != report.Fstab {
 		panic("device fstab mismatch")
 	}
+	for name, expected := range report.CryptexImages {
+		if name != "SystemOS.dmg" && name != "AppOS.dmg" {
+			panic("unexpected retained Cryptex name")
+		}
+		entry := must(system.FileEntryByPath("usr/standalone/firmware/Cryptex1/" + name))
+		h := sha256.New()
+		must(io.CopyBuffer(h, io.NewSectionReader(entry, 0, int64(must(entry.Size()))), make([]byte, 4<<20)))
+		if hex.EncodeToString(h.Sum(nil)) != expected.SHA256 {
+			panic("retained Cryptex payload hash mismatch: " + name)
+		}
+	}
 	must(data.RootDirectory())
 	sm := apfs.NewSpaceManager()
 	block := must(c.CheckpointMap.PhysicalAddressByObjectIdentifier(c.Superblock.SpacemanOID))
@@ -62,5 +90,5 @@ func verifyDevice(args []string) {
 		panic("device Data headroom is insufficient")
 	}
 	writeJSON(*output, map[string]any{"device": *device, "partition_byte_offset": *offset, "container_bytes": report.ContainerBytes, "system_uuid": report.SystemUUID, "data_uuid": report.DataUUID, "volume_group_uuid": report.GroupUUID, "fstab_matches": true, "device_filesystem_read_verified": true, "shared_free_bytes": free, "data_headroom_verified": true, "full_ios_boot_verified": false})
-	fmt.Println("Actual device System/Data UUIDs, volume group, fstab and free space verified.")
+	fmt.Println("APFS reader: volume identities, fstab, Cryptex payloads and free space verified.")
 }

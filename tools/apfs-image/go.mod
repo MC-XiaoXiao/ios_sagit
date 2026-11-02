@@ -9,7 +9,7 @@ require (
 	github.com/ulikunitz/xz v0.5.17 // indirect
 	golang.org/x/crypto v0.57.0 // indirect
 	golang.org/x/sys v0.48.0 // indirect
-	howett.net/plist v1.0.1
+	howett.net/plist v1.0.1 // indirect
 )
 
 replace github.com/deploymenttheory/go-apfs-v2 => ../src/go-apfs

@@ -396,16 +396,17 @@ func nativeUpdatePlan(args []string, selector string) {
 	source := flags.String("source", "", "offline container")
 	offset := flags.Int64("source-offset", 0, "container byte offset")
 	size := flags.Int64("source-size", 0, "container size")
-	overlay := flags.String("overlay", "", "regular-file System overlay")
+	overlay := flags.String("overlay", "", "regular-file overlay in the selected volume")
+	overlayUID := flags.Uint("overlay-uid", 0, "explicit owner for new Data overlay files and directories")
+	overlayGID := flags.Uint("overlay-gid", 0, "explicit group for new Data overlay files and directories")
 	patch := flags.String("file-block-patch", "", "same-size System file block patch descriptor")
-	setupComplete := flags.Bool("development-setup-complete", false, "merge Setup completion preferences in the native Data volume")
 	output := flags.String("output", "", "COW delta")
 	flags.Parse(args)
 	repairCheck(*source != "" && *output != "", "native update requires source and output")
 	if selector == "data" {
-		repairCheck(*setupComplete && *overlay == "" && *patch == "", "data-update-plan requires --development-setup-complete")
+		repairCheck(*overlay != "" && *patch == "", "data-update-plan requires a prepared overlay")
 	} else {
-		repairCheck(!*setupComplete && (*overlay != "" || *patch != ""), "system-update-plan requires overlay or file-block-patch")
+		repairCheck((*overlay != "" || *patch != ""), "system-update-plan requires overlay or file-block-patch")
 	}
 	f := must(os.Open(*source))
 	defer f.Close()
@@ -419,8 +420,12 @@ func nativeUpdatePlan(args []string, selector string) {
 	defer n.container.Close()
 	var report map[string]any
 	if selector == "data" {
-		report = n.applyVolume("data", nativeSetupInputs(must(n.container.VolumeBySelector("data"))), "")
-		report["development_setup_complete"] = true
+		inputs := []nativeSystemInput{}
+		if *overlay != "" {
+			repairCheck(uint64(*overlayUID) <= uint64(^uint32(0)) && uint64(*overlayGID) <= uint64(^uint32(0)), "overlay ownership outside uint32 range")
+			inputs = nativeDataInputs(*overlay, uint32(*overlayUID), uint32(*overlayGID))
+		}
+		report = n.applyVolume("data", inputs, *overlay)
 	} else {
 		report = n.applySystem(*overlay, *patch)
 	}
@@ -560,8 +565,57 @@ func (n *nativeEditor) applyVolume(selector string, inputs []nativeSystemInput, 
 	fs.nextOID = c.Superblock.NextOID
 	ext := newNativeTree(n.read, n.allocate, n.release, n.write, vs.ExtentrefTreeOID, false, nil, n.xid, nativeIDCompare)
 	nextInode := vs.NextObjID
-	var addedFiles, allocatedData, freedData uint64
+	var addedFiles, addedDirectories, allocatedData, freedData uint64
 	files := map[string]any{}
+	createdDirectories := map[string]uint64{}
+	var parentDirectory func(string, uint32, uint32) uint64
+	parentDirectory = func(path string, uid, gid uint32) uint64 {
+		if id := createdDirectories[path]; id != 0 {
+			return id
+		}
+		if parent, err := v.FileEntryByPath(path); err == nil {
+			repairCheck(must(parent.FileMode())&0170000 == 0040000 && parent.Inode.Flags&2 == 0, "overlay parent is not an ordinary directory: "+path)
+			return must(parent.Identifier())
+		}
+		repairCheck(selector == "data" && path != "/" && path != ".", "overlay parent directory is missing: "+path)
+		parentPath, name := filepath.ToSlash(filepath.Dir(path)), filepath.Base(path)
+		if parentPath == "." {
+			parentPath = "/"
+		}
+		parentID := parentDirectory(parentPath, uid, gid)
+		key := nativeDrecKey(parentID, name)
+		_, exists := fs.find(key)
+		repairCheck(!exists, "unreadable existing directory: "+path)
+		id := nextInode
+		nextInode++
+		nameBytes := append([]byte(name), 0)
+		padded := (len(nameBytes) + 7) &^ 7
+		inode := make([]byte, 100+padded)
+		np64(inode, parentID)
+		np64(inode[8:], id)
+		np64(inode[48:], 0x8000)
+		np32(inode[60:], 0)
+		np16(inode[80:], 0040755)
+		np32(inode[72:], uid)
+		np32(inode[76:], gid)
+		np16(inode[92:], 1)
+		np16(inode[94:], uint16(padded))
+		inode[96], inode[97] = 4, 2
+		np16(inode[98:], uint16(len(nameBytes)))
+		copy(inode[100:], nameBytes)
+		fs.put(nativeKey(id, 3), inode)
+		drec := make([]byte, 18)
+		np64(drec, id)
+		np16(drec[16:], 4)
+		fs.put(key, drec)
+		pinode := fs.required(nativeKey(parentID, 3))
+		repairCheck(nu32(pinode[56:]) < ^uint32(0), "directory child count overflow")
+		np32(pinode[56:], nu32(pinode[56:])+1)
+		fs.put(nativeKey(parentID, 3), pinode)
+		createdDirectories[path] = id
+		addedDirectories++
+		return id
+	}
 	for _, input := range inputs {
 		relative, payload := input.path, input.payload
 		stMode := os.FileMode(0644)
@@ -572,10 +626,7 @@ func (n *nativeEditor) applyVolume(selector string, inputs []nativeSystemInput, 
 		if parentPath == "." {
 			parentPath = "/"
 		}
-		parent := must(v.FileEntryByPath(parentPath))
-		repairCheck(must(parent.FileMode())&0170000 == 0040000, "parent must exist as directory")
-		repairCheck(parent.Inode.Flags&2 == 0, "System overlay parent has unsupported directory statistics")
-		parentID := must(parent.Identifier())
+		parentID := parentDirectory(parentPath, input.uid, input.gid)
 		target, err := v.FileEntryByPath(relative)
 		var id uint64
 		var inode []byte
@@ -611,19 +662,19 @@ func (n *nativeEditor) applyVolume(selector string, inputs []nativeSystemInput, 
 			} else {
 				repairCheck(!must(target.HasExtendedAttributeByName("com.apple.decmpfs")), "stale compression metadata unsupported")
 			}
-			repairCheck(len(stream.PhysicalExtents) <= 1, "replacement target must be empty or a single extent")
-			if len(stream.PhysicalExtents) == 1 {
-				old := stream.PhysicalExtents[0]
-				repairCheck(old.LogicalOffset == 0 && old.EncryptionIdentifier == 0 && old.PhysicalBlockNumber > 0 && old.DataSize%4096 == 0, "unsupported replacement extent")
+			var covered uint64
+			for _, old := range stream.PhysicalExtents {
+				repairCheck(old.LogicalOffset == covered && old.EncryptionIdentifier == 0 && old.PhysicalBlockNumber > 0 && old.DataSize > 0 && old.DataSize%4096 == 0, "unsupported replacement extent")
 				blockKey := nativeKey(old.PhysicalBlockNumber, 2)
 				record := ext.required(blockKey)
 				repairCheck(len(record) == 20 && nu64(record) == old.DataSize/4096|1<<60 && nu64(record[8:]) == id && nu32(record[16:]) == 1, "shared or noncanonical replacement extent")
 				ext.put(blockKey, nil)
+				fs.put(nativeKey(id, 8, old.LogicalOffset), nil)
 				n.release(old.PhysicalBlockNumber, old.DataSize/4096)
 				freedData += old.DataSize / 4096
-			} else {
-				repairCheck(stream.Size() == 0, "missing raw extents")
+				covered += old.DataSize
 			}
+			repairCheck((stream.Size() == 0 && covered == 0) || (covered >= stream.Size() && covered < stream.Size()+4096), "missing or excessive raw extents")
 			oldField := nativeXFields(inode)[8]
 			repairCheck((len(oldField) == 0 && stream.Size() == 0) || (len(oldField) == 40 && nu64(oldField) == stream.Size()), "target stream metadata mismatch")
 			field := make([]byte, 40)
@@ -666,20 +717,34 @@ func (n *nativeEditor) applyVolume(selector string, inputs []nativeSystemInput, 
 			addedFiles++
 		}
 		count := uint64((len(payload) + 4095) / 4096)
-		p := n.allocate(count)
-		raw := make([]byte, count*4096)
-		copy(raw, payload)
-		n.write(p, raw)
-		allocatedData += count
-		fileExtent := make([]byte, 24)
-		np64(fileExtent, count*4096)
-		np64(fileExtent[8:], p)
-		fs.put(nativeKey(id, 8, 0), fileExtent)
-		ref := make([]byte, 20)
-		np64(ref, count|1<<60)
-		np64(ref[8:], id)
-		np32(ref[16:], 1)
-		ext.put(nativeKey(p, 2), ref)
+		for logical := uint64(0); logical < count; {
+			// Native Data can have enough free space spread across small holes.
+			// Copy bounded extents instead of requiring a contiguous whole file.
+			start := max(n.scan, 1)
+			for start < uint64(n.source.size/4096) && (!n.isFree(start) || n.allocated[start]) {
+				start++
+			}
+			run := uint64(0)
+			for start+run < uint64(n.source.size/4096) && run < min(count-logical, 256) && n.isFree(start+run) && !n.allocated[start+run] {
+				run++
+			}
+			repairCheck(run > 0, "no original free space for file extent")
+			p := n.allocate(run)
+			raw := make([]byte, run*4096)
+			copy(raw, payload[logical*4096:min(uint64(len(payload)), (logical+run)*4096)])
+			n.write(p, raw)
+			allocatedData += run
+			fileExtent := make([]byte, 24)
+			np64(fileExtent, run*4096)
+			np64(fileExtent[8:], p)
+			fs.put(nativeKey(id, 8, logical*4096), fileExtent)
+			ref := make([]byte, 20)
+			np64(ref, run|1<<60)
+			np64(ref[8:], id)
+			np32(ref[16:], 1)
+			ext.put(nativeKey(p, 2), ref)
+			logical += run
+		}
 		sum := sha256.Sum256(payload)
 		files[relative] = map[string]string{"sha256": hex.EncodeToString(sum[:])}
 	}
@@ -717,6 +782,7 @@ func (n *nativeEditor) applyVolume(selector string, inputs []nativeSystemInput, 
 	np64(rawVS[144:], ext.root.physical)
 	np64(rawVS[176:], nextInode)
 	np64(rawVS[184:], vs.NumberOfFiles+addedFiles)
+	np64(rawVS[192:], vs.NumberOfDirectories+addedDirectories)
 	// FsAllocCount excludes the volume superblock itself; its relocation has
 	// zero net balance. Allocated/freed lifetime counters describe stream data.
 	repairCheck(int64(vs.NumberOfAllocatedBlocks)+n.systemBalance > 0, "System allocation underflow")

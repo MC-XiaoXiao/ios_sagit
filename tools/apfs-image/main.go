@@ -20,7 +20,6 @@ import (
 	"github.com/deploymenttheory/go-apfs-v2/pkg/appledouble"
 	"github.com/deploymenttheory/go-apfs-v2/pkg/hostdata"
 	"github.com/deploymenttheory/go-apfs-v2/pkg/osversion"
-	"howett.net/plist"
 )
 
 type value struct {
@@ -146,131 +145,6 @@ func replace(e *apfswrite.Entry, file *apfswrite.Entry) {
 	e.Children = append(e.Children, file)
 }
 
-// iOS 18 UMDPersonaManifestEmbedded v1, audited against the native reader and
-// writer. This is empty persona metadata for reconstructed unencrypted Data,
-// with no cryptographic keybag contents. Existing state is never replaced.
-func seedInitialPersona(data *apfswrite.Entry, s *stats) bool {
-	keybags := child(data, "keybags")
-	if keybags == nil {
-		keybags = &apfswrite.Entry{Name: "keybags", Mode: os.ModeDir | 0700, ModeExplicit: true}
-		data.Children = append(data.Children, keybags)
-		s.Entries++
-	}
-	if !keybags.Mode.IsDir() {
-		panic("Data/keybags is not a directory")
-	}
-	if child(keybags, "persona.kb") != nil {
-		return false
-	}
-	if keybags.UID != 0 || keybags.Mode.Perm()&0022 != 0 {
-		panic("Data/keybags must be root-owned and not writable by other users")
-	}
-	metadata := []byte(`<?xml version="1.0" encoding="UTF-8"?>
-<plist version="1.0"><dict>
-<key>UsePersonaManifestVersion</key><integer>1</integer>
-<key>UsePersonaGenerationID</key><integer>1</integer>
-<key>UserPersonaDictionary</key><dict/>
-</dict></plist>
-`)
-	keybags.Children = append(keybags.Children, &apfswrite.Entry{
-		Name: "persona.kb", Mode: 0600, ModeExplicit: true, Data: metadata,
-	})
-	s.Entries++
-	s.Bytes += (uint64(len(metadata)) + 4095) &^ 4095
-	return true
-}
-
-func ensureOwnedDirectory(parent *apfswrite.Entry, name string, uid, gid uint32, mode os.FileMode, s *stats) *apfswrite.Entry {
-	entry := child(parent, name)
-	if entry == nil {
-		entry = &apfswrite.Entry{Name: name, Mode: os.ModeDir | mode, ModeExplicit: true, UID: uid, GID: gid}
-		parent.Children = append(parent.Children, entry)
-		s.Entries++
-	} else if !entry.Mode.IsDir() {
-		panic(fmt.Errorf("Data/%s is not a directory", name))
-	}
-	return entry
-}
-
-func entryData(entry *apfswrite.Entry) []byte {
-	if entry.DataValue == nil {
-		return entry.Data
-	}
-	size := entry.DataValue.Size()
-	if size < 0 || size > 1<<20 {
-		panic("Setup preference plist exceeds 1 MiB")
-	}
-	data := make([]byte, size)
-	n, err := entry.DataValue.ReadAt(data, 0)
-	if err != nil && err != io.EOF {
-		panic(err)
-	}
-	if n != len(data) {
-		panic("short read from Setup preference plist")
-	}
-	return data
-}
-
-func mergeSetupPreference(data *apfswrite.Entry, name string, values map[string]any, s *stats) {
-	mobile := ensureOwnedDirectory(data, "mobile", 501, 501, 0755, s)
-	library := ensureOwnedDirectory(mobile, "Library", 501, 501, 0711, s)
-	prefs := ensureOwnedDirectory(library, "Preferences", 501, 501, 0755, s)
-	fileName := name + ".plist"
-	existing := child(prefs, fileName)
-	merged := map[string]any{}
-	oldBytes := 0
-	if existing != nil {
-		if !existing.Mode.IsRegular() {
-			panic(fmt.Errorf("Data/mobile/Library/Preferences/%s is not a regular file", fileName))
-		}
-		raw := entryData(existing)
-		oldBytes = len(raw)
-		if len(raw) != 0 {
-			if _, err := plist.Unmarshal(raw, &merged); err != nil || merged == nil {
-				panic(fmt.Errorf("invalid Setup preference plist %s: %v", fileName, err))
-			}
-		}
-		if _, compressed := existing.XattrValues["com.apple.decmpfs"]; compressed {
-			panic(fmt.Errorf("refusing to rewrite compressed Setup preference plist %s", fileName))
-		}
-	}
-	for key, value := range values {
-		merged[key] = value
-	}
-	encoded, err := plist.Marshal(merged, plist.BinaryFormat)
-	if err != nil {
-		panic(err)
-	}
-	entry := &apfswrite.Entry{Name: fileName, Mode: 0600, ModeExplicit: true,
-		UID: 501, GID: 501, Data: encoded}
-	if existing != nil {
-		entry.BSDFlags = existing.BSDFlags
-		entry.Times = existing.Times
-		entry.XattrValues = existing.XattrValues
-		oldAllocation := (uint64(oldBytes) + 4095) &^ 4095
-		if oldAllocation <= s.Bytes {
-			s.Bytes -= oldAllocation
-		}
-	} else {
-		s.Entries++
-	}
-	s.Bytes += (uint64(len(encoded)) + 4095) &^ 4095
-	replace(prefs, entry)
-}
-
-func seedSetupCompletion(data *apfswrite.Entry, s *stats) {
-	mergeSetupPreference(data, "com.apple.purplebuddy", map[string]any{
-		"SetupDone": true, "SetupFinishedAllSteps": true, "SetupVersion": 11,
-		"daemonizeNeedsToRun": false,
-	}, s)
-	mergeSetupPreference(data, "com.apple.purplebuddy.notbackedup", map[string]any{
-		"ShouldRunDiagnosticsMiniBuddy": false, "ShouldRunHSA2MiniBuddy": false,
-		"ShouldRunKeychainSyncMiniBuddy": false, "ShouldRunMesaMiniBuddy": false,
-		"ShouldRunPaymentMiniBuddy": false, "ShouldRunStandardMiniBuddy": false,
-		"SilentICDPUpgrade": false,
-	}, s)
-}
-
 func fstab(original, sys, data string) string {
 	var lines []string
 	for _, line := range strings.Split(original, "\n") {
@@ -306,9 +180,9 @@ func run() {
 	cryptexOS := flag.String("cryptex-os", "", "original decrypted SystemOS Cryptex image to retain")
 	cryptexApp := flag.String("cryptex-app", "", "original AppOS Cryptex image to retain")
 	overlay := flag.String("system-overlay", "", "root-owned files to add to System")
+	addVolumes := flag.String("add-volumes", "", "JSON array of additional roles, UUIDs and overlays")
 	identity := flag.String("identity-report", "", "retain existing System/Data/container/group UUIDs when rebuilding")
-	initialPersona := flag.Bool("initialize-persona", false, "seed absent initial iOS 18 persona metadata on reconstructed unencrypted Data")
-	setupComplete := flag.Bool("development-setup-complete", false, "seed iOS Setup Assistant completion preferences in the Data volume for this development port")
+	dataOverlay := flag.String("data-overlay", "", "prepared Data payload manifest with explicit ownership and modes")
 	flag.Parse()
 	if *source == "" || *output == "" {
 		panic("--source and --output are required")
@@ -348,12 +222,8 @@ func run() {
 	fmt.Fprintf(os.Stderr, "Imported %d entries, %d allocated payload bytes\n", s.Entries, s.Bytes)
 	private := dir(root, "private")
 	data := dir(private, "var")
-	personaSeeded := false
-	if *initialPersona {
-		personaSeeded = seedInitialPersona(data, &s)
-	}
-	if *setupComplete {
-		seedSetupCompletion(data, &s)
+	if *dataOverlay != "" {
+		addDataOverlay(data, *dataOverlay, &s)
 	}
 	dataName := data.Name
 	data.Name = ""
@@ -398,6 +268,13 @@ func run() {
 		{Name: "System", UUID: systemUUID, Role: apfs.VolumeRoleSystem, VolumeGroupID: groupUUID, CaseSensitive: true, Root: root},
 		{Name: "Data", UUID: dataUUID, Role: apfs.VolumeRoleData, VolumeGroupID: groupUUID, CaseSensitive: true, Root: data},
 	}}
+	if *addVolumes != "" {
+		var additions []addedVolume
+		if err := json.Unmarshal(must(os.ReadFile(*addVolumes)), &additions); err != nil {
+			panic(err)
+		}
+		opts.Volumes = appendVolumes(opts.Volumes, additions, &s)
+	}
 	lower := int64(*minimum)
 	if lower < 1024 {
 		lower = 1024
@@ -434,10 +311,12 @@ func run() {
 	report := map[string]any{"schema": 1, "source": *source, "source_sha256": hash(*source), "source_volume_uuid": uuidString(must(v.Identifier())), "inventory": s, "cryptex_images": cryptexes, "minimum_layout_mib": lower, "system_min_mib": *minimum, "data_free_mib": *dataFree, "container_bytes": size, "container_uuid": uuidString(containerUUID), "volume_group_uuid": uuidString(groupUUID), "system_uuid": sys, "data_uuid": dat, "fstab": mounts, "hardware_boot_verified": false, "authenticated_root_preserved": false}
 	report["system_overlay"] = *overlay
 	report["identity_report"] = *identity
-	report["initial_persona_requested"] = *initialPersona
-	report["initial_persona_seeded"] = personaSeeded
-	report["development_setup_complete_requested"] = *setupComplete
-	report["setup_completion_written"] = *setupComplete && !*inspect
+	var volumeIDs []volumeIdentity
+	for _, spec := range opts.Volumes {
+		volumeIDs = append(volumeIDs, volumeIdentity{spec.Name, uint16(spec.Role), uuidString(spec.UUID), uuidString(spec.VolumeGroupID)})
+	}
+	report["volumes"] = volumeIDs
+	report["data_overlay"] = *dataOverlay
 	if *inspect {
 		writeJSON(*output, report)
 		return
@@ -490,6 +369,10 @@ func main() {
 			os.Exit(1)
 		}
 	}()
+	if len(os.Args) > 1 && os.Args[1] == "extract-files" {
+		extractFiles(os.Args[2:])
+		return
+	}
 	if len(os.Args) > 1 && os.Args[1] == "create-volume" {
 		createVolume(os.Args[2:])
 		return
