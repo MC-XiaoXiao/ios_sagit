@@ -64,6 +64,13 @@ bool QcomUSBController::prepare(QcomUSB *bus, USB::Role role, UInt64 epoch, cons
         int console = 0;
         PE_parse_boot_argn("qcom.usb-cdc", &console, sizeof(console));
         if (!setProperty("USBDevicePersonality", console == 1 ? "CDCACM" : "Native")) return false;
+        if (console == 2) {
+            const char name[] = "mi6Composite";
+            auto *description = OSData::withBytes(name, sizeof(name));
+            const bool ok = description && setProperty("configuration-string", description);
+            OSSafeReleaseNULL(description);
+            if (!ok) return false;
+        }
         if (console == 1) {
             unsigned vendor = 0, product = 0;
             PE_parse_boot_argn("qcom.usb-cdc-vid", &vendor, sizeof(vendor));

@@ -29,6 +29,7 @@
 #include <pexpert/arm/protos.h>
 #include <kern/sched_prim.h>
 #include <pexpert/arm/usb_console.h>
+#include <pexpert/arm/bridge_boot_log.h>
 #ifdef PL011_UART
 #include <pexpert/arm/pl011.h>
 #endif /* PL011_UART */
@@ -949,7 +950,23 @@ serial_init(void)
 
 	int usb_mode = 0;
 	PE_parse_boot_argn("qcom.usb-cdc", &usb_mode, sizeof(usb_mode));
-	usb_console_select(&usb_console, usb_mode == 1);
+	usb_console_select(&usb_console, usb_mode == 1 || usb_mode == 2);
+	if (usb_console.selected) {
+		const DeviceTreeNode *chosen;
+		const struct bridge_boot_log *log = NULL;
+		unsigned size = 0;
+		if (SecureDTFindNodeWithStringProperty("name", "chosen", &chosen) == kSuccess &&
+		    SecureDTGetProperty(chosen, "qcom,bridge-boot-log", (const void **)&log, &size) == kSuccess &&
+		    bridge_boot_log_valid(log, size)) {
+			for (unsigned i = 0; i < log->used; ++i) usb_console_putc(&usb_console, log->bytes[i]);
+			if (log->dropped) {
+				const char *p = "\n[boot-log] bridge buffer overflow\n";
+				while (*p) usb_console_putc(&usb_console, *p++);
+			}
+		}
+		const char *p = "\n[boot-log] XNU early console\n";
+		while (*p) usb_console_putc(&usb_console, *p++);
+	}
 
 	soc_base = pe_arm_get_soc_base_phys();
 

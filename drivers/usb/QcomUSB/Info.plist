@@ -150,6 +150,62 @@
 			<key>IOProbeScore</key>
 			<integer>1000</integer>
 		</dict>
+		<key>Mi6CompositeConfiguration</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>com.apple.iokit.IOUSBDeviceFamily</string>
+			<key>IOClass</key>
+			<string>IOUSBDeviceConfigurator</string>
+			<key>IOProviderClass</key>
+			<string>IOUSBDeviceController</string>
+			<key>IOPropertyMatch</key>
+			<dict>
+				<key>ConfigurationType</key>
+				<string>mi6Composite</string>
+			</dict>
+			<key>DeviceDescription</key>
+			<dict>
+				<key>ConfigurationDescriptors</key>
+				<array>
+					<dict>
+						<key>Interfaces</key>
+						<array>
+							<string>AppleUSBMux</string>
+							<string>Mi6CDCControl</string>
+							<string>Mi6CDCData</string>
+						</array>
+					</dict>
+				</array>
+			</dict>
+		</dict>
+		<key>Mi6CDCControl</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>org.darwin.driver.QcomUSB</string>
+			<key>IOClass</key>
+			<string>QcomUSBConsole</string>
+			<key>IOProviderClass</key>
+			<string>IOUSBDeviceInterface</string>
+			<key>IOPropertyMatch</key>
+			<dict>
+				<key>USBDeviceFunction</key>
+				<string>Mi6CDCControl</string>
+			</dict>
+		</dict>
+		<key>Mi6CDCData</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>org.darwin.driver.QcomUSB</string>
+			<key>IOClass</key>
+			<string>QcomUSBConsole</string>
+			<key>IOProviderClass</key>
+			<string>IOUSBDeviceInterface</string>
+			<key>IOPropertyMatch</key>
+			<dict>
+				<key>USBDeviceFunction</key>
+				<string>Mi6CDCData</string>
+			</dict>
+		</dict>
 	</dict>
 </dict>
 </plist>

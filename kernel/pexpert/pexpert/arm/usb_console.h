@@ -11,7 +11,7 @@
  * Try-locking also makes nested panic output safe: contention drops bytes.
  * Every access to ring state is protected by the same acquire/release lock.
  */
-#define USB_CONSOLE_TX_BYTES 65536u
+#define USB_CONSOLE_TX_BYTES (1024u * 1024u)
 #define USB_CONSOLE_RX_BYTES 4096u
 struct usb_console_buffer {
 	unsigned char lock;
