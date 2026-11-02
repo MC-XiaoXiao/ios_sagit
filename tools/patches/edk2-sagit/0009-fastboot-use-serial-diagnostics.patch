@@ -1,0 +1,73 @@
+diff --git a/Platforms/Msm8998FamilyPkg/Drivers/QcomFastboot/QcomFastboot.c b/Platforms/Msm8998FamilyPkg/Drivers/QcomFastboot/QcomFastboot.c
+index 3a89f97..429ea1f 100644
+--- a/Platforms/Msm8998FamilyPkg/Drivers/QcomFastboot/QcomFastboot.c
++++ b/Platforms/Msm8998FamilyPkg/Drivers/QcomFastboot/QcomFastboot.c
+@@ -11,6 +11,7 @@
+ #include <Library/MemoryAllocationLib.h>
+ #include <Library/PrintLib.h>
+ #include <Library/UefiLib.h>
++#include <Library/DebugLib.h>
+ #include <Library/PcdLib.h>
+ #include "QcomUsb.h"
+ 
+@@ -90,7 +91,7 @@ STATIC EFI_STATUS ConnectPeripheral(VOID) {
+   if (EFI_ERROR(Status)) return Status;
+   if (Config->Revision!=0x10002 && Config->Revision!=0x10003) return EFI_UNSUPPORTED;
+   Status=Config->StartController(Config,0,4);
+-  Print(L"USB switch to peripheral: %r\r\n",Status);
++  DEBUG((DEBUG_ERROR,"USB switch to peripheral: %r\r\n",Status));
+   Status=gBS->LocateProtocol(&gEfiUsbFunctionIoProtocolGuid,NULL,(VOID **)&Function);
+   if (!EFI_ERROR(Status)) return EFI_SUCCESS;
+ 
+@@ -108,7 +109,7 @@ STATIC EFI_STATUS ConnectPeripheral(VOID) {
+     PreviousMode=Config->Mode;
+     Config->Mode=4;
+     Status=gBS->ConnectController(Handles[Index],NULL,NULL,TRUE);
+-    Print(L"USB Function bind core %u: %r\r\n",Config->Core,Status);
++    DEBUG((DEBUG_ERROR,"USB Function bind core %u: %r\r\n",Config->Core,Status));
+     if (EFI_ERROR(Status)) {
+       Config->Mode=PreviousMode;
+       gBS->ConnectController(Handles[Index],NULL,NULL,TRUE);
+@@ -116,7 +117,7 @@ STATIC EFI_STATUS ConnectPeripheral(VOID) {
+   }
+   FreePool(Handles);
+   Status=gBS->LocateProtocol(&gEfiUsbFunctionIoProtocolGuid,NULL,(VOID **)&Function);
+-  Print(L"USB Function interface: %r\r\n",Status);
++  DEBUG((DEBUG_ERROR,"USB Function interface: %r\r\n",Status));
+   return Status;
+ }
+ STATIC EFI_STATUS Start(EFI_EVENT Receive) {
+@@ -126,7 +127,7 @@ STATIC EFI_STATUS Start(EFI_EVENT Receive) {
+   Status=ConnectPeripheral();
+   if (EFI_ERROR(Status)) return Status;
+   Status = gBS->LocateProtocol(&mUsbGuid,NULL,(VOID **)&mUsb);
+-  Print(L"Qualcomm USB locate before init: %r\r\n", Status);
++  DEBUG((DEBUG_ERROR,"Qualcomm USB locate before init: %r\r\n", Status));
+   if (EFI_ERROR(Status)) {
+   Status = gBS->CreateEventEx(EVT_NOTIFY_SIGNAL,TPL_CALLBACK,Dummy,NULL,&mUsbInitGuid,&InitEvent);
+   if (EFI_ERROR(Status)) return Status;
+@@ -134,12 +135,12 @@ STATIC EFI_STATUS Start(EFI_EVENT Receive) {
+   Status = gBS->LocateProtocol(&mUsbGuid,NULL,(VOID **)&mUsb);
+   if (EFI_ERROR(Status)) return Status;
+   }
+-  Print(L"Qualcomm USB protocol ready\r\n");
++  DEBUG((DEBUG_ERROR,"Qualcomm USB protocol ready\r\n"));
+   Status = mUsb->Start(&mDevice,&Configs,&mQualifier,NULL,4,mStrings);
+-  Print(L"Qualcomm USB Start: %r, revision %lx\r\n",Status,mUsb->Revision);
++  DEBUG((DEBUG_ERROR,"Qualcomm USB Start: %r, revision %lx\r\n",Status,mUsb->Revision));
+   if (EFI_ERROR(Status)) return Status;
+   Status = mUsb->Allocate(RX_SIZE,&mRx);
+-  Print(L"Qualcomm USB RX allocate: %r\r\n", Status);
++  DEBUG((DEBUG_ERROR,"Qualcomm USB RX allocate: %r\r\n", Status));
+   if (EFI_ERROR(Status)) { mUsb->Stop(); return Status; }
+   Status = mUsb->Allocate(4096,&mTx);
+   if (EFI_ERROR(Status)) { mUsb->Free(mRx); mRx=NULL; mUsb->Stop(); return Status; }
+@@ -257,7 +258,7 @@ STATIC EFI_STATUS Flash(CHAR8 *Name, UINTN Size, VOID *Data) {
+   if (!EFI_ERROR(Status)) Status=mBootDisk->FlushBlocks(mBootDisk);
+   if (!EFI_ERROR(Status)) Status=mBootDisk->ReadBlocks(mBootDisk,mBootDisk->Media->MediaId,mBootStart,Bytes,Read);
+   if (!EFI_ERROR(Status) && CompareMem(Write,Read,Bytes)!=0) Status=EFI_CRC_ERROR;
+-  Print(L"Fastboot flash boot + readback: %r (%u bytes)\r\n",Status,Size);
++  DEBUG((DEBUG_ERROR,"Fastboot flash boot + readback: %r (%u bytes)\r\n",Status,Size));
+   FreeAlignedPages(Write,Pages); FreeAlignedPages(Read,Pages); return Status;
+ }
+ STATIC EFI_STATUS Erase(CHAR8 *Name) { return EFI_UNSUPPORTED; }

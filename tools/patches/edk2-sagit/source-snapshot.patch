@@ -8,417 +8,12 @@ index 69e5d98..cc8c691 100644
  BOOTIMG_OS_VERSION=12.0.0
 +BOOTIMG_HEADER_VERSION=0
  
-diff --git a/Platforms/Msm8998FamilyPkg/Library/ArmPlatformLib/ArmPlatformLibMem.c b/Platforms/Msm8998FamilyPkg/Library/ArmPlatformLib/ArmPlatformLibMem.c
-index 2e3f9f2..d2ba91a 100644
---- a/Platforms/Msm8998FamilyPkg/Library/ArmPlatformLib/ArmPlatformLibMem.c
-+++ b/Platforms/Msm8998FamilyPkg/Library/ArmPlatformLib/ArmPlatformLibMem.c
-@@ -33,7 +33,8 @@ ArmPlatformGetVirtualMemoryMap (
-   //TO-DO:ADD MEMORY MAP HERE
-   PARM_MEMORY_REGION_DESCRIPTOR_EX MemoryDescriptorEx =
-       GetPlatformMemoryMap();
--  ARM_MEMORY_REGION_DESCRIPTOR
-+  // The caller uses this table after the function returns.
-+  STATIC ARM_MEMORY_REGION_DESCRIPTOR
-         MemoryTable[MAX_ARM_MEMORY_REGION_DESCRIPTOR_COUNT];
-   UINTN Index = 0;
- 
-@@ -64,4 +65,4 @@ ArmPlatformGetVirtualMemoryMap (
- 
-   *VirtualMemoryMap = MemoryTable;
- 
--}
-\ No newline at end of file
-+}
-diff --git a/Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.c b/Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.c
-index 6c3c911..44a7607 100644
---- a/Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.c
-+++ b/Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.c
-@@ -9,6 +9,9 @@
- #include <Resources/FbColor.h>
- 
- #include "FrameBufferSerialPortLib.h"
-+#ifdef QCOM_UARTDM_CONSOLE
-+#include "QcomUartDm.h"
-+#endif
- 
- FBCON_POSITION m_Position;
- FBCON_POSITION m_MaxPosition;
-@@ -58,6 +61,9 @@ SerialPortInitialize
- 	ArmDisableInterrupts();
- 
- 	// Reset console
-+#ifdef QCOM_UARTDM_CONSOLE
-+	UartInit();
-+#endif
- 	FbConReset();
- 
- 	// Set flag
-@@ -363,6 +369,9 @@ SerialPortWrite
- 
- 	while (Buffer < Final)
- 	{
-+#ifdef QCOM_UARTDM_CONSOLE
-+		if (!UartPut(*Buffer)) break;
-+#endif
- 		FbConPutCharWithFactor(*Buffer++, FBCON_COMMON_MSG, SCALE_FACTOR);
- 	}
- 
-@@ -387,6 +396,9 @@ SerialPortWriteCritical
- 
- 	while (Buffer < Final)
- 	{
-+#ifdef QCOM_UARTDM_CONSOLE
-+		if (!UartPut(*Buffer)) break;
-+#endif
- 		FbConPutCharWithFactor(*Buffer++, FBCON_COMMON_MSG, SCALE_FACTOR);
- 	}
- 
-@@ -404,7 +416,17 @@ SerialPortRead
- 	IN  UINTN     NumberOfBytes
- )
- {
-+#ifdef QCOM_UARTDM_CONSOLE
-+	UINTN Count = 0;
-+	while (Count < NumberOfBytes && UartPoll()) {
-+		Buffer[Count++] = (UINT8)mRxWord;
-+		mRxWord >>= 8;
-+		mRxCount--;
-+	}
-+	return Count;
-+#else
- 	return 0;
-+#endif
- }
- 
- BOOLEAN
-@@ -414,7 +436,11 @@ SerialPortPoll
- 	VOID
- )
- {
-+#ifdef QCOM_UARTDM_CONSOLE
-+	return UartPoll();
-+#else
- 	return FALSE;
-+#endif
- }
- 
- RETURN_STATUS
-@@ -424,7 +450,11 @@ SerialPortSetControl
- 	IN UINT32 Control
- )
- {
-+#ifdef QCOM_UARTDM_CONSOLE
-+	return Control == 0 ? RETURN_SUCCESS : RETURN_UNSUPPORTED;
-+#else
- 	return RETURN_UNSUPPORTED;
-+#endif
- }
- 
- RETURN_STATUS
-@@ -434,7 +464,14 @@ SerialPortGetControl
- 	OUT UINT32 *Control
- )
- {
-+#ifdef QCOM_UARTDM_CONSOLE
-+	if (Control == NULL) return RETURN_INVALID_PARAMETER;
-+	*Control = UartPoll() ? 0 : EFI_SERIAL_INPUT_BUFFER_EMPTY;
-+	if (UartRead(UART_SR) & 8) *Control |= EFI_SERIAL_OUTPUT_BUFFER_EMPTY;
-+	return RETURN_SUCCESS;
-+#else
- 	return RETURN_UNSUPPORTED;
-+#endif
- }
- 
- RETURN_STATUS
-@@ -449,7 +486,21 @@ SerialPortSetAttributes
- 	IN OUT EFI_STOP_BITS_TYPE *StopBits
- )
- {
-+#ifdef QCOM_UARTDM_CONSOLE
-+	if ((*BaudRate != 0 && *BaudRate != 115200) ||
-+	    (*DataBits != 0 && *DataBits != 8) ||
-+	    (*Parity != DefaultParity && *Parity != NoParity) ||
-+	    (*StopBits != DefaultStopBits && *StopBits != OneStopBit))
-+		return RETURN_UNSUPPORTED;
-+	*BaudRate = 115200;
-+	*DataBits = 8;
-+	*Parity = NoParity;
-+	*StopBits = OneStopBit;
-+	*ReceiveFifoDepth = 32;
-+	return RETURN_SUCCESS;
-+#else
- 	return RETURN_UNSUPPORTED;
-+#endif
- }
- 
- UINTN SerialPortFlush(VOID)
-@@ -461,4 +512,4 @@ VOID
- EnableSynchronousSerialPortIO(VOID)
- {
- 	// Already synchronous
--}
-\ No newline at end of file
-+}
-diff --git a/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/PlatformBm.c b/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/PlatformBm.c
-index 50981ff..728f6aa 100644
---- a/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/PlatformBm.c
-+++ b/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/PlatformBm.c
-@@ -32,6 +32,10 @@
-
- #include "PlatformBm.h"
-
-+#ifdef MI6_BOOT_PAYLOAD_ENABLED
-+EFI_STATUS Mi6BootPayload(VOID);
-+#endif
-+
- #define DP_NODE_LEN(Type)                                                      \
-   {                                                                            \
-     (UINT8)sizeof(Type), (UINT8)(sizeof(Type) >> 8)                            \
-@@ -508,21 +512,22 @@ VOID EFIAPI PlatformBootManagerBeforeConsole(VOID)
-   EfiBootManagerUpdateConsoleVariable(
-       ConIn, (EFI_DEVICE_PATH_PROTOCOL *)&mUsbKeyboard, NULL);
-
--  EFI_HANDLE *              handles;
--  UINTN                     NoHandles;
-+  EFI_HANDLE *              handles = NULL;
-+  UINTN                     NoHandles = 0;
-+  UINTN                     InputIndex;
-   EFI_DEVICE_PATH_PROTOCOL *devicehandle;
--  /*CHAR16 *devicepathtxt;*/
--  // EfiBootManagerUpdateConsoleVariable(ConIn,
--  //  (EFI_DEVICE_PATH_PROTOCOL*)&gQcomKeypadDeviceGuid, NULL);
--  gBS->LocateHandleBuffer(
--      ByProtocol, &gEfiSimpleTextInputExProtocolGuid, NULL, &NoHandles,
--      &handles);
--  devicehandle = DevicePathFromHandle(handles[1]);
--  EfiBootManagerUpdateConsoleVariable(
--      ConIn, devicehandle, NULL); /*
--            devicepathtxt = ConvertDevicePathToText(devicehandle,TRUE,TRUE);
--            DEBUG((DEBUG_ERROR,"There are %s handles\n",devicepathtxt));
--            ASSERT(0);*/
-+  // Input enumeration order and count change when UART or USB is absent.
-+  if (!EFI_ERROR(gBS->LocateHandleBuffer(
-+          ByProtocol, &gEfiSimpleTextInputExProtocolGuid, NULL, &NoHandles,
-+          &handles))) {
-+    for (InputIndex = 0; InputIndex < NoHandles; InputIndex++) {
-+      devicehandle = DevicePathFromHandle(handles[InputIndex]);
-+      if (devicehandle != NULL) {
-+        EfiBootManagerUpdateConsoleVariable(ConIn, devicehandle, NULL);
-+      }
-+    }
-+  }
-+  if (handles != NULL) FreePool(handles);
-
-   //
-   // Add the hardcoded serial console device path to ConIn, ConOut, ErrOut.
-@@ -655,6 +660,15 @@ VOID EFIAPI PlatformBootManagerAfterConsole(VOID)
-   //
-   HandleCapsules();
-
-+#ifdef MI6_BOOT_PAYLOAD_ENABLED
-+  // Firmware boots the bundled bridge before menu/BootOrder enumeration.
-+  // This path must also work in builds without a UART console.
-+  Status = Mi6BootPayload();
-+  if (Status != EFI_NOT_FOUND) {
-+    Print(L"XNU payload returned: %r. Entering USB Fastboot.\r\n", Status);
-+  }
-+#endif
-+
-   //
-   // Enumerate all possible boot options.
-   //
-@@ -666,6 +680,34 @@ VOID EFIAPI PlatformBootManagerAfterConsole(VOID)
-   PlatformRegisterFvBootOption(
-       &gUefiShellFileGuid, L"UEFI Shell", LOAD_OPTION_ACTIVE);
-
-+#if defined(MI6_BOOT_PAYLOAD_ENABLED) || defined(QCOM_UARTDM_CONSOLE)
-+  // A missing, cancelled or rejected payload falls through to USB Fastboot.
-+  {
-+    EFI_GUID FastbootGuid = {0x9588502a,0x5370,0x11e3,{0x86,0x31,0xd7,0xc5,0x95,0x13,0x64,0xc8}};
-+    PlatformRegisterFvBootOption(&FastbootGuid, L"UEFI Fastboot", LOAD_OPTION_ACTIVE);
-+  }
-+  {
-+    EFI_BOOT_MANAGER_LOAD_OPTION *Options;
-+    UINTN Count, Index;
-+    Options = EfiBootManagerGetLoadOptions(&Count, LoadOptionTypeBoot);
-+    for (Index = 0; Index < Count; Index++) {
-+      if (StrCmp(Options[Index].Description, L"UEFI Fastboot") == 0) {
-+        Print(L"Entering USB Fastboot\r\n");
-+        EfiBootManagerBoot(&Options[Index]);
-+        break;
-+      }
-+    }
-+    for (Index = 0; Index < Count; Index++) {
-+      if (StrCmp(Options[Index].Description, L"UEFI Shell") == 0) {
-+        Print(L"Entering UART Shell\r\n");
-+        EfiBootManagerBoot(&Options[Index]);
-+        break;
-+      }
-+    }
-+    EfiBootManagerFreeLoadOptions(Options, Count);
-+  }
-+#endif
-+
- #ifdef ENABLE_LINUX_SIMPLE_MASS_STORAGE
-   //
-   // Register Built-in Linux Kernel
-diff --git a/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/PlatformBootManagerLib.inf b/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/PlatformBootManagerLib.inf
-index 133b66e..a5a66ea 100644
---- a/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/PlatformBootManagerLib.inf
-+++ b/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/PlatformBootManagerLib.inf
-@@ -27,6 +27,8 @@
- [Sources]
-   PlatformBm.c
-   PlatformBm.h
-+  XnuBoot.c
-+  XnuBootFormat.h
- 
- [Packages]
-   EmbeddedPkg/EmbeddedPkg.dec
-@@ -82,6 +84,10 @@
-   gLinuxSimpleMassStorageGuid
- 
- [Protocols]
-+  gEfiBlockIoProtocolGuid
-+  gEfiDiskIoProtocolGuid
-+  gEfiPartitionInfoProtocolGuid
-+  gEfiSimpleTextInputExProtocolGuid
-   gEdkiiNonDiscoverableDeviceProtocolGuid
-   gEfiDevicePathProtocolGuid
-   gEfiGraphicsOutputProtocolGuid
-diff --git a/Platforms/Msm8998FamilyPkg/Msm8998FamilyPkg.dsc.inc b/Platforms/Msm8998FamilyPkg/Msm8998FamilyPkg.dsc.inc
-index 76f1f09..22dc5b7 100644
---- a/Platforms/Msm8998FamilyPkg/Msm8998FamilyPkg.dsc.inc
-+++ b/Platforms/Msm8998FamilyPkg/Msm8998FamilyPkg.dsc.inc
-@@ -510,7 +510,12 @@
-   MdeModulePkg/Universal/DisplayEngineDxe/DisplayEngineDxe.inf
-   MdeModulePkg/Universal/SetupBrowserDxe/SetupBrowserDxe.inf
-   MdeModulePkg/Universal/DriverHealthManagerDxe/DriverHealthManagerDxe.inf
--  MdeModulePkg/Universal/BdsDxe/BdsDxe.inf
-+  MdeModulePkg/Universal/BdsDxe/BdsDxe.inf {
-+!if $(PLATFORM_NAME) == sagit
-+    <LibraryClasses>
-+      NULL|MdeModulePkg/Library/LzmaCustomDecompressLib/LzmaCustomDecompressLib.inf
-+!endif
-+  }
-   MdeModulePkg/Application/UiApp/UiApp.inf {
-     <LibraryClasses>
-       NULL|MdeModulePkg/Library/DeviceManagerUiLib/DeviceManagerUiLib.inf
-@@ -543,4 +548,6 @@
-   ShellPkg/DynamicCommand/TftpDynamicCommand/TftpDynamicCommand.inf
- !endif #$(INCLUDE_TFTP_COMMAND)
- 
--  Platforms/Msm8998FamilyPkg/LinuxSimpleMassStorage/LinuxSimpleMassStorage.inf
-\ No newline at end of file
-+  Platforms/Msm8998FamilyPkg/LinuxSimpleMassStorage/LinuxSimpleMassStorage.inf
-+[Components]
-+  MdeModulePkg/Universal/FvSimpleFileSystemDxe/FvSimpleFileSystemDxe.inf
-diff --git a/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.dsc b/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.dsc
-index 974bac7..5e75f72 100644
---- a/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.dsc
-+++ b/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.dsc
-@@ -12,6 +12,9 @@
- 
- !include Platforms/Msm8998Pkg/Msm8998.dsc
- 
-+[BuildOptions]
-+  GCC:*_*_AARCH64_CC_FLAGS = -DQCOM_UARTDM_CONSOLE -DMI6_BOOT_PAYLOAD_ENABLED
-+
- [PcdsFixedAtBuild.common]
-   gMSM8998PkgTokenSpaceGuid.PcdMipiFrameBufferWidth|1080
-   gMSM8998PkgTokenSpaceGuid.PcdMipiFrameBufferHeight|1920
-@@ -20,3 +23,12 @@
-   gMSM8998PkgTokenSpaceGuid.PcdDeviceVendor|"Xiaomi"
-   gMSM8998PkgTokenSpaceGuid.PcdDeviceProduct|"6"
-   gMSM8998PkgTokenSpaceGuid.PcdDeviceCodeName|"sagit"
-+
-+[Components]
-+  Platforms/Msm8998FamilyPkg/Drivers/QcomFastboot/QcomFastboot.inf
-+
-+[PcdsFixedAtBuild.common]
-+  gEfiMdePkgTokenSpaceGuid.PcdDebugPrintErrorLevel|0x80000000
-+
-+[Components]
-+  Platforms/Msm8998FamilyPkg/Drivers/QcomFastboot/TestPayload/Probe.inf
-diff --git a/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.fdf b/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.fdf
-index 73c5b3c..4157d78 100755
---- a/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.fdf
-+++ b/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.fdf
-@@ -60,7 +60,7 @@ DATA = {
-   0x01, 0x00, 0x00, 0x10,                         # code0: adr x1, .
-   0xff, 0x1f, 0x00, 0x14,                         # code1: b 0x8000
-   0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, # text_offset: 512 KB
--  0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, # image_size: 2 MB
-+  0x00, 0x00, 0x60, 0x00, 0x00, 0x00, 0x00, 0x00, # image_size: 6 MB, the complete FD
-   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # flags
-   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # res2
-   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # res3
-@@ -129,6 +129,7 @@ READ_LOCK_STATUS   = TRUE
-     INF MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitterDxe.inf
-     INF MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsoleDxe.inf
-     INF MdeModulePkg/Universal/Console/TerminalDxe/TerminalDxe.inf
-+    INF MdeModulePkg/Universal/SerialDxe/SerialDxe.inf
-
-
-     INF ArmPkg/Drivers/ArmGic/ArmGicDxe.inf
-@@ -159,7 +160,7 @@ READ_LOCK_STATUS   = TRUE
-     #
-     # USB Peripheral Support
-     #
--    INF EmbeddedPkg/Drivers/AndroidFastbootTransportUsbDxe/FastbootTransportUsbDxe.inf
-+    INF Platforms/Msm8998FamilyPkg/Drivers/QcomFastboot/QcomFastboot.inf
-
-     #
-     # Fastboot
-@@ -170,6 +171,7 @@ READ_LOCK_STATUS   = TRUE
-     # FAT filesystem + GPT/MBR partitioning
-     #
-     INF MdeModulePkg/Universal/Disk/DiskIoDxe/DiskIoDxe.inf
-+    INF MdeModulePkg/Universal/FvSimpleFileSystemDxe/FvSimpleFileSystemDxe.inf
-     INF MdeModulePkg/Universal/Disk/PartitionDxe/PartitionDxe.inf
-     INF FatPkg/EnhancedFatDxe/Fat.inf
-     INF MdeModulePkg/Universal/Disk/UnicodeCollation/EnglishDxe/EnglishDxe.inf
-diff --git a/Platforms/Msm8998Pkg/Msm8998.dsc b/Platforms/Msm8998Pkg/Msm8998.dsc
-index 682b55d..80bc5ac 100644
---- a/Platforms/Msm8998Pkg/Msm8998.dsc
-+++ b/Platforms/Msm8998Pkg/Msm8998.dsc
-@@ -15,6 +15,8 @@
-   GCC:RELEASE_*_*_CC_FLAGS  = -DMDEPKG_NDEBUG
- 
- [PcdsFixedAtBuild.common]
-+  # Expose installed AML namespace lookup to the EFI resource-handoff producer.
-+  gEfiMdeModulePkgTokenSpaceGuid.PcdInstallAcpiSdtProtocol|TRUE
-   gArmTokenSpaceGuid.PcdSystemMemorySize|0xF0000000        # System Memory (4GB)
- 
- [PcdsDynamicHii.common.DEFAULT]
-diff --git a/build.sh b/build.sh
-index f2236a0..7bca47f 100755
---- a/build.sh
-+++ b/build.sh
-@@ -81,7 +81,7 @@ function _build(){
- 		--tags_offset 0x00000000 \
- 		--os_version "${BOOTIMG_OS_VERSION}" \
- 		--os_patch_level "${BOOTIMG_OS_PATCH_LEVEL}" \
--		--header_version 1 \
-+		--header_version "${BOOTIMG_HEADER_VERSION:-1}" \
- 		-o "${OUTDIR}/boot-${DEVICE}.img" \
- 		||return "$?"
- 	echo "Build done: ${OUTDIR}/boot-${DEVICE}.img"
-@@ -125,7 +125,7 @@ done
- if "${DISTCLEAN}";then _distclean;exit "$?";fi
- if "${CLEAN}";then _clean;exit "$?";fi
- [ -z "${DEVICE}" ]&&_help 1
--if ! [ -f Common/edk2/edksetup.sh ] || ! [ -f ../edk2/edksetup.sh ]
-+if ! [ -f Common/edk2/edksetup.sh ] && ! [ -f ../edk2/edksetup.sh ]
- then	set -e
- 	echo "Updating submodules"
- 	if "${CHINESE}"
 diff --git a/Platforms/Msm8998FamilyPkg/Drivers/QcomFastboot/QcomFastboot.c b/Platforms/Msm8998FamilyPkg/Drivers/QcomFastboot/QcomFastboot.c
 new file mode 100644
-index 0000000..3a89f97
+index 0000000..429ea1f
 --- /dev/null
 +++ b/Platforms/Msm8998FamilyPkg/Drivers/QcomFastboot/QcomFastboot.c
-@@ -0,0 +1,281 @@
+@@ -0,0 +1,282 @@
 +// SPDX-License-Identifier: BSD-2-Clause-Patent
 +#include <Uefi.h>
 +#include <Protocol/AndroidFastbootTransport.h>
@@ -432,6 +27,7 @@ index 0000000..3a89f97
 +#include <Library/MemoryAllocationLib.h>
 +#include <Library/PrintLib.h>
 +#include <Library/UefiLib.h>
++#include <Library/DebugLib.h>
 +#include <Library/PcdLib.h>
 +#include "QcomUsb.h"
 +
@@ -511,7 +107,7 @@ index 0000000..3a89f97
 +  if (EFI_ERROR(Status)) return Status;
 +  if (Config->Revision!=0x10002 && Config->Revision!=0x10003) return EFI_UNSUPPORTED;
 +  Status=Config->StartController(Config,0,4);
-+  Print(L"USB switch to peripheral: %r\r\n",Status);
++  DEBUG((DEBUG_ERROR,"USB switch to peripheral: %r\r\n",Status));
 +  Status=gBS->LocateProtocol(&gEfiUsbFunctionIoProtocolGuid,NULL,(VOID **)&Function);
 +  if (!EFI_ERROR(Status)) return EFI_SUCCESS;
 +
@@ -529,7 +125,7 @@ index 0000000..3a89f97
 +    PreviousMode=Config->Mode;
 +    Config->Mode=4;
 +    Status=gBS->ConnectController(Handles[Index],NULL,NULL,TRUE);
-+    Print(L"USB Function bind core %u: %r\r\n",Config->Core,Status);
++    DEBUG((DEBUG_ERROR,"USB Function bind core %u: %r\r\n",Config->Core,Status));
 +    if (EFI_ERROR(Status)) {
 +      Config->Mode=PreviousMode;
 +      gBS->ConnectController(Handles[Index],NULL,NULL,TRUE);
@@ -537,7 +133,7 @@ index 0000000..3a89f97
 +  }
 +  FreePool(Handles);
 +  Status=gBS->LocateProtocol(&gEfiUsbFunctionIoProtocolGuid,NULL,(VOID **)&Function);
-+  Print(L"USB Function interface: %r\r\n",Status);
++  DEBUG((DEBUG_ERROR,"USB Function interface: %r\r\n",Status));
 +  return Status;
 +}
 +STATIC EFI_STATUS Start(EFI_EVENT Receive) {
@@ -547,7 +143,7 @@ index 0000000..3a89f97
 +  Status=ConnectPeripheral();
 +  if (EFI_ERROR(Status)) return Status;
 +  Status = gBS->LocateProtocol(&mUsbGuid,NULL,(VOID **)&mUsb);
-+  Print(L"Qualcomm USB locate before init: %r\r\n", Status);
++  DEBUG((DEBUG_ERROR,"Qualcomm USB locate before init: %r\r\n", Status));
 +  if (EFI_ERROR(Status)) {
 +  Status = gBS->CreateEventEx(EVT_NOTIFY_SIGNAL,TPL_CALLBACK,Dummy,NULL,&mUsbInitGuid,&InitEvent);
 +  if (EFI_ERROR(Status)) return Status;
@@ -555,12 +151,12 @@ index 0000000..3a89f97
 +  Status = gBS->LocateProtocol(&mUsbGuid,NULL,(VOID **)&mUsb);
 +  if (EFI_ERROR(Status)) return Status;
 +  }
-+  Print(L"Qualcomm USB protocol ready\r\n");
++  DEBUG((DEBUG_ERROR,"Qualcomm USB protocol ready\r\n"));
 +  Status = mUsb->Start(&mDevice,&Configs,&mQualifier,NULL,4,mStrings);
-+  Print(L"Qualcomm USB Start: %r, revision %lx\r\n",Status,mUsb->Revision);
++  DEBUG((DEBUG_ERROR,"Qualcomm USB Start: %r, revision %lx\r\n",Status,mUsb->Revision));
 +  if (EFI_ERROR(Status)) return Status;
 +  Status = mUsb->Allocate(RX_SIZE,&mRx);
-+  Print(L"Qualcomm USB RX allocate: %r\r\n", Status);
++  DEBUG((DEBUG_ERROR,"Qualcomm USB RX allocate: %r\r\n", Status));
 +  if (EFI_ERROR(Status)) { mUsb->Stop(); return Status; }
 +  Status = mUsb->Allocate(4096,&mTx);
 +  if (EFI_ERROR(Status)) { mUsb->Free(mRx); mRx=NULL; mUsb->Stop(); return Status; }
@@ -678,7 +274,7 @@ index 0000000..3a89f97
 +  if (!EFI_ERROR(Status)) Status=mBootDisk->FlushBlocks(mBootDisk);
 +  if (!EFI_ERROR(Status)) Status=mBootDisk->ReadBlocks(mBootDisk,mBootDisk->Media->MediaId,mBootStart,Bytes,Read);
 +  if (!EFI_ERROR(Status) && CompareMem(Write,Read,Bytes)!=0) Status=EFI_CRC_ERROR;
-+  Print(L"Fastboot flash boot + readback: %r (%u bytes)\r\n",Status,Size);
++  DEBUG((DEBUG_ERROR,"Fastboot flash boot + readback: %r (%u bytes)\r\n",Status,Size));
 +  FreeAlignedPages(Write,Pages); FreeAlignedPages(Read,Pages); return Status;
 +}
 +STATIC EFI_STATUS Erase(CHAR8 *Name) { return EFI_UNSUPPORTED; }
@@ -823,6 +419,227 @@ index 0000000..859427e
 +[LibraryClasses]
 +  UefiApplicationEntryPoint
 +  UefiLib
+diff --git a/Platforms/Msm8998FamilyPkg/Include/Guid/Mi6BootRamdisk.h b/Platforms/Msm8998FamilyPkg/Include/Guid/Mi6BootRamdisk.h
+new file mode 100644
+index 0000000..eac4c7d
+--- /dev/null
++++ b/Platforms/Msm8998FamilyPkg/Include/Guid/Mi6BootRamdisk.h
+@@ -0,0 +1,19 @@
++// SPDX-License-Identifier: BSD-2-Clause-Patent
++#ifndef MI6_BOOT_RAMDISK_H
++#define MI6_BOOT_RAMDISK_H
++
++#define MI6_BOOT_RAMDISK_HOB_GUID \
++  {0x297866da,0x926e,0x4625,{0xa6,0x6c,0x8f,0xf6,0xad,0x0f,0xbb,0xb9}}
++
++// The producer owns a page allocation containing a copy of the incoming
++// ramdisk. Presence, including a rejected ramdisk, takes precedence over disk.
++typedef struct {
++  UINT32 Version;
++  UINT32 Reserved;
++  UINT64 Status;
++  EFI_PHYSICAL_ADDRESS Base;
++  UINT64 Size;
++} MI6_BOOT_RAMDISK;
++
++#define MI6_BOOT_RAMDISK_MAX_SIZE 0x4000000ULL
++#endif
+diff --git a/Platforms/Msm8998FamilyPkg/Library/ArmPlatformLib/AArch64/ArmPlatformHelper.S b/Platforms/Msm8998FamilyPkg/Library/ArmPlatformLib/AArch64/ArmPlatformHelper.S
+index 5988c04..a8f5e34 100644
+--- a/Platforms/Msm8998FamilyPkg/Library/ArmPlatformLib/AArch64/ArmPlatformHelper.S
++++ b/Platforms/Msm8998FamilyPkg/Library/ArmPlatformLib/AArch64/ArmPlatformHelper.S
+@@ -19,15 +19,15 @@
+ 
+ ASM_FUNC(ArmPlatformPeiBootAction)
+ startlabel:
++  mov x10, FixedPcdGet64 (PcdDeviceTreeStore)
++  str x0, [x10] // preserve the FDT even if the FD is already in place
+   // check if we're located at expected location
+-  adr	x4, .
++  adr	x4, startlabel
+   ldr	x5, =ArmPlatformPeiBootAction
+   cmp	x4, x5
+   bne	docopy
+   ret
+ docopy:
+-  mov x10, FixedPcdGet64 (PcdDeviceTreeStore)
+-  str x0, [x10] // oh my fdt
+   // find our start address by getting our expected offset, then subtracting it from our actual address
+   ldr	x6, =FixedPcdGet64 (PcdFdBaseAddress)
+   sub	x5, x5, x6 // x5 now holds offset of ArmPlatformPeiBootAction from start of FD base
+diff --git a/Platforms/Msm8998FamilyPkg/Library/ArmPlatformLib/ArmPlatformLibMem.c b/Platforms/Msm8998FamilyPkg/Library/ArmPlatformLib/ArmPlatformLibMem.c
+index 2e3f9f2..d2ba91a 100644
+--- a/Platforms/Msm8998FamilyPkg/Library/ArmPlatformLib/ArmPlatformLibMem.c
++++ b/Platforms/Msm8998FamilyPkg/Library/ArmPlatformLib/ArmPlatformLibMem.c
+@@ -33,7 +33,8 @@ ArmPlatformGetVirtualMemoryMap (
+   //TO-DO:ADD MEMORY MAP HERE
+   PARM_MEMORY_REGION_DESCRIPTOR_EX MemoryDescriptorEx =
+       GetPlatformMemoryMap();
+-  ARM_MEMORY_REGION_DESCRIPTOR
++  // The caller uses this table after the function returns.
++  STATIC ARM_MEMORY_REGION_DESCRIPTOR
+         MemoryTable[MAX_ARM_MEMORY_REGION_DESCRIPTOR_COUNT];
+   UINTN Index = 0;
+ 
+@@ -64,4 +65,4 @@ ArmPlatformGetVirtualMemoryMap (
+ 
+   *VirtualMemoryMap = MemoryTable;
+ 
+-}
+\ No newline at end of file
++}
+diff --git a/Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.c b/Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.c
+index 6c3c911..81f2986 100644
+--- a/Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.c
++++ b/Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.c
+@@ -9,6 +9,9 @@
+ #include <Resources/FbColor.h>
+ 
+ #include "FrameBufferSerialPortLib.h"
++#ifdef QCOM_UARTDM_CONSOLE
++#include "QcomUartDm.h"
++#endif
+ 
+ FBCON_POSITION m_Position;
+ FBCON_POSITION m_MaxPosition;
+@@ -58,6 +61,9 @@ SerialPortInitialize
+ 	ArmDisableInterrupts();
+ 
+ 	// Reset console
++#ifdef QCOM_UARTDM_CONSOLE
++	UartInit();
++#endif
+ 	FbConReset();
+ 
+ 	// Set flag
+@@ -363,7 +369,13 @@ SerialPortWrite
+ 
+ 	while (Buffer < Final)
+ 	{
+-		FbConPutCharWithFactor(*Buffer++, FBCON_COMMON_MSG, SCALE_FACTOR);
++#ifdef QCOM_UARTDM_CONSOLE
++		if (!UartPut(*Buffer)) break;
++#endif
++		// Serial diagnostics must not paint over GOP or the text console.
++		if (FixedPcdGetBool(PcdFrameBufferSerialDebugEnable))
++			FbConPutCharWithFactor(*Buffer, FBCON_COMMON_MSG, SCALE_FACTOR);
++		Buffer++;
+ 	}
+ 
+ 	if (InterruptState) ArmEnableInterrupts();
+@@ -387,7 +399,13 @@ SerialPortWriteCritical
+ 
+ 	while (Buffer < Final)
+ 	{
+-		FbConPutCharWithFactor(*Buffer++, FBCON_COMMON_MSG, SCALE_FACTOR);
++#ifdef QCOM_UARTDM_CONSOLE
++		if (!UartPut(*Buffer)) break;
++#endif
++		// Serial diagnostics must not paint over GOP or the text console.
++		if (FixedPcdGetBool(PcdFrameBufferSerialDebugEnable))
++			FbConPutCharWithFactor(*Buffer, FBCON_COMMON_MSG, SCALE_FACTOR);
++		Buffer++;
+ 	}
+ 
+ 	m_Color.Foreground = CurrentForeground;
+@@ -404,7 +422,17 @@ SerialPortRead
+ 	IN  UINTN     NumberOfBytes
+ )
+ {
++#ifdef QCOM_UARTDM_CONSOLE
++	UINTN Count = 0;
++	while (Count < NumberOfBytes && UartPoll()) {
++		Buffer[Count++] = (UINT8)mRxWord;
++		mRxWord >>= 8;
++		mRxCount--;
++	}
++	return Count;
++#else
+ 	return 0;
++#endif
+ }
+ 
+ BOOLEAN
+@@ -414,7 +442,11 @@ SerialPortPoll
+ 	VOID
+ )
+ {
++#ifdef QCOM_UARTDM_CONSOLE
++	return UartPoll();
++#else
+ 	return FALSE;
++#endif
+ }
+ 
+ RETURN_STATUS
+@@ -424,7 +456,11 @@ SerialPortSetControl
+ 	IN UINT32 Control
+ )
+ {
++#ifdef QCOM_UARTDM_CONSOLE
++	return Control == 0 ? RETURN_SUCCESS : RETURN_UNSUPPORTED;
++#else
+ 	return RETURN_UNSUPPORTED;
++#endif
+ }
+ 
+ RETURN_STATUS
+@@ -434,7 +470,14 @@ SerialPortGetControl
+ 	OUT UINT32 *Control
+ )
+ {
++#ifdef QCOM_UARTDM_CONSOLE
++	if (Control == NULL) return RETURN_INVALID_PARAMETER;
++	*Control = UartPoll() ? 0 : EFI_SERIAL_INPUT_BUFFER_EMPTY;
++	if (UartRead(UART_SR) & 8) *Control |= EFI_SERIAL_OUTPUT_BUFFER_EMPTY;
++	return RETURN_SUCCESS;
++#else
+ 	return RETURN_UNSUPPORTED;
++#endif
+ }
+ 
+ RETURN_STATUS
+@@ -449,7 +492,21 @@ SerialPortSetAttributes
+ 	IN OUT EFI_STOP_BITS_TYPE *StopBits
+ )
+ {
++#ifdef QCOM_UARTDM_CONSOLE
++	if ((*BaudRate != 0 && *BaudRate != 115200) ||
++	    (*DataBits != 0 && *DataBits != 8) ||
++	    (*Parity != DefaultParity && *Parity != NoParity) ||
++	    (*StopBits != DefaultStopBits && *StopBits != OneStopBit))
++		return RETURN_UNSUPPORTED;
++	*BaudRate = 115200;
++	*DataBits = 8;
++	*Parity = NoParity;
++	*StopBits = OneStopBit;
++	*ReceiveFifoDepth = 32;
++	return RETURN_SUCCESS;
++#else
+ 	return RETURN_UNSUPPORTED;
++#endif
+ }
+ 
+ UINTN SerialPortFlush(VOID)
+@@ -461,4 +518,4 @@ VOID
+ EnableSynchronousSerialPortIO(VOID)
+ {
+ 	// Already synchronous
+-}
+\ No newline at end of file
++}
+diff --git a/Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.inf b/Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.inf
+index ae51b8a..50b0f65 100644
+--- a/Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.inf
++++ b/Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.inf
+@@ -23,6 +23,7 @@
+   CacheMaintenanceLib
+ 
+ [Pcd]
++  gMSM8998PkgTokenSpaceGuid.PcdFrameBufferSerialDebugEnable
+   gMSM8998PkgTokenSpaceGuid.PcdMipiFrameBufferAddress
+   gMSM8998PkgTokenSpaceGuid.PcdMipiFrameBufferWidth
+   gMSM8998PkgTokenSpaceGuid.PcdMipiFrameBufferHeight
 diff --git a/Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/QcomUartDm.h b/Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/QcomUartDm.h
 new file mode 100644
 index 0000000..4095f6a
@@ -925,6 +742,133 @@ index 0000000..4095f6a
 +  }
 +  return mRxCount != 0;
 +}
+diff --git a/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/PlatformBm.c b/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/PlatformBm.c
+index 50981ff..728f6aa 100644
+--- a/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/PlatformBm.c
++++ b/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/PlatformBm.c
+@@ -32,6 +32,10 @@
+ 
+ #include "PlatformBm.h"
+ 
++#ifdef MI6_BOOT_PAYLOAD_ENABLED
++EFI_STATUS Mi6BootPayload(VOID);
++#endif
++
+ #define DP_NODE_LEN(Type)                                                      \
+   {                                                                            \
+     (UINT8)sizeof(Type), (UINT8)(sizeof(Type) >> 8)                            \
+@@ -508,21 +512,22 @@ VOID EFIAPI PlatformBootManagerBeforeConsole(VOID)
+   EfiBootManagerUpdateConsoleVariable(
+       ConIn, (EFI_DEVICE_PATH_PROTOCOL *)&mUsbKeyboard, NULL);
+ 
+-  EFI_HANDLE *              handles;
+-  UINTN                     NoHandles;
++  EFI_HANDLE *              handles = NULL;
++  UINTN                     NoHandles = 0;
++  UINTN                     InputIndex;
+   EFI_DEVICE_PATH_PROTOCOL *devicehandle;
+-  /*CHAR16 *devicepathtxt;*/
+-  // EfiBootManagerUpdateConsoleVariable(ConIn,
+-  //  (EFI_DEVICE_PATH_PROTOCOL*)&gQcomKeypadDeviceGuid, NULL);
+-  gBS->LocateHandleBuffer(
+-      ByProtocol, &gEfiSimpleTextInputExProtocolGuid, NULL, &NoHandles,
+-      &handles);
+-  devicehandle = DevicePathFromHandle(handles[1]);
+-  EfiBootManagerUpdateConsoleVariable(
+-      ConIn, devicehandle, NULL); /*
+-            devicepathtxt = ConvertDevicePathToText(devicehandle,TRUE,TRUE);
+-            DEBUG((DEBUG_ERROR,"There are %s handles\n",devicepathtxt));
+-            ASSERT(0);*/
++  // Input enumeration order and count change when UART or USB is absent.
++  if (!EFI_ERROR(gBS->LocateHandleBuffer(
++          ByProtocol, &gEfiSimpleTextInputExProtocolGuid, NULL, &NoHandles,
++          &handles))) {
++    for (InputIndex = 0; InputIndex < NoHandles; InputIndex++) {
++      devicehandle = DevicePathFromHandle(handles[InputIndex]);
++      if (devicehandle != NULL) {
++        EfiBootManagerUpdateConsoleVariable(ConIn, devicehandle, NULL);
++      }
++    }
++  }
++  if (handles != NULL) FreePool(handles);
+ 
+   //
+   // Add the hardcoded serial console device path to ConIn, ConOut, ErrOut.
+@@ -655,6 +660,15 @@ VOID EFIAPI PlatformBootManagerAfterConsole(VOID)
+   //
+   HandleCapsules();
+ 
++#ifdef MI6_BOOT_PAYLOAD_ENABLED
++  // Firmware boots the bundled bridge before menu/BootOrder enumeration.
++  // This path must also work in builds without a UART console.
++  Status = Mi6BootPayload();
++  if (Status != EFI_NOT_FOUND) {
++    Print(L"XNU payload returned: %r. Entering USB Fastboot.\r\n", Status);
++  }
++#endif
++
+   //
+   // Enumerate all possible boot options.
+   //
+@@ -666,6 +680,34 @@ VOID EFIAPI PlatformBootManagerAfterConsole(VOID)
+   PlatformRegisterFvBootOption(
+       &gUefiShellFileGuid, L"UEFI Shell", LOAD_OPTION_ACTIVE);
+ 
++#if defined(MI6_BOOT_PAYLOAD_ENABLED) || defined(QCOM_UARTDM_CONSOLE)
++  // A missing, cancelled or rejected payload falls through to USB Fastboot.
++  {
++    EFI_GUID FastbootGuid = {0x9588502a,0x5370,0x11e3,{0x86,0x31,0xd7,0xc5,0x95,0x13,0x64,0xc8}};
++    PlatformRegisterFvBootOption(&FastbootGuid, L"UEFI Fastboot", LOAD_OPTION_ACTIVE);
++  }
++  {
++    EFI_BOOT_MANAGER_LOAD_OPTION *Options;
++    UINTN Count, Index;
++    Options = EfiBootManagerGetLoadOptions(&Count, LoadOptionTypeBoot);
++    for (Index = 0; Index < Count; Index++) {
++      if (StrCmp(Options[Index].Description, L"UEFI Fastboot") == 0) {
++        Print(L"Entering USB Fastboot\r\n");
++        EfiBootManagerBoot(&Options[Index]);
++        break;
++      }
++    }
++    for (Index = 0; Index < Count; Index++) {
++      if (StrCmp(Options[Index].Description, L"UEFI Shell") == 0) {
++        Print(L"Entering UART Shell\r\n");
++        EfiBootManagerBoot(&Options[Index]);
++        break;
++      }
++    }
++    EfiBootManagerFreeLoadOptions(Options, Count);
++  }
++#endif
++
+ #ifdef ENABLE_LINUX_SIMPLE_MASS_STORAGE
+   //
+   // Register Built-in Linux Kernel
+diff --git a/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/PlatformBootManagerLib.inf b/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/PlatformBootManagerLib.inf
+index 133b66e..a5a66ea 100644
+--- a/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/PlatformBootManagerLib.inf
++++ b/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/PlatformBootManagerLib.inf
+@@ -27,6 +27,8 @@
+ [Sources]
+   PlatformBm.c
+   PlatformBm.h
++  XnuBoot.c
++  XnuBootFormat.h
+ 
+ [Packages]
+   EmbeddedPkg/EmbeddedPkg.dec
+@@ -82,6 +84,10 @@
+   gLinuxSimpleMassStorageGuid
+ 
+ [Protocols]
++  gEfiBlockIoProtocolGuid
++  gEfiDiskIoProtocolGuid
++  gEfiPartitionInfoProtocolGuid
++  gEfiSimpleTextInputExProtocolGuid
+   gEdkiiNonDiscoverableDeviceProtocolGuid
+   gEfiDevicePathProtocolGuid
+   gEfiGraphicsOutputProtocolGuid
 diff --git a/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/XnuBoot.c b/Platforms/Msm8998FamilyPkg/Library/PlatformBootManagerLib/XnuBoot.c
 new file mode 100644
 index 0000000..0a54173
@@ -1153,54 +1097,6 @@ index 0000000..429ed95
 +         (((UINT64)*Size+Page-1)&~((UINT64)Page-1))<=PartitionBytes-*Offset;
 +}
 +#endif
-diff --git a/Platforms/Msm8998FamilyPkg/Include/Guid/Mi6BootRamdisk.h b/Platforms/Msm8998FamilyPkg/Include/Guid/Mi6BootRamdisk.h
-new file mode 100644
-index 0000000..eac4c7d
---- /dev/null
-+++ b/Platforms/Msm8998FamilyPkg/Include/Guid/Mi6BootRamdisk.h
-@@ -0,0 +1,19 @@
-+// SPDX-License-Identifier: BSD-2-Clause-Patent
-+#ifndef MI6_BOOT_RAMDISK_H
-+#define MI6_BOOT_RAMDISK_H
-+
-+#define MI6_BOOT_RAMDISK_HOB_GUID \
-+  {0x297866da,0x926e,0x4625,{0xa6,0x6c,0x8f,0xf6,0xad,0x0f,0xbb,0xb9}}
-+
-+// The producer owns a page allocation containing a copy of the incoming
-+// ramdisk. Presence, including a rejected ramdisk, takes precedence over disk.
-+typedef struct {
-+  UINT32 Version;
-+  UINT32 Reserved;
-+  UINT64 Status;
-+  EFI_PHYSICAL_ADDRESS Base;
-+  UINT64 Size;
-+} MI6_BOOT_RAMDISK;
-+
-+#define MI6_BOOT_RAMDISK_MAX_SIZE 0x4000000ULL
-+#endif
-diff --git a/Platforms/Msm8998FamilyPkg/Library/ArmPlatformLib/AArch64/ArmPlatformHelper.S b/Platforms/Msm8998FamilyPkg/Library/ArmPlatformLib/AArch64/ArmPlatformHelper.S
-index 5988c04..a8f5e34 100644
---- a/Platforms/Msm8998FamilyPkg/Library/ArmPlatformLib/AArch64/ArmPlatformHelper.S
-+++ b/Platforms/Msm8998FamilyPkg/Library/ArmPlatformLib/AArch64/ArmPlatformHelper.S
-@@ -19,15 +19,15 @@
-
- ASM_FUNC(ArmPlatformPeiBootAction)
- startlabel:
-+  mov x10, FixedPcdGet64 (PcdDeviceTreeStore)
-+  str x0, [x10] // preserve the FDT even if the FD is already in place
-   // check if we're located at expected location
--  adr	x4, .
-+  adr	x4, startlabel
-   ldr	x5, =ArmPlatformPeiBootAction
-   cmp	x4, x5
-   bne	docopy
-   ret
- docopy:
--  mov x10, FixedPcdGet64 (PcdDeviceTreeStore)
--  str x0, [x10] // oh my fdt
-   // find our start address by getting our expected offset, then subtracting it from our actual address
-   ldr	x6, =FixedPcdGet64 (PcdFdBaseAddress)
-   sub	x5, x5, x6 // x5 now holds offset of ArmPlatformPeiBootAction from start of FD base
 diff --git a/Platforms/Msm8998FamilyPkg/MemoryInitPei/MemoryInitPeiLib.c b/Platforms/Msm8998FamilyPkg/MemoryInitPei/MemoryInitPeiLib.c
 index 9cad287..4ba7130 100644
 --- a/Platforms/Msm8998FamilyPkg/MemoryInitPei/MemoryInitPeiLib.c
@@ -1212,13 +1108,13 @@ index 9cad287..4ba7130 100644
 +#ifdef MI6_BOOT_PAYLOAD_ENABLED
 +#include "XnuBootRamdisk.h"
 +#endif
-
+ 
  #define SIZE_KB ((UINTN)(1024))
  #define SIZE_MB ((UINTN)(SIZE_KB * 1024))
 @@ -127,6 +130,13 @@ MemoryPeim(IN EFI_PHYSICAL_ADDRESS UefiMemoryBase, IN UINT64 UefiMemorySize)
    DEBUG((EFI_D_INFO, "FDT Memory Total: 0x%016lx (%d GiB)\n", MemoryTotal, MemoryTotal / SIZE_GB));
    DEBUG((EFI_D_INFO, "Select Config: %d GiB\n", MemGB));
-
+ 
 +#ifdef MI6_BOOT_PAYLOAD_ENABLED
 +  // Copy the incoming Android ramdisk before DXE can reuse its original RAM.
 +  Mi6PreserveRamdisk(Fdt,MemoryDescriptorEx,Mem,UefiMemoryBase,UefiMemorySize,
@@ -1234,16 +1130,16 @@ index 5fdccfa..763fcdf 100644
 --- a/Platforms/Msm8998FamilyPkg/MemoryInitPei/MemoryInitPeiLib.inf
 +++ b/Platforms/Msm8998FamilyPkg/MemoryInitPei/MemoryInitPeiLib.inf
 @@ -22,6 +22,7 @@
-
+ 
  [Sources]
    MemoryInitPeiLib.c
 +  XnuBootRamdisk.h
-
+ 
  [Packages]
    MdePkg/MdePkg.dec
 @@ -33,8 +34,11 @@
    SimpleInit.dec
-
+ 
  [LibraryClasses]
 +  BaseLib
 +  BaseMemoryLib
@@ -1260,7 +1156,7 @@ index 5fdccfa..763fcdf 100644
 +  gArmTokenSpaceGuid.PcdFdBaseAddress
 +  gArmTokenSpaceGuid.PcdFdSize
    gSimpleInitTokenSpaceGuid.PcdDeviceTreeStore
-
+ 
  [Depex]
 diff --git a/Platforms/Msm8998FamilyPkg/MemoryInitPei/XnuBootRamdisk.h b/Platforms/Msm8998FamilyPkg/MemoryInitPei/XnuBootRamdisk.h
 new file mode 100644
@@ -1362,3 +1258,146 @@ index 0000000..e9b8208
 +  Record->Base=(UINTN)Copy; Record->Size=Size; Record->Status=EFI_SUCCESS;
 +}
 +#endif
+diff --git a/Platforms/Msm8998FamilyPkg/Msm8998FamilyPkg.dec b/Platforms/Msm8998FamilyPkg/Msm8998FamilyPkg.dec
+index f3e3f7e..bc6e8ae 100644
+--- a/Platforms/Msm8998FamilyPkg/Msm8998FamilyPkg.dec
++++ b/Platforms/Msm8998FamilyPkg/Msm8998FamilyPkg.dec
+@@ -42,6 +42,8 @@
+   gMSM8998PkgTokenSpaceGuid.PcdMipiFrameBufferPixelBpp|32|UINT32|0x0000a403
+   gMSM8998PkgTokenSpaceGuid.PcdMipiFrameBufferVisibleWidth|1440|UINT32|0x0000a404
+   gMSM8998PkgTokenSpaceGuid.PcdMipiFrameBufferVisibleHeight|2560|UINT32|0x0000a405
++  # Optional serial-to-framebuffer diagnostics; boards with UART may disable it.
++  gMSM8998PkgTokenSpaceGuid.PcdFrameBufferSerialDebugEnable|TRUE|BOOLEAN|0x0000a406
+   # RTC information
+   gMSM8998PkgTokenSpaceGuid.PcdBootShimInfo1|0xaf000000|UINT64|0x00000a601
+ 
+diff --git a/Platforms/Msm8998FamilyPkg/Msm8998FamilyPkg.dsc.inc b/Platforms/Msm8998FamilyPkg/Msm8998FamilyPkg.dsc.inc
+index 76f1f09..22dc5b7 100644
+--- a/Platforms/Msm8998FamilyPkg/Msm8998FamilyPkg.dsc.inc
++++ b/Platforms/Msm8998FamilyPkg/Msm8998FamilyPkg.dsc.inc
+@@ -510,7 +510,12 @@
+   MdeModulePkg/Universal/DisplayEngineDxe/DisplayEngineDxe.inf
+   MdeModulePkg/Universal/SetupBrowserDxe/SetupBrowserDxe.inf
+   MdeModulePkg/Universal/DriverHealthManagerDxe/DriverHealthManagerDxe.inf
+-  MdeModulePkg/Universal/BdsDxe/BdsDxe.inf
++  MdeModulePkg/Universal/BdsDxe/BdsDxe.inf {
++!if $(PLATFORM_NAME) == sagit
++    <LibraryClasses>
++      NULL|MdeModulePkg/Library/LzmaCustomDecompressLib/LzmaCustomDecompressLib.inf
++!endif
++  }
+   MdeModulePkg/Application/UiApp/UiApp.inf {
+     <LibraryClasses>
+       NULL|MdeModulePkg/Library/DeviceManagerUiLib/DeviceManagerUiLib.inf
+@@ -543,4 +548,6 @@
+   ShellPkg/DynamicCommand/TftpDynamicCommand/TftpDynamicCommand.inf
+ !endif #$(INCLUDE_TFTP_COMMAND)
+ 
+-  Platforms/Msm8998FamilyPkg/LinuxSimpleMassStorage/LinuxSimpleMassStorage.inf
+\ No newline at end of file
++  Platforms/Msm8998FamilyPkg/LinuxSimpleMassStorage/LinuxSimpleMassStorage.inf
++[Components]
++  MdeModulePkg/Universal/FvSimpleFileSystemDxe/FvSimpleFileSystemDxe.inf
+diff --git a/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.dsc b/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.dsc
+index 974bac7..636e986 100644
+--- a/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.dsc
++++ b/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.dsc
+@@ -12,11 +12,25 @@
+ 
+ !include Platforms/Msm8998Pkg/Msm8998.dsc
+ 
++[BuildOptions]
++  GCC:*_*_AARCH64_CC_FLAGS = -DQCOM_UARTDM_CONSOLE -DMI6_BOOT_PAYLOAD_ENABLED
++
+ [PcdsFixedAtBuild.common]
+   gMSM8998PkgTokenSpaceGuid.PcdMipiFrameBufferWidth|1080
+   gMSM8998PkgTokenSpaceGuid.PcdMipiFrameBufferHeight|1920
++  # Keep diagnostics on UART; GOP/ConOut still provide menus and Shell.
++  gMSM8998PkgTokenSpaceGuid.PcdFrameBufferSerialDebugEnable|FALSE
+ 
+   # Device Info
+   gMSM8998PkgTokenSpaceGuid.PcdDeviceVendor|"Xiaomi"
+   gMSM8998PkgTokenSpaceGuid.PcdDeviceProduct|"6"
+   gMSM8998PkgTokenSpaceGuid.PcdDeviceCodeName|"sagit"
++
++[Components]
++  Platforms/Msm8998FamilyPkg/Drivers/QcomFastboot/QcomFastboot.inf
++
++[PcdsFixedAtBuild.common]
++  gEfiMdePkgTokenSpaceGuid.PcdDebugPrintErrorLevel|0x80000000
++
++[Components]
++  Platforms/Msm8998FamilyPkg/Drivers/QcomFastboot/TestPayload/Probe.inf
+diff --git a/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.fdf b/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.fdf
+index 73c5b3c..4157d78 100755
+--- a/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.fdf
++++ b/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.fdf
+@@ -60,7 +60,7 @@ DATA = {
+   0x01, 0x00, 0x00, 0x10,                         # code0: adr x1, .
+   0xff, 0x1f, 0x00, 0x14,                         # code1: b 0x8000
+   0x00, 0x00, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, # text_offset: 512 KB
+-  0x00, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00, 0x00, # image_size: 2 MB
++  0x00, 0x00, 0x60, 0x00, 0x00, 0x00, 0x00, 0x00, # image_size: 6 MB, the complete FD
+   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # flags
+   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # res2
+   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, # res3
+@@ -129,6 +129,7 @@ READ_LOCK_STATUS   = TRUE
+     INF MdeModulePkg/Universal/Console/ConSplitterDxe/ConSplitterDxe.inf
+     INF MdeModulePkg/Universal/Console/GraphicsConsoleDxe/GraphicsConsoleDxe.inf
+     INF MdeModulePkg/Universal/Console/TerminalDxe/TerminalDxe.inf
++    INF MdeModulePkg/Universal/SerialDxe/SerialDxe.inf
+ 
+ 
+     INF ArmPkg/Drivers/ArmGic/ArmGicDxe.inf
+@@ -159,7 +160,7 @@ READ_LOCK_STATUS   = TRUE
+     #
+     # USB Peripheral Support
+     #
+-    INF EmbeddedPkg/Drivers/AndroidFastbootTransportUsbDxe/FastbootTransportUsbDxe.inf
++    INF Platforms/Msm8998FamilyPkg/Drivers/QcomFastboot/QcomFastboot.inf
+ 
+     #
+     # Fastboot
+@@ -170,6 +171,7 @@ READ_LOCK_STATUS   = TRUE
+     # FAT filesystem + GPT/MBR partitioning
+     #
+     INF MdeModulePkg/Universal/Disk/DiskIoDxe/DiskIoDxe.inf
++    INF MdeModulePkg/Universal/FvSimpleFileSystemDxe/FvSimpleFileSystemDxe.inf
+     INF MdeModulePkg/Universal/Disk/PartitionDxe/PartitionDxe.inf
+     INF FatPkg/EnhancedFatDxe/Fat.inf
+     INF MdeModulePkg/Universal/Disk/UnicodeCollation/EnglishDxe/EnglishDxe.inf
+diff --git a/Platforms/Msm8998Pkg/Msm8998.dsc b/Platforms/Msm8998Pkg/Msm8998.dsc
+index 682b55d..80bc5ac 100644
+--- a/Platforms/Msm8998Pkg/Msm8998.dsc
++++ b/Platforms/Msm8998Pkg/Msm8998.dsc
+@@ -15,6 +15,8 @@
+   GCC:RELEASE_*_*_CC_FLAGS  = -DMDEPKG_NDEBUG
+ 
+ [PcdsFixedAtBuild.common]
++  # Expose installed AML namespace lookup to the EFI resource-handoff producer.
++  gEfiMdeModulePkgTokenSpaceGuid.PcdInstallAcpiSdtProtocol|TRUE
+   gArmTokenSpaceGuid.PcdSystemMemorySize|0xF0000000        # System Memory (4GB)
+ 
+ [PcdsDynamicHii.common.DEFAULT]
+diff --git a/build.sh b/build.sh
+index f2236a0..7bca47f 100755
+--- a/build.sh
++++ b/build.sh
+@@ -81,7 +81,7 @@ function _build(){
+ 		--tags_offset 0x00000000 \
+ 		--os_version "${BOOTIMG_OS_VERSION}" \
+ 		--os_patch_level "${BOOTIMG_OS_PATCH_LEVEL}" \
+-		--header_version 1 \
++		--header_version "${BOOTIMG_HEADER_VERSION:-1}" \
+ 		-o "${OUTDIR}/boot-${DEVICE}.img" \
+ 		||return "$?"
+ 	echo "Build done: ${OUTDIR}/boot-${DEVICE}.img"
+@@ -125,7 +125,7 @@ done
+ if "${DISTCLEAN}";then _distclean;exit "$?";fi
+ if "${CLEAN}";then _clean;exit "$?";fi
+ [ -z "${DEVICE}" ]&&_help 1
+-if ! [ -f Common/edk2/edksetup.sh ] || ! [ -f ../edk2/edksetup.sh ]
++if ! [ -f Common/edk2/edksetup.sh ] && ! [ -f ../edk2/edksetup.sh ]
+ then	set -e
+ 	echo "Updating submodules"
+ 	if "${CHINESE}"

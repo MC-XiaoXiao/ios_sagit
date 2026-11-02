@@ -1,0 +1,66 @@
+diff --git a/Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.c b/Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.c
+index 44a7607..81f2986 100644
+--- a/Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.c
++++ b/Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.c
+@@ -372,7 +372,10 @@ SerialPortWrite
+ #ifdef QCOM_UARTDM_CONSOLE
+ 		if (!UartPut(*Buffer)) break;
+ #endif
+-		FbConPutCharWithFactor(*Buffer++, FBCON_COMMON_MSG, SCALE_FACTOR);
++		// Serial diagnostics must not paint over GOP or the text console.
++		if (FixedPcdGetBool(PcdFrameBufferSerialDebugEnable))
++			FbConPutCharWithFactor(*Buffer, FBCON_COMMON_MSG, SCALE_FACTOR);
++		Buffer++;
+ 	}
+ 
+ 	if (InterruptState) ArmEnableInterrupts();
+@@ -399,7 +402,10 @@ SerialPortWriteCritical
+ #ifdef QCOM_UARTDM_CONSOLE
+ 		if (!UartPut(*Buffer)) break;
+ #endif
+-		FbConPutCharWithFactor(*Buffer++, FBCON_COMMON_MSG, SCALE_FACTOR);
++		// Serial diagnostics must not paint over GOP or the text console.
++		if (FixedPcdGetBool(PcdFrameBufferSerialDebugEnable))
++			FbConPutCharWithFactor(*Buffer, FBCON_COMMON_MSG, SCALE_FACTOR);
++		Buffer++;
+ 	}
+ 
+ 	m_Color.Foreground = CurrentForeground;
+diff --git a/Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.inf b/Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.inf
+index ae51b8a..50b0f65 100644
+--- a/Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.inf
++++ b/Platforms/Msm8998FamilyPkg/Library/FrameBufferSerialPortLib/FrameBufferSerialPortLib.inf
+@@ -23,6 +23,7 @@
+   CacheMaintenanceLib
+ 
+ [Pcd]
++  gMSM8998PkgTokenSpaceGuid.PcdFrameBufferSerialDebugEnable
+   gMSM8998PkgTokenSpaceGuid.PcdMipiFrameBufferAddress
+   gMSM8998PkgTokenSpaceGuid.PcdMipiFrameBufferWidth
+   gMSM8998PkgTokenSpaceGuid.PcdMipiFrameBufferHeight
+diff --git a/Platforms/Msm8998FamilyPkg/Msm8998FamilyPkg.dec b/Platforms/Msm8998FamilyPkg/Msm8998FamilyPkg.dec
+index f3e3f7e..bc6e8ae 100644
+--- a/Platforms/Msm8998FamilyPkg/Msm8998FamilyPkg.dec
++++ b/Platforms/Msm8998FamilyPkg/Msm8998FamilyPkg.dec
+@@ -42,6 +42,8 @@
+   gMSM8998PkgTokenSpaceGuid.PcdMipiFrameBufferPixelBpp|32|UINT32|0x0000a403
+   gMSM8998PkgTokenSpaceGuid.PcdMipiFrameBufferVisibleWidth|1440|UINT32|0x0000a404
+   gMSM8998PkgTokenSpaceGuid.PcdMipiFrameBufferVisibleHeight|2560|UINT32|0x0000a405
++  # Optional serial-to-framebuffer diagnostics; boards with UART may disable it.
++  gMSM8998PkgTokenSpaceGuid.PcdFrameBufferSerialDebugEnable|TRUE|BOOLEAN|0x0000a406
+   # RTC information
+   gMSM8998PkgTokenSpaceGuid.PcdBootShimInfo1|0xaf000000|UINT64|0x00000a601
+ 
+diff --git a/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.dsc b/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.dsc
+index 5e75f72..636e986 100644
+--- a/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.dsc
++++ b/Platforms/Msm8998Pkg/Device/xiaomi/sagit/sagit.dsc
+@@ -18,6 +18,8 @@
+ [PcdsFixedAtBuild.common]
+   gMSM8998PkgTokenSpaceGuid.PcdMipiFrameBufferWidth|1080
+   gMSM8998PkgTokenSpaceGuid.PcdMipiFrameBufferHeight|1920
++  # Keep diagnostics on UART; GOP/ConOut still provide menus and Shell.
++  gMSM8998PkgTokenSpaceGuid.PcdFrameBufferSerialDebugEnable|FALSE
+ 
+   # Device Info
+   gMSM8998PkgTokenSpaceGuid.PcdDeviceVendor|"Xiaomi"
