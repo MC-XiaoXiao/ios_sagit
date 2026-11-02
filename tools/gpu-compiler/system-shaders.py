@@ -39,13 +39,13 @@ def main():
     ap.add_argument('--output',type=Path,required=True);ap.add_argument('--work',type=Path,required=True)
     ap.add_argument('--jobs',type=int,default=4)
     ap.add_argument('--manifest',type=Path,default=ROOT/'tools/gpu-compiler/SystemShaders.json')
+    ap.add_argument('--firmware-report',type=Path,help='checked original firmware report for system shader extraction')
     a=ap.parse_args()
     if not 1<=a.jobs<=16:ap.error('--jobs must be in 1..16')
     work=a.work.resolve();work.mkdir(parents=True,exist_ok=True)
-    spec=importlib.util.spec_from_file_location('system_shader_toolchain',ROOT/'scripts/toolchain.py')
-    tc=importlib.util.module_from_spec(spec);spec.loader.exec_module(tc)
-    source=ROOT/'tools/gpu-compiler';generated=ROOT/'build/drivers/generated/GPU'
-    library=ROOT/'build/gpu-compiler/host/src/freedreno/QcomGPUCompiler.so'
+    from project.build import native as tc, context as build_state
+    source=ROOT/'tools/gpu-compiler';generated=build_state.BUILD/'obj/drivers/generated/GPU'
+    library=build_state.BUILD/'obj/gpu-compiler/host/src/freedreno/QcomGPUCompiler.so'
     helper=work/'system-shader-tool'
     flags=shlex.split(subprocess.check_output([tc.host('llvm-config'),'--ldflags','--libs','core','irreader','analysis'],text=True))
     cmd=[tc.host('clang++'),'-std=c++17','-O2','-Wall','-Wextra','-Werror',
@@ -54,11 +54,17 @@ def main():
          *[str(source/f) for f in ['SystemShaderTool.cpp','AIRRuntime.cpp','Compiler.cpp','MSL.cpp']],
          str(library),*flags,'-Wl,-rpath,'+str(library.parent),'-o',str(helper)]
     manifest=json.loads(a.manifest.read_text());inputs={str(a.manifest.relative_to(ROOT)):sha(a.manifest.read_bytes())}
+    if a.firmware_report:
+        from project.firmware import load_firmware_report
+        firmware=load_firmware_report(a.firmware_report)
+        for item in manifest['inputs']:
+            if item.get('source_image'):
+                item['path']=str(work/'inputs'/item['source_path'].lstrip('/'))
+                item['source_image']=firmware['components']['OS']['image']
     materialize_inputs(manifest['inputs'],work,tc)
     paths=[*source.glob('*.h'),*source.glob('*.cpp'),
            *(ROOT/'drivers/include'/name for name in ('GPUShaderInterface.h','GPUShaderProtocol.h','GPUJITProtocol.h')),
-           Path(__file__),library,generated/'GPUPrograms.h',
-           ROOT/'tests/system_shader_catalog_test.cpp']
+           Path(__file__),library,generated/'GPUPrograms.h']
     for item in manifest['inputs']:
         path=ROOT/item['path'];data=path.read_bytes()
         if sha(data)!=item['sha256']:raise RuntimeError('Pinned AIR/library changed: '+str(path))
@@ -169,12 +175,14 @@ def main():
     # standalone executable that cannot call LLVM or a shader compiler.
     staging=work/'staging';staging.mkdir(exist_ok=True)
     staged=staging/'GPUSystemShaders.h';staged.write_text(header)
-    test=staging/'catalog-test'
+    verifier=staging/'verify-system-catalog'
     subprocess.run([tc.host('clang++'),'-std=c++17','-O2','-Wall','-Wextra','-Werror',
                     '-I'+str(staging),'-I'+str(source),'-I'+str(ROOT/'drivers/include'),
-                    str(ROOT/'tests/system_shader_catalog_test.cpp'),'-o',str(test)],check=True)
-    checked=subprocess.run([str(test),str(staging)],check=True,capture_output=True,text=True)
+                    str(source/'VerifySystemCatalog.cpp'),'-o',str(verifier)],check=True)
+    checked=subprocess.run([str(verifier),str(staging)],check=True,capture_output=True,text=True)
     expected=[v for e in report for v in e['variants'] if 'sha256' in v]
+    validation=json.loads(checked.stdout)
+    if validation['variants']!=len(expected):raise RuntimeError('Catalog variant count mismatch')
     for i,v in enumerate(expected):
         if sha((staging/f'{i}.bin').read_bytes())!=v['sha256']:raise RuntimeError('Catalog roundtrip mismatch')
     tmp=a.output.with_suffix('.tmp');tmp.write_text(header);tmp.replace(a.output)
@@ -182,6 +190,6 @@ def main():
                   'registry':f'{registry:016x}','attempted_entry_count':len(report),'entry_count':len(records),
                   'compiled_entry_count':sum(any('sha256' in v for v in e['variants']) for e in report),
                   'variant_count':variant_total,'packed_bytes':packed_total,
-                  'validation':json.loads(checked.stdout),'nonstage_functions':nonstage,'entries':report})
+                  'validation':validation,'nonstage_functions':nonstage,'entries':report})
     print(f'System shaders: {len(records)} reflected entries, {variant_total} exact variants, {packed_total} packed bytes')
 if __name__=='__main__':main()
