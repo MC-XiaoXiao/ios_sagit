@@ -184,6 +184,13 @@ void SynapticsTouch::interrupt(OSObject *owner,IOInterruptEventSource *,int) { s
 void SynapticsTouch::timer(OSObject *owner,IOTimerEventSource *) { static_cast<SynapticsTouch *>(owner)->sample(); }
 IOReturn SynapticsTouch::setProperties(OSObject *object) {
     auto *properties=OSDynamicCast(OSDictionary,object);
+    if(properties && properties->getObject("TouchDiagnosticSwipe")) {
+        auto *data=OSDynamicCast(OSData,properties->getObject("TouchDiagnosticSwipe"));
+        if(properties->getCount()!=1 || !data || data->getLength()!=sizeof(TouchDiagnostic::Gesture))return kIOReturnBadArgument;
+        if(IOUserClient::clientHasPrivilege(current_task(),kIOClientPrivilegeAdministrator)!=kIOReturnSuccess)return kIOReturnNotPrivileged;
+        if(!fDiagnosticEnabled)return kIOReturnUnsupported;
+        return fGateAdded?fGate->runAction(diagnosticSwipe,const_cast<void *>(data->getBytesNoCopy())):kIOReturnNotReady;
+    }
     if (!properties || !properties->getObject("TouchDiagnosticTap")) return super::setProperties(object);
     auto *data=OSDynamicCast(OSData,properties->getObject("TouchDiagnosticTap"));
     if (properties->getCount()!=1 || !data || data->getLength()!=7) return kIOReturnBadArgument;
@@ -211,8 +218,43 @@ IOReturn SynapticsTouch::diagnosticTap(OSObject *owner,void *request,void *,void
     s->fDiagnosticTimer->setTimeoutMS(120);
     return kIOReturnSuccess;
 }
+bool SynapticsTouch::diagnosticContact(uint16_t x,uint16_t y,uint8_t pressure,uint8_t width,uint8_t height) {
+    RMI4::Frame frame;auto &c=frame.contacts[0];c.active=true;
+    c.x=uint32_t(x)*fMaxX/32767;c.y=uint32_t(y)*fMaxY/32767;
+    c.pressure=pressure;c.width=width;c.height=height;
+    return fDelivery.send(frame,[this](const RMI4::Frame &value){return emit(value);});
+}
+IOReturn SynapticsTouch::diagnosticSwipe(OSObject *owner,void *request,void *,void *,void *) {
+    auto *s=static_cast<SynapticsTouch *>(owner);TouchDiagnostic::Gesture gesture;
+    memcpy(&gesture,request,sizeof(gesture));
+    if(!gesture.valid())return kIOReturnBadArgument;
+    if(!s->fRunning || !s->fHIDReady || !s->fConfigured || !s->fDiagnosticTimerAdded)return kIOReturnNotReady;
+    if(s->fDiagnosticActive || s->fDelivery.held() || s->fDelivery.releasing())return kIOReturnBusy;
+    RMI4::Frame physical;
+    if(s->fSensor.sample(physical)!=RMI4::Result::Success)return kIOReturnIOError;
+    for(const auto &c:physical.contacts)if(c.active)return kIOReturnBusy;
+    uint64_t ticks,now;clock_get_uptime(&ticks);absolutetime_to_nanoseconds(ticks,&now);
+    if(!s->fDiagnosticStroke.begin(gesture,now))return kIOReturnBusy;
+    s->fDiagnosticActive=true;s->fIRQ->disable();s->fTimer->cancelTimeout();
+    if(!s->diagnosticContact(gesture.fromX,gesture.fromY,gesture.pressure,gesture.width,gesture.height)) {
+        s->fDiagnosticStroke.cancel();s->fDiagnosticActive=false;s->sample();return kIOReturnIOError;
+    }
+    s->setProperty("TouchDiagnosticPulses",++s->fDiagnosticPulses,64);
+    s->setProperty("TouchDiagnosticLastReleased",false);
+    s->fDiagnosticTimer->setTimeoutMS(8);return kIOReturnSuccess;
+}
 void SynapticsTouch::diagnosticRelease(OSObject *owner,IOTimerEventSource *) {
     auto *s=static_cast<SynapticsTouch *>(owner);RMI4::Frame neutral;
+    if(!s->fDiagnosticActive)return;
+    uint64_t ticks,now;clock_get_uptime(&ticks);absolutetime_to_nanoseconds(ticks,&now);
+    TouchDiagnostic::Point point;
+    if(s->fDiagnosticStroke.next(now,point)) {
+        const auto &g=s->fDiagnosticStroke.gesture();
+        if(s->diagnosticContact(point.x,point.y,g.pressure,g.width,g.height)) {
+            s->fDiagnosticTimer->setTimeoutMS(8);return;
+        }
+        s->fDiagnosticStroke.cancel();
+    }
     s->fDelivery.release();
     const bool released=s->fDelivery.send(neutral,[s](const RMI4::Frame &value){return s->emit(value);});
     s->setProperty("TouchDiagnosticLastReleased",released);
@@ -222,6 +264,9 @@ void SynapticsTouch::diagnosticRelease(OSObject *owner,IOTimerEventSource *) {
 IOReturn SynapticsTouch::power(OSObject *owner,void *state,void *,void *,void *) {
     auto *self=static_cast<SynapticsTouch *>(owner);
     if (state==reinterpret_cast<void *>(2)) {
+        if (self->fDiagnosticTimer) self->fDiagnosticTimer->cancelTimeout();
+        self->fDiagnosticStroke.cancel();
+        self->fDiagnosticActive=false;
         self->fRunning=false;
         if (self->fIRQ) self->fIRQ->disable();
         if (self->fTimer) self->fTimer->cancelTimeout();
@@ -234,6 +279,7 @@ IOReturn SynapticsTouch::power(OSObject *owner,void *state,void *,void *,void *)
         self->fRunning=true;self->fErrors=self->fRecoveries=0;self->sample();
     } else {
         if (self->fDiagnosticTimer) self->fDiagnosticTimer->cancelTimeout();
+        self->fDiagnosticStroke.cancel();
         self->fDiagnosticActive=false;
         self->fRunning=false;self->fIRQ->disable();self->fTimer->cancelTimeout();
         self->fDelivery.release();self->sample();

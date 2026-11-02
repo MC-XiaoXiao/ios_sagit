@@ -8,6 +8,7 @@
 #include <IOKit/IOInterruptEventSource.h>
 #include <IOKit/IOTimerEventSource.h>
 #include "TouchHID.h"
+#include <TouchDiagnosticGesture.h>
 
 class SynapticsTouch : public IOHIDDevice {
     OSDeclareDefaultStructors(SynapticsTouch);
@@ -33,6 +34,7 @@ class SynapticsTouch : public IOHIDDevice {
     bool fRunning=false,fConfigured=false,fStopping=false,fHIDReady=false,fTrace=false;
     bool fDiagnosticEnabled=false,fDiagnosticActive=false,fDiagnosticTimerAdded=false;
     uint64_t fDiagnosticPulses=0,fDiagnosticReports=0;
+    TouchDiagnostic::Stroke fDiagnosticStroke;
     unsigned fErrors=0,fRecoveries=0,fLastContacts=0;
     uint64_t fInputReports=0;
     uint64_t fActiveFrames=0,fDownTransitions=0,fUpTransitions=0;
@@ -43,7 +45,9 @@ class SynapticsTouch : public IOHIDDevice {
     static IOReturn power(OSObject *,void *,void *,void *,void *);
     static IOReturn snapshot(OSObject *,void *,void *,void *,void *);
     static IOReturn diagnosticTap(OSObject *,void *,void *,void *,void *);
+    static IOReturn diagnosticSwipe(OSObject *,void *,void *,void *,void *);
     static void diagnosticRelease(OSObject *,IOTimerEventSource *);
+    bool diagnosticContact(uint16_t,uint16_t,uint8_t,uint8_t,uint8_t);
     bool emit(const RMI4::Frame &);
     void sample();
     void cleanup();
