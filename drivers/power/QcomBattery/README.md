@@ -64,11 +64,16 @@ batteryctl --charging on --limit 100
 ```
 
 The `batteryctl` commands run on the device. `--summary` avoids a full registry
-dump on a slow console. `--system` uses the iOS
+dump on a slow console. `--system` checks native `IOPSGetPercentRemaining`
+notifications, including their validity and charging flags. It separately checks
+the `com.apple.PowerManagement.control` service before using the
 `IOPSCopyPowerSourcesInfoPrecise` API, as in Apple's
 [pmset](https://github.com/apple-oss-distributions/PowerManagement/blob/main/pmset/pmset.m),
-and reports the native status and source count when unavailable. An empty
-coarse IOPS result alone does not establish failed powerd discovery.
+and reports its status and source count. A valid mobile notification can exist
+without that separate service. An empty IOPS result alone does not establish
+failed powerd discovery. The command succeeds when either native path supplies
+valid data; it never interprets the notification API's error-default percentage
+as a battery measurement.
 The desktop complete-image pipeline
 builds and signs `batteryctl`, installs it at `/usr/bin/batteryctl`, and includes
 its signature in the existing System-overlay engineering trust cache.
@@ -83,6 +88,16 @@ the charger phase, and `BatteryNetCharging` requires positive measured battery
 current. A charger can be active while system load exceeds its input budget.
 `InputCurrentLimited` and `ThermalChargingLimited` expose SMB2 status without
 guessing an adapter rating. `BatteryProfileVerified` remains false.
+
+`USBInputStatusValid` qualifies the optional read-only input diagnostics.
+`USBInputSettledLimitMA` is the hardware ICL status in 25 mA steps, not measured
+USB current. `USBHighCurrentConfiguredMA` is the configured high-current ceiling;
+`USBHighCurrentMode` selects that mode. `USBSDPCurrentLimitMA` decodes the SDP
+options only when APSD and the Type-C source identify SDP/default USB. Those
+options can remain set while high-current mode is selected. APSD, Type-C source,
+input-suspend and AICL status are also exposed. Configuration is sampled twice
+to reject transitions. An input-diagnostic failure removes its stale properties
+without invalidating a good battery sample or changing charging policy.
 
 `ChargeControlError`: 0 success, 1 inactive/not ready, 2 unsupported
 chip/control mode, 3 I/O failure, 4 readback mismatch, 5 latched fault.
@@ -136,6 +151,8 @@ Tests execute the production register reader/control logic and the actual
 capacity hysteresis, lost ACKs, read/write failures, readback mismatch,
 coherent-sample races, privilege/type validation, delayed source publication,
 notification deduplication, sleep/wake, stop and partial-start rollback.
+Input tests cover SDP option decoding, ICL units, configuration transitions,
+every diagnostic read failure and independence from valid battery/control data.
 The real board DTS is also compiled and converted to Apple DT to check the
 permission cell's byte order. Kext compilation and collection verification
 use the real kernel SDK and original firmware provider.
@@ -158,9 +175,18 @@ requests both returned success and reported the corresponding command readback.
 The source reported positive net current of 214 mA, 3741 mV and 37.1 °C in one
 settled sample. SOC progressed from 4% to 5% across the test sessions.
 
+Version 1.1.1 additionally reported a 500 mA settled input limit, matching the
+host's USB configuration, with valid coherent input diagnostics. SOC reached
+7%. The native `IOPSGetPercentRemaining` notification returned success, 7% and
+`charging=true`; after a protected off request it returned `charging=false`.
+After re-enabling, the notification returned `charging=true` again, with a
+verified on command, no control fault and a sampled net battery current of 31 mA.
+The independent PowerManagement service lookup returned `0x44e` (not registered),
+and Precise returned `0xe00002bc`. That Precise failure did not indicate absent
+mobile battery notifications.
+
 This is not sustained charging qualification: the input-limit flag remained
-set, and later desktop-load samples again showed negative net current with the
+set, and desktop-load samples sometimes showed negative net current with the
 enable command on. USB sink-current allocation has not been implemented here.
-The native iOS Precise query returned `0xe00002bc` with no sources. System-level
-battery reporting remains unverified; hardware control success does not prove
-powerd/SpringBoard integration. Rebooting returns to the retained boot image.
+Native notifications are verified; SpringBoard's visual presentation has not
+been observed. Rebooting returns to the retained boot image.

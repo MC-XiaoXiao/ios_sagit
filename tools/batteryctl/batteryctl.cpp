@@ -4,8 +4,11 @@
 #include <cstring>
 #include <cstdlib>
 extern "C" {
+extern mach_port_t bootstrap_port;
+kern_return_t bootstrap_look_up(mach_port_t, const char *, mach_port_t *);
 kern_return_t IORegistryEntryCreateCFProperties(mach_port_t, CFMutableDictionaryRef *, CFAllocatorRef, uint32_t);
 kern_return_t IOPSCopyPowerSourcesInfoPrecise(CFTypeRef *);
+kern_return_t IOPSGetPercentRemaining(int *, bool *, bool *);
 CFArrayRef IOPSCopyPowerSourcesList(CFTypeRef);
 CFDictionaryRef IOPSGetPowerSourceDescription(CFTypeRef, CFTypeRef);
 }
@@ -21,6 +24,8 @@ static bool printSummary(const char *name,CFDictionaryRef properties) {
     const CFStringRef fields[]={CFSTR("BatteryTelemetryValid"),CFSTR("CurrentCapacity"),
         CFSTR("Voltage"),CFSTR("Amperage"),CFSTR("Temperature"),CFSTR("ExternalConnected"),
         CFSTR("IsCharging"),CFSTR("InputCurrentLimited"),CFSTR("ChargeEnablePinControlled"),
+        CFSTR("USBInputStatusValid"),CFSTR("USBInputSettledLimitMA"),CFSTR("USBSDPCurrentLimitMA"),
+        CFSTR("USBHighCurrentMode"),
         CFSTR("ChargeLimit"),CFSTR("ChargeInhibitReasons"),CFSTR("ChargeControlCommandEnabled"),
         CFSTR("ChargeControlReadbackValid"),CFSTR("ChargeControlFault"),CFSTR("ChargeControlError")};
     fputs(name,stdout);
@@ -91,6 +96,22 @@ int main(int argc,char **argv) {
         }
     }
     if(system) {
+        int percent=-1; bool charging=false,full=false;
+        const auto notifyStatus=IOPSGetPercentRemaining(&percent,&charging,&full);
+        printf("SystemBatteryNotification status=0x%08x valid=%s percent=%d charging=%s full=%s\n",
+            unsigned(notifyStatus),notifyStatus==KERN_SUCCESS?"true":"false",
+            notifyStatus==KERN_SUCCESS?percent:-1,charging?"true":"false",full?"true":"false");
+        mach_port_t server=MACH_PORT_NULL;
+        const auto lookup=bootstrap_look_up(bootstrap_port,"com.apple.PowerManagement.control",&server);
+        printf("PowerManagementService lookup=0x%08x available=%s\n",unsigned(lookup),
+               lookup==KERN_SUCCESS && server!=MACH_PORT_NULL?"true":"false");
+        if(server!=MACH_PORT_NULL)mach_port_deallocate(mach_task_self(),server);
+        // The mobile notification path can be live without the separate
+        // PowerManagement MIG service used by Precise. Report each independently.
+        if(lookup!=KERN_SUCCESS || server==MACH_PORT_NULL) {
+            fputs("PrecisePowerSources unavailable: PowerManagement service not registered.\n",stdout);
+            return notifyStatus==KERN_SUCCESS ? 0:2;
+        }
         CFTypeRef info=nullptr;
         // Apple's iOS pmset uses the Precise API; retain its error instead of
         // interpreting an empty coarse result as failed powerd discovery.
@@ -104,9 +125,9 @@ int main(int argc,char **argv) {
         }
         if(list)CFRelease(list);
         if(info)CFRelease(info);
-        if(!ok)fprintf(stderr,"System power source query: status=0x%08x sources=%ld. No system battery data verified.\n",
+        if(!ok)fprintf(stderr,"Precise power source query: status=0x%08x sources=%ld.\n",
                        unsigned(status),static_cast<long>(count));
-        return ok ? 0:2;
+        return ok || notifyStatus==KERN_SUCCESS ? 0:2;
     }
     bool valid=false, error=false, found=false;
     const char *classes[]={"QcomBattery","QcomBatteryPowerSource"};
