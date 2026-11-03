@@ -16,6 +16,7 @@
 #include "DisplayPrepareSlot.h"
 #include "DisplayInterruptDispatch.h"
 #include "DisplayIdleMappings.h"
+#include "DisplayWakeGate.h"
 class QcomDisplayMapper;
 
 class QcomDisplay : public IOMobileFramebufferLegacy {
@@ -66,6 +67,8 @@ private:
     IOService *backlight;
     uint32_t backlightIdentifier;
     bool backlightClaimed, displayVisible;
+    Display::WakeGate wakeGate;
+    uint64_t backlightRequests=0, backlightRequestTicks=0, backlightRequestPeakTicks=0, powerCallbacks=0;
     IOInterruptEventSource *interrupt;
     IOTimerEventSource *timeout;
     IOCommandGate *gate;
@@ -161,6 +164,8 @@ private:
         NativeWidth = 0x17c8, NativeHeight = 0x17cc,
         NativePixelFormat = 0x1818, DisplayReady = 0x1898, MainDisplay = 0x189a,
         SurfaceArray = 0xa48, EffectiveSurfaces = 0xa68, RequestIntent = 0x32c,
+        // Original swap_submit stores slot244's continuous time at +0x2d8.
+        RequestSubmittedTime = 0x2d8,
         RequestBackground = 0x320, DefaultTransaction = 0x130, EmptyTransaction = 0x644,
         // These are changed/ready masks, not a count of visible layers.
         ChangedLayers = 0x318, ReadyLayers = 0x31c, RequestLinks = 0xc00,
