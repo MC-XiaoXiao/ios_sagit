@@ -309,36 +309,17 @@ static int displayIdentities() {
 }
 
 static int prepareExecutable() {
-    // One-time bootstrap from the loadable builtin to the independently signed
-    // executable. Native APFS performs the rename/mode update; USB later replaces
-    // only this preallocated diagnostic file's owned data extents.
-    auto nativeGetuid = reinterpret_cast<uid_t (*)()>(dlsym(RTLD_DEFAULT, "getuid"));
-    auto nativeSync = reinterpret_cast<void (*)()>(dlsym(RTLD_DEFAULT, "sync"));
-    if (!nativeGetuid || nativeGetuid() || !nativeSync) return 1;
-    NSString *source = @"/private/var/displayctl.dylib";
-    NSString *destination = @"/private/var/displayctl";
-    NSFileManager *files = [NSFileManager defaultManager];
-    NSError *error = nil;
-    NSDictionary *attributes = [files attributesOfItemAtPath:source error:&error];
-    if (![attributes[NSFileType] isEqualToString:NSFileTypeRegular] ||
-            [attributes[NSFileSize] unsignedLongLongValue] != 131072 ||
-            [attributes[NSFileOwnerAccountID] unsignedLongLongValue] != 0 ||
-            [files fileExistsAtPath:destination]) {
-        puts("DISPLAY_PREPARE unexpected source or existing destination; retained"); return 1;
-    }
-    if (![files moveItemAtPath:source toPath:destination error:&error]) {
-        printf("DISPLAY_PREPARE rename failed=%s\n", error.description.UTF8String); return 1;
-    }
-    if (![files setAttributes:@{NSFilePosixPermissions: @0700} ofItemAtPath:destination error:&error]) {
-        printf("DISPLAY_PREPARE mode failed=%s\n", error.description.UTF8String);
-        NSError *rollback = nil;
-        if (![files moveItemAtPath:destination toPath:source error:&rollback])
-            printf("DISPLAY_PREPARE rollback failed=%s\n", rollback.description.UTF8String);
-        return 1;
-    }
-    nativeSync();
-    puts("DISPLAY_PREPARE renamed=/private/var/displayctl mode=0700; executable upload required before use");
-    return 0;
+    // Reserve only our fixed diagnostic path. Keep the currently mapped dylib
+    // intact; an independently signed executable is uploaded to this new inode.
+    if (geteuid()) return 1;
+    int fd = open("/private/var/displayctl", O_WRONLY | O_CREAT | O_EXCL | O_NOFOLLOW, 0700);
+    if (fd < 0) { printf("DISPLAY_PREPARE create errno=%d; existing file retained\n", errno); return 1; }
+    struct stat attributes{};
+    bool ok = !fchmod(fd, 0700) && !fstat(fd, &attributes) && S_ISREG(attributes.st_mode) &&
+        !attributes.st_uid && (attributes.st_mode & 0777) == 0700 && !attributes.st_size && !fsync(fd);
+    if (close(fd)) ok = false;
+    printf("DISPLAY_PREPARE created=/private/var/displayctl mode=0700 verified=%u; executable upload required before use\n", ok);
+    return ok ? 0 : 1;
 }
 
 static int stacks(bool selfOnly = false, bool allTasks = false, int selectedPID = 0) {
@@ -2325,10 +2306,19 @@ struct DisplayWord { char *word; int flags; };
 struct DisplayWordList { DisplayWordList *next; DisplayWord *word; };
 static int displayBuiltin(DisplayWordList *words) {
     char name[] = "displayctl";
-    char *args[3] = {name, nullptr, nullptr};
-    if (!words || words->next || !words->word) return 2;
-    args[1] = words->word->word;
-    return main(2, args);
+    char *args[17] = {name};
+    int count = 1;
+    for (auto *entry = words; entry; entry = entry->next) {
+        if (!entry->word || !entry->word->word || count == 16) return 2;
+        args[count++] = entry->word->word;
+    }
+    if (count == 1) return 2;
+    // Bash restores redirections after returning from a builtin. Flush libc's
+    // independent stream while the diagnostic's selected descriptor is active.
+    fflush(stdout); fflush(stderr);
+    int result = main(count, args);
+    if (fflush(stdout) || fflush(stderr)) return result ? result : 1;
+    return result;
 }
 static const char *displayDocumentation[] = {"Read native display, process and launchd state.", nullptr};
 extern "C" {
