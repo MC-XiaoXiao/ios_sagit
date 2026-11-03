@@ -4,6 +4,10 @@
     {
       "source": "output/QcomMTLDriver.bundle",
       "destination": "System/Library/Extensions/QcomMTLDriver.bundle"
+    },
+    {
+      "source": "output/batteryctl",
+      "destination": "usr/bin/batteryctl"
     }
   ]
 }

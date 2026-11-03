@@ -69,6 +69,10 @@ def complete(selected: dict, jobs: int, options: list[str]) -> None:
             gpu.build_gpu_shaders()
             gpu.build_gpu_metal()
             gpu.build_gpu_client()
+    if 'battery' in selected['profile_config']['features']:
+        with stage(selected, 'battery-client'):
+            from project.build.clients import build_battery_client
+            build_battery_client()
     with stage(selected, 'image'):
         firmware_command(selected, 'build', ['--ipsw', str(args.ipsw.resolve())])
     with stage(selected, 'bridge'):

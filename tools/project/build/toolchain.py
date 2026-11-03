@@ -141,10 +141,7 @@ def main():
                 'com.apple.hid.system.user-access-service':True},
             signing_identifier='org.darwin.development.inputctl')
     elif args.command == 'build-battery-client':
-        _component_clients.build_iokit_client('batteryctl', ['batteryctl/batteryctl.cpp'],
-            extra_exports=['IORegistryEntryCreateCFProperties', 'IOPSCopyPowerSourcesInfo',
-                           'IOPSCopyPowerSourcesList', 'IOPSGetPowerSourceDescription'],
-            headers=['include/IOKitUser.h'], adhoc_sign=True)
+        _component_clients.build_battery_client()
     elif args.command == 'build-haptics-client':
         _component_clients.build_iokit_client('hapticsctl', ['hapticsctl/hapticsctl.cpp'],
             headers=['include/IOKitUser.h'], protocol=['HapticsProtocol.h'], adhoc_sign=True)

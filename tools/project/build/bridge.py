@@ -517,7 +517,7 @@ NUMERIC = {'#address-cells', '#size-cells', '#interrupt-cells', 'phandle', 'linu
            'amfi-only-platform-code',
            'certificate-production-status', 'effective-production-status-ap',
            'certificate-security-mode', 'effective-security-mode-sep',
-           'qcom,pmic-rtc', 'qcom,battery-observer', 'qcom,pmi8998-haptics',
+           'qcom,pmic-rtc', 'qcom,battery-observer', 'qcom,battery-charge-control', 'qcom,pmi8998-haptics',
            'reg-shift', 'reg-io-width', 'timebase-frequency', 'clock-frequency', 'bus-frequency', 'cpu-id', 'cluster-id',
            'l2-cache-id', 'l2-cache-size', 'l3-cache-id', 'l3-cache-size', 'cluster-core-id', 'die-cluster-id', 'cluster-type',
            '#clock-cells', '#reset-cells', '#power-domain-cells', 'qcom,gcc-handoff-version',

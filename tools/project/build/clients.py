@@ -16,6 +16,15 @@ def build_power_client():
                        signing_identifier='org.darwin.development.powerctl')
 
 
+def build_battery_client():
+    for loadable in (False, True):
+        build_iokit_client('batteryctl', ['batteryctl/batteryctl.cpp'],
+                           extra_exports=['IORegistryEntrySetCFProperties', 'IORegistryEntryCreateCFProperties',
+                                          'IOPSCopyPowerSourcesInfoPrecise', 'IOPSCopyPowerSourcesList',
+                                          'IOPSGetPowerSourceDescription'],
+                           headers=['include/IOKitUser.h'], adhoc_sign=True, loadable=loadable)
+
+
 def build_iokit_client(name, source_paths, extra_exports=(), headers=(), protocol=None,
                        bundle=None, frameworks=(), include_dirs=(), libraries=(), exception_sources=(),
                        adhoc_sign=False, loadable=False, blocks=False, entitlements=None, signing_identifier=None):
