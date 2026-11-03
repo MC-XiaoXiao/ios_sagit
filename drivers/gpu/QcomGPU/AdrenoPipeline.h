@@ -34,12 +34,12 @@ inline bool hardwareClearEligible(uint64_t address,uint32_t bytes,const uint32_t
 struct FramebufferCopyRegion { uint32_t offset=0,bytes=0; };
 struct Framebuffer2DRegion {uint32_t offset=0,pitch=0,rows=0,x=0,width=0;};
 // Experimental texture-barrier feedback, not coherent GMEM framebuffer fetch.
-// One triangle per barrier prevents self-overdraw. Keep MSAA, MRT, lines and
+// One line or triangle per barrier prevents self-overdraw. Keep MSAA, MRT and
 // non-UNORM targets on the original private snapshot path.
 inline bool framebufferInplaceEligible(const GPU::Shader::Draw &d,const GPU::Shader::Program &fs) {
     using namespace GPU::Shader;
     return fs.framebufferMask==1 && fs.colorMask==1 && colorTargetMask(d)==1 &&
-        (d.primitive==3 || d.primitive==4) && d.rasterSamples<=1 && d.target.samples<=1 &&
+        (d.primitive==1 || d.primitive==3 || d.primitive==4) && d.rasterSamples<=1 && d.target.samples<=1 &&
         !(fs.sampleFlags&QGPU_SAMPLE_MSAA) &&
         (d.target.format==RGBA8 || d.target.format==BGRA8 || d.target.format==RGBA8SRGB || d.target.format==BGRA8SRGB);
 }
