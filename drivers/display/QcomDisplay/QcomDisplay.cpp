@@ -429,7 +429,6 @@ IOReturn QcomDisplay::setProperties(OSObject *object) {
         return gate && gateAdded?gate->runAction(leaseHistoryAction):kIOReturnNotReady;
     }
     if(properties && properties->getObject("DisplayFrameStatistics")) {
-        if(!scanoutCaptureEnabled)return kIOReturnUnsupported;
         if(properties->getCount()!=1 || properties->getObject("DisplayFrameStatistics")!=kOSBooleanTrue)return kIOReturnBadArgument;
         if(IOUserClient::clientHasPrivilege(current_task(),kIOClientPrivilegeAdministrator)!=kIOReturnSuccess)return kIOReturnNotPrivileged;
         return gate && gateAdded?gate->runAction(swapStatisticsAction):kIOReturnNotReady;
@@ -1260,15 +1259,15 @@ void QcomDisplay::completeSwap(bool displayed) {
         memcpy(&kind, request + RequestIntent, sizeof(kind));
         memcpy(&state, request + 0x34c, sizeof(state));
     }
-    if(scanoutCaptureEnabled) {
-        if(displayed) {
-            ++displayedSwapCount;
-            const uint32_t at=(swapSampleHead+swapSampleCount)%Display::SwapSampleCapacity;
-            swapSamples[at]={mach_continuous_time(),sequence,uint32_t(displayVisible)|(frontSurface?2u:0u)};
-            if(swapSampleCount<Display::SwapSampleCapacity)++swapSampleCount;
-            else swapSampleHead=(swapSampleHead+1)%Display::SwapSampleCapacity;
-        } else ++failedSwapCount;
-    }
+    // Keep bounded completion statistics in normal operation too. Reading
+    // counters must not require pixel capture or change the IRQ event source.
+    if(displayed) {
+        ++displayedSwapCount;
+        const uint32_t at=(swapSampleHead+swapSampleCount)%Display::SwapSampleCapacity;
+        swapSamples[at]={mach_continuous_time(),sequence,uint32_t(displayVisible)|(frontSurface?2u:0u)};
+        if(swapSampleCount<Display::SwapSampleCapacity)++swapSampleCount;
+        else swapSampleHead=(swapSampleHead+1)%Display::SwapSampleCapacity;
+    } else ++failedSwapCount;
     if (trace) DISPLAY_NATIVE_LOG("QcomDisplay: native completion before id=%u kind=%u state=%u active=%u cancelled=%u displayed=%u completed=%u\n",
         sequence, kind, state, request != nullptr, request ? request[0x54a] : 0, displayed,
         nativeState<UInt32>(LastCompletedSwap));

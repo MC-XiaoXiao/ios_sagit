@@ -9,9 +9,9 @@
 	<key>CFBundleName</key>
 	<string>QcomDisplay</string>
 	<key>CFBundleVersion</key>
-	<string>1.0.26</string>
+	<string>1.0.27</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.26</string>
+	<string>1.0.27</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
