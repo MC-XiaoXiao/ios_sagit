@@ -3,7 +3,7 @@
 #include <stdint.h>
 
 // Register evidence: local/reference/qcom/msm8998/battery (Xiaomi sagit-n-oss).
-// This observer never programs the charger, FG SRAM, IRQs or battery profile.
+// Telemetry never programs the charger, FG SRAM, IRQs or battery profile.
 namespace PMICBattery {
 enum class Result : uint32_t { Success, InvalidConfig, IOFailure, Unsupported,
                                NotReady, Incoherent, OutOfRange, Suspended };
@@ -22,6 +22,7 @@ struct Sample {
     int32_t milliamps = 0, centiCelsius = 0;
     uint8_t revision = 0, rawSOC = 0, chargeState = 0, chargerFaults = 0;
     uint8_t powerPath = 0;
+    bool chargeRequested = false, pinControlled = false, inputLimited = false, thermalLimited = false;
 };
 inline uint16_t word(const uint8_t *p, bool swapped) {
     return swapped ? (uint16_t(p[0]) << 8) | p[1] : (uint16_t(p[1]) << 8) | p[0];
@@ -47,14 +48,19 @@ template<class Bus> Result readSample(Bus &bus, const Config &c, Sample &output)
         Sample s{};
         s.revision = id[0];
         uint8_t present = 0, presentAfter = 0, path = 0, pathAfter = 0;
-        uint8_t charger[8]{}, chargerAfter[8]{};
+        uint8_t charger[8]{}, chargerAfter[8]{}, command = 0, commandAfter = 0, mode = 0, modeAfter = 0;
         if (!read(c.info + 7, &present, 1) || !read(c.misc + 0x0b, &path, 1) ||
-            !read(c.charger + 6, charger, 8)) return Result::IOFailure;
+            !read(c.charger + 6, charger, 8) || !read(c.charger + 0x42, &command, 1) ||
+            !read(c.charger + 0x51, &mode, 1)) return Result::IOFailure;
         s.installed = !(present & 7);
         s.powerPath = path;
         s.external = (path & 1) && (path & 0x18);
         s.chargeState = charger[0] & 7;
         s.chargerFaults = charger[1] & 0x73; // expiry, OV, missing, hot/cold
+        s.chargeRequested = command & 1;
+        s.pinControlled = mode & 0x80;
+        s.inputLimited = charger[1] & 0x80;
+        s.thermalLimited = charger[1] & 0x0c;
         if (s.installed) {
             uint8_t enabled = 0, ready = 0, restart = 0, cap[2]{};
             if (!read(c.soc + 0x46, &enabled, 1) || !read(c.soc + 0x10, &ready, 1) ||
@@ -85,7 +91,7 @@ template<class Bus> Result readSample(Bus &bus, const Config &c, Sample &output)
             // Preserve quarter-Kelvin resolution; Apple Temperature uses 0.01 C.
             s.centiCelsius = int32_t((uint16_t(temp[1] & 7) << 8) | temp[0]) * 25 - 27315;
             s.temperatureValid = (tempStatus & 1) && s.centiCelsius >= -4000 && s.centiCelsius <= 10000;
-            s.charging = s.external && !s.chargerFaults && s.chargeState <= 4 &&
+            s.charging = s.external && (s.pinControlled || s.chargeRequested) && !s.chargerFaults && s.chargeState <= 4 &&
                 (charger[7] & 0xf0);
             // Inhibit is not evidence of full charge. Never force SOC to 100.
             s.full = s.external && !s.chargerFaults && s.chargeState == 5 && s.percent >= 99;
@@ -97,9 +103,12 @@ template<class Bus> Result readSample(Bus &bus, const Config &c, Sample &output)
                 !(enabledAfter & 0x80) || (restartAfter & 1)) continue;
         }
         if (!read(c.info + 7, &presentAfter, 1) || !read(c.misc + 0x0b, &pathAfter, 1) ||
-            !read(c.charger + 6, chargerAfter, 8)) return Result::IOFailure;
+            !read(c.charger + 6, chargerAfter, 8) ||
+            !read(c.charger + 0x42, &commandAfter, 1) ||
+            !read(c.charger + 0x51, &modeAfter, 1)) return Result::IOFailure;
         if (present != presentAfter || path != pathAfter || charger[0] != chargerAfter[0] ||
-            charger[1] != chargerAfter[1] || charger[7] != chargerAfter[7]) continue;
+            charger[1] != chargerAfter[1] || charger[7] != chargerAfter[7] ||
+            command != commandAfter || mode != modeAfter) continue;
         output = s;
         return Result::Success;
     }

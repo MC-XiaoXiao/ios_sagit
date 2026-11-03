@@ -60,7 +60,11 @@
 &spmi { qcom,pmic-rtc = <0 0x6000>; };
 // Read-only PMI8998 FG/charger observer: version, SID, SOC, INFO, CHGR, MISC, ms.
 // Uses retained firmware configuration; does not grant charger/SRAM writes.
-&spmi { qcom,battery-observer = <1 2 0x4000 0x4100 0x1000 0x1600 5000>; };
+&spmi {
+    qcom,battery-observer = <1 2 0x4000 0x4100 0x1000 0x1600 5000>;
+    // OS owns SMB2's charge-enable command and source/polarity selection after ExitBootServices.
+    qcom,battery-charge-control = <1>;
+};
 // PMI8998 LRA: version, exclusive-ownership flag, SID, base, period us,
 // maximum mV, current limit mA, maximum pulse ms. Flag 0 prevents binding and
 // all motor writes. Enable only after AP-exclusive SPMI ownership is handed off.

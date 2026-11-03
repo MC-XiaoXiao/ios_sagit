@@ -5,9 +5,94 @@
 #include <libkern/c++/OSBoolean.h>
 #include <libkern/c++/OSNumber.h>
 #include <kern/clock.h>
+#include <IOKit/IOUserClient.h>
 
 OSDefineMetaClassAndStructors(QcomBatteryPowerSource, IOPMPowerSource);
 OSDefineMetaClassAndStructors(QcomBattery, IOService);
+
+IOReturn QcomBatteryPowerSource::setProperties(OSObject *object) {
+    auto *owner = OSDynamicCast(QcomBattery, getProvider());
+    return owner ? owner->setProperties(object) : kIOReturnNotAttached;
+}
+void QcomBatteryPowerSource::publishControl(const PMICBattery::ChargeControl &c, bool allowed) {
+    boolean("ChargeControlSupported", allowed);
+    boolean("ChargeControlActive", c.active);
+    boolean("ChargeControlFault", c.fault);
+    boolean("ChargeControlReadbackValid", c.active && c.commandKnown);
+    if (c.active && c.commandKnown) boolean("ChargeControlCommandEnabled", c.commandEnabled);
+    else forget("ChargeControlCommandEnabled");
+    number("ChargeControlError", uint32_t(c.result));
+    if (c.active) {
+        number("ChargeLimit", c.policy.limit);
+        number("ChargeInhibitReasons", c.inhibit);
+        boolean("ChargingEnabled", c.policy.manualEnabled);
+        boolean("PredictiveChargingInhibit", c.policy.predictive);
+    }
+    updateStatus();
+}
+void QcomBattery::publishControl() {
+    setProperty("ChargeControlSupported", controlAllowed);
+    setProperty("ChargeControlActive", control.active);
+    setProperty("ChargeControlFault", control.fault);
+    setProperty("ChargeControlReadbackValid", control.active && control.commandKnown);
+    if (control.active && control.commandKnown) setProperty("ChargeControlCommandEnabled", control.commandEnabled);
+    else removeProperty("ChargeControlCommandEnabled");
+    setProperty("ChargeControlError", uint32_t(control.result), 32);
+    setProperty("ChargeInhibitReasons", control.inhibit, 32);
+    if (source) source->publishControl(control, controlAllowed);
+}
+static IOReturn controlReturn(PMICBattery::ControlResult result) {
+    using R = PMICBattery::ControlResult;
+    switch (result) {
+        case R::Success: return kIOReturnSuccess;
+        case R::NotReady: return kIOReturnNotReady;
+        case R::Unsupported: return kIOReturnUnsupported;
+        default: return kIOReturnIOError;
+    }
+}
+IOReturn QcomBattery::setProperties(OSObject *object) {
+    if (IOUserClient::clientHasPrivilege(current_task(), kIOClientPrivilegeAdministrator) != kIOReturnSuccess)
+        return kIOReturnNotPrivileged;
+    auto *dict = OSDynamicCast(OSDictionary, object);
+    if (!dict || !dict->getCount()) return kIOReturnBadArgument;
+    // Validate the complete request before changing a vote or hardware state.
+    const char *names[] = {"ChargingEnabled", "IsCharging", "PredictiveChargingInhibit", "ChargeLimit"};
+    unsigned count = 0;
+    for (unsigned i = 0; i < 4; ++i) if (auto *value = dict->getObject(names[i])) {
+        ++count;
+        if (i < 3) { if (!OSDynamicCast(OSBoolean, value)) return kIOReturnBadArgument; }
+        else {
+            auto *n = OSDynamicCast(OSNumber, value);
+            if (!n || n->unsigned64BitValue() < 50 || n->unsigned64BitValue() > 100)
+                return kIOReturnBadArgument;
+        }
+    }
+    if (count != dict->getCount()) return kIOReturnUnsupported;
+    if (!gateAdded) return kIOReturnNotReady;
+    return gate->runAction([](OSObject *o, void *argument, void *, void *, void *) -> IOReturn {
+        auto *self = static_cast<QcomBattery *>(o);
+        auto *d = static_cast<OSDictionary *>(argument);
+        if (!self->running || !self->awake) return kIOReturnNotReady;
+        if (!self->controlAllowed) return kIOReturnUnsupported;
+        Bus bus{self->spmi};
+        // A manual request can recover a latched transport fault only after a
+        // successful, verified disable. Native policy updates cannot clear it.
+        if (self->control.fault && d->getObject("ChargingEnabled")) {
+            const auto r = self->control.recover(bus, self->config);
+            if (r != PMICBattery::ControlResult::Success) {
+                self->publishControl(); return controlReturn(r);
+            }
+        }
+        auto &p = self->control.policy;
+        if (auto *v = OSDynamicCast(OSBoolean, d->getObject("ChargingEnabled"))) p.manualEnabled = v->isTrue();
+        if (auto *v = OSDynamicCast(OSBoolean, d->getObject("IsCharging"))) p.systemEnabled = v->isTrue();
+        if (auto *v = OSDynamicCast(OSBoolean, d->getObject("PredictiveChargingInhibit"))) p.predictive = v->isTrue();
+        if (auto *v = OSDynamicCast(OSNumber, d->getObject("ChargeLimit"))) p.setLimit(v->unsigned32BitValue());
+        self->control.active = true;
+        self->poll(); // Fresh telemetry and readback before acknowledging the request.
+        return controlReturn(self->control.result);
+    }, dict);
+}
 
 void QcomBatteryPowerSource::number(const char *name, uint32_t value) {
     auto *key = OSSymbol::withCString(name);
@@ -44,6 +129,11 @@ void QcomBatteryPowerSource::publish(const PMICBattery::Sample &s) {
     number("ChargerState", s.chargeState);
     number("ChargerFaults", s.chargerFaults);
     number("PMICPowerPath", s.powerPath);
+    boolean("ChargeCommandEnabled", s.chargeRequested);
+    boolean("ChargeEnablePinControlled", s.pinControlled);
+    boolean("InputCurrentLimited", s.inputLimited);
+    boolean("ThermalChargingLimited", s.thermalLimited);
+    boolean("BatteryNetCharging", s.installed && s.external && s.milliamps > 0);
     if (s.installed) {
         // iOS-style relative capacity. No guessed mAh or health is published.
         setProperty("BatteryCapacityUnits", "Percent");
@@ -63,7 +153,8 @@ void QcomBatteryPowerSource::publish(const PMICBattery::Sample &s) {
 void QcomBatteryPowerSource::invalidate(PMICBattery::Result result) {
     clearMeasurements();
     const char *keys[] = {"BatteryInstalled", "ExternalConnected", "IsCharging",
-                         "ChargerState", "ChargerFaults", "PMICPowerPath"};
+                         "ChargerState", "ChargerFaults", "PMICPowerPath", "ChargeCommandEnabled", "ChargeEnablePinControlled",
+                         "InputCurrentLimited", "ThermalChargingLimited", "BatteryNetCharging"};
     for (const char *key : keys) forget(key);
     setTimeRemaining(-1);
     boolean("BatteryTelemetryValid", false);
@@ -75,6 +166,13 @@ void QcomBatteryPowerSource::invalidate(PMICBattery::Result result) {
 
 bool QcomBattery::Bus::read(uint8_t sid, uint16_t address, uint8_t *p, unsigned n) {
     error = spmi->transfer(sid, address, p, n, false);
+    return error == kIOReturnSuccess;
+}
+bool QcomBattery::Bus::write(uint8_t sid, uint16_t address, const uint8_t *p, unsigned n) {
+    // No generic register-write interface is exposed to userspace.
+    if ((address != 0x1042 && address != 0x1051) || n != 1) { error = kIOReturnBadArgument; return false; }
+    uint8_t value = *p;
+    error = spmi->transfer(sid, address, &value, n, true);
     return error == kIOReturnSuccess;
 }
 static UInt64 uptimeNS() {
@@ -92,6 +190,9 @@ bool QcomBattery::start(IOService *provider) {
               QcomPower::le32(p+12), QcomPower::le32(p+16), QcomPower::le32(p+20),
               QcomPower::le32(p+24)};
     if (!config.valid() || !IOService::start(provider)) return false;
+    if (auto *allow = OSDynamicCast(OSData, dt->getProperty("qcom,battery-charge-control")))
+        controlAllowed = allow->getLength() == 4 &&
+            QcomPower::le32(static_cast<const uint8_t *>(allow->getBytesNoCopy())) == 1;
     loop = IOWorkLoop::workLoop();
     gate = IOCommandGate::commandGate(this);
     timer = IOTimerEventSource::timerEventSource(this, tick);
@@ -102,7 +203,8 @@ bool QcomBattery::start(IOService *provider) {
     timerAdded = true;
     setProperty("BatteryDataSource", "PMI8998-FG-Gen3/SPMI");
     setProperty("BatteryTelemetryValid", false);
-    setProperty("BatteryObserverOnly", true);
+    setProperty("BatteryObserverOnly", !controlAllowed);
+    publishControl();
     setProperty("BatteryProfileVerified", false);
     setProperty("BatteryPollIntervalMS", config.pollMS, 32);
     {
@@ -121,7 +223,7 @@ bool QcomBattery::start(IOService *provider) {
         changePowerStateTo(1);
     }
     registerService();
-    IOLog("QcomBattery: read-only FG observer ready; interval=%u ms\n", config.pollMS);
+    IOLog("QcomBattery: FG telemetry ready; charge-control=%u interval=%u ms\n", controlAllowed, config.pollMS);
     return true;
 fail:
     cleanup(); IOService::stop(provider); return false;
@@ -131,6 +233,14 @@ void QcomBattery::poll() {
     Bus bus{spmi};
     PMICBattery::Sample sample;
     auto result = PMICBattery::readSample(bus, config, sample);
+    if (controlAllowed && control.active) {
+        const bool valid = result == PMICBattery::Result::Success;
+        control.synchronize(bus, config, valid ? &sample : nullptr);
+        // Charging status predating a command write must never be published as
+        // the current state. Take another coherent hardware sample.
+        if (valid) result = PMICBattery::readSample(bus, config, sample);
+        if (result != PMICBattery::Result::Success) control.synchronize(bus, config, nullptr);
+    }
     const auto now = uptimeNS();
     setProperty("BatteryLastAttemptUptimeNS", now, 64);
     if (result == PMICBattery::Result::Success && !source) {
@@ -145,7 +255,7 @@ void QcomBattery::poll() {
         if (!source) { result = PMICBattery::Result::IOFailure; bus.error = kIOReturnNoMemory; }
         else {
             source->setProperty("BatteryDataSource", "PMI8998-FG-Gen3/SPMI");
-            source->setProperty("BatteryObserverOnly", true);
+            source->setProperty("BatteryObserverOnly", !controlAllowed);
             source->setProperty("BatteryProfileVerified", false);
             source->setProperty("Transport Type", "Internal");
         }
@@ -168,7 +278,10 @@ void QcomBattery::poll() {
     setProperty("BatteryLastIOError", uint32_t(bus.error), 32);
     setProperty("BatterySuccessfulSamples", successes, 64);
     setProperty("BatteryFailedSamples", failures, 64);
-    timer->setTimeoutMS(config.pollMS);
+    publishControl();
+    const auto interval = control.active ? 1000 : config.pollMS;
+    setProperty("BatteryPollIntervalMS", interval, 32);
+    timer->setTimeoutMS(interval);
 }
 void QcomBattery::tick(OSObject *owner, IOTimerEventSource *) {
     static_cast<QcomBattery *>(owner)->poll(); // same workloop gate as PM/stop
@@ -180,6 +293,10 @@ IOReturn QcomBattery::powerAction(OSObject *o, void *state, void *, void *, void
     self->timer->cancelTimeout();
     if (self->awake) self->poll();
     else {
+        if (self->control.active) {
+            Bus bus{self->spmi}; self->control.synchronize(bus, self->config, nullptr);
+            self->publishControl();
+        }
         self->setProperty("BatteryTelemetryValid", false);
         self->setProperty("BatteryReadError", uint32_t(PMICBattery::Result::Suspended), 32);
         if (self->source) self->source->invalidate(PMICBattery::Result::Suspended);
@@ -197,6 +314,10 @@ void QcomBattery::cleanup() {
     if (gateAdded) gate->runAction([](OSObject *o, void *, void *, void *, void *) -> IOReturn {
         auto *self = static_cast<QcomBattery *>(o);
         self->running = false;
+        if (self->control.active) {
+            Bus bus{self->spmi}; self->control.synchronize(bus, self->config, nullptr);
+            self->publishControl();
+        }
         if (self->timer) self->timer->cancelTimeout();
         if (self->source) self->source->invalidate(PMICBattery::Result::Suspended);
         return kIOReturnSuccess;

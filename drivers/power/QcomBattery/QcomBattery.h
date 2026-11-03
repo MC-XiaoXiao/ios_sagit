@@ -4,6 +4,7 @@
 #include <IOKit/IOTimerEventSource.h>
 #include <QcomSPMI.h>
 #include "PMI8998Battery.h"
+#include "PMI8998Charger.h"
 
 // Created explicitly with IOPMPowerSource::init(void), which initializes the
 // native settings dictionary (IOService's personality initializer does not).
@@ -14,6 +15,8 @@ class QcomBatteryPowerSource : public IOPMPowerSource {
     void forget(const char *);
     void clearMeasurements();
 public:
+    IOReturn setProperties(OSObject *) APPLE_KEXT_OVERRIDE;
+    void publishControl(const PMICBattery::ChargeControl &, bool);
     void publish(const PMICBattery::Sample &);
     void invalidate(PMICBattery::Result);
 };
@@ -26,6 +29,8 @@ class QcomBattery : public IOService {
     IOTimerEventSource *timer = nullptr;
     QcomBatteryPowerSource *source = nullptr;
     PMICBattery::Config config{};
+    PMICBattery::ChargeControl control{};
+    bool controlAllowed = false;
     bool gateAdded = false, timerAdded = false, pm = false;
     bool running = false, awake = true, published = false;
     UInt64 successes = 0, failures = 0;
@@ -33,12 +38,15 @@ class QcomBattery : public IOService {
         QcomSPMI *spmi;
         IOReturn error = kIOReturnSuccess;
         bool read(uint8_t, uint16_t, uint8_t *, unsigned);
+        bool write(uint8_t, uint16_t, const uint8_t *, unsigned);
     };
     static void tick(OSObject *, IOTimerEventSource *);
     static IOReturn powerAction(OSObject *, void *, void *, void *, void *);
     void poll();
     void cleanup();
+    void publishControl();
 public:
+    IOReturn setProperties(OSObject *) APPLE_KEXT_OVERRIDE;
     bool start(IOService *) APPLE_KEXT_OVERRIDE;
     void stop(IOService *) APPLE_KEXT_OVERRIDE;
     void free() APPLE_KEXT_OVERRIDE;
