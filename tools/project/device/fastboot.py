@@ -98,7 +98,8 @@ class Fastboot:
         self.run('stage', str(payload.resolve()), serial=serial)
         crc = zlib.crc32(data)
         output = self.run('oem', 'crc32', serial=serial)
-        if not re.search(r'crc32=' + f'{crc:08x}' + r'\b', output.lower()):
+        checksums = re.findall(r'^(?:\(bootloader\)\s*)?(?:crc32=)?([0-9a-f]{8})\s*$', output.lower(), re.M)
+        if checksums != [f'{crc:08x}']:
             raise ValueError('downloaded EFI CRC32 differs from host; EFI was not started')
         self.run('oem', 'run-efi', serial=serial)
         return crc
