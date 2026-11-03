@@ -1496,28 +1496,10 @@ void QcomGPU::retireJobs()
         }
         fTimer->setTimeoutMS(10);
     } else if(fJobCount) {
-        // Native display/read fences can be the only remaining dependency.
-        // Never leave an accepted surface waiter on the100ms idle cadence.
-        const auto now=mach_absolute_time();
-        for(unsigned i=0;i<fJobCount;++i) {
-            const auto &job=fJobs[(fJobHead+i)%GPU::MaxJobs];
-            if(job.native && !job.sequence && !job.accessFailed &&
-                job.native->surfaceAccess().state==GPU::Native::SurfaceAccessState::Pending &&
-                now>=job.admitted && now-job.admitted>=10*fTimeoutTicks) {
-                if(fExecutionProfile) {
-                    auto *records=OSArray::withCapacity(32);QcomGPUSurfaceWaitLog log{records};
-                    log.append("QcomGPU: surface-wait-timeout jobs=%u accelerator=%u now=%llu",fJobCount,nativeAcceleratorIdentifier(),now);
-                    for(unsigned n=0;n<fJobCount;++n) {
-                        const auto &pending=fJobs[(fJobHead+n)%GPU::MaxJobs];
-                        log.append("QcomGPU: surface-wait-job index=%u queue=%p sequence=%u stamp=%u done=%u admitted=%llu",n,
-                            pending.native?pending.native->queue:nullptr,pending.sequence,pending.native?pending.native->stamp:0,pending.hardwareDone,pending.admitted);
-                        if(pending.native)pending.native->logSurfaceFenceWait(n,log);
-                    }
-                    if(records){setProperty("GPUSurfaceWaitSnapshot",records);records->release();}
-                }
-                faultHardware();return;
-            }
-        }
+        // No command is executing. IOSurface access can remain pending across
+        // display blanking or another native client's access. Admission time
+        // is not GPU progress: keep native ordering instead of faulting the
+        // entire device when an external reader outlives the GPU watchdog.
         fTimer->setTimeoutMS(1);
     } else fTimer->setTimeoutMS(100); // validate retained platform state while idle too
 }
