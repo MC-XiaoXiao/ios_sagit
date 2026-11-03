@@ -25,7 +25,7 @@ Hardware status is based on validation through October 23, 2026.
 | Kernel / SMP | Working | 2, 4, and 8 CPU cores tested; 4 cores by default |
 | UFS / APFS | Working | Native root boot, System and Data mounts, and Data reads and writes |
 | Home screen | Working | SpringBoard, app icons, and Dock with development Setup configuration |
-| Display / backlight | Partial | 1080×1920 output, display submission, and backlight takeover; cold panel initialization, automatic brightness, and suspend/resume remain incomplete |
+| Display / backlight | Partial | 1080×1920 output, brightness control, backlight off/on, and EDR synchronization (SDR headroom 1) tested; cold panel initialization, automatic brightness, and full system suspend/resume remain incomplete |
 | Touch | Working | Native HID / BackBoard / UIKit path; physical swipes and taps tested; full multitouch coverage remains unverified |
 | Adreno 540 / Metal | Partial | Firmware authentication, hardware submission, Compute / Render, IOSurface readback, and system compositing tested; API coverage and long-term stability remain incomplete |
 | USB device mode | Working | High-Speed enumeration, AppleUSBDeviceMux, device information queries, and reconnect; Host / OTG, USB 3, and full pairing services remain unverified |
