@@ -20,7 +20,7 @@ def build_battery_client():
     for loadable in (False, True):
         build_iokit_client('batteryctl', ['batteryctl/batteryctl.cpp'],
                            extra_exports=['IORegistryEntrySetCFProperties', 'IORegistryEntryCreateCFProperties',
-                                          'IOPSCopyPowerSourcesInfoPrecise', 'IOPSCopyPowerSourcesList',
+                                          'IOPSCopyPowerSourcesInfoPrecise', 'IOPSGetPercentRemaining', 'IOPSCopyPowerSourcesList',
                                           'IOPSGetPowerSourceDescription'],
                            headers=['include/IOKitUser.h'], adhoc_sign=True, loadable=loadable)
 
