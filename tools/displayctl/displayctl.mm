@@ -16,6 +16,7 @@
 #include <DisplayFrameStatistics.h>
 #include <DisplayLeaseHistory.h>
 #include <DisplayTimeline.h>
+#include <DisplayBacklight.h>
 #include <algorithm>
 #include <vector>
 #include <objc/message.h>
@@ -436,6 +437,56 @@ static bool pinnedImage(const void *base, const uint8_t (&uuid)[16]) {
     }
     return false;
 }
+static int nativeEDRState() {
+    struct Deadline {
+        void (*previous)(int);
+        Deadline():previous(signal(SIGALRM, +[](int) { const char message[] = "DISPLAY_EDR_TIMEOUT\n"; (void)write(2, message, sizeof(message)-1); _exit(124); })) { alarm(15); }
+        ~Deadline() { alarm(0); if (previous != SIG_ERR) signal(SIGALRM, previous); }
+    } deadline;
+    if (setenv("CA_SYSTEM_SESSION_CLIENT", "1", 1)) return 1;
+    const uint8_t uuid[] = {0xfa,0xf7,0xd7,0xea,0x18,0xf0,0x3c,0x2d,0x81,0x6c,0xac,0x56,0xd1,0x6c,0x40,0xa3};
+    struct Getter { const char *name; uintptr_t offset; float (*read)(uint32_t); } getters[] = {
+        {"CADisplayGetCurrentHeadroom", 0x18c32c, nullptr},
+        {"CADisplayGetPotentialHeadroom", 0xe8bb8, nullptr},
+        {"CADisplayGetReferenceHeadroom", 0x18c3c4, nullptr}};
+    void *base = nullptr;
+    for (auto &getter : getters) {
+        void *symbol = dlsym(RTLD_DEFAULT, getter.name); Dl_info origin{};
+        if (!symbol || !dladdr(symbol, &origin) || !pinnedImage(origin.dli_fbase, uuid) ||
+                uintptr_t(symbol) - uintptr_t(origin.dli_fbase) != getter.offset ||
+                (base && base != origin.dli_fbase)) {
+            printf("DISPLAY_EDR_API_UNAVAILABLE name=%s\n", getter.name); return 1;
+        }
+        base = origin.dli_fbase; getter.read = reinterpret_cast<float (*)(uint32_t)>(symbol);
+    }
+    @try {
+        auto send = reinterpret_cast<id (*)(id, SEL)>(objc_msgSend);
+        id display = send((id)objc_getClass("CADisplay"), sel_registerName("mainDisplay"));
+        id number = [display valueForKey:@"displayId"];
+        if (![number isKindOfClass:[NSNumber class]]) return 1;
+        uint32_t identifier = [number unsignedIntValue];
+        float values[3];
+        const auto begin = mach_absolute_time();
+        for (unsigned j = 0; j < 3; ++j) values[j] = getters[j].read(identifier);
+        // The public getters also return 1 when the server mapping is absent.
+        // Audit the existing cache entry after those getters created it. The
+        // pinned lookup is read-only for an existing entry; no private state
+        // is written and no synthetic EDR service or headroom is installed.
+        auto lookup = reinterpret_cast<const uint8_t *(*)(uint32_t)>(static_cast<char *>(base) + 0xe8c54);
+        const uint8_t *entry = lookup(identifier); const void *mapping = nullptr;
+        if (entry) memcpy(&mapping, entry + 0x10, sizeof(mapping));
+        mach_timebase_info_data_t timebase{};
+        if (mach_timebase_info(&timebase) || !timebase.denom) return 1;
+        const double ms = double(mach_absolute_time() - begin) * timebase.numer / timebase.denom / 1000000.;
+        bool valid = mapping && isfinite(values[0]) && isfinite(values[1]) && isfinite(values[2]) &&
+            values[0] >= 1 && values[1] >= values[0] && values[2] >= 1;
+        printf("DISPLAY_EDR_STATE display_id=%u shared_mapping=%u current=%.9g potential=%.9g reference=%.9g elapsed_ms=%.3f valid=%u\n",
+            identifier, mapping != nullptr, double(values[0]), double(values[1]), double(values[2]), ms, valid);
+        return valid ? 0 : 1;
+    } @catch (NSException *error) {
+        printf("DISPLAY_EDR_EXCEPTION %s %s\n", error.name.UTF8String, error.reason.UTF8String); return 1;
+    }
+}
 static int displayAPIs() {
     // Resolve original exports without calling an unaudited private ABI.
     // Offsets and image UUID checks permit offline inspection of this build.
@@ -537,7 +588,7 @@ static void *uiWakeWorker(void *) {
     }
     __atomic_store_n(&uiWakeState,2,__ATOMIC_RELEASE);return nullptr;
 }
-static int displayState(bool turnOn = false, bool retainObserver = false) {
+static int displayState(bool turnOn = false, bool retainObserver = false, bool turnOff = false) {
     // Native display discovery can wait behind an unresponsive backboardd.
     // Bound this diagnostic's IPC without changing the system service.
     struct Deadline {
@@ -564,7 +615,7 @@ static int displayState(bool turnOn = false, bool retainObserver = false) {
         SEL all = sel_registerName("displays");
         if ([cls respondsToSelector:all]) reinterpret_cast<id (*)(id, SEL)>(objc_msgSend)(cls, all);
         id display = reinterpret_cast<id (*)(id, SEL)>(objc_msgSend)(cls, main);
-        id state = turnOn && activeDisplayControl ? activeDisplayControl :
+        id state = (turnOn || turnOff) && activeDisplayControl ? activeDisplayControl :
             reinterpret_cast<id (*)(id, SEL)>(objc_msgSend)(display, control);
         printf("DISPLAY_STATE_OBJECT display=%s control=%s\n", display ? [[display description] UTF8String] : "nil",
             state ? object_getClassName(state) : "nil");
@@ -578,7 +629,7 @@ static int displayState(bool turnOn = false, bool retainObserver = false) {
         puts("DISPLAY_STATE_ENUM display_off=0 display_on=1 flipbook=2 suppressed=3; power_values_raw=1");
         describeNativeObject("state-control", state, keys);
         if(retainObserver) activeDisplayControl=state;
-        if (turnOn) {
+        if (turnOn || turnOff) {
             SEL transition = sel_registerName("transitionToDisplayState:withCompletion:");
             Method member = class_getInstanceMethod(object_getClass(state), transition);
             Dl_info origin = {};
@@ -588,26 +639,186 @@ static int displayState(bool turnOn = false, bool retainObserver = false) {
                     reinterpret_cast<uintptr_t>(method_getImplementation(member)) - reinterpret_cast<uintptr_t>(origin.dli_fbase) != 0x270944) {
                 puts("DISPLAY_STATE native transition ABI unavailable"); return 1;
             }
-            // Original enum table maps 1 to on. Let the native render server
+            // Original enum table maps 0 to off and 1 to on. The render server
             // authorize and execute the transition, including IOMFB policy.
             activeDisplayControl = state;
-            reinterpret_cast<void (*)(id, SEL, NSInteger, id)>(objc_msgSend)(state, transition, 1, nil);
-            puts("DISPLAY_STATE on requested through native QuartzCore; completion not assumed");
+            const NSInteger target = turnOn ? 1 : 0;
+            reinterpret_cast<void (*)(id, SEL, NSInteger, id)>(objc_msgSend)(state, transition, target, nil);
+            printf("DISPLAY_STATE %s requested through native QuartzCore\n", turnOn ? "on" : "off");
             bool reached = false;
             for (unsigned attempt = 0; attempt < 100; ++attempt) {
                 [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.02]];
                 auto read = reinterpret_cast<NSInteger (*)(id, SEL)>(objc_msgSend);
-                reached = read(state, sel_registerName("displayState")) == 1 && read(state, sel_registerName("powerState")) == 1 &&
-                    read(state, sel_registerName("targetDisplayState")) == 1 && read(state, sel_registerName("targetPowerState")) == 1;
+                reached = read(state, sel_registerName("displayState")) == target && read(state, sel_registerName("powerState")) == target &&
+                    read(state, sel_registerName("targetDisplayState")) == target && read(state, sel_registerName("targetPowerState")) == target;
                 if (reached) break;
             }
-            printf("DISPLAY_STATE request_reached_on=%u optical_verification=0\n", reached);
+            printf("DISPLAY_STATE request_target=%ld request_reached=%u optical_verification=0\n", long(target), reached);
             describeNativeObject("state-control-after-request", state, keys);
+            return reached ? 0 : 1;
         }
         return 0;
     } @catch (NSException *error) {
         printf("DISPLAY_STATE_EXCEPTION %s %s\n", error.name.UTF8String, error.reason.UTF8String); return 1;
     }
+}
+static int nativeBrightnessControl(const char *argument = nullptr) {
+    double target = 0;
+    if (argument) {
+        char *end = nullptr; errno = 0; target = strtod(argument, &end);
+        if (errno || !argument[0] || !end || *end || !isfinite(target) || target < 0 || target > 1000) return 2;
+    }
+    struct Deadline {
+        void (*previous)(int);
+        Deadline():previous(signal(SIGALRM, +[](int) { _exit(124); })) { alarm(10); }
+        ~Deadline() { alarm(0); if (previous != SIG_ERR) signal(SIGALRM, previous); }
+    } deadline;
+    if (!dlopen("/System/Library/PrivateFrameworks/BrightnessControl.framework/BrightnessControl", RTLD_LAZY)) return 1;
+    Class cls = NSClassFromString(@"BCAppleBacklightBrtControl");
+    SEL factory = sel_registerName("copyAvailableControls");
+    Method method = class_getClassMethod(cls, factory);
+    const uint8_t uuid[] = {0xa3,0x7e,0x00,0xa7,0x58,0xb6,0x32,0xcd,0x85,0x4c,0xb5,0xb1,0xac,0x1e,0x87,0x4d};
+    Dl_info image{};
+    if (!method || strcmp(method_getTypeEncoding(method), "@16@0:8") ||
+            !dladdr(reinterpret_cast<void *>(method_getImplementation(method)), &image) || !pinnedImage(image.dli_fbase, uuid)) return 1;
+    @try {
+        id controls = reinterpret_cast<id (*)(id, SEL)>(objc_msgSend)(cls, factory);
+        if (![controls isKindOfClass:[NSArray class]] || [controls count] != 1) {
+            printf("NATIVE_BRIGHTNESS controls=%s expected=1\n", [controls description].UTF8String); return 1;
+        }
+        id control = [controls firstObject];
+        describeNativeObject("native-brightness", control, @[@"isValid", @"minNits", @"maxNits"]);
+        id capabilities = [control valueForKey:@"capabilities"];
+        if ([capabilities isKindOfClass:[NSDictionary class]]) {
+            NSMutableDictionary *summary = [NSMutableDictionary new];
+            for (NSString *key in @[@"BuiltIn", @"MinNits", @"MaxNits", @"MaxNitsPanel", @"MaxNitsEDR", @"EDRPotentialHeadroom", @"EDRReferenceHeadroom"])
+                if ([capabilities[key] isKindOfClass:[NSNumber class]]) summary[key] = capabilities[key];
+            printf("NATIVE_BRIGHTNESS_CAPABILITIES %s\n", summary.description.UTF8String);
+        }
+        const char *selectors[] = {"setNits:error:", "getNitsWithError:"};
+        const char *types[] = {"B32@0:8d16^@24", "d24@0:8^@16"};
+        for (unsigned i = 0; i < 2; ++i) {
+            Method member = class_getInstanceMethod(object_getClass(control), sel_registerName(selectors[i]));
+            if (!member || strcmp(method_getTypeEncoding(member), types[i])) return 1;
+        }
+        NSError *error = nil;
+        if (argument) {
+            BOOL applied = reinterpret_cast<BOOL (*)(id, SEL, double, NSError **)>(objc_msgSend)(control, sel_registerName(selectors[0]), target, &error);
+            printf("NATIVE_BRIGHTNESS_SET target_nits=%.9g applied=%u error=%s\n", target, applied, error.description.UTF8String ?: "none");
+            if (!applied || error) return 1;
+        }
+        double current = reinterpret_cast<double (*)(id, SEL, NSError **)>(objc_msgSend)(control, sel_registerName(selectors[1]), &error);
+        printf("NATIVE_BRIGHTNESS_GET nits=%.9g error=%s optical_verified=0\n", current, error.description.UTF8String ?: "none");
+        return error || !isfinite(current) || current < 0 ? 1 : 0;
+    } @catch (NSException *error) {
+        printf("NATIVE_BRIGHTNESS_EXCEPTION %s %s\n", error.name.UTF8String, error.reason.UTF8String); return 1;
+    }
+}
+static int nativeBrightnessPath() {
+    struct Deadline {
+        void (*previous)(int);
+        Deadline():previous(signal(SIGALRM, +[](int) { _exit(124); })) { alarm(10); }
+        ~Deadline() { alarm(0); if (previous != SIG_ERR) signal(SIGALRM, previous); }
+    } deadline;
+    void *library = dlopen("/System/Library/PrivateFrameworks/IOMobileFramebuffer.framework/IOMobileFramebuffer", RTLD_LAZY);
+    const uint8_t uuid[] = {0xe2,0x31,0x18,0x84,0x56,0xcd,0x33,0x79,0x88,0x2d,0xc8,0xc6,0xa6,0xcd,0x0a,0x98};
+    struct Entry { const char *name; uintptr_t offset; void *symbol; } apis[] = {
+        {"IOMobileFramebufferGetMainDisplay", 0xa17c, nullptr},
+        {"IOMobileFramebufferGetBrightnessControlInfo", 0x60d0, nullptr},
+        {"IOMobileFramebufferGetBrightnessControlCapabilities", 0x66f8, nullptr},
+        {"IOMobileFramebufferSetBrightnessControlCallback", 0x6114, nullptr}};
+    for (auto &api : apis) {
+        api.symbol = library ? dlsym(library, api.name) : nullptr;
+        Dl_info origin{};
+        if (!api.symbol || !dladdr(api.symbol, &origin) || !pinnedImage(origin.dli_fbase, uuid) ||
+                uintptr_t(api.symbol) - uintptr_t(origin.dli_fbase) != api.offset) return 1;
+    }
+    void *gestalt = dlopen("/usr/lib/libMobileGestalt.dylib", RTLD_LAZY);
+    auto answer = reinterpret_cast<CFTypeRef (*)(CFStringRef)>(gestalt ? dlsym(gestalt, "MGCopyAnswer") : nullptr);
+    CFTypeRef synchronous = answer ? answer(CFSTR("DeviceSupportsFrameSynchronousBrightness")) : nullptr;
+    printf("BRIGHTNESS_PATH synchronous_gestalt=%s\n", synchronous ? [(__bridge id)synchronous description].UTF8String : "unavailable");
+    if (synchronous) CFRelease(synchronous);
+    CFTypeRef display = nullptr;
+    auto main = reinterpret_cast<kern_return_t (*)(CFTypeRef *)>(apis[0].symbol);
+    auto result = main(&display);
+    printf("BRIGHTNESS_PATH main_result=0x%x\n", result);
+    if (result || !display) return 1;
+    using Callback = void (*)(CFTypeRef, uint32_t, void *);
+    auto monitor = reinterpret_cast<kern_return_t (*)(CFTypeRef, Callback, void *)>(apis[3].symbol);
+    // This monitor belongs to this client handle. It asks the original
+    // framework to associate a control; it does not invent capabilities.
+    result = monitor(display, +[](CFTypeRef, uint32_t event, void *) {
+        printf("BRIGHTNESS_PATH callback_event=%u\n", event);
+    }, nullptr);
+    [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:3]];
+    struct Info { uint32_t version, reserved; double maximumNits, minimumNits; } info{};
+    static_assert(sizeof(Info) == 24, "22H374 native brightness info ABI");
+    auto query = reinterpret_cast<kern_return_t (*)(CFTypeRef, Info *)>(apis[1].symbol);
+    auto status = query(display, &info);
+    auto capabilities = reinterpret_cast<CFTypeRef (*)(CFTypeRef)>(apis[2].symbol)(display);
+    printf("BRIGHTNESS_PATH monitor_result=0x%x info_result=0x%x version=%u minimum_nits=%.9g maximum_nits=%.9g capabilities_present=%u\n",
+        result, status, info.version, info.minimumNits, info.maximumNits,
+        capabilities != nullptr);
+    auto stopped = monitor(display, nullptr, nullptr);
+    return result || status || stopped || !capabilities ? 1 : 0;
+}
+static mach_port_t findBacklight() {
+    auto matching = IOServiceMatching("IOService");
+    if (!matching) return 0;
+    // The USB control protocol remains available while native brightness
+    // discovery is disabled for diagnosis.
+    CFDictionarySetValue(matching, CFSTR("IOPropertyMatch"), (__bridge CFDictionaryRef)
+        @{@"DisplayBacklightProtocolVersion":@1});
+    mach_port_t iterator = 0, selected = 0;
+    auto result = IOServiceGetMatchingServices(0, matching, &iterator);
+    if (result) { printf("BACKLIGHT_MATCH result=0x%x\n", result); return 0; }
+    unsigned count = 0;
+    for (mach_port_t service; (service = IOIteratorNext(iterator));) {
+        if (!count++) selected = service; else IOObjectRelease(service);
+    }
+    IOObjectRelease(iterator);
+    if (count != 1) {
+        if (selected) IOObjectRelease(selected);
+        printf("BACKLIGHT_MATCH count=%u expected=1\n", count); return 0;
+    }
+    return selected;
+}
+static bool backlightSnapshot(mach_port_t service, DisplayBacklight::State &state, const char *phase) {
+    CFTypeRef value = IORegistryEntryCreateCFProperty(service, CFSTR("DisplayBacklightState"), nullptr, 0);
+    bool ok = value && CFGetTypeID(value) == CFDataGetTypeID() && CFDataGetLength((CFDataRef)value) == sizeof(state);
+    if (ok) memcpy(&state, CFDataGetBytePtr((CFDataRef)value), sizeof(state));
+    if (value) CFRelease(value);
+    ok = ok && state.version == 1 && state.size == sizeof(state) && !state.reserved &&
+        state.brightness <= 4095 && state.appliedBrightness <= 4095 && state.power <= 1 && state.valid <= 1;
+    if (!ok) { printf("BACKLIGHT_STATE phase=%s snapshot=unavailable\n", phase); return false; }
+    printf("BACKLIGHT_STATE phase=%s brightness=%u applied=%u power=%u valid=%u last_error=0x%x optical_verified=0\n",
+        phase, state.brightness, state.appliedBrightness, state.power, state.valid, state.lastError);
+    return true;
+}
+static int backlightControl(const char *argument = nullptr) {
+    uint32_t target = 0;
+    if (argument) {
+        if (geteuid()) { fputs("BACKLIGHT_WRITE requires administrator\n", stderr); return 1; }
+        char *end = nullptr; errno = 0;
+        unsigned long value = strtoul(argument, &end, 10);
+        if (errno || !argument[0] || strspn(argument, "0123456789") != strlen(argument) || !end || *end || value > 4095) return 2;
+        target = uint32_t(value);
+    }
+    mach_port_t service = findBacklight();
+    if (!service) return 1;
+    DisplayBacklight::State before, after;
+    bool ok = backlightSnapshot(service, before, "before");
+    if (argument && ok) {
+        // Original AppleARMBacklight property ABI; the kernel serializes this
+        // with native brightness requests and framebuffer power transitions.
+        auto result = IORegistryEntrySetCFProperties(service, (__bridge CFTypeRef)@{@"brightness":@(target)});
+        printf("BACKLIGHT_WRITE requested=%u result=0x%x\n", target, result);
+        const bool read = backlightSnapshot(service, after, "after");
+        ok = !result && read && after.valid && !after.lastError && after.brightness == target &&
+            after.power == before.power && after.appliedBrightness == (after.power ? target : 0);
+    } else ok = ok && before.valid;
+    IOObjectRelease(service);
+    return ok ? 0 : 1;
 }
 static int frameStatistics(bool raw);
 static int sampleDisplayPower(unsigned seconds, bool requestOn) {
@@ -1023,9 +1234,30 @@ static int invalidateGestaltCache() {
         result, result ? saved : 0, backup.UTF8String, (unsigned long)before.length, scale);
     return result ? 1 : 0;
 }
+static int gpuState() {
+    auto copy = reinterpret_cast<kern_return_t (*)(mach_port_t, CFMutableDictionaryRef *, CFAllocatorRef, uint32_t)>(dlsym(RTLD_DEFAULT, "IORegistryEntryCreateCFProperties"));
+    if (!copy) return 1;
+    mach_port_t iterator = 0;
+    auto matched = IOServiceGetMatchingServices(0, IOServiceMatching("QcomGPU"), &iterator);
+    if (matched) return 1;
+    auto service = IOIteratorNext(iterator); IOObjectRelease(iterator);
+    if (!service) return 1;
+    CFMutableDictionaryRef properties = nullptr;
+    auto status = copy(service, &properties, nullptr, 0);
+    IOObjectRelease(service);
+    if (status || !properties) { printf("GPU_STATE registry_result=0x%x\n", status); return 1; }
+    CFErrorRef error = nullptr;
+    CFDataRef data = CFPropertyListCreateData(nullptr, properties, kCFPropertyListXMLFormat_v1_0, 0, &error);
+    CFRelease(properties);
+    if (error) CFRelease(error);
+    if (!data) return 1;
+    const auto size = size_t(CFDataGetLength(data));
+    const bool ok = size <= 4*1024*1024 && fwrite(CFDataGetBytePtr(data), 1, size, stdout) == size;
+    CFRelease(data); return ok ? 0 : 1;
+}
 static void registry() {
     chosenDisplayScale();
-    const char *classes[] = {"IOMobileFramebuffer", "IOSurfaceRoot", "AppleARMMIPIDSIController", "QcomPanel", "PMI8998WLED", "AppleKeyStore"};
+    const char *classes[] = {"IOMobileFramebuffer", "IOSurfaceRoot", "AppleARMMIPIDSIController", "QcomPanel", "PMI8998WLED", "QcomGPU", "AppleKeyStore"};
     for (const char *name : classes) {
         mach_port_t iterator = 0;
         kern_return_t result = IOServiceGetMatchingServices(0, IOServiceMatching(name), &iterator);
@@ -1040,7 +1272,14 @@ static void registry() {
                     @"Width", @"Height", @"RowBytes", @"PixelFormat", @"Location", @"IOMFBDisplayRefresh",
                     @"BacklightStateValid", @"BacklightLastError", @"DisplayBrightness", @"DisplayAppliedBrightness",
                     @"DisplayBacklightPower", @"DisplayPowerTransitionError", @"PanelReady", @"MDP Double Buffered",
-                    @"BacklightPower", @"BacklightBrightness", @"BacklightAppliedBrightness", @"NativeBrightnessRequestCount"]) {
+                    @"BacklightPower", @"BacklightBrightness", @"BacklightAppliedBrightness", @"NativeBrightnessRequestCount",
+                    @"BacklightPowerRequestCount", @"BacklightQueryCount", @"BacklightHardwareTransferCount",
+                    @"DisplayPowerCallbackCount", @"DisplayBacklightRequestCount", @"DisplayBacklightRequestTicks",
+                    @"DisplayBacklightRequestPeakTicks", @"DisplayWakeFramePending",
+                    @"GPUStage", @"GPUHardwareReady", @"GPUStartupResult", @"GPUStartupPending", @"GPUWorkScheduling",
+                    @"IOGPUNativeSubmission", @"GPUProtocolVersion", @"GPUNativeJobsSubmitted", @"GPUNativeJobsCompleted",
+                    @"GPUNativeTicketsFailed", @"GPUCompositorJobsSubmitted", @"GPUCompositorJobsCompleted",
+                    @"GPUCompositorTicketsFailed", @"GPURecoveryCount", @"GPURecoveryResult"]) {
                 CFTypeRef value = IORegistryEntryCreateCFProperty(service, (__bridge CFStringRef)key, nullptr, 0);
                 if (value) {
                     NSString *description = [(__bridge id)value description];
@@ -2213,11 +2452,16 @@ static int setupCycles(unsigned count,const char *prefix) {
     }
     printf("SETUP_CYCLES_END count=%u absolute=%llu\n",count,mach_absolute_time());return 0;
 }
-static const char displayUsage[] = "displayctl timeline-binary | timeline | sample-display-state SECONDS | hold-display-on SECONDS | lease-history | frame-stats [raw] | wake-ui | display-on | setup-cycles COUNT driver [setup-NAME] | setup-button home|power | logical-image /private/var/tmp/setup-NAME.png | diagnostic-file /private/var/tmp/setup-NAME.txt | diagnostic-image /private/var/tmp/setup-NAME.png | scanout|validate-scanout|validate-window|validate-retirement /private/var/tmp/PREFIX | stacks-pid PID | scanout-live | scanout-samples COUNT INTERVAL_MS | native-exception-window | registry | framebuffer | swap-test | swap-gpu | displays | displays-system | display-link | progress-ui | layer-test | layer-animation | identity | display-identities | display-apis | render-info | display-state | prepare-executable | bootstrap | screen-info | device-identity | invalidate-device-identity-cache | keybag-state | invalidate-gestalt-cache | tasks | stacks | stacks-all | jobs | containers | initialize-persona | reboot\n";
+static const char displayUsage[] = "displayctl timeline-binary | timeline | sample-display-state SECONDS | hold-display-on SECONDS | lease-history | frame-stats [raw] | wake-ui | display-on | display-off | backlight | brightness 0..4095 | native-brightness [NITS] | brightness-path | edr-state | gpu-state | setup-cycles COUNT driver [setup-NAME] | setup-button home|power | logical-image /private/var/tmp/setup-NAME.png | diagnostic-file /private/var/tmp/setup-NAME.txt | diagnostic-image /private/var/tmp/setup-NAME.png | scanout|validate-scanout|validate-window|validate-retirement /private/var/tmp/PREFIX | stacks-pid PID | scanout-live | scanout-samples COUNT INTERVAL_MS | native-exception-window | registry | framebuffer | swap-test | swap-gpu | displays | displays-system | display-link | progress-ui | layer-test | layer-animation | identity | display-identities | display-apis | render-info | display-state | prepare-executable | bootstrap | screen-info | device-identity | invalidate-device-identity-cache | keybag-state | invalidate-gestalt-cache | tasks | stacks | stacks-all | jobs | containers | initialize-persona | reboot\n";
 
 int main(int argc, char **argv) {
     setbuf(stdout, nullptr);
     @autoreleasepool {
+        if (argc == 2 && !strcmp(argv[1], "edr-state")) return nativeEDRState();
+        if (argc == 2 && !strcmp(argv[1], "gpu-state")) return gpuState();
+        if(argc==3 && !strcmp(argv[1],"brightness"))return backlightControl(argv[2]);
+        if(argc==2 && !strcmp(argv[1],"brightness-path"))return nativeBrightnessPath();
+        if((argc==2 || argc==3) && !strcmp(argv[1],"native-brightness"))return nativeBrightnessControl(argc==3?argv[2]:nullptr);
         if(argc==3 && !strcmp(argv[1],"diagnostic-file"))return diagnosticFile(argv[2]);
         if(argc==3 && !strcmp(argv[1],"diagnostic-image"))return diagnosticFile(argv[2],true);
         if(argc==3 && !strcmp(argv[1],"diagnostic-thumbnail"))return diagnosticFile(argv[2],true,true);
@@ -2278,6 +2522,8 @@ int main(int argc, char **argv) {
         if (!strcmp(argv[1], "render-info")) return boundedProbe(renderInfoWorker,&renderInfoState,&renderInfoResult,"RENDER_INFO");
         if (!strcmp(argv[1], "display-state")) return displayState();
         if (!strcmp(argv[1], "display-on")) return displayState(true);
+        if (!strcmp(argv[1], "display-off")) return displayState(false, false, true);
+        if (!strcmp(argv[1], "backlight")) return backlightControl();
         if (!strcmp(argv[1], "wake-ui")) return boundedProbe(uiWakeWorker,&uiWakeState,&uiWakeResult,"NATIVE_UI_WAKE");
         if (!strcmp(argv[1], "prepare-executable")) return prepareExecutable();
         if (!strcmp(argv[1], "bootstrap")) return boundedProbe(displayBootstrapWorker, &displayBootstrapState, &displayBootstrapResult, "CA_BOOTSTRAP");
