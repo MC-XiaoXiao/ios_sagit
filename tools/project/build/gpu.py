@@ -786,7 +786,7 @@ def build_gpu_metal():
         shutil.copyfile(generated / name,bundle / name)
     shutil.copyfile(build_state.BUILD / 'obj/gpu-compiler/NOTICE.Mesa.txt', bundle / 'NOTICE.Mesa.txt')
     _component_clients.build_iokit_client('metalctl', ['gpuctl/metalctl.mm'],
-                       headers=['gpuctl/AIRNIROutputDiagnostics.h','gpuctl/RenderClearDiagnostics.h','gpuctl/GMEMDiagnostics.h', '../drivers/gpu/QcomMTL/CoreFSCache.h',
+                       headers=['gpuctl/AIRNIROutputDiagnostics.h','gpuctl/RenderClearDiagnostics.h','gpuctl/RenderFeedbackDiagnostics.h','gpuctl/GMEMDiagnostics.h', '../drivers/gpu/QcomMTL/CoreFSCache.h',
                                 '../drivers/gpu/QcomMTL/QcomMTL.h', '../drivers/gpu/QcomMTL/NativeMetal.h', 'include/IOKitUser.h'],
                        protocol=['GPUDiagnostics.h', 'GPUUserProtocol.h','GPUNativeProtocol.h','GPURenderPass.h','GPUShaderProtocol.h','GPUShaderInterface.h','GPUJITProtocol.h'],
                        extra_exports=['IORegistryEntryGetRegistryEntryID', 'IORegistryEntryCreateCFProperty', 'IOConnectCallMethod'],

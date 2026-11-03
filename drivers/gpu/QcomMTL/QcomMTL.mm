@@ -5760,6 +5760,7 @@ void resourceBarrier(QcomMTLCommandBuffer *buffer,const id<MTLResource> resource
     for(unsigned i=0;i<QGPU_COLOR_TARGET_COUNT;++i){attachmentTextures[i]=_targets[i].get();attachmentPlanes[i]=GPU::Shader::colorTarget(draw,i);}
     attachmentTextures[QGPU_COLOR_TARGET_COUNT]=_depth.get();attachmentTextures[QGPU_COLOR_TARGET_COUNT+1]=_stencil.get();
     attachmentPlanes[QGPU_COLOR_TARGET_COUNT]=draw.depth;attachmentPlanes[QGPU_COLOR_TARGET_COUNT+1]=draw.stencil;
+    NSMutableDictionary<NSValue *,QcomMTLBuffer *> *feedbackSnapshots=nil;
     for(unsigned stage=0;stage<2;++stage) {
         const auto *program=programs[stage];
         for(unsigned slot=0;slot<QGPU_STAGE_SAMPLER_COUNT;++slot)if(program->samplerMask&(1u<<slot)) {
@@ -5775,12 +5776,40 @@ void resourceBarrier(QcomMTLCommandBuffer *buffer,const id<MTLResource> resource
                 [_buffer fail:failure(@"Graphics texture usage excludes shader reads",MTLCommandBufferErrorInvalidResource)];return;
             }
             texturePlanes[stage][slot]=[texture nativeTexture];[retained addObject:texture];
-            // Native admission repeats feedback checks against pinned pages.
+            // AGX restarts the render pass at a fragment memory barrier. Our
+            // sysmem path already retires draws in order, but sampling the
+            // attachment while writing it would still race within this draw.
+            // Read an ordered GPU snapshot; keep native alias checks intact.
+            bool feedback=false;
             for(unsigned i=0;i<attachmentCount;++i)if(attachmentTextures[i] && (GPU::Shader::graphicsReadMask(*program)&(1u<<slot))) {
                 auto *sampled=texture->_backing,*backing=attachmentTextures[i]->_backing;
                 bool alias=sampled==backing || sampled->_resource.id==backing->_resource.id || (sampled->_surface && backing->_surface && IOSurfaceGetID(sampled->_surface)==IOSurfaceGetID(backing->_surface));
                 auto a=texturePlanes[stage][slot],b=attachmentPlanes[i];a.resource=b.resource=1;
-                if(alias && GPU::Shader::overlap(a,b)){[_buffer fail:failure(@"Render-target feedback")];return;}
+                feedback|=alias && GPU::Shader::overlap(a,b);
+            }
+            if(feedback) {
+                if(!feedbackSnapshots)feedbackSnapshots=[NSMutableDictionary new];
+                NSValue *key=[NSValue valueWithPointer:(__bridge const void *)texture];
+                QcomMTLBuffer *snapshot=feedbackSnapshots[key];
+                if(!snapshot) {
+                    const auto source=texturePlanes[stage][slot];uint64_t bytes=0;
+                    if(!GPU::Shader::textureBytes(source,bytes) || !bytes || source.offset<texture->_backing->_nativeOffset ||
+                        !validRange(texture->_backing.length,source.offset-texture->_backing->_nativeOffset,bytes)) {
+                        [_buffer fail:failure(@"Invalid render feedback snapshot range",MTLCommandBufferErrorInvalidResource)];return;
+                    }
+                    snapshot=[[QcomMTLBuffer alloc] initWithDevice:(QcomMTLDevice *)self.device length:NSUInteger(bytes)
+                        options:MTLResourceStorageModePrivate];
+                    if(!snapshot){[_buffer fail:failure(@"Render feedback snapshot allocation failed",MTLCommandBufferErrorOutOfMemory)];return;}
+                    // Internal allocations also belong to unretained command
+                    // buffers until their actual GPU completion.
+                    [_buffer retainInternalResource:snapshot];feedbackSnapshots[key]=snapshot;
+                    auto copy=[QcomMTLOperation new];copy.source=texture->_backing;copy.destination=snapshot;
+                    copy.sourceOffset=source.offset;copy.bytes=NSUInteger(bytes);copy.rows=1;
+                    copy.sourceStride=copy.destinationStride=NSUInteger(bytes);copy.resources=@[texture,snapshot];
+                    [_buffer record:copy];_gmemCandidate=NO;
+                }
+                texturePlanes[stage][slot].resource=snapshot->_resource.id;
+                texturePlanes[stage][slot].offset=0;[retained addObject:snapshot];
             }
         }
         if(!GPU::Shader::graphicsTextures(*program,texturePlanes[stage],samplerStates[stage])) {
