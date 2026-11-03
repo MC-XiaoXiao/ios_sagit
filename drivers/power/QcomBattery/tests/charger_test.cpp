@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0-only
 #include "PMI8998Charger.h"
+#include "PMI8998Input.h"
 #include <array>
 #include <cassert>
 #include <cstdio>
@@ -48,6 +49,31 @@ static Sample good() {
 }
 int main() {
     auto s = good();
+    // Settled input current is a hardware observation, separate from the
+    // selected SDP ceiling and the inactive high-current configuration.
+    for (unsigned mode : {0u, 2u, 4u, 6u}) {
+        Bus b; b.bytes[0x1307] = 1; b.bytes[0x1308] = 1; b.bytes[0x130b] = 0x80;
+        b.bytes[0x1366] = mode; b.bytes[0x1370] = 40; b.bytes[0x1607] = 20;
+        InputStatus input;
+        assert(readInputStatus(b, Config{}, input) == Result::Success && input.sdp);
+        assert(input.sdpMA == (mode & 2 ? (mode & 4 ? 900u : 500u) : (mode & 4 ? 150u : 100u)));
+        assert(input.settledMA == 500 && input.highCurrentMA == 1000 && !input.highCurrent);
+        assert(b.writes.empty());
+        b.bytes[0x1308] = 8;
+        assert(readInputStatus(b, Config{}, input) == Result::Success && !input.sdp);
+    }
+    { Bus baseline; InputStatus input;
+      assert(readInputStatus(baseline, Config{}, input) == Result::Success);
+      for (unsigned failure = 1; failure <= baseline.calls; ++failure) {
+          Bus b; b.failAt = failure; input.settledMA = 77;
+          assert(readInputStatus(b, Config{}, input) == Result::IOFailure && input.settledMA == 77);
+          assert(b.writes.empty());
+      }
+      Bus b; b.bytes[0x1607] = 193; input.settledMA = 77;
+      assert(readInputStatus(b, Config{}, input) == Result::OutOfRange && input.settledMA == 77);
+      b.bytes[0x1607] = 20;
+      b.beforeRead = [&](uint16_t address) { if (address == 0x1365) b.bytes[0x1366] ^= 2; };
+      assert(readInputStatus(b, Config{}, input) == Result::Incoherent && input.settledMA == 77); }
     { Bus b; b.bytes[0x1051] = 0xc5; b.ignoreAddress = 0x1051;
       assert(chargeEnable(b, Config{}, true) == ControlResult::VerifyFailed);
       assert(!(b.bytes[0x1042] & 1));

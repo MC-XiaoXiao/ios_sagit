@@ -5,19 +5,22 @@
 #include <QcomSPMI.h>
 #include "PMI8998Battery.h"
 #include "PMI8998Charger.h"
+#include "PMI8998Input.h"
 
 // Created explicitly with IOPMPowerSource::init(void), which initializes the
 // native settings dictionary (IOService's personality initializer does not).
 class QcomBatteryPowerSource : public IOPMPowerSource {
     OSDeclareDefaultStructors(QcomBatteryPowerSource);
-    void number(const char *, uint32_t);
-    void boolean(const char *, bool);
-    void forget(const char *);
+    // Share property allocation/removal code across the telemetry fields.
+    void number(const char *, uint32_t) __attribute__((noinline));
+    void boolean(const char *, bool) __attribute__((noinline));
+    void forget(const char *) __attribute__((noinline));
     void clearMeasurements();
 public:
     IOReturn setProperties(OSObject *) APPLE_KEXT_OVERRIDE;
     void publishControl(const PMICBattery::ChargeControl &, bool);
     void publish(const PMICBattery::Sample &);
+    void publishInput(const PMICBattery::InputStatus *);
     void invalidate(PMICBattery::Result);
 };
 

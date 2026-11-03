@@ -31,12 +31,12 @@ int main() {
         bytes[0x160b] = 0x11; bytes[0x1006] = 2; bytes[0x100d] = 0x20;
         bytes[0x1042] = 0x81;
         if (scenario == 2) bytes[0x1051] = 0xc5;
-        unsigned reads = 0, writes = 0; bool offline = true, failWrite = false;
+        unsigned reads = 0, writes = 0; bool offline = true, failWrite = false, failInput = false;
         spmi->transport = [&](UInt8 sid, UInt16 address, UInt8 *p, unsigned n, bool write) {
             assert(sid == 2);
             if (write) { ++writes; assert((address == 0x1042 || address == 0x1051) && n == 1); }
             else ++reads;
-            if (offline || (write && failWrite)) return -99;
+            if (offline || (write && failWrite) || (!write && failInput && address == 0x1365)) return -99;
             for (unsigned i = 0; i < n; ++i) {
                 if (write) bytes[address + i] = p[i]; else p[i] = bytes[address + i];
             }
@@ -81,6 +81,13 @@ int main() {
                 assert(!(bytes[0x1042] & 1)); // manual enable preserves system inhibit
                 assert(request(source, "IsCharging", kOSBooleanTrue) == kIOReturnSuccess);
                 assert(bytes[0x1042] & 1);
+                failInput = true; driver->getWorkLoop()->fire();
+                assert(source->getProperty("BatteryTelemetryValid") == kOSBooleanTrue);
+                assert(source->getProperty("USBInputStatusValid") == kOSBooleanFalse);
+                assert(!source->getProperty("USBInputSettledLimitMA"));
+                assert(source->getProperty("ChargeControlFault") == kOSBooleanFalse && (bytes[0x1042] & 1));
+                failInput = false; driver->getWorkLoop()->fire();
+                assert(source->getProperty("USBInputStatusValid") == kOSBooleanTrue);
                 assert(request(source, "PredictiveChargingInhibit", kOSBooleanTrue) == kIOReturnSuccess);
                 assert(!(bytes[0x1042] & 1));
                 assert(request(source, "PredictiveChargingInhibit", kOSBooleanFalse) == kIOReturnSuccess);

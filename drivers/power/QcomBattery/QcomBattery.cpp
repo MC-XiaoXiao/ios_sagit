@@ -118,6 +118,29 @@ void QcomBatteryPowerSource::clearMeasurements() {
                          "AtWarnLevel", "AtCriticalLevel", "RawSOC"};
     for (const char *key : keys) forget(key);
 }
+void QcomBatteryPowerSource::publishInput(const PMICBattery::InputStatus *s) {
+    boolean("USBInputStatusValid", s != nullptr);
+    if (!s) {
+        const char *keys[] = {"USBInputSettledLimitMA", "USBHighCurrentConfiguredMA", "USBSDPCurrentLimitMA",
+            "USBHighCurrentMode", "USBInputSuspendRequested", "USBAPSDComplete", "USBAPSDResult",
+            "USBTypeCSource", "USBAICLComplete", "USBAICLFailed", "USBAICLSoftLimited"};
+        for (const char *key : keys) forget(key);
+        return;
+    }
+    number("USBInputSettledLimitMA", s->settledMA);
+    if (s->highCurrentValid) number("USBHighCurrentConfiguredMA", s->highCurrentMA);
+    else forget("USBHighCurrentConfiguredMA");
+    if (s->sdp) number("USBSDPCurrentLimitMA", s->sdpMA);
+    else forget("USBSDPCurrentLimitMA");
+    boolean("USBHighCurrentMode", s->highCurrent);
+    boolean("USBInputSuspendRequested", s->suspended);
+    boolean("USBAPSDComplete", s->apsdComplete);
+    number("USBAPSDResult", s->apsdResult);
+    number("USBTypeCSource", s->typeCSource);
+    boolean("USBAICLComplete", s->aiclComplete);
+    boolean("USBAICLFailed", s->aiclFailed);
+    boolean("USBAICLSoftLimited", s->softLimited);
+}
 void QcomBatteryPowerSource::publish(const PMICBattery::Sample &s) {
     forget("ErrorCondition");
     setBatteryInstalled(s.installed);
@@ -152,6 +175,7 @@ void QcomBatteryPowerSource::publish(const PMICBattery::Sample &s) {
 }
 void QcomBatteryPowerSource::invalidate(PMICBattery::Result result) {
     clearMeasurements();
+    publishInput(nullptr);
     const char *keys[] = {"BatteryInstalled", "ExternalConnected", "IsCharging",
                          "ChargerState", "ChargerFaults", "PMICPowerPath", "ChargeCommandEnabled", "ChargeEnablePinControlled",
                          "InputCurrentLimited", "ThermalChargingLimited", "BatteryNetCharging"};
@@ -261,6 +285,12 @@ void QcomBattery::poll() {
         }
     }
     if (result == PMICBattery::Result::Success) {
+        // Input diagnostics are optional. Their failure cannot invalidate a
+        // valid FG sample or change the protected charging policy.
+        Bus inputBus{spmi}; PMICBattery::InputStatus input;
+        const auto inputResult = PMICBattery::readInputStatus(inputBus, config, input);
+        source->publishInput(inputResult == PMICBattery::Result::Success ? &input : nullptr);
+        source->setProperty("USBInputReadError", uint32_t(inputResult), 32);
         source->setProperty("BatteryLastSuccessUptimeNS", now, 64);
         source->publish(sample);
         setProperty("BatteryLastSuccessUptimeNS", now, 64);
