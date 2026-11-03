@@ -38,6 +38,8 @@
 		<string>8.0.0</string>
 		<key>com.apple.kpi.private</key>
 		<string>22.0</string>
+		<key>com.apple.driver.AppleARMPlatform</key>
+		<string>1.0.2</string>
 		<key>org.darwin.driver.QcomSPMI</key>
 		<string>1.2.0</string>
 	</dict>

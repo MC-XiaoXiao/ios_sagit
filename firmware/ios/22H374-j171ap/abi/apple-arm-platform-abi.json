@@ -33,7 +33,11 @@
     "__ZN25AppleARMMIPIDSIController13nativeSlot176Ev",
     "__ZN25AppleARMMIPIDSIController13nativeSlot177Ev",
     "__ZN21AppleARMMIPIDSIDevice10gMetaClassE",
-    "__ZN21AppleARMMIPIDSIDevice9metaClassE"
+    "__ZN21AppleARMMIPIDSIDevice9metaClassE",
+    "__ZN17AppleARMBacklight10gMetaClassE",
+    "__ZN17AppleARMBacklightC2EPK11OSMetaClass",
+    "__ZN17AppleARMBacklightD2Ev",
+    "__ZTV17AppleARMBacklight"
   ],
   "note": "Subclass-only ABI contract. The original AppleARMPlatform and its dependency closure are still required. Import accounting is not a kernel-collection link or a boot test.",
   "classes": {
@@ -73,6 +77,11 @@
       "super": "IOService",
       "instance_size": 144,
       "vtable_slots": 177
+    },
+    "AppleARMBacklight": {
+      "super": "IOService",
+      "instance_size": 880,
+      "vtable_slots": 169
     }
   },
   "audited_virtual_slots": {

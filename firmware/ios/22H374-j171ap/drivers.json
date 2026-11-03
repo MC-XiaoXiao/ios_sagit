@@ -17,12 +17,13 @@
   "vtable_contracts": {
     "PMI8998WLED": {
       "unit": "PMI8998WLED.cpp",
-      "slots": 168,
+      "slots": 169,
       "bindings": {
         "44": "PMI8998WLED::setProperties",
         "86": "PMI8998WLED::start",
         "111": "PMI8998WLED::getWorkLoop",
-        "117": "PMI8998WLED::callPlatformFunction"
+        "117": "PMI8998WLED::callPlatformFunction",
+        "168": "PMI8998WLED::nativeSlot168"
       }
     },
     "QcomWatchdog": {

@@ -18,8 +18,8 @@ collection = "ios-runtime"
 cpus = 4
 features = ["storage", "display", "gpu", "input", "usb-device", "battery"]
 bridge_flags = ["--ufs-handoff", "--full-memory", "--disable-system-sleep", "--os-environment", "darwinos", "--watchdog-seconds", "31"]
-boot_args = ["display-direct-scanout=1", "gpu-shader-direct=1", "gpu-fb2d=2", "gpu-fbf=2", "gpu-pipe=6", "ml-timeout-interrupt-masked-scale=8", "ml-timeout-interrupt-masked-b-scale=8"]
-bridge_options = ["--display-handoff-profile", "{board}/handoff/display.json", "--display-smmu-handoff", "--disable-display-backlight", "--gpu-handoff-profile", "{board}/handoff/gpu.json", "--gpu-zap-firmware", "{workspace}/obj/device-firmware/gpu/a540_zap.mbn", "--gpu-firmware", "{workspace}/obj/device-firmware/gpu", "--gpu-smmu-init", "--gpu-cold-start", "--cpu-osm-handoff", "--touch-prepare", "--touch-handoff-profile", "{board}/handoff/touch.json", "--input-firmware", "{workspace}/obj/device-firmware/input", "--usb-resource-profile", "{board}/handoff/usb.json", "--usb-composite-console"]
+boot_args = ["display-direct-scanout=1", "wled-nominal-max-nits=600", "gpu-shader-direct=1", "gpu-fb2d=2", "gpu-fbf=2", "gpu-pipe=6", "ml-timeout-interrupt-masked-scale=8", "ml-timeout-interrupt-masked-b-scale=8"]
+bridge_options = ["--display-handoff-profile", "{board}/handoff/display.json", "--display-smmu-handoff", "--gpu-handoff-profile", "{board}/handoff/gpu.json", "--gpu-zap-firmware", "{workspace}/obj/device-firmware/gpu/a540_zap.mbn", "--gpu-firmware", "{workspace}/obj/device-firmware/gpu", "--gpu-smmu-init", "--gpu-cold-start", "--cpu-osm-handoff", "--touch-prepare", "--touch-handoff-profile", "{board}/handoff/touch.json", "--input-firmware", "{workspace}/obj/device-firmware/input", "--usb-resource-profile", "{board}/handoff/usb.json", "--usb-composite-console"]
 
 [profiles.platform]
 collection = "platform"

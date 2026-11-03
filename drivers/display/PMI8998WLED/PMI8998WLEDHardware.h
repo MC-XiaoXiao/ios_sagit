@@ -137,6 +137,15 @@ public:
         return OK; // Adoption is read-only: never flash a default brightness.
     }
     template <class Bus> Status setPower(Bus &b, bool on) {
+        if (!ready) return NotReady;
+        if (!on) {
+            // A failed brightness latch makes further lighting unsafe, but
+            // must not prevent blanking. Only clear the owned module bit;
+            // retain the sticky fault and never reinitialize protection here.
+            auto s = module(b, false);
+            if (s == OK) powered = false;
+            return s;
+        }
         if (!available()) return fault ? Stale : NotReady;
         auto s = check(b, on && level);
         if (s != OK) return s;
