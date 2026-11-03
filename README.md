@@ -29,7 +29,7 @@ Hardware status is based on validation through October 23, 2026.
 | Touch | Working | Native HID / BackBoard / UIKit path; physical swipes and taps tested; full multitouch coverage remains unverified |
 | Adreno 540 / Metal | Partial | Firmware authentication, hardware submission, Compute / Render, IOSurface readback, and system compositing tested; API coverage and long-term stability remain incomplete |
 | USB device mode | Working | High-Speed enumeration, AppleUSBDeviceMux, device information queries, and reconnect; Host / OTG, USB 3, and full pairing services remain unverified |
-| Battery | Partial | Read-only telemetry and charging connection UI; charging control and full powerd integration remain incomplete |
+| Battery | Partial | Telemetry, charging on/off, charge limits, and native iOS battery notifications tested; fast charging and sustained charging remain unverified |
 | Buttons / Home | Working | Input events; fingerprint authentication is unavailable |
 | Wi-Fi | Unavailable | Scan, association, and data transfer are not operational |
 | Bluetooth | Unavailable | Native stack integration and pairing remain incomplete |
